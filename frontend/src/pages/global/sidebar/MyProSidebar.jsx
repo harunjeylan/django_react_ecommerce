@@ -1,8 +1,8 @@
 // docs https://github.com/azouaoui-med/react-pro-sidebar
 import { useState } from "react";
-import { Menu, Sidebar,SubMenu, MenuItem } from "react-pro-sidebar";
+import { Menu, Sidebar, SubMenu, MenuItem } from "react-pro-sidebar";
 import { useProSidebar } from "react-pro-sidebar";
-
+import adminImage from "../../../assets/user.png";
 import { useSidebarContext } from "./SidebarContext";
 
 import { Link } from "react-router-dom";
@@ -24,9 +24,6 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import SwitchRightOutlinedIcon from "@mui/icons-material/SwitchRightOutlined";
 import SwitchLeftOutlinedIcon from "@mui/icons-material/SwitchLeftOutlined";
-
-
-
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -82,10 +79,10 @@ const MyProSidebar = () => {
           color: `${colors.greenAccent[500]} !important`,
           backgroundColor: "transparent !important",
         },
-        "& .sub-menu-content":{
-            backgroundColor:colors.primary[400],
-            height:"100%",
-        }
+        "& .sub-menu-content": {
+          backgroundColor: colors.primary[400],
+          height: "100%",
+        },
       }}
     >
       <Sidebar
@@ -93,7 +90,7 @@ const MyProSidebar = () => {
         rtl={sidebarRTL}
         backgroundColor={colors.primary[400]}
         image={sidebarImage}
-        width={broken ? "270px":"320px"}
+        width={broken ? "270px" : "320px"}
       >
         <Menu iconshape="square">
           <MenuItem
@@ -122,21 +119,22 @@ const MyProSidebar = () => {
                 alignItems="center"
                 ml="15px"
               >
-                <Typography 
-                 sx={{"& a": {
-                        color: "inherit !important",
-                        backgroundColor: "transparent !important",
-                        textDecoration:"none",
+                <Typography
+                  sx={{
+                    "& a": {
+                      color: "inherit !important",
+                      backgroundColor: "transparent !important",
+                      textDecoration: "none",
                     },
                     "& a:hover": {
-                        color: `none !important`,
-                        backgroundColor: "none !important",
+                      color: `none !important`,
+                      backgroundColor: "none !important",
                     },
-                    }}
-                    variant="h3" color={colors.grey[100]}>
-                    <Link to="/">
-                        ADMINIS
-                    </Link>                  
+                  }}
+                  variant="h3"
+                  color={colors.grey[100]}
+                >
+                  <Link to="/">ADMINIS</Link>
                 </Typography>
                 <IconButton
                   onClick={
@@ -165,7 +163,7 @@ const MyProSidebar = () => {
                   alt="profile user"
                   width="100px"
                   height="100px"
-                  src={"../../assets/user.png"}
+                  src={adminImage}
                   style={{ cursor: "pointer", borderRadius: "50%" }}
                 />
               </Box>
@@ -247,37 +245,30 @@ const MyProSidebar = () => {
               sx={{ m: "15px 20px 5px 20px" }}
             >
               Charts
-              
             </Typography>
-              <SubMenu 
-              label="Charts"
-              icon={<BarChartOutlinedIcon />}
-              >
-                  
-            <Item
-              title="Bar Chart"
-              to="/admin/bar"
-              icon={<BarChartOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Line Chart"
-              to="/admin/line"
-              icon={<TimelineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Pie Chart"
-              to="/admin/pie"
-              icon={<PieChartOutlineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            
-              </SubMenu>
-
+            <SubMenu label="Charts" icon={<BarChartOutlinedIcon />}>
+              <Item
+                title="Bar Chart"
+                to="/admin/bar"
+                icon={<BarChartOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Line Chart"
+                to="/admin/line"
+                icon={<TimelineOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Pie Chart"
+                to="/admin/pie"
+                icon={<PieChartOutlineOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            </SubMenu>
           </Box>
         </Menu>
       </Sidebar>
