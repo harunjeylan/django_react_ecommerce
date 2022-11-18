@@ -1,10 +1,12 @@
 import { Box, InputBase, Divider, Typography, IconButton } from "@mui/material";
 import MarkEmailReadOutlinedIcon from "@mui/icons-material/MarkEmailReadOutlined";
 import { useState } from "react";
-
+import { useTheme } from "@emotion/react";
+import { tokens } from "../../theme";
 const Subscribe = () => {
   const [email, setEmail] = useState("");
-
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   return (
     <Box width="80%" margin="80px auto" textAlign="center">
       <IconButton>
@@ -20,7 +22,7 @@ const Subscribe = () => {
         display="flex"
         alignItems="center"
         width="75%"
-        backgroundColor="#F2F2F2"
+        backgroundColor={colors.primary[400]}
       >
         <InputBase
           sx={{ ml: 1, flex: 1 }}

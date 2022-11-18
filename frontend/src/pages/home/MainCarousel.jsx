@@ -3,7 +3,8 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import { shades } from "../../theme";
+import { useTheme } from "@emotion/react";
+import { tokens } from "../../theme";
 
 // imports all images from assets folder
 const importAll = (r) =>
@@ -18,6 +19,8 @@ export const heroTextureImports = importAll(
 
 const MainCarousel = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   return (
     <Carousel
       infiniteLoop={true}
@@ -80,11 +83,11 @@ const MainCarousel = () => {
             margin={isNonMobile ? undefined : "0 auto"}
             maxWidth={isNonMobile ? undefined : "240px"}
           >
-            <Typography color={shades.secondary[200]}>-- NEW ITEMS</Typography>
+            <Typography color={colors.greenAccent[200]}>-- NEW ITEMS</Typography>
             <Typography variant="h1">Summer Sale</Typography>
             <Typography
               fontWeight="bold"
-              color={shades.secondary[300]}
+              color={colors.greenAccent[300]}
               sx={{ textDecoration: "underline" }}
             >
               Discover More

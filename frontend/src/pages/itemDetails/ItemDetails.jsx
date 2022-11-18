@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography } from "@mui/material";
+import { Box, Button, IconButton, useTheme, Typography } from "@mui/material";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { useParams } from "react-router-dom";
@@ -7,9 +7,9 @@ import Item from "../../components/Item";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { shades } from "../../theme";
 import { addToCart } from "../../state";
 import { useDispatch } from "react-redux";
+import { tokens } from "../../theme";
 
 const ItemDetails = () => {
   const dispatch = useDispatch();
@@ -18,7 +18,8 @@ const ItemDetails = () => {
   const [count, setCount] = useState(1);
   const [item, setItem] = useState(null);
   const [items, setItems] = useState([]);
-
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -77,7 +78,7 @@ const ItemDetails = () => {
             <Box
               display="flex"
               alignItems="center"
-              border={`1.5px solid ${shades.neutral[300]}`}
+              border={`1.5px solid ${colors.neutral[300]}`}
               mr="20px"
               p="2px 5px"
             >

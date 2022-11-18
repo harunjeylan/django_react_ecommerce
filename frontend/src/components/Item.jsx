@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { IconButton, Box, Typography, useTheme, Button } from "@mui/material";
+import { IconButton, Box, Typography, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { shades } from "../theme";
+import { useTheme } from "@emotion/react";
+import { tokens } from "../theme";
 import { addToCart } from "../state";
 import { useNavigate } from "react-router-dom";
 
@@ -12,20 +13,10 @@ const Item = ({ item, width }) => {
   const dispatch = useDispatch();
   const [count, setCount] = useState(1);
   const [isHovered, setIsHovered] = useState(false);
-  const {
-    palette: { neutral },
-  } = useTheme();
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
   const { category, price, name, images } = item;
-  // const {
-  //   data: {
-  //     attributes: {
-  //       formats: {
-  //         medium: { url },
-  //       },
-  //     },
-  //   },
-  // } = images;
 
   return (
     <Box width={width}>
@@ -54,14 +45,20 @@ const Item = ({ item, width }) => {
             <Box
               display="flex"
               alignItems="center"
-              backgroundColor={shades.neutral[100]}
+              backgroundColor={colors.neutral[100]}
               borderRadius="3px"
             >
-              <IconButton onClick={() => setCount(Math.max(count - 1, 1))}>
+              <IconButton
+                sx={{ color: colors.primary[300] }}
+                onClick={() => setCount(Math.max(count - 1, 1))}
+              >
                 <RemoveIcon />
               </IconButton>
-              <Typography color={shades.primary[300]}>{count}</Typography>
-              <IconButton onClick={() => setCount(count + 1)}>
+              <Typography color={colors.primary[300]}>{count}</Typography>
+              <IconButton
+                sx={{ color: colors.primary[300] }}
+                onClick={() => setCount(count + 1)}
+              >
                 <AddIcon />
               </IconButton>
             </Box>
@@ -69,7 +66,13 @@ const Item = ({ item, width }) => {
               onClick={() => {
                 dispatch(addToCart({ item: { ...item, count } }));
               }}
-              sx={{ backgroundColor: shades.primary[300], color: "white" }}
+              sx={{
+                backgroundColor: colors.greenAccent[500],
+                color: colors.grey[100],
+                "&:hover": {
+                  backgroundColor: colors.greenAccent[700],
+                },
+              }}
             >
               Add to Cart
             </Button>
@@ -78,7 +81,7 @@ const Item = ({ item, width }) => {
       </Box>
 
       <Box mt="3px">
-        <Typography variant="subtitle2" color={neutral.dark}>
+        <Typography variant="subtitle2" color={colors.neutral[800]}>
           {category}
         </Typography>
         <Typography>{name}</Typography>

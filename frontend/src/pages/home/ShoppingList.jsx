@@ -5,13 +5,14 @@ import { Typography } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useDispatch, useSelector } from "react-redux";
 import { setItems } from "../../state";
+import { useTheme } from "@emotion/react";
+import { tokens } from "../../theme";
 
 const ShoppingList = () => {
   const dispatch = useDispatch();
   const items = useSelector((state) => state.cart.items);
-  const breakPoint = useMediaQuery("(min-width:600px)");
-  // console.log(items);
-
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   async function getItems() {
     const produacts = await fetch("http://127.0.0.1:8000/api/products", {
       method: "GET",
@@ -39,10 +40,9 @@ const ShoppingList = () => {
         rowGap="20px"
         columnGap="1.33%"
       >
-        {items.map(
-          (item) =>
-            <Item item={item} key={`${item.name}-${item.id}`} />
-        )}
+        {items.map((item) => (
+          <Item item={item} key={`${item.name}-${item.id}`} />
+        ))}
         <div></div>
       </Box>
     </Box>
