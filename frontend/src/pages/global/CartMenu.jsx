@@ -4,7 +4,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import styled from "@emotion/styled";
-import { shades } from "../../theme";
+import { useTheme } from "@emotion/react";
+import { tokens } from "../../theme";
+import { colors } from "../../theme";
 import {
   decreaseCount,
   increaseCount,
@@ -24,7 +26,8 @@ const CartMenu = () => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.cart);
   const isCartOpen = useSelector((state) => state.cart.isCartOpen);
-
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   const totalPrice = cart.reduce((total, item) => {
     return total + item.count * item.price;
   }, 0);
@@ -47,7 +50,7 @@ const CartMenu = () => {
         bottom="0"
         width="max(400px, 30%)"
         height="100%"
-        backgroundColor="white"
+        backgroundColor={colors.primary[400]}
       >
         <Box padding="30px" overflow="auto" height="100%">
           {/* HEADER */}
@@ -87,7 +90,7 @@ const CartMenu = () => {
                       <Box
                         display="flex"
                         alignItems="center"
-                        border={`1.5px solid ${shades.neutral[500]}`}
+                        border={`1.5px solid ${colors.neutral[500]}`}
                       >
                         <IconButton
                           onClick={() =>
@@ -122,12 +125,15 @@ const CartMenu = () => {
             </FlexBox>
             <Button
               sx={{
-                backgroundColor: shades.primary[400],
-                color: "white",
+                backgroundColor: colors.blueAccent[700],
+                color: colors.grey[100],
                 borderRadius: 0,
                 minWidth: "100%",
                 padding: "20px 40px",
                 m: "20px 0",
+                "&:hover": {
+                  backgroundColor: colors.blueAccent[800],
+                },
               }}
               onClick={() => {
                 navigate("/checkout");

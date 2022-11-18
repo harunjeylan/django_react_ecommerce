@@ -1,5 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Badge, Box, IconButton } from "@mui/material";
+import { useTheme, InputBase, Badge, Box, IconButton } from "@mui/material";
+import { useContext, useState, useRef } from "react";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import {
   PersonOutline,
   ShoppingBagOutlined,
@@ -7,21 +10,32 @@ import {
   SearchOutlined,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { shades } from "../../theme";
+import { colors } from "../../theme";
 import { setIsCartOpen } from "../../state";
+import { ColorModeContext, tokens } from "../../theme";
+import { Link } from "react-router-dom";
 
 function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.cart);
-
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const colorMode = useContext(ColorModeContext);
+  const [activeSearch, setActiveSearch] = useState(false);
+  const searchRef = useRef(null);
+  const hundleSearchClick = () => {
+    setActiveSearch(!activeSearch);
+    console.log(activeSearch);
+    searchRef.current.focus();
+  };
   return (
     <Box
       display="flex"
       alignItems="center"
       width="100%"
       height="60px"
-      backgroundColor="rgba(255, 255, 255, 0.95)"
+      backgroundColor={colors.primary[400]}
       color="black"
       position="fixed"
       top="0"
@@ -38,7 +52,7 @@ function Navbar() {
         <Box
           onClick={() => navigate("/")}
           sx={{ "&:hover": { cursor: "pointer" } }}
-          color={shades.secondary[500]}
+          color={colors.greenAccent[500]}
         >
           ECOMMER
         </Box>
@@ -48,10 +62,31 @@ function Navbar() {
           columnGap="20px"
           zIndex="2"
         >
-          <IconButton sx={{ color: "black" }}>
-            <SearchOutlined />
+          <Box
+            display="flex"
+            backgroundColor={colors.primary[400]}
+            p={0.2}
+            borderRadius={1}
+          >
+            {activeSearch && (
+              <InputBase
+                ref={searchRef}
+                sx={{ ml: 1, flex: 1 }}
+                placeholder="Search"
+              />
+            )}
+            <IconButton onClick={hundleSearchClick} type="button">
+              <SearchOutlined />
+            </IconButton>
+          </Box>
+          <IconButton onClick={colorMode.toggleColorMode}>
+            {theme.palette.mode === "dark" ? (
+              <LightModeOutlinedIcon />
+            ) : (
+              <DarkModeOutlinedIcon />
+            )}
           </IconButton>
-          <IconButton sx={{ color: "black" }}>
+          <IconButton>
             <PersonOutline />
           </IconButton>
           <Badge
@@ -68,16 +103,15 @@ function Navbar() {
               },
             }}
           >
-            <IconButton
-              onClick={() => dispatch(setIsCartOpen({}))}
-              sx={{ color: "black" }}
-            >
+            <IconButton onClick={() => dispatch(setIsCartOpen({}))}>
               <ShoppingBagOutlined />
             </IconButton>
           </Badge>
-          <IconButton sx={{ color: "black" }}>
-            <MenuOutlined />
-          </IconButton>
+          <Link to="/admin/">
+            <IconButton>
+              <MenuOutlined />
+            </IconButton>
+          </Link>
         </Box>
       </Box>
     </Box>

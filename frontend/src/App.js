@@ -1,39 +1,144 @@
 import { useEffect } from "react";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
+
+import { ColorModeContext, useMode } from "./theme";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 import Home from "./pages/home/Home";
-import Navbar from "./pages/global/Navbar";
-import Footer from "./pages/global/Footer";
+
 import ItemDetails from "./pages/itemDetails/ItemDetails";
-import CartMenu from "./pages/global/CartMenu";
 import Checkout from "./pages/checkout/Checkout";
 import Confirmation from "./pages/checkout/Confirmation";
 
-const ScrollToTop = () => {
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
-  return null;
-};
-
+import Admin from "./pages/Admin";
+import Customer from "./pages/Customer";
+import Dashboard from "./pages/dashboard";
+import Team from "./pages/team";
+import Invoices from "./pages/invoices";
+import Contacts from "./pages/contacts";
+import Bar from "./pages/bar";
+import Line from "./pages/line";
+import Pie from "./pages/pie";
+import FAQ from "./pages/faq";
+import Form from "./pages/form";
 function App() {
+  const [theme, colorMode] = useMode();
+
   return (
-    <div className="app">
-      <BrowserRouter>
-        <Navbar />
-        <ScrollToTop />
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="item/:itemId" element={<ItemDetails />} />
-          <Route path="checkout" element={<Checkout />} />
-          <Route path="checkout/success" element={<Confirmation />} />
+          <Route path="/">
+            <Route
+              index
+              element={
+                <Customer>
+                  <Home />
+                </Customer>
+              }
+            />
+            <Route
+              path="item/:itemId"
+              element={
+                <Customer>
+                  <ItemDetails />
+                </Customer>
+              }
+            />
+            <Route
+              path="checkout"
+              element={
+                <Customer>
+                  <Checkout />
+                </Customer>
+              }
+            />
+            <Route
+              path="checkout/success"
+              element={
+                <Customer>
+                  <Confirmation />
+                </Customer>
+              }
+            />
+          </Route>
+          <Route path="admin">
+            <Route
+              index
+              element={
+                <Admin>
+                  <Dashboard />
+                </Admin>
+              }
+            />
+            <Route
+              path="bar"
+              element={
+                <Admin>
+                  <Bar />
+                </Admin>
+              }
+            />
+            <Route
+              path="pie"
+              element={
+                <Admin>
+                  <Pie />
+                </Admin>
+              }
+            />
+            <Route
+              path="line"
+              element={
+                <Admin>
+                  <Line />
+                </Admin>
+              }
+            />
+            <Route
+              path="faq"
+              element={
+                <Admin>
+                  <FAQ />
+                </Admin>
+              }
+            />
+            <Route
+              path="form"
+              element={
+                <Admin>
+                  <Form />
+                </Admin>
+              }
+            />
+            <Route
+              path="contacts"
+              element={
+                <Admin>
+                  <Contacts />
+                </Admin>
+              }
+            />
+            <Route
+              path="invoices"
+              element={
+                <Admin>
+                  <Invoices />
+                </Admin>
+              }
+            />
+            <Route
+              path="team"
+              element={
+                <Admin>
+                  <Team />
+                </Admin>
+              }
+            />
+          </Route>
         </Routes>
-        <CartMenu />
-        <Footer />
-      </BrowserRouter>
-    </div>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   );
 }
 

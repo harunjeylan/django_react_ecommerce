@@ -5,10 +5,7 @@ import App from "./App";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import cartReducer from "./state";
-import { ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import { theme } from "./theme";
-
+import { BrowserRouter } from "react-router-dom";
 const store = configureStore({
   reducer: {
     cart: cartReducer,
@@ -19,10 +16,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
+      <BrowserRouter>
         <App />
-      </ThemeProvider>
+      </BrowserRouter>
     </Provider>
   </React.StrictMode>
 );
