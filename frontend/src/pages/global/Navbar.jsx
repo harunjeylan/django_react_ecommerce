@@ -40,7 +40,8 @@ function Navbar() {
       position="fixed"
       top="0"
       left="0"
-      zIndex="1"
+      zIndex="1000"
+      className="drop-shadow-md"
     >
       <Box
         width="80%"
