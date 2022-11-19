@@ -10,6 +10,8 @@ import { useTheme } from "@emotion/react";
 import { tokens } from "../../theme";
 import { useGetAllProductsQuery } from "../../redux/services/products";
 import damyProduct from "./damyData";
+import Grid from "@mui/material/Unstable_Grid2";
+import Container from "@mui/material/Container";
 const ShoppingList = () => {
   const dispatch = useDispatch();
   const items = useSelector((state) => state.cart.items);
@@ -17,17 +19,14 @@ const ShoppingList = () => {
   const colors = tokens(theme.palette.mode);
   const { data, isFetching, error } = useGetAllProductsQuery();
   return (
-    <Box width="80%" margin="80px auto">
+    <Container maxWidth="lg">
       <Typography variant="h3" textAlign="center">
         Our Featured <b>Products</b>
       </Typography>
-      <Box
-        margin="0 auto"
-        display="grid"
-        gridTemplateColumns="repeat(auto-fill, 300px)"
-        justifyContent="space-around"
-        rowGap="20px"
-        columnGap="1.33%"
+      <Grid
+        container
+        spacing={{ xs: 2, md: 3 }}
+        columns={{ xs: 4, sm: 8, md: 12 }}
       >
         {isFetching ? (
           <Box sx={{ display: "flex" }}>
@@ -35,12 +34,13 @@ const ShoppingList = () => {
           </Box>
         ) : (
           data.products.map((item) => (
-            <Item item={item} key={`${item.title}-${item.id}`} />
+            <Grid xs={2} sm={4} md={4} key={item.id}>
+              <Item item={item} key={`${item.title}-${item.id}`} />
+            </Grid>
           ))
         )}
-        <div></div>
-      </Box>
-    </Box>
+      </Grid>
+    </Container>
   );
 };
 
