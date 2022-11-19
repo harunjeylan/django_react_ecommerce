@@ -5,7 +5,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../theme";
-import { addToCart } from "../state";
+import { addToCart } from "../redux/services/cartReducer";
 import { useNavigate } from "react-router-dom";
 
 const Item = ({ item, width }) => {
@@ -16,67 +16,72 @@ const Item = ({ item, width }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const { category, price, name, images } = item;
+  const { category, price, title, images } = item;
 
   return (
-    <Box width={width}>
-      <Box
-        position="relative"
-        onMouseOver={() => setIsHovered(true)}
-        onMouseOut={() => setIsHovered(false)}
-      >
-        <img
-          alt={item.name}
-          width="300px"
-          height="400px"
-          src={`${images[0].image}`}
-          onClick={() => navigate(`/item/${item.id}`)}
-          style={{ cursor: "pointer" }}
-        />
+    <Box
+      width={width}
+      className="flex flex-col bg-opacity-80 backdrop-blur-sm animate-slideup rounded-lg cursor-pointer p-4 bg-white/5"
+    >
+      <Box position="relative" className="w-full h-56 group">
         <Box
-          display={isHovered ? "block" : "none"}
           position="absolute"
-          bottom="10%"
-          left="0"
-          width="100%"
-          padding="0 5%"
+          className={`inset-0 justify-center items-center bg-black bg-opacity-50 group-hover:flex `}
         >
-          <Box display="flex" justifyContent="space-between">
-            <Box
-              display="flex"
-              alignItems="center"
-              backgroundColor={colors.neutral[100]}
-              borderRadius="3px"
-            >
-              <IconButton
-                sx={{ color: colors.primary[300] }}
-                onClick={() => setCount(Math.max(count - 1, 1))}
+          <img
+            alt={item.title}
+            width="300px"
+            height="400px"
+            src={`${images[0]}`}
+            onClick={() => navigate(`/item/${item.id}`)}
+            style={{ cursor: "pointer" }}
+            className="rounded-lg"
+          />
+          {/* <Box
+            display={isHovered ? "block" : "none"}
+            position="absolute"
+            bottom="10%"
+            left="0"
+            width="100%"
+            padding="0 5%"
+          >
+            <Box display="flex" justifyContent="space-between">
+              <Box
+                display="flex"
+                alignItems="center"
+                backgroundColor={colors.neutral[100]}
+                borderRadius="3px"
               >
-                <RemoveIcon />
-              </IconButton>
-              <Typography color={colors.primary[300]}>{count}</Typography>
-              <IconButton
-                sx={{ color: colors.primary[300] }}
-                onClick={() => setCount(count + 1)}
+                <IconButton
+                  sx={{ color: colors.primary[300] }}
+                  onClick={() => setCount(Math.max(count - 1, 1))}
+                >
+                  <RemoveIcon />
+                </IconButton>
+                <Typography color={colors.primary[300]}>{count}</Typography>
+                <IconButton
+                  sx={{ color: colors.primary[300] }}
+                  onClick={() => setCount(count + 1)}
+                >
+                  <AddIcon />
+                </IconButton>
+              </Box>
+              <Button
+                onClick={() => {
+                  dispatch(addToCart({ item: { ...item, count } }));
+                }}
+                sx={{
+                  backgroundColor: colors.greenAccent[500],
+                  color: colors.grey[100],
+                  "&:hover": {
+                    backgroundColor: colors.greenAccent[700],
+                  },
+                }}
               >
-                <AddIcon />
-              </IconButton>
+                Add to Cart
+              </Button>
             </Box>
-            <Button
-              onClick={() => {
-                dispatch(addToCart({ item: { ...item, count } }));
-              }}
-              sx={{
-                backgroundColor: colors.greenAccent[500],
-                color: colors.grey[100],
-                "&:hover": {
-                  backgroundColor: colors.greenAccent[700],
-                },
-              }}
-            >
-              Add to Cart
-            </Button>
-          </Box>
+          </Box> */}
         </Box>
       </Box>
 
@@ -84,7 +89,7 @@ const Item = ({ item, width }) => {
         <Typography variant="subtitle2" color={colors.neutral[800]}>
           {category}
         </Typography>
-        <Typography>{name}</Typography>
+        <Typography>{title}</Typography>
         <Typography fontWeight="bold">${price}</Typography>
       </Box>
     </Box>
