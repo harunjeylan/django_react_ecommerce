@@ -1,13 +1,24 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { IconButton, Box, Typography, Button } from "@mui/material";
+import {
+  IconButton,
+  Box,
+  Typography,
+  Button,
+  ButtonGroup,
+  Rating,
+} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../theme";
 import { addToCart } from "../redux/services/cartReducer";
 import { useNavigate } from "react-router-dom";
-
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import { CardActionArea, CardActions } from "@mui/material";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 const Item = ({ item, width }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -17,82 +28,86 @@ const Item = ({ item, width }) => {
   const colors = tokens(theme.palette.mode);
 
   const { category, price, title, images } = item;
-
   return (
-    <Box
-      width={width}
-      className="flex flex-col bg-opacity-80 backdrop-blur-sm animate-slideup rounded-lg cursor-pointer p-4 bg-white/5"
-    >
-      <Box position="relative" className="w-full h-56 group">
-        <Box
-          position="absolute"
-          className={`inset-0 justify-center items-center bg-black bg-opacity-50 group-hover:flex `}
-        >
-          <img
-            alt={item.title}
-            width="300px"
-            height="400px"
-            src={`${images[0]}`}
-            onClick={() => navigate(`/item/${item.id}`)}
-            style={{ cursor: "pointer" }}
-            className="rounded-lg"
+    <Card className="bg-opacity-80 backdrop-blur-sm animate-slideup rounded-lg rounded-lg  p-4 bg-white/5 ">
+      <div onClick={() => navigate(`/item/${item.id}`)}>
+        <CardActionArea className="hover:scale-105 ease-in-out duration-300">
+          <CardMedia
+            component="img"
+            image={item?.thumbnail}
+            alt={`${title} image`}
+            className="max-w-[80] max-h-52 h-52"
           />
-          {/* <Box
-            display={isHovered ? "block" : "none"}
-            position="absolute"
-            bottom="10%"
-            left="0"
-            width="100%"
-            padding="0 5%"
-          >
-            <Box display="flex" justifyContent="space-between">
-              <Box
-                display="flex"
-                alignItems="center"
-                backgroundColor={colors.neutral[100]}
-                borderRadius="3px"
-              >
-                <IconButton
-                  sx={{ color: colors.primary[300] }}
-                  onClick={() => setCount(Math.max(count - 1, 1))}
-                >
-                  <RemoveIcon />
-                </IconButton>
-                <Typography color={colors.primary[300]}>{count}</Typography>
-                <IconButton
-                  sx={{ color: colors.primary[300] }}
-                  onClick={() => setCount(count + 1)}
-                >
-                  <AddIcon />
-                </IconButton>
+          <CardContent className="w-auto">
+            <Box
+              borderColor={colors.grey[600]}
+              className="flex justify-between border-b my-2"
+            >
+              <Box>
+                <Typography gutterBottom variant="h5" component="div">
+                  {item.title}
+                </Typography>
+                <Typography gutterBottom variant="h6" component="div">
+                  {item.brand}
+                </Typography>
               </Box>
-              <Button
-                onClick={() => {
-                  dispatch(addToCart({ item: { ...item, count } }));
-                }}
-                sx={{
-                  backgroundColor: colors.greenAccent[500],
-                  color: colors.grey[100],
-                  "&:hover": {
-                    backgroundColor: colors.greenAccent[700],
-                  },
-                }}
-              >
-                Add to Cart
-              </Button>
+              <Rating name="read-only" value={item?.rating} readOnly />
             </Box>
-          </Box> */}
-        </Box>
-      </Box>
+            <Box borderColor={colors.grey[600]} className="border-b my-2">
+              <Typography gutterBottom variant="h5" component="div">
+                {item.category}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {item.description}
+              </Typography>
+            </Box>
+          </CardContent>
+        </CardActionArea>
+      </div>
 
-      <Box mt="3px">
-        <Typography variant="subtitle2" color={colors.neutral[800]}>
-          {category}
-        </Typography>
-        <Typography>{title}</Typography>
-        <Typography fontWeight="bold">${price}</Typography>
-      </Box>
-    </Box>
+      <CardActions className="flex-col">
+        <Box className="flex justify-between w-full p-4">
+          <ButtonGroup
+            variant="contained"
+            aria-label="outlined primary button group"
+            sx={{
+              backgroundColor: colors.primary[400],
+              color: colors.grey[100],
+            }}
+            className="border-1"
+          >
+            <IconButton onClick={() => setCount(Math.max(count - 1, 1))}>
+              <RemoveIcon />
+            </IconButton>
+            <IconButton className="px-4">
+              <Typography>{count}</Typography>
+            </IconButton>
+            <IconButton onClick={() => setCount(count + 1)}>
+              <AddIcon />
+            </IconButton>
+          </ButtonGroup>
+
+          <Typography gutterBottom variant="h4" component="div">
+            ${item?.price * count}
+          </Typography>
+        </Box>
+        <Box className="w-full mt-4">
+          <Button
+            startIcon={<AddShoppingCartIcon />}
+            variant="contained"
+            onClick={() => {
+              dispatch(addToCart({ item: { ...item, count } }));
+            }}
+            className={`w-full p-4 
+            text-[${colors.grey[100]}] 
+            bg-[#3da58a] 
+            hover:bg-[#2e7c67]`}
+          >
+            Add to Cart
+          </Button>
+        </Box>
+      </CardActions>
+    </Card>
   );
 };
 
