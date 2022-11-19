@@ -11,7 +11,7 @@ import {
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { colors } from "../../theme";
-import { setIsCartOpen } from "../../state";
+import { setIsCartOpen } from "../../redux/services/cartReducer";
 import { ColorModeContext, tokens } from "../../theme";
 import { Link } from "react-router-dom";
 

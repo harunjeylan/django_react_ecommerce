@@ -12,7 +12,7 @@ import {
   increaseCount,
   removeFromCart,
   setIsCartOpen,
-} from "../../state";
+} from "../../redux/services/cartReducer";
 import { useNavigate } from "react-router-dom";
 
 const FlexBox = styled(Box)`
@@ -64,19 +64,19 @@ const CartMenu = () => {
           {/* CART LIST */}
           <Box>
             {cart.map((item, ind) => (
-              <Box key={`${item.name}-${item.id}-${ind}`}>
+              <Box key={`${item.title}-${item.id}-${ind}`}>
                 <FlexBox p="15px 0">
                   <Box flex="1 1 40%">
                     <img
-                      alt={item?.name}
+                      alt={item?.title}
                       width="123px"
                       height="164px"
-                      src={`${item?.images[0]?.image}`}
+                      src={`${item?.images[0]}`}
                     />
                   </Box>
                   <Box flex="1 1 60%">
                     <FlexBox mb="5px">
-                      <Typography fontWeight="bold">{item.name}</Typography>
+                      <Typography fontWeight="bold">{item.title}</Typography>
                       <IconButton
                         onClick={() =>
                           dispatch(removeFromCart({ id: item.id }))
@@ -85,7 +85,7 @@ const CartMenu = () => {
                         <CloseIcon />
                       </IconButton>
                     </FlexBox>
-                    <Typography>{item.short_description}</Typography>
+                    <Typography>{item.description}</Typography>
                     <FlexBox m="15px 0">
                       <Box
                         display="flex"

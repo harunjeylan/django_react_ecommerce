@@ -7,7 +7,12 @@ import Item from "../../components/Item";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { addToCart } from "../../state";
+import { addToCart } from "../../redux/services/cartReducer";
+import {
+  getAllProductsByCategory,
+  getProductsDetailes,
+} from "../../redux/services/products";
+
 import { useDispatch } from "react-redux";
 import { tokens } from "../../theme";
 
@@ -16,34 +21,16 @@ const ItemDetails = () => {
   const { itemId } = useParams();
   const [value, setValue] = useState("description");
   const [count, setCount] = useState(1);
-  const [item, setItem] = useState(null);
-  const [items, setItems] = useState([]);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  async function getItem() {
-    const item = await fetch(`http://127.0.0.1:8000/api/products/${itemId}`, {
-      method: "GET",
-    });
-    const itemJson = await item.json();
-    setItem(itemJson);
-  }
-
-  async function getItems() {
-    const items = await fetch(`http://127.0.0.1:8000/api/products`, {
-      method: "GET",
-    });
-    const itemsJson = await items.json();
-    setItems(itemsJson);
-  }
-
-  useEffect(() => {
-    getItem();
-    getItems();
-  }, [itemId]); // eslint-disable-line react-hooks/exhaustive-deps
+  const { item, itemIsFetching, itemIrror } = getProductsDetailes(itemId);
+  // const { items, itemsIsFetching, itemsError } = getAllProductsByCategory(
+  //   item.category
+  // );
 
   return (
     <Box width="80%" m="80px auto">
@@ -51,10 +38,10 @@ const ItemDetails = () => {
         {/* IMAGES */}
         <Box flex="1 1 40%" mb="40px">
           <img
-            alt={item?.name}
+            alt={item?.title}
             width="100%"
             height="100%"
-            src={`${item?.images[0]?.image}`}
+            src={`${item?.images[0]}`}
             style={{ objectFit: "contain" }}
           />
         </Box>
@@ -67,11 +54,9 @@ const ItemDetails = () => {
           </Box>
 
           <Box m="65px 0 25px 0">
-            <Typography variant="h3">{item?.name}</Typography>
+            <Typography variant="h3">{item?.title}</Typography>
             <Typography>${item?.price}</Typography>
-            <Typography sx={{ mt: "20px" }}>
-              {item?.long_description}
-            </Typography>
+            <Typography sx={{ mt: "20px" }}>{item?.description}</Typography>
           </Box>
 
           <Box display="flex" alignItems="center" minHeight="50px">
@@ -121,7 +106,7 @@ const ItemDetails = () => {
         </Tabs>
       </Box>
       <Box display="flex" flexWrap="wrap" gap="15px">
-        {value === "description" && <div>{item?.long_description}</div>}
+        {value === "description" && <div>{item?.description}</div>}
         {value === "reviews" && <div>reviews</div>}
       </Box>
 
@@ -137,9 +122,9 @@ const ItemDetails = () => {
           columnGap="1.33%"
           justifyContent="space-between"
         >
-          {items.slice(0, 4).map((item, i) => (
-            <Item key={`${item.name}-${i}`} item={item} />
-          ))}
+          {/* {items.slice(0, 4).map((item, i) => (
+            <Item key={`${item.title}-${i}`} item={item} />
+          ))} */}
         </Box>
       </Box>
     </Box>
