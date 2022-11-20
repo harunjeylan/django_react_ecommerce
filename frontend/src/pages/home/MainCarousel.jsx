@@ -5,7 +5,15 @@ import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../../theme";
+import { Swiper, SwiperSlide } from "swiper/react";
 
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+
+// import required modules
+import { Autoplay } from "swiper";
 // imports all images from assets folder
 const importAll = (r) =>
   r.keys().reduce((acc, item) => {
@@ -22,80 +30,55 @@ const MainCarousel = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
-    <Carousel
-      infiniteLoop={true}
-      showThumbs={false}
-      showIndicators={false}
-      showStatus={false}
-      renderArrowPrev={(onClickHandler, hasPrev, label) => (
-        <IconButton
-          onClick={onClickHandler}
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "0",
-            color: "white",
-            padding: "5px",
-            zIndex: "10",
-          }}
-        >
-          <NavigateBeforeIcon sx={{ fontSize: 40 }} />
-        </IconButton>
-      )}
-      renderArrowNext={(onClickHandler, hasNext, label) => (
-        <IconButton
-          onClick={onClickHandler}
-          sx={{
-            position: "absolute",
-            top: "50%",
-            right: "0",
-            color: "white",
-            padding: "5px",
-            zIndex: "10",
-          }}
-        >
-          <NavigateNextIcon sx={{ fontSize: 40 }} />
-        </IconButton>
-      )}
+    <Swiper
+      slidesPerView={1}
+      spaceBetween={30}
+      loop={true}
+      autoplay={{
+        delay: 3000,
+        disableOnInteraction: false,
+      }}
+      modules={[Autoplay]}
+      className="mySwiper h-[400px] md:h-[600px]"
     >
       {Object.values(heroTextureImports).map((texture, index) => (
-        <Box key={`carousel-image-${index}`}>
-          <img
-            src={texture}
-            alt={`carousel-${index}`}
-            style={{
-              width: "100%",
-              height: "700px",
-              objectFit: "cover",
-              backgroundAttachment: "fixed",
-            }}
-          />
-          <Box
-            color="white"
-            padding="20px"
-            borderRadius="1px"
-            textAlign="left"
-            backgroundColor="rgb(0, 0, 0, 0.4)"
-            position="absolute"
-            top="46%"
-            left={isNonMobile ? "10%" : "0"}
-            right={isNonMobile ? undefined : "0"}
-            margin={isNonMobile ? undefined : "0 auto"}
-            maxWidth={isNonMobile ? undefined : "240px"}
-          >
-            <Typography color={colors.greenAccent[200]}>-- NEW ITEMS</Typography>
-            <Typography variant="h1">Summer Sale</Typography>
-            <Typography
-              fontWeight="bold"
-              color={colors.greenAccent[300]}
-              sx={{ textDecoration: "underline" }}
+        <SwiperSlide key={`carousel-image-${index}`}>
+          <Box>
+            <img
+              src={texture}
+              alt={`carousel-${index}`}
+              className={`w-100 h-[100%]`}
+            />
+            <Box
+              color="white"
+              padding="20px"
+              borderRadius="1px"
+              textAlign="left"
+              backgroundColor="rgb(0, 0, 0, 0.4)"
+              position="absolute"
+              top="46%"
+              left={isNonMobile ? "10%" : "0"}
+              right={isNonMobile ? undefined : "0"}
+              margin={isNonMobile ? undefined : "0 auto"}
+              maxWidth={isNonMobile ? undefined : "260px"}
+              className="rounded-lg hover:skew-y-6 ease-in-out duration-300 "
             >
-              Discover More
-            </Typography>
+              <Typography color={colors.greenAccent[200]}>
+                -- NEW ITEMS
+              </Typography>
+              <Typography variant="h1">Summer Sale</Typography>
+              <Typography
+                fontWeight="bold"
+                color={colors.greenAccent[300]}
+                sx={{ textDecoration: "underline" }}
+              >
+                Discover More
+              </Typography>
+            </Box>
           </Box>
-        </Box>
+        </SwiperSlide>
       ))}
-    </Carousel>
+    </Swiper>
   );
 };
 
