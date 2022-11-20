@@ -31,12 +31,12 @@ const Item = ({ item, width }) => {
   return (
     <Card className="bg-opacity-80 backdrop-blur-sm animate-slideup rounded-lg rounded-lg  p-4 bg-white/5 ">
       <div onClick={() => navigate(`/item/${item.id}`)}>
-        <CardActionArea className="hover:scale-105 ease-in-out duration-300">
+        <CardActionArea className="rounded-lg hover:scale-105 ease-in-out duration-300">
           <CardMedia
             component="img"
             image={item?.thumbnail}
             alt={`${title} image`}
-            className="max-w-[80] max-h-52 h-52"
+            className="max-w-[80] rounded-t-lg max-h-52 h-52"
           />
           <CardContent className="w-auto">
             <Box

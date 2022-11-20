@@ -19,7 +19,7 @@ const ShoppingList = () => {
   const colors = tokens(theme.palette.mode);
   const { data, isFetching, error } = useGetAllProductsQuery();
   return (
-    <Container maxWidth="lg">
+    <>
       <Typography variant="h3" textAlign="center">
         Our Featured <b>Products</b>
       </Typography>
@@ -34,13 +34,13 @@ const ShoppingList = () => {
           </Box>
         ) : (
           data.products.map((item) => (
-            <Grid xs={2} sm={4} md={4} key={item.id}>
+            <Grid xs={12} sm={12} md={6} lg={4} xl={3} key={item.id}>
               <Item item={item} key={`${item.title}-${item.id}`} />
             </Grid>
           ))
         )}
       </Grid>
-    </Container>
+    </>
   );
 };
 
