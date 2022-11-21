@@ -2,6 +2,11 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   IconButton,
+  CardActionArea,
+  CardActions,
+  Card,
+  CardContent,
+  CardMedia,
   Box,
   Typography,
   Button,
@@ -14,10 +19,6 @@ import { useTheme } from "@emotion/react";
 import { tokens } from "../theme";
 import { addToCart } from "../redux/services/cartReducer";
 import { useNavigate } from "react-router-dom";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import { CardActionArea, CardActions } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 const Item = ({ item, width }) => {
   const navigate = useNavigate();
@@ -29,13 +30,13 @@ const Item = ({ item, width }) => {
   const { category, price, title, images } = item;
   return (
     <>
-      <Box
+      <CardActionArea
         className={`
             absolute 
             xs:w-[100%] h-[100%]  md:w-[45%] md:h-[110%] 
-            md:-top-[5%] md:right-[0] 
+            md:-inset-y-[5%] md:right-[0] 
             xs:z-10 xs:hover:z-0
-            cursor-pointer rounded-lg p-2
+            cursor-pointer rounded-lg p-2 m-0
             bg-opacity-[90%]  backdrop-blur-xs bg-white/5
             md:hover:scale-105  ease-in-out duration-300 
           `}
@@ -46,11 +47,11 @@ const Item = ({ item, width }) => {
           onClick={() => navigate(`/item/${item.id}`)}
           className={`w-[100%] h-[100%] rounded-lg `}
         />
-      </Box>
-      <Box
+      </CardActionArea>
+      <CardActionArea
         className={`
-          absolute  md:ml-4 md:w-[45%] md:top-[2.5%] p-2
-          w-[100%] h-[100%] max-h-[300px] md:h-[90%]
+          absolute  md:ml-4 md:w-[45%] md:inset-y-[5%] p-2
+          w-auto h-[100%]  md:h-[90%]
           xs:z-0 xs:hover:z-10 
           flex flex-col rounded-lg justify-between
           bg-opacity-[90%]  ease-in-out duration-300
@@ -60,21 +61,24 @@ const Item = ({ item, width }) => {
       >
         <Box
           onClick={() => navigate(`/item/${item.id}`)}
-          className="p-4 duration-300"
+          className="flex-col w-full px-4 py-2 md:px-2 md:py-1 duration-300"
         >
-          <Typography gutterBottom variant="h5" component="div">
+          <Typography gutterBottom variant="h5" className={``}>
             {item.title}
           </Typography>
-          <Typography gutterBottom variant="subtitle" component="div">
+          <Typography gutterBottom variant="subtitle" className={``}>
             {item.brand}
           </Typography>
-          <Typography gutterBottom variant="subtitle2" component="div">
+          <Typography gutterBottom variant="subtitle2" className={``}>
             {item.category}
           </Typography>
           <Rating name="read-only" value={item?.rating} readOnly />
+          <Typography variant="body2" color="text.secondary" className={``}>
+            {item.description}
+          </Typography>
         </Box>
-        <Box className="p-4 duration-300">
-          <Box className="flex items-center justify-between mb-2">
+        <Box className="flex-col w-full px-4 py-2 md:px-2 md:py-1">
+          <Box className="flex justify-between w-full p-1">
             <ButtonGroup
               variant="contained"
               aria-label="outlined primary button group"
@@ -82,6 +86,7 @@ const Item = ({ item, width }) => {
                 backgroundColor: colors.primary[400],
                 color: colors.grey[100],
               }}
+              className="border-1"
             >
               <IconButton onClick={() => setCount(Math.max(count - 1, 1))}>
                 <RemoveIcon />
@@ -93,27 +98,29 @@ const Item = ({ item, width }) => {
                 <AddIcon />
               </IconButton>
             </ButtonGroup>
-
-            <Typography gutterBottom variant="h4" component="div">
-              ${item?.price * count}
-            </Typography>
+            <Box>
+              <Typography gutterBottom variant="h4" component="div">
+                ${item?.price * count}
+              </Typography>
+            </Box>
           </Box>
-          <Button
-            className="w-full m-2"
-            startIcon={<AddShoppingCartIcon />}
-            variant="contained"
-            onClick={() => {
-              dispatch(addToCart({ item: { ...item, count } }));
-            }}
-            className={`w-full p-2 
-            text-[${colors.grey[100]}] 
-            bg-[#3da58a] 
-            hover:bg-[#2e7c67]`}
-          >
-            Add to Cart
-          </Button>
+          <Box className="w-full w-full px-4 py-2 md:px-2 md:py-1">
+            <Button
+              startIcon={<AddShoppingCartIcon />}
+              variant="contained"
+              onClick={() => {
+                dispatch(addToCart({ item: { ...item, count } }));
+              }}
+              className={`w-full py-4 m-0
+                text-[${colors.grey[100]}] 
+                bg-[#3da58a] 
+                hover:bg-[#2e7c67]`}
+            >
+              Add to Cart
+            </Button>
+          </Box>
         </Box>
-      </Box>
+      </CardActionArea>
     </>
   );
 };

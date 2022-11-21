@@ -36,14 +36,13 @@ const ItemCarouse = () => {
         depth: 100,
         modifier: 1,
         slideShadows: false,
+        pauseOnMouseEnter: true,
       }}
-      autoplay={{
-        delay: 3000,
-        disableOnInteraction: false,
-      }}
-      modules={[EffectCoverflow, Autoplay]}
-
-      //
+      // autoplay={{
+      //   delay: 5000,
+      //   disableOnInteraction: false,
+      // }}
+      modules={[EffectCoverflow]} //Autoplay
     >
       {isFetching ? (
         <Box sx={{ display: "flex" }}>
@@ -53,7 +52,7 @@ const ItemCarouse = () => {
         items?.products.map((item, index) => (
           <SwiperSlide
             key={`carousel-${index}`}
-            className={`relative xs:h-[260px] md:h-[300px] xs:w-[100%]  md:w-[640px] rounded-lg
+            className={`relative xs:h-[300px] md:h-[360px] xs:w-[100%]  md:w-[640px] rounded-lg
                bg-opacity-[90%] backdrop-blur-sm bg-white/5  overflow-visible relative `}
           >
             <Item2 item={item} key={`${item?.title}-${item?.id}`} />
