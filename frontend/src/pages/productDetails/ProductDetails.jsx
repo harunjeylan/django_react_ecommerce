@@ -12,7 +12,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Item from "../../components/Item";
+import ProductCard2 from "../../components/ProductCard2";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -31,9 +31,9 @@ import {
 import { useDispatch } from "react-redux";
 import { tokens } from "../../theme";
 import damyProduct from "../home/damyData";
-const ItemDetails = () => {
+const ProductDetails = () => {
   const dispatch = useDispatch();
-  const { itemId } = useParams();
+  const { productId } = useParams();
   const [value, setValue] = useState("description");
   const [count, setCount] = useState(1);
   const theme = useTheme();
@@ -41,24 +41,24 @@ const ItemDetails = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  console.log(itemId);
+  console.log(productId);
   const {
-    data: item,
-    isFetching: itemIsFetching,
-    error: itemError,
-  } = useGetProductsDetailesQuery({ itemId });
+    data: product,
+    isFetching: productIsFetching,
+    error: productError,
+  } = useGetProductsDetailesQuery({ productId });
   const {
-    data: items,
-    isFetching: itemsIsFetching,
-    error: itemsError,
+    data: products,
+    isFetching: productsIsFetching,
+    error: productsError,
   } = useGetProductsByCategoryQuery({
-    category: item?.category,
+    category: product?.category,
   });
 
   return (
     <Container maxWidth="xl" className="mt-20">
-      <Header title={item?.title} subtitle={item?.category} />
-      {itemIsFetching ? (
+      <Header title={product?.title} subtitle={product?.category} />
+      {productIsFetching ? (
         <Box sx={{ display: "flex" }}>
           <CircularProgress />
         </Box>
@@ -70,13 +70,13 @@ const ItemDetails = () => {
         >
           <Grid xs={12} sm={12} md={6} lg={5}>
             <ImageList variant="masonry" cols={2} gap={8}>
-              {item?.images.map((img, index) => (
+              {product?.images.map((img, index) => (
                 <ImageListItem key={index}>
                   <img
                     className="rounded-lg drop-shadow-lg hover:scale-95 ease-in-out duration-300"
                     src={`${img}?w=248&fit=crop&auto=format`}
                     srcSet={`${img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                    alt={`${item.title} image`}
+                    alt={`${product.title} image`}
                     loading="lazy"
                   />
                 </ImageListItem>
@@ -86,13 +86,13 @@ const ItemDetails = () => {
           <Grid xs={12} sm={12} md={6} lg={7}>
             <Box mb="40px">
               <Box display="flex" justifyContent="space-between">
-                <Box>Home/Item</Box>
+                <Box>Home/Product</Box>
                 <Box>Prev Next</Box>
               </Box>
 
               <Box m="65px 0 25px 0" className="border-b my-2">
-                <Typography variant="h3">{item?.title}</Typography>
-                <Rating name="read-only" value={item?.rating} readOnly />
+                <Typography variant="h3">{product?.title}</Typography>
+                <Rating name="read-only" value={product?.rating} readOnly />
               </Box>
               <Box className="border-b my-2">
                 <Typography
@@ -104,7 +104,7 @@ const ItemDetails = () => {
                   Category
                 </Typography>
                 <Typography gutterBottom variant="h6" component="div">
-                  {item?.category}
+                  {product?.category}
                 </Typography>
               </Box>
               <Box className="border-b my-2">
@@ -117,7 +117,7 @@ const ItemDetails = () => {
                   Brand
                 </Typography>
                 <Typography gutterBottom variant="h6" component="div">
-                  {item?.brand}
+                  {product?.brand}
                 </Typography>
               </Box>
               <Box className="border-b my-2">
@@ -129,10 +129,10 @@ const ItemDetails = () => {
                 >
                   Description
                 </Typography>
-                <Typography sx={{ mt: "20px" }}>{item?.description}</Typography>
+                <Typography sx={{ mt: "20px" }}>{product?.description}</Typography>
               </Box>
 
-              <Box display="flex" alignItems="center" minHeight="50px">
+              <Box display="flex" alignProducts="center" minHeight="50px">
                 <Box className="flex justify-between w-full">
                   <ButtonGroup
                     variant="contained"
@@ -157,7 +157,7 @@ const ItemDetails = () => {
                   </ButtonGroup>
 
                   <Typography gutterBottom variant="h4" component="div">
-                    ${item?.price * count}
+                    ${product?.price * count}
                   </Typography>
                 </Box>
               </Box>
@@ -166,7 +166,7 @@ const ItemDetails = () => {
                   startIcon={<AddShoppingCartIcon />}
                   variant="contained"
                   onClick={() => {
-                    dispatch(addToCart({ item: { ...item, count } }));
+                    dispatch(addToCart({ product: { ...product, count } }));
                   }}
                   className={`w-full p-4 t
                     ext-[${colors.grey[100]}] 
@@ -182,7 +182,7 @@ const ItemDetails = () => {
                   <FavoriteBorderOutlinedIcon />
                   <Typography sx={{ ml: "5px" }}>ADD TO WISHLIST</Typography>
                 </Box>
-                <Typography>CATEGORIES: {item?.category}</Typography>
+                <Typography>CATEGORIES: {product?.category}</Typography>
               </Box>
             </Box>
           </Grid>
@@ -197,7 +197,7 @@ const ItemDetails = () => {
         </Tabs>
       </Box>
       <Box display="flex" flexWrap="wrap" gap="15px">
-        {value === "description" && <div>{item?.description}</div>}
+        {value === "description" && <div>{product?.description}</div>}
         {value === "reviews" && <div>reviews</div>}
       </Box>
 
@@ -212,14 +212,14 @@ const ItemDetails = () => {
           spacing={{ xs: 2, md: 3 }}
           columns={{ xs: 4, sm: 8, md: 12 }}
         >
-          {itemsIsFetching ? (
+          {productsIsFetching ? (
             <Box sx={{ display: "flex" }}>
               <CircularProgress />
             </Box>
           ) : (
-            items.products.map((item) => (
-              <Grid xs={12} sm={12} md={6} lg={4} xl={3} key={item.id}>
-                <Item item={item} key={`${item.title}-${item.id}`} />
+            products.products.map((product) => (
+              <Grid xs={12} sm={12} md={6} lg={4} xl={3} key={product.id}>
+                <ProductCard2 product={product} key={`${product.title}-${product.id}`} />
               </Grid>
             ))
           )}
@@ -229,4 +229,4 @@ const ItemDetails = () => {
   );
 };
 
-export default ItemDetails;
+export default ProductDetails;

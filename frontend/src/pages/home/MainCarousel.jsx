@@ -32,7 +32,7 @@ const MainCarousel = () => {
   return (
     <Swiper
       slidesPerView={1}
-      spaceBetween={30}
+      spaceBetween={0}
       loop={true}
       autoplay={{
         delay: 6000,
@@ -48,28 +48,32 @@ const MainCarousel = () => {
             <img
               src={texture}
               alt={`carousel-${index}`}
-              className={`w-100 h-[100%] `}
+              className={`w-[100%] h-[600px]`}
+              style={{
+                objectFit: "cover",
+                backgroundAttachment: "fixed",
+              }}
             />
             <Box
-              className={`absolute top-0 h-[50%] left-[10%]
-              backdrop-blur-sm bg-black/5  text-white p-[5%] 
+              className={`absolute bottom-0 h-[90%] sm:h-[80%] md:h-[70%] lg:h-[60%] left-[5%]
+              backdrop-blur-sm bg-black-900/50  text-white p-[20px] 
               rounded-b-lg `}
             >
               <Typography
-                className={`hover:skew-x-6 text-6xl ease-in-out duration-300`}
+                className={`hover:skew-x-6 sm:text-2xl md:text-4xl lg:text-6xl ease-in-out duration-300`}
                 color={colors.greenAccent[200]}
                 variant="h2"
               >
                 -- NEW ITEMS
               </Typography>
               <Typography
-                className={`hover:skew-x-6  text-9xl ease-in-out duration-300`}
+                className={`hover:skew-x-6  sm:text-4xl md:text-6xl lg:text-9xl ease-in-out duration-300`}
                 variant="h1"
               >
                 Summer Sale
               </Typography>
               <Typography
-                className={`hover:skew-x-6 text-6xl ease-in-out duration-300`}
+                className={`hover:skew-x-6 sm:text-2xl md:text-4xl lg:text-6xl ease-in-out duration-300`}
                 variant="h2"
                 fontWeight="bold"
                 color={colors.greenAccent[300]}

@@ -5,7 +5,7 @@ import { ColorModeContext, useMode } from "./theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import Home from "./pages/home/Home";
 
-import ItemDetails from "./pages/itemDetails/ItemDetails";
+import ProductDetails from "./pages/productDetails/ProductDetails";
 import Checkout from "./pages/checkout/Checkout";
 import Confirmation from "./pages/checkout/Confirmation";
 
@@ -38,10 +38,10 @@ function App() {
               }
             />
             <Route
-              path="item/:itemId"
+              path="product/:productId"
               element={
                 <Customer>
-                  <ItemDetails />
+                  <ProductDetails />
                 </Customer>
               }
             />
