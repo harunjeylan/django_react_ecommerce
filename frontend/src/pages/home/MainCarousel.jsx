@@ -35,39 +35,42 @@ const MainCarousel = () => {
       spaceBetween={30}
       loop={true}
       autoplay={{
-        delay: 3000,
+        delay: 6000,
         disableOnInteraction: false,
+        pauseOnMouseEnter: true,
       }}
       modules={[Autoplay]}
-      className="mySwiper h-[400px] md:h-[600px]"
+      className="mySwiper h-[400px] md:h-[600px] mt-[60px]"
     >
       {Object.values(heroTextureImports).map((texture, index) => (
         <SwiperSlide key={`carousel-image-${index}`}>
-          <Box>
+          <Box className={`relative`}>
             <img
               src={texture}
               alt={`carousel-${index}`}
-              className={`w-100 h-[100%]`}
+              className={`w-100 h-[100%] `}
             />
             <Box
-              color="white"
-              padding="20px"
-              borderRadius="1px"
-              textAlign="left"
-              backgroundColor="rgb(0, 0, 0, 0.4)"
-              position="absolute"
-              top="46%"
-              left={isNonMobile ? "10%" : "0"}
-              right={isNonMobile ? undefined : "0"}
-              margin={isNonMobile ? undefined : "0 auto"}
-              maxWidth={isNonMobile ? undefined : "260px"}
-              className="rounded-lg hover:skew-y-6 ease-in-out duration-300 "
+              className={`absolute top-0 h-[50%] left-[10%]
+              backdrop-blur-sm bg-black/5  text-white p-[5%] 
+              rounded-b-lg `}
             >
-              <Typography color={colors.greenAccent[200]}>
+              <Typography
+                className={`hover:skew-x-6 text-6xl ease-in-out duration-300`}
+                color={colors.greenAccent[200]}
+                variant="h2"
+              >
                 -- NEW ITEMS
               </Typography>
-              <Typography variant="h1">Summer Sale</Typography>
               <Typography
+                className={`hover:skew-x-6  text-9xl ease-in-out duration-300`}
+                variant="h1"
+              >
+                Summer Sale
+              </Typography>
+              <Typography
+                className={`hover:skew-x-6 text-6xl ease-in-out duration-300`}
+                variant="h2"
                 fontWeight="bold"
                 color={colors.greenAccent[300]}
                 sx={{ textDecoration: "underline" }}
