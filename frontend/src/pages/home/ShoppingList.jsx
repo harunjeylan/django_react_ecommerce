@@ -18,40 +18,79 @@ import Grid from "@mui/material/Unstable_Grid2";
 import { Container, Tabs, Tab } from "@mui/material";
 import Header from "../../components/Header";
 import CategoryTap from "../../components/CategoryTap";
-const ShoppingList = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+
+const ProductsList = ({ category }) => {
+  const {
+    data: productsByCategory,
+    isFetching: productsIsFetching,
+    error: productsError,
+  } = getProductsByCategoryQuery({
+    category,
+  });
 
   const {
     data: allProducts,
     isFetching: isFetchingAllProducts,
     error: errorFoAllProducts,
   } = getAllProductsQuery();
+
+  return isFetchingAllProducts ? (
+    <Box sx={{ display: "flex" }}>
+      <CircularProgress />
+    </Box>
+  ) : category === "all" ? (
+    allProducts.products?.map((filteredProduct) => (
+      <Grid
+        xs={12}
+        sm={6}
+        md={4}
+        lg={3}
+        key={filteredProduct?.id}
+        className={`h-100`}
+      >
+        <ProductCard
+          product={filteredProduct}
+          key={`${filteredProduct?.title}-${filteredProduct?.id}`}
+        />
+      </Grid>
+    ))
+  ) : (
+    productsByCategory?.products.map((filteredProduct) => (
+      <Grid
+        xs={12}
+        sm={6}
+        md={4}
+        lg={3}
+        key={filteredProduct?.id}
+        className={`h-100`}
+      >
+        <ProductCard
+          product={filteredProduct}
+          key={`${filteredProduct?.title}-${filteredProduct?.id}`}
+        />
+      </Grid>
+    ))
+  );
+};
+const ShoppingList = () => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
   const {
     data: allCategory,
     isFetching: isFetchingAllCategory,
     error: errorFoAllCategory,
   } = getAllCategoryQuery();
+
   const [categoryValue, setCategoryValue] = useState("all");
-  // const [products, setProducts] = useState(allProducts);
-  // const {
-  //   data: productsByCategory,
-  //   isFetching: productsIsFetching,
-  //   error: productsError,
-  // } = getProductsByCategoryQuery({
-  //   category: categoryValue,
-  // });
-  // const getProducts = () => {
-  //   setProducts(productsByCategory);
-  // };
-  // useEffect(() => {
-  //   getProducts();
-  // }, [categoryValue]);
 
   const handleChange = (event, newValue) => {
     setCategoryValue(newValue);
   };
-
+  //  .filter(
+  //               (product) =>
+  //                 categoryValue === "all" || product?.category === categoryValue
+  //             )
   return (
     <Box className={`space-y-4`}>
       <Header title="Shopping List" subtitle="welcome to you Shopping List" />
@@ -75,37 +114,8 @@ const ShoppingList = () => {
             ))}
         </Tabs>
       </Box>
-      <Grid
-        container
-        spacing={{ xs: 3, md: 3 }}
-        columns={{ xs: 4, sm: 8, md: 12 }}
-      >
-        {isFetchingAllProducts ? (
-          <Box sx={{ display: "flex" }}>
-            <CircularProgress />
-          </Box>
-        ) : (
-          allProducts.products
-            .filter(
-              (product) =>
-                categoryValue === "all" || product?.category === categoryValue
-            )
-            .map((filteredProduct) => (
-              <Grid
-                xs={12}
-                sm={12}
-                md={6}
-                lg={4}
-                xl={3}
-                key={filteredProduct.id}
-              >
-                <ProductCard
-                  product={filteredProduct}
-                  key={`${filteredProduct?.title}-${filteredProduct?.id}`}
-                />
-              </Grid>
-            ))
-        )}
+      <Grid container spacing={{ sm: 4, md: 6 }}>
+        <ProductsList category={categoryValue} />
       </Grid>
     </Box>
   );

@@ -11,11 +11,11 @@ const ProductCard = ({ product, width }) => {
   const { category, price, title, images } = product;
   return (
     <CardActionArea
+      onClick={() => navigate(`/product/${product.id}`)}
       className={`rounded-lg hover:scale-[102%] md:hover:scale-105 ease-in-out duration-300
         bg-opacity-80 backdrop-blur-sm  bg-white/5`}
     >
       <CardMedia
-        onClick={() => navigate(`/product/${product.id}`)}
         component="img"
         image={product?.thumbnail}
         alt={`${title} image`}
