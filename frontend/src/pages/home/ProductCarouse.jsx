@@ -26,10 +26,6 @@ const ProductCarouse = () => {
   } = useGetLimitAndSkipProductsQuery({ limit: 10, skip: 10 });
   return (
     <Box>
-      <Header
-        title="Now Product List"
-        subtitle="welcome to you Shopping List"
-      />
       <Swiper
         grabCursor={true}
         centeredSlides={true}
