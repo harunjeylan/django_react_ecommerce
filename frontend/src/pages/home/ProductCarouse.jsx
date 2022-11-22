@@ -17,6 +17,8 @@ import Header from "../../components/Header";
 const ProductCarouse = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  const isNoneMobile = useMediaQuery("(min-width:768px)");
   const {
     data: products,
     isFetching,
@@ -31,9 +33,9 @@ const ProductCarouse = () => {
       <Swiper
         grabCursor={true}
         centeredSlides={true}
-        spaceBetween={30}
+        spaceBetween={80}
         slidesPerView={"auto"}
-        className="mySwiper py-[30px] md:py-[50px]"
+        className="mySwiper h-[260px] py-[30px] md:h-[380px]  md:py-[50px] "
         effect={"coverflow"}
         coverflowEffect={{
           rotate: 50,
@@ -43,11 +45,11 @@ const ProductCarouse = () => {
           slideShadows: false,
           pauseOnMouseEnter: true,
         }}
-        // autoplay={{
-        //   delay: 5000,
-        //   disableOnInteraction: false,
-        // }}
-        modules={[EffectCoverflow]} //Autoplay
+        autoplay={{
+          delay: 5000,
+          disableOnInteraction: false,
+        }}
+        modules={[EffectCoverflow, Autoplay]} //Autoplay
       >
         {isFetching ? (
           <Box sx={{ display: "flex" }}>
@@ -57,7 +59,7 @@ const ProductCarouse = () => {
           products?.products.map((product, index) => (
             <SwiperSlide
               key={`carousel-${index}`}
-              className={`relative xs:h-[300px] md:h-[360px] xs:w-[100%]  md:w-[640px] rounded-lg
+              className={`relative h-[200px] w-[300px] md:h-[300px] md:w-[400px] rounded-lg
                bg-opacity-[90%] backdrop-blur-sm bg-white/5  overflow-visible relative `}
             >
               <ProductCard2
