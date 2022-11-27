@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "react-countdown": "^2.3.5",
     "swiper": "^8.4.4"
   }
 }

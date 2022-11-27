@@ -8,6 +8,8 @@ import Home from "./pages/home/Home";
 import ProductDetails from "./pages/productDetails/ProductDetails";
 import Checkout from "./pages/checkout/Checkout";
 import Confirmation from "./pages/checkout/Confirmation";
+import Shopping from "./pages/shopping"
+
 
 import Admin from "./pages/Admin";
 import Customer from "./pages/Customer";
@@ -20,6 +22,7 @@ import Line from "./pages/line";
 import Pie from "./pages/pie";
 import FAQ from "./pages/faq";
 import Form from "./pages/form";
+import { ShoppingBag } from "@mui/icons-material";
 function App() {
   const [theme, colorMode] = useMode();
 
@@ -50,6 +53,14 @@ function App() {
               element={
                 <Customer>
                   <Checkout />
+                </Customer>
+              }
+            />
+            <Route
+              path="shopping"
+              element={
+                <Customer>
+                  <Shopping />
                 </Customer>
               }
             />
