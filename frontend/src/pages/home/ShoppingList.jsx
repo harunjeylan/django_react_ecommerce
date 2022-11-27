@@ -93,7 +93,6 @@ const ShoppingList = () => {
   //             )
   return (
     <Box className={`space-y-4`}>
-      <Header title="Shopping List" subtitle="welcome to you Shopping List" />
       <Box
         className={`my-4 w-full bg-opacity-[90%]  backdrop-blur-xs bg-white/5`}
       >
