@@ -12,7 +12,7 @@ const Header = ({ title, subtitle }) => {
         variant="h2"
         color={colors.grey[100]}
         fontWeight="bold"
-        sx={{ mb: "5px" }}
+        className={`text-lg md:text-2xl lg:text-4xl mb-2`}
       >
         {title}
       </Typography>

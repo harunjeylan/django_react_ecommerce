@@ -16,7 +16,6 @@ import Topbar from "./global/Topbar";
 // import FAQ from "./faq";
 
 const Admin = ({ children }) => {
-  const [theme, colorMode] = useMode();
   return (
     <MyProSidebarProvider>
       <main

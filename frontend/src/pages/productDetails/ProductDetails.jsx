@@ -1,219 +1,444 @@
+import { useState, useEffact, SyntheticEvent } from "react";
+import ShoppingList from "../../components/ShoppingList";
+import Service from "../../components/Service";
+import Subscribe from "../../components/Subscribe";
+import Header2 from "../../components/Header2";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import PriceCheckIcon from "@mui/icons-material/PriceCheck";
+import MoneyIcon from "@mui/icons-material/Money";
+import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import BeachAccessIcon from "@mui/icons-material/BeachAccess";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import PaletteIcon from "@mui/icons-material/Palette";
+import PaletteOutlinedIcon from "@mui/icons-material/PaletteOutlined";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import Banner from "../../components/Banner";
+import ProductCarouse from "../../components/ProductCarouse";
+import Header from "../../components/Header";
+import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import {
   Box,
+  container,
+  CardContent,
+  CardMedia,
+  CardActionArea,
   Button,
-  IconButton,
-  useTheme,
   Typography,
-  Container,
-  ButtonGroup,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  List,
+  FormControlLabel,
+  Checkbox,
+  Radio,
+  ListItem,
+  CircularProgress,
+  ListItemAvatar,
+  Breadcrumbs,
+  Tabs,
+  Tab,
+  Link,
+  ListItemIcon,
+  FormControl,
+  FormLabel,
+  RadioGroup,
   Rating,
+  ListItemText,
+  Avatar,
+  Collapse,
+  Slider,
+  IconButton,
+  TextField,
+  ButtonGroup,
 } from "@mui/material";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import ProductCard from "../../components/ProductCard";
-import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { addToCart } from "../../redux/services/cartReducer";
-import Grid from "@mui/material/Unstable_Grid2";
-import CircularProgress from "@mui/material/CircularProgress";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import ImageList from "@mui/material/ImageList";
-import ImageListItem from "@mui/material/ImageListItem";
-import Header from "../../components/Header";
-import ProductContent2 from "./ProductContent2";
+import { tokens } from "../../theme";
+import { useTheme } from "@emotion/react";
+import { useNavigate } from "react-router-dom";
+import ProductCard from "../../components/ProductCard";
+
+import { addToCart } from "../../redux/services/cartReducer";
 import {
   useGetProductsByCategoryQuery,
   useGetProductsDetailesQuery,
 } from "../../redux/services/products";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/effect-cards";
 
-import { EffectCards } from "swiper";
-import { useDispatch } from "react-redux";
-import { tokens } from "../../theme";
-import damyProduct from "../home/damyData";
 const ProductDetails = () => {
+  const isNoneMobile = useMediaQuery("(min-width:1024px)");
+  const [openCategory, setOpenCategory] = useState(false);
+  const [openFilter, setOpenFilter] = useState(false);
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
+
   const dispatch = useDispatch();
   const { productId } = useParams();
   const [value, setValue] = useState("description");
   const [count, setCount] = useState(1);
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
   console.log(productId);
+
   const {
     data: product,
     isFetching: productIsFetching,
     error: productError,
   } = useGetProductsDetailesQuery({ productId });
-  const {
-    data: productsData,
-    isFetching: productsIsFetching,
-    error: productsError,
-  } = useGetProductsByCategoryQuery({
-    category: product?.category,
-  });
+
+  const [activeImage, setActiveImage] = useState("");
 
   return (
-    <Container maxWidth="lg" className="mt-[60px]">
-      <Box ClassName="bg-opacity-[90%] bg-white/5 md:p-[20]">
-        {/* <Box
-          className={`relative h-[260px] w-[80%] md:h-[360px] mx-auto px-[10%] rounded-lg mt-[160px]
-               bg-opacity-[90%] bg-white/5  overflow-visible relative `}
-        >
-          <ProductContent2 product={product} />
-        </Box> */}
-
-        <Box
-          className={`flex flex-col md:flex-row w-[100%] mt-[60px] mx-auto space-[40px]`}
-        >
-          <Swiper
-            effect={"cards"}
-            grabCursor={true}
-            modules={[EffectCards]}
-            className={`mySwiper w-[100%] my-4 md:mx-4 md:w-[50%]  h-[400px]  rounded-lg 
-                ease-in-out duration-300 bg-opacity-[90%] bg-white/5 p-[40px]`}
+    <Box className={`flex flex-col gap-8 mt-[100px] `}>
+      <Box className={`container mx-auto my-[80px]`}>
+        <Breadcrumbs aria-label="breadcrumb">
+          <Button
+            onClick={() => navigate(`/`)}
+            variant="text"
+            color="secondary"
+            className={`bg-opacity-0 hover:bg-opacity-100 px-4 py-2 ${
+              "hover:bg-" + colors.greenAccent[400]
+            }`}
           >
-            <SwiperSlide>
-              {" "}
-              <img
-                style={{}}
-                src={product?.thumbnail}
-                className={`h-[100%] max-w-[100%] inset-0 rounded-lg
-                    ease-in-out duration-300`}
-              />
-            </SwiperSlide>
-            {product?.images.map((image, index) => (
-              <SwiperSlide key={index} className={`relative h-[90%] w-[90%]`}>
-                <img
-                  style={{}}
-                  src={image}
-                  className={`absolute  h-[100%] w-[100%] inset-0 rounded-lg
-                    ease-in-out duration-300`}
-                />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-          <Box className="py-[2%] px-[5%] md:px-[10px] my-4 lg:mx-4 md:w-[50%] rounded-lg bg-opacity-[90%] bg-white/5">
-            <Box
-              className={`flex h-full flex-col md:flex-row justify-between `}
-            >
-              <Box
-                className={`md:w-[50%] h-[100%] w-full flex flex-col justify-between my-2 md:mx-4 `}
-              >
-                <Box>
-                  <Header title={product?.title} subtitle={product?.brand} />
-                  <Typography
-                    gutterBottom
-                    color={colors.greenAccent[400]}
-                    variant="subtitle2"
-                    className={`text-sm md:text-base`}
-                  >
-                    {product?.category}
-                  </Typography>
-                  <Rating name="read-only" value={product?.rating} readOnly />
-                </Box>
+            Home
+          </Button>
+          <Button
+            onClick={() => navigate(`/shopping`)}
+            variant="text"
+            color="secondary"
+            className={`bg-opacity-0 hover:bg-opacity-100 px-4 py-2 ${
+              "hover:bg-" + colors.greenAccent[400]
+            }`}
+          >
+            shopping
+          </Button>
+          <Typography color="text.primary">{product?.title}</Typography>
+        </Breadcrumbs>
+      </Box>
 
-                <Box className="flex-col w-full  mx-0 my-2 md:px-2 md:py-1 space-y-2 mt-auto">
-                  <Box className="flex justify-between items-center w-full">
-                    <ButtonGroup
-                      size="small"
-                      variant="contained"
-                      aria-label="outlined primary button group"
-                      sx={{
-                        backgroundColor: colors.primary[400],
-                        color: colors.grey[100],
-                      }}
-                      className="border-1"
-                    >
-                      <IconButton
-                        size="small"
-                        onClick={() => setCount(Math.max(count - 1, 1))}
+      <Box className="container mx-auto">
+        <Box className={`flex flex-col gap-8 lg:flex-row-reverse`}>
+          <Box className={``}>
+            <Typography
+              variant="h1"
+              color={colors.grey[100]}
+              fontWeight="bold"
+              className={`text-2xl md:text-4xl`}
+            >
+              {product?.title}
+            </Typography>
+            <Box className="flex  items-sm-center justify-between mb-4">
+              <Typography
+                variant="h4"
+                color={colors.grey[100]}
+                className="text-md"
+              >
+                <s className="me-2 mr-1">$40.00</s>
+                <span>${product?.price}</span>
+              </Typography>
+              <Box className="flex gap-4 items-center text-sm">
+                <Rating name="read-only" value={product?.rating} readOnly />
+                <Typography variant="h5" color={colors.greenAccent[400]}>
+                  25 reviews
+                </Typography>
+              </Box>
+            </Box>
+            <Typography variant="body2" className={`w-full px-auto  my-auto`}>
+              Samsa was a travelling salesman - and above it there hung a
+              picture that he had recently cut out of an illustrated magazine
+              and housed in a nice, gilded frame.
+            </Typography>
+            <Box className=" w-full mt-4 rounded-md">
+              <Typography
+                variant="h1"
+                color={colors.grey[100]}
+                fontWeight="bold"
+                className={`text-xl md:text-2xl  text-left my-4`}
+              >
+                Filter
+              </Typography>
+              <Box className="flex  items-sm-center justify-between mb-4">
+                <Box className={`mb-4`}>
+                  <FormControl>
+                    <FormLabel id="demo-radio-buttons-group-label">
+                      <Typography
+                        variant="h1"
+                        color={colors.grey[100]}
+                        fontWeight="bold"
+                        className={`text-xl md:text-2xl  text-left mb-2`}
                       >
-                        <RemoveIcon />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        disabled={true}
-                        className="px-auto"
-                      >
-                        <Typography>{count}</Typography>
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        onClick={() => setCount(count + 1)}
-                      >
-                        <AddIcon />
-                      </IconButton>
-                    </ButtonGroup>
-                    <Box>
-                      <Typography gutterBottom variant="h4" component="div">
-                        ${product?.price * count}
+                        Brands
                       </Typography>
+                    </FormLabel>
+                    <Box className={`flex flex-col`}>
+                      <FormControlLabel
+                        value="adidass"
+                        control={<Checkbox color="secondary" />}
+                        label="Adidass"
+                        labelPlacement="end"
+                      />
+                      <FormControlLabel
+                        value="adidass"
+                        control={<Checkbox color="secondary" />}
+                        label="Adidass"
+                        labelPlacement="end"
+                      />
+                      <FormControlLabel
+                        value="adidass"
+                        control={<Checkbox color="secondary" />}
+                        label="Adidass"
+                        labelPlacement="end"
+                      />
                     </Box>
-                  </Box>
-                  <Box className="flex justify-between w-full">
-                    <Button
-                      startIcon={<AddShoppingCartIcon />}
-                      variant="contained"
-                      onClick={() => {
-                        dispatch(addToCart({ product: { ...product, count } }));
-                      }}
-                      className={`w-full
-                text-[${colors.grey[100]}] 
-                bg-[#3da58a] 
-                hover:bg-[#2e7c67]`}
-                    >
-                      Add to Cart
-                    </Button>
+                  </FormControl>
+                </Box>
+                <Box className={`mb-4`}>
+                  <Box className={`flex flex-col w-100`}>
+                    <FormControl>
+                      <FormLabel id="demo-radio-buttons-group-label">
+                        <Typography
+                          variant="h1"
+                          color={colors.grey[100]}
+                          fontWeight="bold"
+                          className={`text-xl md:text-2xl  text-left mb-2`}
+                        >
+                          Size
+                        </Typography>
+                      </FormLabel>
+                      <Box>
+                        <RadioGroup
+                          aria-labelledby="demo-radio-buttons-group-label"
+                          defaultValue="female"
+                          name="radio-buttons-group"
+                        >
+                          <FormControlLabel
+                            value="female"
+                            control={<Radio color="secondary" />}
+                            label="Female"
+                          />
+                          <FormControlLabel
+                            value="male"
+                            control={<Radio color="secondary" />}
+                            label="Male"
+                          />
+                          <FormControlLabel
+                            value="other"
+                            control={<Radio color="secondary" />}
+                            label="Other"
+                          />
+                        </RadioGroup>
+                      </Box>
+                    </FormControl>
                   </Box>
                 </Box>
-              </Box>
-              <Box className={`md:w-[50%]`}>
-                <Tabs value={value} onChange={handleChange}>
-                  <Tab label="DESCRIPTION" value="description" />
-                  <Tab label="REVIEWS" value="reviews" />
-                </Tabs>
-                <Box display="flex" flexWrap="wrap" gap="15px">
-                  {value === "description" && <div>{product?.description}</div>}
-                  {value === "reviews" && <div>reviews</div>}
+                <Box className={`mb-4`}>
+                  <FormControl>
+                    <FormLabel id="demo-radio-buttons-group-label">
+                      <Typography
+                        variant="h1"
+                        color={colors.grey[100]}
+                        fontWeight="bold"
+                        className={`text-xl md:text-2xl  text-left mb-2`}
+                      >
+                        Color
+                      </Typography>
+                    </FormLabel>
+                    <Box className={``}>
+                      <Box>
+                        <Checkbox
+                          icon={
+                            <PaletteOutlinedIcon
+                              fontSize="large"
+                              sx={{ color: "red" }}
+                            />
+                          }
+                          checkedIcon={
+                            <PaletteIcon
+                              fontSize="large"
+                              sx={{ color: "red" }}
+                            />
+                          }
+                        />
+                      </Box>
+                      <Box>
+                        <Checkbox
+                          icon={
+                            <PaletteOutlinedIcon
+                              fontSize="large"
+                              sx={{ color: "blue" }}
+                            />
+                          }
+                          checkedIcon={
+                            <PaletteIcon
+                              fontSize="large"
+                              sx={{ color: "blue" }}
+                            />
+                          }
+                        />
+                      </Box>
+                      <Box>
+                        <Checkbox
+                          icon={
+                            <PaletteOutlinedIcon
+                              fontSize="large"
+                              sx={{ color: "green" }}
+                            />
+                          }
+                          checkedIcon={
+                            <PaletteIcon
+                              fontSize="large"
+                              sx={{ color: "green" }}
+                            />
+                          }
+                        />
+                      </Box>
+                    </Box>
+                  </FormControl>
                 </Box>
               </Box>
             </Box>
+            <Box className="flex-col w-full px-4  md:px-2 md:py-1 space-y-2">
+              <Box className="flex justify-between items-center w-full">
+                <ButtonGroup
+                  size="large"
+                  variant="contained"
+                  aria-label="outlined primary button group"
+                  sx={{
+                    backgroundColor: colors.primary[400],
+                    color: colors.grey[100],
+                  }}
+                  className="border-1 w-full"
+                >
+                  <IconButton
+                    size="large"
+                    onClick={() => setCount(Math.max(count - 1, 1))}
+                  >
+                    <RemoveIcon />
+                  </IconButton>
+                  <TextField
+                    id="outlined-number"
+                    type="number"
+                    value={count}
+                    onChange={(event) => setCount(event.target.value)}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                  <IconButton size="large" onClick={() => setCount(count + 1)}>
+                    <AddIcon />
+                  </IconButton>
+                  <Button
+                    startIcon={<AddShoppingCartIcon />}
+                    variant="contained"
+                    onClick={() => {
+                      dispatch(addToCart({ product: { ...product, count } }));
+                    }}
+                    className={`w-full
+                        text-[${colors.grey[100]}] 
+                        bg-[#3da58a] 
+                        hover:bg-[#2e7c67]`}
+                  >
+                    Add to Cart
+                  </Button>
+                </ButtonGroup>
+              </Box>
+            </Box>
+          </Box>
+          <Box className={` flex flex-col gap-4 w-full lg:max-w-[50%]`}>
+            <Box className={`my-4 max-h-[600px] overflow-hidden`}>
+              <img
+                style={{
+                  objectFit: "cover",
+                  backgroundAttachment: "fixed",
+                }}
+                src={activeImage === "" ? product?.thumbnail : activeImage}
+                className={` max-w-[600px] max-h-[600px] rounded-md mx-auto`}
+              />
+            </Box>
+
+            <Box
+              className={`flex flex-wrap gap-4 my-4 justify-center items-center w-full px-auto`}
+            >
+              <CardActionArea
+                onClick={() => setActiveImage(product?.thumbnail)}
+                className={`${
+                  theme.palette.mode === "dark" ? "bg-white/5" : "bg-black/5"
+                } ${
+                  activeImage === product?.thumbnail
+                    ? "h-[80px] w-[80px]"
+                    : "h-[70px] w-[70px]"
+                } bg-opacity-90 p-1  rounded-md ease-in-out duration-300  `}
+              >
+                <img
+                  src={product?.thumbnail}
+                  className={` rounded-md h-[100%] w-[100%]`}
+                />
+              </CardActionArea>
+              {product?.images?.map((image, index) => (
+                <CardActionArea
+                  onClick={() => setActiveImage(image)}
+                  className={`${
+                    theme.palette.mode === "dark" ? "bg-white/5" : "bg-black/5"
+                  } ${
+                    activeImage === image
+                      ? "h-[80px] w-[80px]"
+                      : "h-[70px] w-[70px]"
+                  } bg-opacity-90 p-1  rounded-md  ease-in-out duration-300 `}
+                >
+                  <img
+                    key={index}
+                    src={image}
+                    className={` rounded-md h-[100%] w-[100%]`}
+                  />
+                </CardActionArea>
+              ))}
+            </Box>
+          </Box>
+        </Box>
+        <Box className={`md:w-[50%]`}>
+          <Tabs value={value} onChange={handleChange} color="secondary">
+            <Tab label="DESCRIPTION" value="description" />
+            <Tab label="REVIEWS" value="reviews" />
+          </Tabs>
+          <Box display="flex" flexWrap="wrap" gap="15px">
+            {value === "description" && <div>{product?.description}</div>}
+            {value === "reviews" && <div>reviews</div>}
           </Box>
         </Box>
       </Box>
 
-      {/* RELATED ITEMS */}
-      <Box m="20px 0">
-        <Header title="Related Products" subtitle="Related Products" />
-        <Grid container spacing={{ xs: 4, md: 4 }}>
-          {productsIsFetching ? (
-            <Box sx={{ display: "flex" }}>
-              <CircularProgress />
-            </Box>
-          ) : (
-            productsData?.products.map((product) => (
-              <Grid
-                xs={12}
-                sm={6}
-                md={4}
-                lg={3}
-                key={`${product?.title}-${product?.id}`}
-              >
-                <ProductCard product={product} />
-              </Grid>
-            ))
-          )}
-        </Grid>
+      <Box className="md:container mx-auto bg-opacity-80 backdrop-blur-sm animate-slideup rounded-lg  p-4 bg-dark/5 ">
+        <Box className="flex justify-between items-center">
+          <Header title="You might also like these" />
+          <Button
+            onClick={() => navigate(`/shopping`)}
+            variant="outlined"
+            color="secondary"
+            className={`bg-opacity-0 hover:bg-opacity-100 px-4 py-2 ${
+              "hover:bg-" + colors.greenAccent[400]
+            }`}
+          >
+            More
+          </Button>
+        </Box>
+        <ProductCarouse />
       </Box>
-    </Container>
+      <Box
+        backgroundColor={colors.primary[400]}
+        className="px-auto py-[80px] items-center mb-[50px]"
+      >
+        <Service />
+      </Box>
+      <Box className="my-4">
+        <Subscribe />
+      </Box>
+    </Box>
   );
 };
 

@@ -7,7 +7,7 @@ const Header2 = ({ title, subtitle, bodyText }) => {
   const colors = tokens(theme.palette.mode);
 
   return (
-    <Box className={`w-full items-center text-center 30px`}>
+    <Box className={`flex flex-col gap-2 w-full items-center text-center 30px`}>
       <Typography
         variant="h1"
         color={colors.grey[100]}
@@ -25,7 +25,7 @@ const Header2 = ({ title, subtitle, bodyText }) => {
       </Typography>
       <Typography
         variant="body2"
-        className={`w-full px-auto text-center my-auto`}
+        className={`w-full px-auto  my-auto`}
       >
         {bodyText}
       </Typography>
