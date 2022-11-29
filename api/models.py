@@ -27,6 +27,6 @@ class Product(models.Model):
 class Order(models.Model):
     username = models.CharField(max_length=191)
     products = models.ManyToManyField(Product, blank=True)
-
+    email = models.EmailField()
     def __str__(self):
-        return f"{self.username}"
+        return f"{self.username: self.email}"
