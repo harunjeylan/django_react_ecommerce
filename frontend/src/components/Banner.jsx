@@ -110,10 +110,7 @@ const Banner = ({ title, subtitle }) => {
           <Button
             onClick={() => navigate(`/shopping`)}
             variant="outlined"
-            sx={{
-              color: colors.grey[200],
-              backgroundColor: colors.greenAccent[400],
-            }}
+            color="secondary"
             className={`bg-opacity-0 hover:bg-opacity-100 px-[40px] py-4 ${
               "hover:bg-" + colors.greenAccent[400]
             }`}

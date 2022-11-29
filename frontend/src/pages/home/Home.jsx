@@ -1,29 +1,32 @@
 import { useState, SyntheticEvent } from "react";
 import ShoppingList from "../../components/ShoppingList";
 import Service from "../../components/Service";
-import Subscribe from "./Subscribe";
+import Subscribe from "../../components/Subscribe";
 import MainCarousel from "./MainCarousel";
-import ProductCarouse from "./ProductCarouse";
+import ProductCarouse from "../../components/ProductCarouse";
 import { Box } from "@mui/material";
-
+import { useNavigate } from "react-router-dom";
 import {
   CardContent,
   CardMedia,
   CardActionArea,
+  Button,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../../theme";
+import Header from "../../components/Header";
 import Header2 from "../../components/Header2";
 import Banner from "../../components/Banner";
 function Home() {
   const [value, setValue] = useState(0);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
   return (
-    <Box className="home">
+    <Box className="flex flex-col gap-8">
       <Box className="mb-4 bg-black/5 bg-opacity-80">
-        {/* <MainCarousel /> */}
+        <MainCarousel />
         <Box
           className={`container px-auto mx-auto flex flex-col md:flex-row
           px-[12px] py-[96px]`}
@@ -77,7 +80,10 @@ function Home() {
           </CardActionArea>
         </Box>
       </Box>
-      <Box class={`container mx-auto md:mx-[10%] p-[48px]`}>
+      <Box backgroundColor={colors.primary[400]} className={`mb-[50px]`}>
+        <Banner />
+      </Box>
+      <Box class={`container mx-auto p-[48px] max-w-xl`}>
         <Header2
           title="New Arrivals"
           subtitle="One morning"
@@ -90,10 +96,44 @@ function Home() {
       </Box>
 
       <Box className="md:container mx-auto bg-opacity-80 backdrop-blur-sm animate-slideup rounded-lg  p-4 bg-dark/5 ">
+        <Box className="flex justify-between items-center">
+          <Header
+            title="Recommended"
+            subtitle="One morning"
+            bodyText={`One morning, when Gregor Samsa `}
+          />
+          <Button
+            onClick={() => navigate(`/shopping`)}
+            variant="outlined"
+            color="secondary"
+            className={`bg-opacity-0 hover:bg-opacity-100 px-4 py-2 ${
+              "hover:bg-" + colors.greenAccent[400]
+            }`}
+          >
+            More
+          </Button>
+        </Box>
         <ProductCarouse />
       </Box>
 
       <Box className="container mx-auto mb-[50px]">
+        <Box className="flex justify-between items-center">
+          <Header
+            title="Top Products"
+            subtitle="One morning"
+            bodyText={`One morning, when Gregor Samsa `}
+          />
+          <Button
+            onClick={() => navigate(`/shopping`)}
+            variant="outlined"
+            color="secondary"
+            className={`bg-opacity-0 hover:bg-opacity-100 px-4 py-2 ${
+              "hover:bg-" + colors.greenAccent[400]
+            }`}
+          >
+            More
+          </Button>
+        </Box>
         <ShoppingList />
       </Box>
       <Box backgroundColor={colors.primary[400]} className={`mb-[50px]`}>

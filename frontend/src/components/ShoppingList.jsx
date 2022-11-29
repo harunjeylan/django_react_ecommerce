@@ -32,7 +32,7 @@ const ProductsList = ({ category }) => {
       {allProducts.products?.map((filteredProduct) => (
         <Box
           key={filteredProduct?.id}
-          className={`h-100 w-100
+          className={`h-auto w-100
                     max-w-[260px] 
                     md:max-w-[220px] 
                     lg:max-w-[240px] 
@@ -56,7 +56,7 @@ const ProductsList = ({ category }) => {
       {productsByCategory?.products.map((filteredProduct) => (
         <Box
           key={filteredProduct?.id}
-          className={`h-100 w-100 
+          className={`h-auto w-100 
                     max-w-[260px] 
                     md:max-w-[220px] 
                     lg:max-w-[240px]  mx-auto`}
@@ -74,10 +74,8 @@ const ShoppingList = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const {
-    data: allCategory,
-    isFetching: isFetchingAllCategory,
-  } = getAllCategoryQuery();
+  const { data: allCategory, isFetching: isFetchingAllCategory } =
+    getAllCategoryQuery();
 
   const [categoryValue, setCategoryValue] = useState("all");
 

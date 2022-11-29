@@ -2,7 +2,7 @@ import { Box, InputBase, Divider, Typography, IconButton } from "@mui/material";
 import MarkEmailReadOutlinedIcon from "@mui/icons-material/MarkEmailReadOutlined";
 import { useState } from "react";
 import { useTheme } from "@emotion/react";
-import { tokens } from "../../theme";
+import { tokens } from "../theme";
 const Subscribe = () => {
   const [email, setEmail] = useState("");
   const theme = useTheme();

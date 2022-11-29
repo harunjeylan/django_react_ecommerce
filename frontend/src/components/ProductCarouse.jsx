@@ -4,16 +4,16 @@ import "swiper/css";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { useTheme } from "@emotion/react";
-import { tokens } from "../../theme";
-import { useGetLimitAndSkipProductsQuery } from "../../redux/services/products";
-import ProductCard2 from "../../components/ProductCard2";
+import { tokens } from "../theme";
+import { useGetLimitAndSkipProductsQuery } from "../redux/services/products";
+import ProductCard2 from "./ProductCard2";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { EffectCoverflow, Autoplay } from "swiper";
-import Header from "../../components/Header";
+import Header from "./Header";
 const ProductCarouse = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -39,7 +39,7 @@ const ProductCarouse = () => {
           depth: 100,
           modifier: 1,
           slideShadows: false,
-          pauseOnMouseEnter: true,
+          pauseOnMouseEnter: false,
         }}
         autoplay={{
           delay: 5000,
@@ -56,7 +56,11 @@ const ProductCarouse = () => {
             <SwiperSlide
               key={`carousel-${index}`}
               className={`relative h-[200px] w-[300px] md:h-[300px] md:w-[400px] rounded-lg
-               bg-opacity-[90%] backdrop-blur-sm bg-white/5  overflow-visible relative `}
+               bg-opacity-[90%] 
+               ${
+                 theme.palette.mode === "dark" ? "bg-white/5" : "bg-black/10"
+               }   
+               overflow-visible relative `}
             >
               <ProductCard2
                 product={product}

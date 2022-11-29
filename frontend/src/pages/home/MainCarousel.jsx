@@ -35,7 +35,7 @@ const MainCarousel = () => {
       spaceBetween={0}
       loop={true}
       autoplay={{
-        delay: 6000,
+        delay: 3000,
         disableOnInteraction: false,
         pauseOnMouseEnter: true,
       }}
