@@ -2,6 +2,7 @@ import React from "react";
 import { Typography, Box, useTheme } from "@mui/material";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import MoneyIcon from "@mui/icons-material/Money";
+import PriceCheckIcon from "@mui/icons-material/PriceCheck";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import { tokens } from "../theme";
 
@@ -53,7 +54,7 @@ const Service = () => {
         </Box>
       </Box>
       <Box className="flex space-x-4">
-        <riceCheckIcon fontSize="large" />
+        <PriceCheckIcon fontSize="large" />
         <Box className="service-text">
           <Typography
             color={colors.grey[100]}

@@ -15,7 +15,7 @@ import PaletteIcon from "@mui/icons-material/Palette";
 import PaletteOutlinedIcon from "@mui/icons-material/PaletteOutlined";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Banner from "../../components/Banner";
-import ProductCarouse from "../../components/ProductCarouse";
+import ProductCarouse1 from "../../components/ProductCarouse1";
 import Header from "../../components/Header";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -61,7 +61,9 @@ import { tokens } from "../../theme";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "../../components/ProductCard";
-
+import Reviews from "../../components/Reviews";
+import ReviewForm from "../../components/ReviewForm";
+import { reviews } from "../../data/reviews";
 import { addToCart } from "../../redux/services/cartReducer";
 import {
   useGetProductsByCategoryQuery,
@@ -92,11 +94,11 @@ const ProductDetails = () => {
     error: productError,
   } = useGetProductsDetailesQuery({ productId });
 
-  const [activeImage, setActiveImage] = useState("");
+  const [activeImage, setActiveImage] = useState(product?.thumbnail);
 
   return (
     <Box className={`flex flex-col gap-8 mt-[100px] `}>
-      <Box className={`container mx-auto my-[80px]`}>
+      <Box className={`container mx-auto my-[80px] px-8`}>
         <Breadcrumbs aria-label="breadcrumb">
           <Button
             onClick={() => navigate(`/`)}
@@ -122,7 +124,7 @@ const ProductDetails = () => {
         </Breadcrumbs>
       </Box>
 
-      <Box className="container mx-auto">
+      <Box className="container mx-auto px-8">
         <Box className={`flex flex-col gap-8 lg:flex-row-reverse`}>
           <Box className={``}>
             <Typography
@@ -357,7 +359,7 @@ const ProductDetails = () => {
                   objectFit: "cover",
                   backgroundAttachment: "fixed",
                 }}
-                src={activeImage === "" ? product?.thumbnail : activeImage}
+                src={activeImage}
                 className={` max-w-[600px] max-h-[600px] rounded-md mx-auto`}
               />
             </Box>
@@ -365,21 +367,6 @@ const ProductDetails = () => {
             <Box
               className={`flex flex-wrap gap-4 my-4 justify-center items-center w-full px-auto`}
             >
-              <CardActionArea
-                onClick={() => setActiveImage(product?.thumbnail)}
-                className={`${
-                  theme.palette.mode === "dark" ? "bg-white/5" : "bg-black/5"
-                } ${
-                  activeImage === product?.thumbnail
-                    ? "h-[80px] w-[80px]"
-                    : "h-[70px] w-[70px]"
-                } bg-opacity-90 p-1  rounded-md ease-in-out duration-300  `}
-              >
-                <img
-                  src={product?.thumbnail}
-                  className={` rounded-md h-[100%] w-[100%]`}
-                />
-              </CardActionArea>
               {product?.images?.map((image, index) => (
                 <CardActionArea
                   onClick={() => setActiveImage(image)}
@@ -401,19 +388,37 @@ const ProductDetails = () => {
             </Box>
           </Box>
         </Box>
-        <Box className={`md:w-[50%]`}>
-          <Tabs value={value} onChange={handleChange} color="secondary">
-            <Tab label="DESCRIPTION" value="description" />
-            <Tab label="REVIEWS" value="reviews" />
+        <Box className={`w-full`}>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            textColor="secondary"
+            indicatorColor="secondary"
+            aria-label="secondary tabs example"
+            
+          >
+            <Tab label="Description" value="description" />
+            <Tab label="Additional Information" value="additiona-information" />
+            <Tab label="Reviews" value="reviews" />
           </Tabs>
-          <Box display="flex" flexWrap="wrap" gap="15px">
-            {value === "description" && <div>{product?.description}</div>}
-            {value === "reviews" && <div>reviews</div>}
+          <Box className="flex flex-wrap gap-4  mt-8">
+            {value === "description" && <Box>{product?.description}</Box>}
+            {value === "reviews" && (
+              <Box className={`flex flex-col gap-4 w-full`}>
+                {reviews.map((review) => (
+                  <Reviews review={review} />
+                ))}
+                <ReviewForm />
+              </Box>
+            )}
+            {value === "additiona-information" && (
+              <Box>additiona-information</Box>
+            )}
           </Box>
         </Box>
       </Box>
 
-      <Box className="md:container mx-auto bg-opacity-80 backdrop-blur-sm animate-slideup rounded-lg  p-4 bg-dark/5 ">
+      <Box className="md:container mx-auto px-8 py-4 mt-16 ">
         <Box className="flex justify-between items-center">
           <Header title="You might also like these" />
           <Button
@@ -427,15 +432,15 @@ const ProductDetails = () => {
             More
           </Button>
         </Box>
-        <ProductCarouse />
+        <ProductCarouse1 />
       </Box>
       <Box
         backgroundColor={colors.primary[400]}
-        className="px-auto py-[80px] items-center mb-[50px]"
+        className="px-4 flex justify-center lg:px-auto py-[80px] items-center mb-[50px]"
       >
         <Service />
       </Box>
-      <Box className="my-4">
+      <Box className="my-2">
         <Subscribe />
       </Box>
     </Box>

@@ -3,7 +3,7 @@ import ShoppingList from "../../components/ShoppingList";
 import Service from "../../components/Service";
 import Subscribe from "../../components/Subscribe";
 import MainCarousel from "./MainCarousel";
-import ProductCarouse from "../../components/ProductCarouse";
+import ProductCarouse1 from "../../components/ProductCarouse1";
 import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import {
@@ -113,7 +113,7 @@ function Home() {
             More
           </Button>
         </Box>
-        <ProductCarouse />
+        <ProductCarouse1 />
       </Box>
 
       <Box className="container mx-auto mb-[50px]">

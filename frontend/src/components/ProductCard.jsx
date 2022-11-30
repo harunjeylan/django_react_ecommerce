@@ -39,14 +39,14 @@ const ProductCard = ({ product }) => {
           image={isHovered ? product?.thumbnail : product?.images[0]}
         />
         <Box
-          className={` absolute bottom-0 flex justify-between w-full items-center ${
+          className={` absolute bottom-0 flex justify-between w-full max-w-[100%] items-center ${
             isHovered ? "h-[60px] " : "lg:h-0 h-[60px]"
-          } overflow-hidden ease-in-out duration-300 px-2 
+          } overflow-hidden ease-in-out duration-300 px-[4px] 
           ${
             theme.palette.mode === "dark" ? "bg-black/70" : "bg-white/70"
           } bg-opacity-90`}
         >
-          <Box className="my-2">
+          <Box className="mx-auto">
             <IconButton
               onClick={() => {
                 dispatch(addToCart({ product: { ...product, count: 1 } }));
@@ -56,7 +56,7 @@ const ProductCard = ({ product }) => {
               <AddShoppingCartIcon />
             </IconButton>
           </Box>
-          <Box>
+          <Box className="mx-auto">
             <Checkbox
               color="secondary"
               inputProps={{ "aria-label": "Checkbox demo" }}
