@@ -92,8 +92,8 @@ const ShoppingList = () => {
         className={`my-4 w-full bg-opacity-[90%]  backdrop-blur-xs bg-white/5`}
       >
         <Tabs
-          // textColor={colors.grey[100]}
-          // indicatorColor={colors.greenAccent[400]}
+          textColor="secondary"
+          indicatorColor="secondary"
           value={categoryValue}
           onChange={handleChange}
           variant="scrollable"

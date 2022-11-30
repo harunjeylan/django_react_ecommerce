@@ -14,7 +14,7 @@ import PaletteIcon from "@mui/icons-material/Palette";
 import PaletteOutlinedIcon from "@mui/icons-material/PaletteOutlined";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Banner from "../../components/Banner";
-import ProductCarouse from "../../components/ProductCarouse";
+import ProductCarouse1 from "../../components/ProductCarouse1";
 import Header from "../../components/Header";
 
 import {
@@ -184,7 +184,7 @@ const Shopping = () => {
             More
           </Button>
         </Box>
-        <ProductCarouse />
+        <ProductCarouse1 />
       </Box>
 
       <Box className={`container  mx-auto  my-[40px] space-4`}>
