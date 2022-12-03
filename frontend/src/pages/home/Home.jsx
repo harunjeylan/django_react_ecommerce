@@ -95,7 +95,7 @@ function Home() {
         />
       </Box>
 
-      <Box className="md:container mx-auto bg-opacity-80 backdrop-blur-sm animate-slideup rounded-lg  p-4 bg-dark/5 ">
+      <Box className="container mx-auto">
         <Box className="flex justify-between items-center">
           <Header
             title="Recommended"

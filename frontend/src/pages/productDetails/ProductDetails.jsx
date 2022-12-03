@@ -395,7 +395,6 @@ const ProductDetails = () => {
             textColor="secondary"
             indicatorColor="secondary"
             aria-label="secondary tabs example"
-            
           >
             <Tab label="Description" value="description" />
             <Tab label="Additional Information" value="additiona-information" />
@@ -418,9 +417,13 @@ const ProductDetails = () => {
         </Box>
       </Box>
 
-      <Box className="md:container mx-auto px-8 py-4 mt-16 ">
+      <Box className="container mx-auto">
         <Box className="flex justify-between items-center">
-          <Header title="You might also like these" />
+          <Header
+            title="You might also like these"
+            subtitle="One morning"
+            bodyText={`One morning, when Gregor Samsa `}
+          />
           <Button
             onClick={() => navigate(`/shopping`)}
             variant="outlined"
@@ -434,6 +437,7 @@ const ProductDetails = () => {
         </Box>
         <ProductCarouse1 />
       </Box>
+
       <Box
         backgroundColor={colors.primary[400]}
         className="px-4 flex justify-center lg:px-auto py-[80px] items-center mb-[50px]"

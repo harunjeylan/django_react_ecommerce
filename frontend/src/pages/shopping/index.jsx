@@ -141,7 +141,7 @@ const Shopping = () => {
   const [priceValue, setPriceValue] = useState([20, 37]);
 
   return (
-    <Box className={`flex flex-col gap-4 mt-[100px] `}>
+    <Box className={`flex flex-col gap-8 mt-[100px] `}>
       <Box className={`container mx-auto my-[80px]`}>
         <Breadcrumbs aria-label="breadcrumb">
           <Button
@@ -166,7 +166,7 @@ const Shopping = () => {
           bodyText="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt."
         />
       </Box>
-      <Box className="md:container mx-auto bg-opacity-80 backdrop-blur-sm animate-slideup rounded-lg  p-4 bg-dark/5 ">
+      <Box className="container mx-auto my-[40px] overflow-heddin">
         <Box className="flex justify-between items-center">
           <Header
             title="Recommended"
