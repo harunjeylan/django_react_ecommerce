@@ -10,7 +10,7 @@ const Shipping = ({
   setFieldValue,
 }) => {
   return (
-    <Box m="30px auto">
+    <Box m="30px auto" className="flex flex-col gap-4">
       {/* BILLING FORM */}
       <Box>
         <Typography sx={{ mb: "15px" }} fontSize="18px">
@@ -30,6 +30,7 @@ const Shipping = ({
         <FormControlLabel
           control={
             <Checkbox
+              color="secondary"
               defaultChecked
               value={values.shippingAddress.isSameAddress}
               onChange={() =>

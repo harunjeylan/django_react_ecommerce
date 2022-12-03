@@ -7,6 +7,7 @@ import Home from "./pages/home/Home";
 
 import ProductDetails from "./pages/productDetails/ProductDetails";
 import Checkout from "./pages/checkout/Checkout";
+import ViewCart from "./pages/viewcart/ViewCart";
 import Confirmation from "./pages/checkout/Confirmation";
 import Shopping from "./pages/shopping"
 
@@ -53,6 +54,14 @@ function App() {
               element={
                 <Customer>
                   <Checkout />
+                </Customer>
+              }
+            />
+            <Route
+              path="viewcart"
+              element={
+                <Customer>
+                  <ViewCart />
                 </Customer>
               }
             />

@@ -9,17 +9,13 @@ import { tokens } from "../../theme";
 import { colors } from "../../theme";
 import {
   decreaseCount,
+  setCount,
   increaseCount,
   removeFromCart,
   setIsCartOpen,
 } from "../../redux/services/cartReducer";
 import { useNavigate } from "react-router-dom";
-
-const FlexBox = styled(Box)`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
+import { TextField } from "@mui/material";
 
 const CartMenu = () => {
   const navigate = useNavigate();
@@ -35,47 +31,37 @@ const CartMenu = () => {
   return (
     <Box
       display={isCartOpen ? "block" : "none"}
-      backgroundColor="rgba(0, 0, 0, 0.4)"
-      position="fixed"
-      zIndex={10}
-      width="100%"
-      height="100%"
-      left="0"
-      top="0"
-      overflow="auto"
+      className={`fixed w-full h-full top-0 left-0 bg-black/50 z-20`}
     >
       <Box
-        position="fixed"
-        right="0"
-        bottom="0"
-        width="max(400px, 30%)"
-        height="100%"
+        className={`fixed top-0 right-0 bottom-0 w-[80%] md:w-[70%] lg:w-[60%] max-w-[600px]  h-full`}
         backgroundColor={colors.primary[400]}
       >
-        <Box className={`mt-[60px] p-8`} overflow="auto" height="100%">
+        <Box className={`px-8 `}>
           {/* HEADER */}
-          <FlexBox mb="15px">
+          <Box className="flex justify-between items-center h-[60px]">
             <Typography variant="h3">SHOPPING BAG ({cart.length})</Typography>
             <IconButton onClick={() => dispatch(setIsCartOpen({}))}>
               <CloseIcon />
             </IconButton>
-          </FlexBox>
-
+          </Box>
           {/* CART LIST */}
-          <Box>
+          <Box
+            sx={{ maxHeight: "calc(var(--vh, 1vh)*100 - 250px)" }}
+            className={`overflow-auto px-4 flex flex-col gap-4`}
+          >
             {cart.map((item, ind) => (
               <Box key={`${item.title}-${item.id}-${ind}`}>
-                <FlexBox p="15px 0">
-                  <Box flex="1 1 40%">
+                <Box className="md:flex gap-2 items-center pb-4">
+                  <Box className="">
                     <img
                       alt={item?.title}
-                      width="123px"
-                      height="164px"
+                      className="md:max-w-[140px] max-h-[140px]"
                       src={`${item?.images[0]}`}
                     />
                   </Box>
-                  <Box flex="1 1 60%">
-                    <FlexBox mb="5px">
+                  <Box className="flex flex-col px-2 w-full">
+                    <Box className="flex justify-between items-center">
                       <Typography fontWeight="bold">{item.title}</Typography>
                       <IconButton
                         onClick={() =>
@@ -84,23 +70,45 @@ const CartMenu = () => {
                       >
                         <CloseIcon />
                       </IconButton>
-                    </FlexBox>
-                    <Typography>{item.description}</Typography>
-                    <FlexBox m="15px 0">
+                    </Box>
+                    <Typography className="mr-4">
+                      {item.description.slice(0, 60)}
+                    </Typography>
+                    <Box className="flex justify-between items-center">
                       <Box
                         display="flex"
                         alignItems="center"
+                        className="my-2"
                         border={`1.5px solid ${colors.neutral[500]}`}
                       >
                         <IconButton
+                          size="small"
                           onClick={() =>
                             dispatch(decreaseCount({ id: item.id }))
                           }
                         >
                           <RemoveIcon />
                         </IconButton>
-                        <Typography>{item.count}</Typography>
+                        <TextField
+                          size="small"
+                          className="w-[100px]"
+                          id="outlined-number"
+                          type="number"
+                          value={item.count}
+                          onChange={(event) =>
+                            dispatch(
+                              setCount({
+                                id: item.id,
+                                count: event.target.value,
+                              })
+                            )
+                          }
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                        />
                         <IconButton
+                          size="small"
                           onClick={() =>
                             dispatch(increaseCount({ id: item.id }))
                           }
@@ -109,32 +117,39 @@ const CartMenu = () => {
                         </IconButton>
                       </Box>
                       <Typography fontWeight="bold">${item.price}</Typography>
-                    </FlexBox>
+                    </Box>
                   </Box>
-                </FlexBox>
+                </Box>
                 <Divider />
               </Box>
             ))}
           </Box>
 
           {/* ACTIONS */}
-          <Box m="20px 0">
-            <FlexBox m="20px 0">
-              <Typography fontWeight="bold">SUBTOTAL</Typography>
-              <Typography fontWeight="bold">${totalPrice}</Typography>
-            </FlexBox>
+          <Box className="h-[60px]">
+            <Box className="flex justify-between items-center py-4">
+              <Typography variant="h5" fontWeight="bold">
+                SUBTOTAL
+              </Typography>
+              <Typography variant="h5" fontWeight="bold">
+                ${totalPrice}
+              </Typography>
+            </Box>
             <Button
-              sx={{
-                backgroundColor: colors.blueAccent[700],
-                color: colors.grey[100],
-                borderRadius: 0,
-                minWidth: "100%",
-                padding: "20px 40px",
-                m: "20px 0",
-                "&:hover": {
-                  backgroundColor: colors.blueAccent[800],
-                },
+              variant="outlined"
+              className={`w-full p-2 my-2`}
+              color="secondary"
+              onClick={() => {
+                navigate("/viewcart");
+                dispatch(setIsCartOpen({}));
               }}
+            >
+              VIEW CART
+            </Button>
+            <Button
+              variant="outlined"
+              className={`w-full p-2 my-2`}
+              color="secondary"
               onClick={() => {
                 navigate("/checkout");
                 dispatch(setIsCartOpen({}));

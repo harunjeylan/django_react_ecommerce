@@ -1,5 +1,4 @@
 import {
-  CardMedia,
   Box,
   Checkbox,
   IconButton,
@@ -31,13 +30,33 @@ const ProductCard = ({ product }) => {
         bg-opacity-80
         ${theme.palette.mode === "dark" ? "bg-white/5" : "bg-black/10"} `}
     >
-      <Box className={`relative overflow-hidden rounded-t-md`}>
-        <CardMedia
-          component="img"
+      <Box
+        className={`relative overflow-hidden rounded-t-md w-[100%] h-[300px]`}
+      >
+        
+        <img
+          style={{
+            objectFit: "cover",
+            backgroundAttachment: "fixed",
+          }}
           alt={`${product?.title} image`}
-          className="rounded-t-md  h-[380px] min-w-[100%] md:h-[300px] hover:scale-105  ease-in-out duration-300 "
-          image={isHovered ? product?.thumbnail : product?.images[0]}
+          className={`absolute top-0 left-0 rounded-t-md w-[100%] h-[300px] hover:scale-105  ease-in-out duration-500 ${
+            isHovered ? "opacity-0" : "opacity-100"
+          } `}
+          src={product?.thumbnail}
         />
+        <img
+          style={{
+            objectFit: "cover",
+            backgroundAttachment: "fixed",
+          }}
+          alt={`${product?.title} image`}
+          className={`absolute  top-0 left-0  rounded-t-md w-[100%] h-[300px] hover:scale-105  ease-in-out duration-500 ${
+            isHovered ? "opacity-100" : "opacity-0"
+          } `}
+          src={product?.images[0]}
+        />
+
         <Box
           className={` absolute bottom-0 flex justify-between w-full max-w-[100%] items-center ${
             isHovered ? "h-[60px] " : "lg:h-0 h-[60px]"

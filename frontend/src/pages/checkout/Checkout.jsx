@@ -1,15 +1,26 @@
 import { useSelector } from "react-redux";
-import { Box, Button, Stepper, Step, StepLabel } from "@mui/material";
+import {
+  Box,
+  Button,
+  Stepper,
+  Step,
+  StepLabel,
+  Breadcrumbs,
+  Typography,
+} from "@mui/material";
 import { Formik } from "formik";
 import { useState } from "react";
 import * as yup from "yup";
 import { colors } from "../../theme";
 import Payment from "./Payment";
 import Shipping from "./Shipping";
+import Delivery from "./Delivery";
+import OrderReview from "./OrderReview";
 import { loadStripe } from "@stripe/stripe-js";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../../theme";
-
+import { useNavigate } from "react-router-dom";
+import Header2 from "../../components/Header2";
 const stripePromise = loadStripe(
   "pk_test_51LgU7yConHioZHhlAcZdfDAnV9643a7N1CMpxlKtzI1AUWLsRyrord79GYzZQ6m8RzVnVQaHsgbvN1qSpiDegoPi006QkO0Mlc"
 );
@@ -18,10 +29,10 @@ const Checkout = () => {
   const [activeStep, setActiveStep] = useState(0);
   const cart = useSelector((state) => state.cart.cart);
   const isFirstStep = activeStep === 0;
-  const isSecondStep = activeStep === 1;
+  const isLastStep = activeStep === 3;
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
+  const navigate = useNavigate();
   const handleFormSubmit = async (values, actions) => {
     setActiveStep(activeStep + 1);
 
@@ -33,7 +44,7 @@ const Checkout = () => {
       });
     }
 
-    if (isSecondStep) {
+    if (isLastStep) {
       makePayment(values);
     }
 
@@ -61,90 +72,204 @@ const Checkout = () => {
       sessionId: session.id,
     });
   }
-
+  const totalPrice = cart.reduce((total, item) => {
+    return total + item.count * item.price;
+  }, 0);
   return (
-    <Box width="80%" m="100px auto">
-      <Stepper activeStep={activeStep} sx={{ m: "20px 0" }}>
-        <Step>
-          <StepLabel>Billing</StepLabel>
-        </Step>
-        <Step>
-          <StepLabel>Payment</StepLabel>
-        </Step>
-      </Stepper>
-      <Box>
-        <Formik
-          onSubmit={handleFormSubmit}
-          initialValues={initialValues}
-          validationSchema={checkoutSchema[activeStep]}
+    <Box className={`flex flex-col gap-4 mt-[100px] `}>
+      <Box className={`container mx-auto`}>
+        <Breadcrumbs aria-label="breadcrumb">
+          <Button
+            onClick={() => navigate(`/`)}
+            variant="text"
+            color="secondary"
+            className={` px-4 py-2 ${"hover:bg-" + colors.greenAccent[400]}`}
+          >
+            Home
+          </Button>
+          <Button
+            onClick={() => navigate(`/viewcart`)}
+            variant="text"
+            color="secondary"
+            className={` px-4 py-2 ${"hover:bg-" + colors.greenAccent[400]}`}
+          >
+            viewcart
+          </Button>
+          <Typography color="text.primary">View Shoping Cart</Typography>
+        </Breadcrumbs>
+        <Box
+          backgroundColor={colors.primary[400]}
+          className={`container mx-auto py-[80px] rounded-lg my-4`}
         >
-          {({
-            values,
-            errors,
-            touched,
-            handleBlur,
-            handleChange,
-            handleSubmit,
-            setFieldValue,
-          }) => (
-            <form onSubmit={handleSubmit}>
-              {isFirstStep && (
-                <Shipping
-                  values={values}
-                  errors={errors}
-                  touched={touched}
-                  handleBlur={handleBlur}
-                  handleChange={handleChange}
-                  setFieldValue={setFieldValue}
-                />
-              )}
-              {isSecondStep && (
-                <Payment
-                  values={values}
-                  errors={errors}
-                  touched={touched}
-                  handleBlur={handleBlur}
-                  handleChange={handleChange}
-                  setFieldValue={setFieldValue}
-                />
-              )}
-              <Box display="flex" justifyContent="space-between" gap="50px">
-                {!isFirstStep && (
-                  <Button
-                    fullWidth
-                    color="primary"
-                    variant="contained"
-                    sx={{
-                      backgroundColor: colors.primary[200],
-                      boxShadow: "none",
-                      color: "white",
-                      borderRadius: 0,
-                      padding: "15px 40px",
-                    }}
-                    onClick={() => setActiveStep(activeStep - 1)}
-                  >
-                    Back
-                  </Button>
+          <Header2
+            title="Shopping cart"
+            bodyText="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt."
+          />
+        </Box>
+      </Box>
+
+      <Box className={`container mx-auto`}>
+        <Box className="flex flex-col gap-8 md:flex-row">
+          <Box className="w-full md:max-w-[60%]">
+            <Stepper
+              sx={{ backgroundColor: colors.primary[400] }}
+              activeStep={activeStep}
+              className="p-4 rounded-md"
+            >
+              <Step>
+                <StepLabel>Billing</StepLabel>
+              </Step>
+              <Step>
+                <StepLabel>Delivery Method</StepLabel>
+              </Step>
+              <Step>
+                <StepLabel>Payment Method</StepLabel>
+              </Step>
+              <Step>
+                <StepLabel>Order Review</StepLabel>
+              </Step>
+            </Stepper>
+            <Box className="mt-8">
+              <Formik
+                onSubmit={handleFormSubmit}
+                initialValues={initialValues}
+                validationSchema={checkoutSchema[activeStep]}
+              >
+                {({
+                  values,
+                  errors,
+                  touched,
+                  handleBlur,
+                  handleChange,
+                  handleSubmit,
+                  setFieldValue,
+                }) => (
+                  <form onSubmit={handleSubmit}>
+                    {isFirstStep && (
+                      <Shipping
+                        values={values}
+                        errors={errors}
+                        touched={touched}
+                        handleBlur={handleBlur}
+                        handleChange={handleChange}
+                        setFieldValue={setFieldValue}
+                      />
+                    )}
+                    {activeStep === 1 && (
+                      <Delivery
+                        values={values}
+                        errors={errors}
+                        touched={touched}
+                        handleBlur={handleBlur}
+                        handleChange={handleChange}
+                        setFieldValue={setFieldValue}
+                      />
+                    )}
+                    {activeStep === 2 && (
+                      <Payment
+                        values={values}
+                        errors={errors}
+                        touched={touched}
+                        handleBlur={handleBlur}
+                        handleChange={handleChange}
+                        setFieldValue={setFieldValue}
+                      />
+                    )}
+                    {isLastStep && <OrderReview />}
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      gap="50px"
+                    >
+                      {!isFirstStep && (
+                        <Button
+                          fullWidth
+                          color="primary"
+                          variant="contained"
+                          sx={{
+                            backgroundColor: colors.primary[200],
+                            boxShadow: "none",
+                            color: "white",
+                            borderRadius: 0,
+                            padding: "15px 40px",
+                          }}
+                          onClick={() => setActiveStep(activeStep - 1)}
+                        >
+                          Back
+                        </Button>
+                      )}
+                      <Button
+                        fullWidth
+                        type="submit"
+                        color="primary"
+                        variant="contained"
+                        sx={{
+                          backgroundColor: colors.primary[400],
+                          boxShadow: "none",
+                          color: "white",
+                          borderRadius: 0,
+                          padding: "15px 40px",
+                        }}
+                      >
+                        {!isLastStep ? "Next" : "Place Order"}
+                      </Button>
+                    </Box>
+                  </form>
                 )}
-                <Button
-                  fullWidth
-                  type="submit"
-                  color="primary"
-                  variant="contained"
-                  sx={{
-                    backgroundColor: colors.primary[400],
-                    boxShadow: "none",
-                    color: "white",
-                    borderRadius: 0,
-                    padding: "15px 40px",
-                  }}
-                >
-                  {!isSecondStep ? "Next" : "Place Order"}
-                </Button>
+              </Formik>
+            </Box>
+          </Box>
+          <Box className="w-full md:max-w-[40%] ">
+            <Box className="flex flex-col gap-8 drop-shadow-lg bg-slate-400/10 rounded-lg">
+              <Box className="px-4 py-4 " backgroundColor={colors.primary[400]}>
+                <Typography variant="h5" fontWeight="bold">
+                  Order Summary
+                </Typography>
               </Box>
-            </form>
-          )}
-        </Formik>
+              <Box className="flex flex-col gap-4 px-4 py-4 border-b">
+                <Typography variant="h5" fontWeight="bold">
+                  Order Summary
+                </Typography>
+                <Typography className="">
+                  Shipping and additional costs are calculated based on values
+                  you have entered.
+                </Typography>
+                <Box className="flex justify-between mt-4">
+                  <Typography variant="h5" fontWeight="bold">
+                    Order Subtotal
+                  </Typography>
+                  <Typography variant="h5" fontWeight="bold">
+                    ${totalPrice}
+                  </Typography>
+                </Box>
+              </Box>
+              <Box className="flex justify-between px-4 py-4 border-b">
+                <Typography variant="h5" fontWeight="bold">
+                  Shipping and handling
+                </Typography>
+                <Typography variant="h5" fontWeight="bold">
+                  $10.00
+                </Typography>
+              </Box>
+              <Box className="flex justify-between px-4 py-4 border-b">
+                <Typography variant="h5" fontWeight="bold">
+                  Tax
+                </Typography>
+                <Typography variant="h5" fontWeight="bold">
+                  $0.00
+                </Typography>
+              </Box>
+              <Box className="flex justify-between px-4 py-4 ">
+                <Typography variant="h5" fontWeight="bold">
+                  Total
+                </Typography>
+                <Typography variant="h5" fontWeight="bold">
+                  ${totalPrice + 10}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
       </Box>
     </Box>
   );
