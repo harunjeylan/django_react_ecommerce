@@ -25,13 +25,13 @@ const ProductCarouse = () => {
     error,
   } = useGetLimitAndSkipProductsQuery({ limit: 10, skip: 10 });
   return (
-    <Box>
+    <Box className="max-w-screen">
       <Swiper
         grabCursor={true}
         centeredSlides={true}
         spaceBetween={80}
         slidesPerView={"auto"}
-        className="mySwiper h-[260px] py-[30px] md:h-[380px]  md:py-[50px] "
+        className="mySwiper h-[260px] py-[30px] md:h-[380px]  md:py-[50px] w-full"
         effect={"coverflow"}
         coverflowEffect={{
           rotate: 50,
