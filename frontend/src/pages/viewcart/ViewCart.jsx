@@ -203,7 +203,7 @@ const ViewCart = () => {
                 </Box>
                 <Box className="flex justify-between pt-4 ">
                   <Button
-                    onClick={() => navigate(`/shopping`)}
+                    onClick={() => navigate(`/checkout`)}
                     variant="outlined"
                     color="secondary"
                     className={` px-[40px] py-4 w-full  `}
