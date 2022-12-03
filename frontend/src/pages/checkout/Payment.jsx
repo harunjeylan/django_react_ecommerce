@@ -5,7 +5,7 @@ const Payment = ({ values, touched, errors, handleBlur, handleChange }) => {
   return (
     <Box m="30px 0">
       {/* CONTACT INFO */}
-      <Box>
+      <Box className="flex flex-col gap-4">
         <Typography sx={{ mb: "15px" }} fontSize="18px">
           Contact Info
         </Typography>

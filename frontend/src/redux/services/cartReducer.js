@@ -19,7 +19,9 @@ export const cartSlice = createSlice({
     },
 
     removeFromCart: (state, action) => {
-      state.cart = state.cart.filter((product) => product.id !== action.payload.id);
+      state.cart = state.cart.filter(
+        (product) => product.id !== action.payload.id
+      );
     },
 
     increaseCount: (state, action) => {
@@ -40,6 +42,16 @@ export const cartSlice = createSlice({
       });
     },
 
+    setCount: (state, action) => {
+      state.cart = state.cart.map((product) => {
+        if (product.id === action.payload.id) {
+          product.count = action.payload.count;
+          if (product.count < 1) product.count = 1;
+        }
+        return product;
+      });
+    },
+
     setIsCartOpen: (state) => {
       state.isCartOpen = !state.isCartOpen;
     },
@@ -49,6 +61,7 @@ export const cartSlice = createSlice({
 export const {
   setItems,
   addToCart,
+  setCount,
   removeFromCart,
   increaseCount,
   decreaseCount,
