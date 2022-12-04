@@ -13,8 +13,9 @@ import Shopping from "./pages/shopping";
 
 import Profile from "./pages/profile/Profile";
 import Address from "./pages/profile/Address";
-import Order from "./pages/profile/Order";
+import Orders from "./pages/profile/Orders";
 import Wishlist from "./pages/profile/Wishlist";
+import OderDetails from "./pages/profile/OderDetails";
 
 import Admin from "./pages/Admin";
 import Customer from "./pages/Customer";
@@ -58,7 +59,16 @@ function App() {
                 path="orders"
                 element={
                   <Customer>
-                    <Order />
+                    <Orders />
+                  </Customer>
+                }
+              />
+
+              <Route
+                path="orders/:orderId"
+                element={
+                  <Customer>
+                    <OderDetails />
                   </Customer>
                 }
               />

@@ -24,8 +24,8 @@ const ProductCard3 = ({ product, width }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const isNoneMobile = useMediaQuery("(min-width:768px)");
+  const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
   const { category, price, title, images } = product;
   return (

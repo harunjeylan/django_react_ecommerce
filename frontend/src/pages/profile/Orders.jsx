@@ -30,7 +30,7 @@ import Service from "../../components/Service";
 
 import { DataGrid } from "@mui/x-data-grid";
 
-const Wishlist = () => {
+const Orders = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.cart);
@@ -85,7 +85,11 @@ const Wishlist = () => {
       sortable: false,
       renderCell: ({ row: { action } }) => {
         return (
-          <Button onClick={() => {}} variant="outlined" color="secondary">
+          <Button
+            onClick={() => navigate(`/profile/orders/${action}`)}
+            variant="outlined"
+            color="secondary"
+          >
             VIEW
           </Button>
         );
@@ -254,4 +258,4 @@ const Wishlist = () => {
   );
 };
 
-export default Wishlist;
+export default Orders;
