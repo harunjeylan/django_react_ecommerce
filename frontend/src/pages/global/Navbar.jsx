@@ -3,12 +3,16 @@ import { useTheme, InputBase, Badge, Box, IconButton } from "@mui/material";
 import { useContext, useState, useRef } from "react";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import {
-  PersonOutline,
-  ShoppingBagOutlined,
-  MenuOutlined,
-  SearchOutlined,
-} from "@mui/icons-material";
+
+import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import SearchIcon from "@mui/icons-material/Search";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+
 import { useNavigate } from "react-router-dom";
 import { colors } from "../../theme";
 import { setIsCartOpen } from "../../redux/services/cartReducer";
@@ -77,7 +81,7 @@ function Navbar() {
               />
             )}
             <IconButton onClick={hundleSearchClick} type="button">
-              <SearchOutlined />
+              <SearchOutlinedIcon />
             </IconButton>
           </Box>
           <IconButton onClick={colorMode.toggleColorMode}>
@@ -87,9 +91,7 @@ function Navbar() {
               <DarkModeOutlinedIcon />
             )}
           </IconButton>
-          <IconButton>
-            <PersonOutline />
-          </IconButton>
+
           <Badge
             badgeContent={cart.length}
             color="secondary"
@@ -105,14 +107,21 @@ function Navbar() {
             }}
           >
             <IconButton onClick={() => dispatch(setIsCartOpen({}))}>
-              <ShoppingBagOutlined />
+              <ShoppingBagOutlinedIcon />
             </IconButton>
           </Badge>
-          <Link to="/admin/">
-            <IconButton>
-              <MenuOutlined />
-            </IconButton>
-          </Link>
+
+          <IconButton onClick={() => navigate("/profile/wishlist")}>
+            <FavoriteBorderOutlinedIcon />
+          </IconButton>
+
+          <IconButton onClick={() => navigate("/profile")}>
+            <PersonOutlinedIcon />
+          </IconButton>
+
+          <IconButton onClick={() => navigate("/admin/")}>
+            <MenuOutlinedIcon />
+          </IconButton>
         </Box>
       </Box>
     </Box>

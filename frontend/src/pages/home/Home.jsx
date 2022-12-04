@@ -106,9 +106,7 @@ function Home() {
             onClick={() => navigate(`/shopping`)}
             variant="outlined"
             color="secondary"
-            className={`bg-opacity-0 hover:bg-opacity-100 px-4 py-2 ${
-              "hover:bg-" + colors.greenAccent[400]
-            }`}
+            className={`px-8 py-3 `}
           >
             More
           </Button>
@@ -127,9 +125,7 @@ function Home() {
             onClick={() => navigate(`/shopping`)}
             variant="outlined"
             color="secondary"
-            className={`bg-opacity-0 hover:bg-opacity-100 px-4 py-2 ${
-              "hover:bg-" + colors.greenAccent[400]
-            }`}
+            className={`px-8 py-3 `}
           >
             More
           </Button>
