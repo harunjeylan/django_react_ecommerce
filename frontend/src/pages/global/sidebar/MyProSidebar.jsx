@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Menu, Sidebar, SubMenu, MenuItem } from "react-pro-sidebar";
 import { useProSidebar } from "react-pro-sidebar";
-import adminImage from "../../../assets/user.png";
+import adminImage from "../../../data/images/user.png";
 import { useSidebarContext } from "./SidebarContext";
 
 import { Link } from "react-router-dom";

@@ -9,8 +9,12 @@ import ProductDetails from "./pages/productDetails/ProductDetails";
 import Checkout from "./pages/checkout/Checkout";
 import ViewCart from "./pages/viewcart/ViewCart";
 import Confirmation from "./pages/checkout/Confirmation";
-import Shopping from "./pages/shopping"
+import Shopping from "./pages/shopping";
 
+import Profile from "./pages/profile/Profile";
+import Address from "./pages/profile/Address";
+import Order from "./pages/profile/Order";
+import Wishlist from "./pages/profile/Wishlist";
 
 import Admin from "./pages/Admin";
 import Customer from "./pages/Customer";
@@ -33,6 +37,48 @@ function App() {
         <CssBaseline />
         <Routes>
           <Route path="/">
+            <Route
+              index
+              element={
+                <Customer>
+                  <Home />
+                </Customer>
+              }
+            />
+            <Route path="profile">
+              <Route
+                index
+                element={
+                  <Customer>
+                    <Profile />
+                  </Customer>
+                }
+              />
+              <Route
+                path="orders"
+                element={
+                  <Customer>
+                    <Order />
+                  </Customer>
+                }
+              />
+              <Route
+                path="address"
+                element={
+                  <Customer>
+                    <Address />
+                  </Customer>
+                }
+              />
+              <Route
+                path="wishlist"
+                element={
+                  <Customer>
+                    <Wishlist />
+                  </Customer>
+                }
+              />
+            </Route>
             <Route
               index
               element={
