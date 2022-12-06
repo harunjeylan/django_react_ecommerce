@@ -7,13 +7,14 @@ import {
   StepLabel,
   Breadcrumbs,
   Typography,
+  Divider,
 } from "@mui/material";
 import { Formik } from "formik";
 import { useState } from "react";
 import * as yup from "yup";
 import { colors } from "../../theme";
 import Payment from "./Payment";
-import Shipping from "./Shipping";
+import Shipping from "../../components//Shipping";
 import Delivery from "./Delivery";
 import OrderReview from "./OrderReview";
 import { loadStripe } from "@stripe/stripe-js";
@@ -220,13 +221,13 @@ const Checkout = () => {
             </Box>
           </Box>
           <Box className="w-full md:max-w-[40%] ">
-            <Box className="flex flex-col gap-8 drop-shadow-lg bg-slate-400/10 rounded-lg">
+            <Box className="flex flex-col gap-4 drop-shadow-lg bg-slate-400/10 rounded-lg">
               <Box className="px-4 py-4 " backgroundColor={colors.primary[400]}>
                 <Typography variant="h5" fontWeight="bold">
                   Order Summary
                 </Typography>
               </Box>
-              <Box className="flex flex-col gap-4 px-4 py-4 border-b">
+              <Box className="flex flex-col gap-4 px-4 py-2 ">
                 <Typography variant="h5" fontWeight="bold">
                   Order Summary
                 </Typography>
@@ -243,7 +244,8 @@ const Checkout = () => {
                   </Typography>
                 </Box>
               </Box>
-              <Box className="flex justify-between px-4 py-4 border-b">
+              <Divider />
+              <Box className="flex justify-between px-4 pt-2 ">
                 <Typography variant="h5" fontWeight="bold">
                   Shipping and handling
                 </Typography>
@@ -251,7 +253,8 @@ const Checkout = () => {
                   $10.00
                 </Typography>
               </Box>
-              <Box className="flex justify-between px-4 py-4 border-b">
+              <Divider />
+              <Box className="flex justify-between px-4 pt-2 ">
                 <Typography variant="h5" fontWeight="bold">
                   Tax
                 </Typography>
@@ -259,7 +262,8 @@ const Checkout = () => {
                   $0.00
                 </Typography>
               </Box>
-              <Box className="flex justify-between px-4 py-4 ">
+              <Divider />
+              <Box className="flex justify-between px-4 pt-2 ">
                 <Typography variant="h5" fontWeight="bold">
                   Total
                 </Typography>
@@ -267,6 +271,7 @@ const Checkout = () => {
                   ${totalPrice + 10}
                 </Typography>
               </Box>
+              <Divider />
             </Box>
           </Box>
         </Box>

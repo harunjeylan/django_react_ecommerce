@@ -1,16 +1,12 @@
-import {
-  Box,
-  Checkbox,
-  IconButton,
-  Rating,
-  Typography,
-} from "@mui/material";
+import { useState, useEffect } from "react";
+import { Box, Checkbox, IconButton, Rating, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../theme";
-import { useState } from "react";
 import { addToCart } from "../redux/services/cartReducer";
-import { useDispatch } from "react-redux";
+import { toggleWishlist } from "../redux/services/wishlistReducer";
+import { useSelector, useDispatch } from "react-redux";
+
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -22,6 +18,22 @@ const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
+
+  const wishlist = useSelector((state) => state.wishlist.wishlist);
+  const findInWishlist = (product) => {
+    const itemsFoundedIndex = wishlist.find(
+      (wishlistProduct) => wishlistProduct.id === product.id
+    );
+    return itemsFoundedIndex !== undefined;
+  };
+  const [isInWishlist, setIsInWishlist] = useState(findInWishlist(product));
+  const changeWishlist = () => {
+    dispatch(toggleWishlist({ product }));
+  };
+  useEffect(() => {
+    setIsInWishlist(findInWishlist(product));
+  }, [wishlist]);
+
   return (
     <Box
       onMouseOver={() => setIsHovered(true)}
@@ -33,7 +45,6 @@ const ProductCard = ({ product }) => {
       <Box
         className={`relative overflow-hidden rounded-t-md w-[100%] h-[300px]`}
       >
-        
         <img
           style={{
             objectFit: "cover",
@@ -81,6 +92,8 @@ const ProductCard = ({ product }) => {
               inputProps={{ "aria-label": "Checkbox demo" }}
               icon={<FavoriteBorderOutlinedIcon color={colors.grey[100]} />}
               checkedIcon={<FavoriteIcon color={colors.grey[100]} />}
+              checked={isInWishlist}
+              onChange={changeWishlist}
             />
             <IconButton onClick={() => navigate(`/product/${product?.id}`)}>
               <LaunchIcon />

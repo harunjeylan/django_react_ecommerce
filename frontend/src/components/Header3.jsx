@@ -7,25 +7,25 @@ const Header2 = ({ title, subtitle, bodyText }) => {
   const colors = tokens(theme.palette.mode);
 
   return (
-    <Box className={`flex flex-col gap-2 w-full items-center text-center `}>
+    <Box className={`flex flex-col gap-2 w-full justify-start `}>
       <Typography
-        variant="h1"
+        variant="h3"
         color={colors.grey[100]}
         fontWeight="bold"
-        className={`text-2xl md:text-4xl  text-center max-w-lg`}
+        className={`text-4xl md:text-6xl  max-w-lg`}
       >
         {title}
       </Typography>
       <Typography
-        variant="subtitle1"
-        className={`text-lg md:text-xl  text-center max-w-lg`}
+        variant="h4"
+        className={`text-xl md:text-2xl  max-w-lg`}
         color={colors.greenAccent[400]}
       >
         {subtitle}
       </Typography>
       <Typography
-        variant="subtitle2"
-        className={`w-full px-auto  my-auto max-w-lg`}
+        variant="subtitle1"
+        className={`text-lg md:text-xl w-full px-auto  my-auto max-w-lg`}
       >
         {bodyText}
       </Typography>

@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
-import Header2 from "../../components/Header2";
+import Header3 from "../../components/Header3";
 
 import { useSelector, useDispatch } from "react-redux";
 import CloseIcon from "@mui/icons-material/Close";
@@ -39,67 +39,9 @@ const Orders = () => {
   const totalPrice = cart.reduce((total, item) => {
     return total + item.count * item.price;
   }, 0);
-  const columns = [
-    { field: "id", headerName: "Order #" },
-    { field: "date", headerName: "Date" },
+  const orders = [
     {
-      field: "total",
-      headerName: "Total",
-      renderCell: ({ row: { total } }) => {
-        return <Typography>${total}</Typography>;
-      },
-    },
-    {
-      field: "status",
-      headerName: "Status",
-      renderCell: ({ row: { status } }) => {
-        return (
-          <Typography color={colors.greenAccent[500]}>
-            {status === "Being prepared" && (
-              <span className="bg-blue-400/5 text-blue-500 px-2 py-1 rounded-md">
-                {status}
-              </span>
-            )}
-            {status === "Action needed" && (
-              <span className="bg-yellow-400/5 text-yellow-500 px-2 py-1 rounded-md">
-                {status}
-              </span>
-            )}
-            {status === "Received" && (
-              <span className="bg-green-400/5 text-green-500 px-2 py-1 rounded-md">
-                {status}
-              </span>
-            )}
-            {status === "Cancelled" && (
-              <span className="bg-red-400/5 text-red-500 px-2 py-1 rounded-md">
-                {status}
-              </span>
-            )}
-          </Typography>
-        );
-      },
-    },
-    {
-      field: "action",
-      headerName: "Action",
-      sortable: false,
-      renderCell: ({ row: { action } }) => {
-        return (
-          <Button
-            onClick={() => navigate(`/profile/orders/${action}`)}
-            variant="outlined"
-            color="secondary"
-          >
-            VIEW
-          </Button>
-        );
-      },
-    },
-  ];
-
-  const rows = [
-    {
-      id: "# 1735",
+      id: "1735",
       date: "22/6/2022",
       total: 150.0,
       type: "number",
@@ -107,7 +49,7 @@ const Orders = () => {
       action: 1,
     },
     {
-      id: "# 1734",
+      id: "1734",
       date: "	7/5/2022",
       total: 170.0,
       type: "number",
@@ -115,7 +57,7 @@ const Orders = () => {
       action: 1,
     },
     {
-      id: "# 1730",
+      id: "1730",
       date: "22/5/2022",
       total: 250.0,
       type: "number",
@@ -123,7 +65,7 @@ const Orders = () => {
       action: 1,
     },
     {
-      id: "# 1705",
+      id: "1705",
       date: "22/7/2022",
       total: 650.0,
       type: "number",
@@ -146,103 +88,114 @@ const Orders = () => {
           </Button>
           <Typography color="text.primary">Order</Typography>
         </Breadcrumbs>
-        <Box
-          backgroundColor={colors.primary[400]}
-          className={`container mx-auto py-[80px] rounded-lg my-4`}
-        >
-          <Header2
+        <Box className={`container mx-auto py-[20px] rounded-lg my-4`}>
+          <Header3
             title="Your Orders"
-            bodyText="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt."
+            subtitle="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt."
           />
         </Box>
       </Box>
       <Box className={`container mx-auto`}>
         <Box className="flex flex-col-reverse  gap-8 md:flex-row">
-          <Box className="w-full md:max-w-[60%]">
-            {rows.length ? (
-              <>
-                <Box
-                  className="h-[60vh] w-full"
-                  sx={{
-                    "& .MuiDataGrid-root": {
-                      border: "none",
-                    },
-                    "& .MuiDataGrid-cell": {
-                      borderBottom: "none",
-                    },
-                    "& .name-column--cell": {
-                      color: colors.greenAccent[300],
-                    },
-                    "& .MuiDataGrid-columnHeaders": {
-                      backgroundColor: colors.blueAccent[700],
-                      borderBottom: "none",
-                    },
-                    "& .MuiDataGrid-virtualScroller": {
-                      backgroundColor: colors.primary[400],
-                    },
-                    "& .MuiDataGrid-footerContainer": {
-                      borderTop: "none",
-                      backgroundColor: colors.blueAccent[700],
-                    },
-                    "& .MuiCheckbox-root": {
-                      color: `${colors.greenAccent[200]} !important`,
-                    },
-                    "& .MuiChackbox-root": {
-                      color: `${colors.greenAccent[200]} !important`,
-                    },
-                  }}
-                >
-                  <DataGrid
-                    rows={rows}
-                    columns={columns}
-                    pageSize={5}
-                    rowsPerPageOptions={[5]}
-                  />
-                  <Divider />
-                </Box>
-
-                <Box className="flex justify-between  py-2">
-                  <Button
-                    onClick={() => navigate(`/shopping`)}
-                    variant="outlined"
-                    color="secondary"
-                    className={` px-[40px] py-4  w-full `}
-                  >
-                    CONTINUE SHOPPING
-                  </Button>
-                </Box>
-              </>
-            ) : (
-              <Box
-                backgroundColor={colors.primary[400]}
-                className={`container mx-auto py-[80px] rounded-lg`}
-              >
-                <Box className="flex flex-col gap-4 justify-center items-center">
-                  <ShoppingBagOutlinedIcon size="large" className="size-lg" />
-                  <Typography
-                    variant="h2"
-                    color={colors.grey[100]}
-                    fontWeight="bold"
-                    className={`text-4xl md:text-6xl  `}
-                  >
-                    Empty Cart
-                  </Typography>
-                  <Button
-                    onClick={() => navigate(`/shopping`)}
-                    variant="outlined"
-                    color="secondary"
-                    className={` px-[40px] py-2 ${
-                      "hover:bg-" + colors.greenAccent[400]
-                    }`}
-                  >
-                    Go Shop now
-                  </Button>
-                </Box>
+          <Box className="w-full md:max-w-[60%] lg:max-w-[70%]">
+             {orders.length ? (
+            <Box className="drop-shadow-md">
+              <Box className="flex justfiy-between items-center gap-2 bg-slate-400/10 py-8 mb-4">
+                <Box className="text-center w-full">Order #</Box>
+                <Box className="text-center w-full">Date</Box>
+                <Box className="text-center w-full">Total</Box>
+                <Box className="text-center w-full">Status</Box>
+                <Box className="text-center w-full">Action</Box>
               </Box>
-            )}
+
+              <Box className="flex flex-col justfiy-between">
+                {orders.map((order, ind) => (
+                  <Box className="hover:bg-white/10 h-[100px] ease-in-out duration-300">
+                    <Box
+                      key={`${order.title}-${order.id}-${ind}`}
+                      className="flex justfiy-between items-center gap-2 w-full h-full"
+                    >
+                      <Box className="text-center w-full">
+                        <Typography># {order?.id}</Typography>
+                      </Box>
+                      <Box className="text-center w-full">
+                        <Typography>{order?.date}</Typography>
+                      </Box>
+                      <Box className="text-center w-full">
+                        <Typography>${order?.total}</Typography>
+                      </Box>
+                      <Box className="text-center w-full">
+                        <Typography color={colors.greenAccent[500]}>
+                          {order?.status === "Being prepared" && (
+                            <span className="bg-blue-400/5 text-blue-500 px-2 py-1 rounded-md">
+                              {order?.status}
+                            </span>
+                          )}
+                          {order?.status === "Action needed" && (
+                            <span className="bg-yellow-400/5 text-yellow-500 px-2 py-1 rounded-md">
+                              {order?.status}
+                            </span>
+                          )}
+                          {order?.status === "Received" && (
+                            <span className="bg-green-400/5 text-green-500 px-2 py-1 rounded-md">
+                              {order?.status}
+                            </span>
+                          )}
+                          {order?.status === "Cancelled" && (
+                            <span className="bg-red-400/5 text-red-500 px-2 py-1 rounded-md">
+                              {order?.status}
+                            </span>
+                          )}
+                        </Typography>
+                      </Box>
+                      <Box className="text-center w-full">
+                        <Button
+                          onClick={() => {
+                           navigate(`/profile/orders/${order?.id}`)
+                          }}
+                          variant="outlined"
+                          color="secondary"
+                        >
+                          VIEW
+                        </Button>
+                      </Box>
+                    </Box>
+                    <Divider />
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          ) : (
+            <Box
+              backgroundColor={colors.primary[400]}
+              className={`container mx-auto py-[80px] rounded-lg`}
+            >
+              <Box className="flex flex-col gap-4 justify-center items-center">
+                <ShoppingBagOutlinedIcon size="large" className="size-lg" />
+                <Typography
+                  variant="h2"
+                  color={colors.grey[100]}
+                  fontWeight="bold"
+                  className={`text-4xl md:text-6xl  `}
+                >
+                  Empty Order
+                </Typography>
+                <Button
+                  onClick={() => navigate(`/shopping`)}
+                  variant="outlined"
+                  color="secondary"
+                  className={` px-[40px] py-2 ${
+                    "hover:bg-" + colors.greenAccent[400]
+                  }`}
+                >
+                  Go Shop now
+                </Button>
+              </Box>
+            </Box>
+          )}
           </Box>
 
-          <Box className="w-full md:max-w-[40%] ">
+          <Box className="w-full md:max-w-[40%] lg:max-w-[30%] ">
             <ProfileCard />
           </Box>
         </Box>

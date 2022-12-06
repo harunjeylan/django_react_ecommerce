@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
-import Header2 from "../../components/Header2";
+import Header3 from "../../components/Header3";
 
 import { useSelector, useDispatch } from "react-redux";
 import CloseIcon from "@mui/icons-material/Close";
@@ -19,7 +19,10 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import ProfileCard from "./ProfileCard";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
-
+import * as yup from "yup";
+import { Formik } from "formik";
+import PersonalDetailsForm from "./PersonalDetailsForm";
+import ChangePasswordForm from "./ChangePasswordForm";
 import {
   decreaseCount,
   setCount,
@@ -37,7 +40,66 @@ const Wishlist = () => {
   const totalPrice = cart.reduce((total, item) => {
     return total + item.count * item.price;
   }, 0);
-
+  const handleFormSubmit = async (values, actions) => {
+    actions.setTouched({});
+  };
+  const initialValues = {
+    PersonalDetails: {
+      firstName: "",
+      lastName: "",
+      country: "",
+      street1: "",
+      street2: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      email: "",
+      phoneNumber: "",
+    },
+    changeYourPassword: {
+      oldPassword: "",
+      newPassword: "",
+      retypeNewPassword: "",
+    },
+  };
+  const phoneRegExp =
+    /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
+  // YupPassword(yup);
+  const checkoutSchema = yup.object().shape({
+    PersonalDetails: yup.object().shape({
+      firstName: yup.string().required("required"),
+      lastName: yup.string().required("required"),
+      country: yup.string().required("required"),
+      street1: yup.string().required("required"),
+      street2: yup.string(),
+      city: yup.string().required("required"),
+      state: yup.string().required("required"),
+      zipCode: yup.string().required("required"),
+      email: yup.string().required("required"),
+      phoneNumber: yup
+        .string()
+        .matches(phoneRegExp, "phone number is not valid!")
+        .required("required"),
+    }),
+    changeYourPassword: yup.object().shape({
+      oldPassword: yup.string().required("required"),
+      newPassword: yup
+        .string()
+        .required("required")
+        .min(
+          8,
+          "password must contain 8 or more characters with at least one of each: uppercase, lowercase, number and special"
+        ),
+      // .minLowercase(1, "password must contain at least 1 lower case letter")
+      // .minUppercase(1, "password must contain at least 1 upper case letter")
+      // .minNumbers(1, "password must contain at least 1 number")
+      // .minSymbols(1, "password must contain at least 1 special character"),
+      passwordConfirmation: yup
+        .string()
+        .oneOf([yup.ref("newPassword"), null], "Passwords must match")
+        .required("required"),
+    }),
+  });
   return (
     <Box className={`flex flex-col gap-4 mt-[100px] `}>
       <Box className={`container mx-auto`}>
@@ -52,147 +114,112 @@ const Wishlist = () => {
           </Button>
           <Typography color="text.primary">Profile</Typography>
         </Breadcrumbs>
-        <Box
-          backgroundColor={colors.primary[400]}
-          className={`container mx-auto py-[80px] rounded-lg my-4`}
-        >
-          <Header2
+       <Box className={`container mx-auto py-[20px] rounded-lg my-4`}>
+          <Header3
             title="Your Profile"
-            bodyText="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt."
+            subtitle="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt."
           />
         </Box>
       </Box>
 
       <Box className={`container mx-auto`}>
         <Box className="flex flex-col-reverse  gap-8 md:flex-row">
-          <Box className="w-full md:max-w-[60%]">
-            {cart.length ? (
-              <>
-                {cart.map((item, ind) => (
-                  <Box key={`${item.title}-${item.id}-${ind}`}>
-                    <Box className="flex gap-2 items-center pb-4">
-                      <Box className="m-1">
-                        <img
-                          alt={item?.title}
-                          className="max-w-[140px] max-h-[140px]"
-                          src={`${item?.images[0]}`}
-                        />
-                      </Box>
-                      <Box className="flex flex-col px-2 w-full">
-                        <Box className="flex justify-between items-center">
-                          <Typography fontWeight="bold">
-                            {item.title}
-                          </Typography>
-                          <IconButton
-                            onClick={() =>
-                              dispatch(removeFromCart({ id: item.id }))
-                            }
-                          >
-                            <CloseIcon />
-                          </IconButton>
-                        </Box>
-                        <Typography className="mr-4">
-                          {item.description}
-                        </Typography>
-                        <Box className="flex justify-between items-center ">
-                          <Box
-                            display="flex"
-                            alignItems="center"
-                            className="my-2"
-                            border={`1.5px solid ${colors.neutral[500]}`}
-                          >
-                            <IconButton
-                              size="small"
-                              onClick={() =>
-                                dispatch(decreaseCount({ id: item.id }))
-                              }
-                            >
-                              <RemoveIcon />
-                            </IconButton>
-                            <TextField
-                              size="small"
-                              className="w-[100px]"
-                              id="outlined-number"
-                              type="number"
-                              value={item.count}
-                              onChange={(event) =>
-                                dispatch(
-                                  setCount({
-                                    id: item.id,
-                                    count: event.target.value,
-                                  })
-                                )
-                              }
-                              InputLabelProps={{
-                                shrink: true,
-                              }}
-                            />
-                            <IconButton
-                              size="small"
-                              onClick={() =>
-                                dispatch(increaseCount({ id: item.id }))
-                              }
-                            >
-                              <AddIcon />
-                            </IconButton>
-                          </Box>
-                          <Typography fontWeight="bold">
-                            ${item.price}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    </Box>
-                    <Divider />
-                  </Box>
-                ))}
-                <Box className="flex justify-between  py-2">
-                  <Button
-                    onClick={() => navigate(`/shopping`)}
-                    variant="outlined"
-                    color="secondary"
-                    className={` px-[40px] py-4  w-full `}
-                  >
-                    CONTINUE SHOPPING
-                  </Button>
-                </Box>
-              </>
-            ) : (
-              <Box
-                backgroundColor={colors.primary[400]}
-                className={`container mx-auto py-[80px] rounded-lg`}
+          <Box className="w-full md:max-w-[60%]  lg:max-w-[70%]">
+            <Box className="flex flex-col  gap-4">
+              <Typography variant="h3" fontSize="18px">
+                Personal details
+              </Typography>
+              <Formik
+                onSubmit={handleFormSubmit}
+                initialValues={initialValues}
+                validationSchema={checkoutSchema}
               >
-                <Box className="flex flex-col gap-4 justify-center items-center">
-                  <ShoppingBagOutlinedIcon size="large" className="size-lg" />
-                  <Typography
-                    variant="h2"
-                    color={colors.grey[100]}
-                    fontWeight="bold"
-                    className={`text-4xl md:text-6xl  `}
+                {({
+                  values,
+                  errors,
+                  touched,
+                  handleBlur,
+                  handleChange,
+                  handleSubmit,
+                  setFieldValue,
+                }) => (
+                  <form
+                    onSubmit={handleSubmit}
+                    className="flex flex-col  gap-4"
                   >
-                    Empty Cart
-                  </Typography>
-                  <Button
-                    onClick={() => navigate(`/shopping`)}
-                    variant="outlined"
-                    color="secondary"
-                    className={` px-[40px] py-2 ${
-                      "hover:bg-" + colors.greenAccent[400]
-                    }`}
+                    <PersonalDetailsForm
+                      type="PersonalDetails"
+                      values={values.PersonalDetails}
+                      touched={touched}
+                      errors={errors}
+                      handleBlur={handleBlur}
+                      handleChange={handleChange}
+                      setFieldValue={setFieldValue}
+                    />
+                    <Button
+                      fullWidth
+                      type="submit"
+                      variant="outlined"
+                      color="secondary"
+                      className={` px-[40px] py-2`}
+                    >
+                      Save Change
+                    </Button>
+                  </form>
+                )}
+              </Formik>
+
+              <Typography variant="h3" fontSize="18px">
+                Change your password
+              </Typography>
+              <Formik
+                onSubmit={handleFormSubmit}
+                initialValues={initialValues}
+                validationSchema={checkoutSchema}
+              >
+                {({
+                  values,
+                  errors,
+                  touched,
+                  handleBlur,
+                  handleChange,
+                  handleSubmit,
+                  setFieldValue,
+                }) => (
+                  <form
+                    onSubmit={handleSubmit}
+                    className="flex flex-col  gap-4"
                   >
-                    Go Shop now
-                  </Button>
-                </Box>
-              </Box>
-            )}
+                    <ChangePasswordForm
+                      type="changeYourPassword"
+                      values={values.changeYourPassword}
+                      touched={touched}
+                      errors={errors}
+                      handleBlur={handleBlur}
+                      handleChange={handleChange}
+                      setFieldValue={setFieldValue}
+                    />
+                    <Button
+                      fullWidth
+                      type="submit"
+                      variant="outlined"
+                      color="secondary"
+                      className={` px-[40px] py-2`}
+                    >
+                      Change Password
+                    </Button>
+                  </form>
+                )}
+              </Formik>
+            </Box>
           </Box>
 
-          <Box className="w-full md:max-w-[40%] ">
+          <Box className="w-full md:max-w-[40%]   lg:max-w-[30%]">
             <ProfileCard />
           </Box>
         </Box>
       </Box>
-import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
-      
+
       <Box
         backgroundColor={colors.primary[400]}
         className="px-4 flex justify-center lg:px-auto py-[80px] items-center my-[50px]"
