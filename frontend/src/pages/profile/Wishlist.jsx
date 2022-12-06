@@ -8,10 +8,11 @@ import {
   Button,
   IconButton,
   TextField,
+  CardActionArea,
 } from "@mui/material";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
-import Header2 from "../../components/Header2";
+import Header3 from "../../components/Header3";
 
 import { useSelector, useDispatch } from "react-redux";
 import CloseIcon from "@mui/icons-material/Close";
@@ -20,7 +21,10 @@ import RemoveIcon from "@mui/icons-material/Remove";
 
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import { addToCart } from "../../redux/services/cartReducer";
 
+import { removeFromWishlist } from "../../redux/services/wishlistReducer";
 import ProfileCard from "./ProfileCard";
 
 import {
@@ -37,9 +41,7 @@ const Wishlist = () => {
   const cart = useSelector((state) => state.cart.cart);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const totalPrice = cart.reduce((total, item) => {
-    return total + item.count * item.price;
-  }, 0);
+  const wishlist = useSelector((state) => state.wishlist.wishlist);
 
   return (
     <Box className={`flex flex-col gap-4 mt-[100px] `}>
@@ -55,110 +57,116 @@ const Wishlist = () => {
           </Button>
           <Typography color="text.primary">Wish List</Typography>
         </Breadcrumbs>
-        <Box
-          backgroundColor={colors.primary[400]}
-          className={`container mx-auto py-[80px] rounded-lg my-4`}
-        >
-          <Header2
+        <Box className={`container mx-auto py-[20px] rounded-lg my-4`}>
+          <Header3
             title="Wish List"
-            bodyText="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt."
+            subtitle="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt."
           />
         </Box>
       </Box>
 
       <Box className={`container mx-auto`}>
         <Box className="flex flex-col-reverse  gap-8 md:flex-row">
-          <Box className="w-full md:max-w-[60%]">
-            {cart.length ? (
-              <>
-                {cart.map((item, ind) => (
-                  <Box key={`${item.title}-${item.id}-${ind}`}>
-                    <Box className="flex gap-2 items-center pb-4">
-                      <Box className="m-1">
-                        <img
-                          alt={item?.title}
-                          className="max-w-[140px] max-h-[140px]"
-                          src={`${item?.images[0]}`}
-                        />
-                      </Box>
-                      <Box className="flex flex-col px-2 w-full">
-                        <Box className="flex justify-between items-center">
-                          <Typography fontWeight="bold">
-                            {item.title}
-                          </Typography>
-                          <IconButton
-                            onClick={() =>
-                              dispatch(removeFromCart({ id: item.id }))
-                            }
+          <Box className="w-full md:max-w-[60%] lg:max-w-[70%]">
+            {wishlist.length ? (
+              <Box className="drop-shadow-md">
+                <Box className="flex justfiy-between items-center gap-2 bg-slate-400/10 py-8 mb-4">
+                  <Box className="text-center w-[40%]">Item</Box>
+                  <Box className="flex justfiy-between items-center w-[60%]">
+                    <Box className="text-center w-full">Price</Box>
+                    <Box className="text-center w-full">Status</Box>
+                    <Box className="text-center w-full">Add to cart</Box>
+                    <Box className="text-center w-full">Remove</Box>
+                  </Box>
+                </Box>
+
+                <Box className="flex flex-col justfiy-between">
+                  {wishlist.map((item, ind) => (
+                    <Box className="hover:bg-white/10  ease-in-out duration-300">
+                      <Box
+                        key={`${item.title}-${item.id}-${ind}`}
+                        className="flex justfiy-between items-center gap-2 w-full py-4 h-full"
+                      >
+                        <Box className="flex justfiy-start gap-4 items-center w-[40%]">
+                          <CardActionArea
+                            onClick={() => navigate(`/product/${item.id}`)}
+                            className={`${
+                              theme.palette.mode === "dark"
+                                ? "bg-white/5"
+                                : "bg-black/5"
+                            } bg-opacity-90 p-1 w-[100px] h-[80px] rounded-md flex
+                        items-center ease-in-out duration-300`}
                           >
-                            <CloseIcon />
-                          </IconButton>
-                        </Box>
-                        <Typography className="mr-4">
-                          {item.description}
-                        </Typography>
-                        <Box className="flex justify-between items-center ">
-                          <Box
-                            display="flex"
-                            alignItems="center"
-                            className="my-2"
-                            border={`1.5px solid ${colors.neutral[500]}`}
-                          >
-                            <IconButton
-                              size="small"
-                              onClick={() =>
-                                dispatch(decreaseCount({ id: item.id }))
-                              }
-                            >
-                              <RemoveIcon />
-                            </IconButton>
-                            <TextField
-                              size="small"
-                              className="w-[100px]"
-                              id="outlined-number"
-                              type="number"
-                              value={item.count}
-                              onChange={(event) =>
-                                dispatch(
-                                  setCount({
-                                    id: item.id,
-                                    count: event.target.value,
-                                  })
-                                )
-                              }
-                              InputLabelProps={{
-                                shrink: true,
-                              }}
+                            <img
+                              alt={item?.title}
+                              className="w-[100px] h-[80px] rounded-md"
+                              src={`${item?.images[0]}`}
                             />
+                          </CardActionArea>
+                          <Box className="flex flex-col justfiy-between gap-1">
+                            <Typography variant="h5">{item?.title}</Typography>
+                            <Typography variant="subtitle2">
+                              Size: Large
+                            </Typography>
+                            <Typography variant="subtitle2">
+                              Colour: Green
+                            </Typography>
+                          </Box>
+                        </Box>
+                        <Box className="flex justfiy-between items-center w-[60%]">
+                          <Box className="text-center w-full">
+                            <Typography>${item?.price}</Typography>
+                          </Box>
+                          <Box className="text-center w-full">
+                            <Typography color={colors.greenAccent[500]}>
+                              {item?.status === "Being prepared" && (
+                                <span className="bg-blue-400/5 text-blue-500 px-2 py-1 rounded-md">
+                                  {item?.status}
+                                </span>
+                              )}
+
+                              {item?.status === "Received" && (
+                                <span className="bg-green-400/5 text-green-500 px-2 py-1 rounded-md">
+                                  {item?.status}
+                                </span>
+                              )}
+                              {item?.status === "Cancelled" && (
+                                <span className="bg-red-400/5 text-red-500 px-2 py-1 rounded-md">
+                                  {item?.status}
+                                </span>
+                              )}
+                              <span className="bg-green-400/5 text-green-500 px-2 py-1 rounded-md">
+                                In stock
+                              </span>
+                            </Typography>
+                          </Box>
+                          <Box className="text-center w-full">
                             <IconButton
-                              size="small"
-                              onClick={() =>
-                                dispatch(increaseCount({ id: item.id }))
-                              }
+                              onClick={() => {
+                                dispatch(
+                                  addToCart({ product: { ...item, count: 1 } })
+                                );
+                              }}
                             >
-                              <AddIcon />
+                              <AddShoppingCartIcon />
                             </IconButton>
                           </Box>
-                          <Typography fontWeight="bold">
-                            ${item.price}
-                          </Typography>
+                          <Box className="text-center w-full">
+                            <IconButton
+                              onClick={() =>
+                                dispatch(removeFromWishlist({ product: item }))
+                              }
+                            >
+                              <CloseIcon />
+                            </IconButton>
+                          </Box>
                         </Box>
                       </Box>
+                      <Divider />
                     </Box>
-                    <Divider />
-                  </Box>
-                ))}
-                <Box className="flex justify-between  py-2">
-                  <Button
-                    onClick={() => navigate(`/shopping`)}
-                    variant="outlined"
-                    color="secondary"
-                    className={` px-[40px] py-4  w-full `}
-                  >
-                    CONTINUE SHOPPING
-                  </Button>
+                  ))}
                 </Box>
-              </>
+              </Box>
             ) : (
               <Box
                 backgroundColor={colors.primary[400]}
@@ -178,9 +186,7 @@ const Wishlist = () => {
                     onClick={() => navigate(`/shopping`)}
                     variant="outlined"
                     color="secondary"
-                    className={` px-[40px] py-2 ${
-                      "hover:bg-" + colors.greenAccent[400]
-                    }`}
+                    className={` px-[40px] py-2`}
                   >
                     Go Shop now
                   </Button>
@@ -189,7 +195,7 @@ const Wishlist = () => {
             )}
           </Box>
 
-          <Box className="w-full md:max-w-[40%] ">
+          <Box className="w-full md:max-w-[40%] lg:max-w-[30%]">
             <ProfileCard />
           </Box>
         </Box>

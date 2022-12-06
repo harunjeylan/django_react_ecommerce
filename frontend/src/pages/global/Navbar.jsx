@@ -23,6 +23,7 @@ function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.cart);
+  const wishlist = useSelector((state) => state.wishlist.wishlist);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
@@ -110,11 +111,24 @@ function Navbar() {
               <ShoppingBagOutlinedIcon />
             </IconButton>
           </Badge>
-
-          <IconButton onClick={() => navigate("/profile/wishlist")}>
-            <FavoriteBorderOutlinedIcon />
-          </IconButton>
-
+          <Badge
+            badgeContent={wishlist.length}
+            color="secondary"
+            invisible={wishlist.length === 0}
+            sx={{
+              "& .MuiBadge-badge": {
+                right: 5,
+                top: 5,
+                padding: "0 4px",
+                height: "14px",
+                minWidth: "13px",
+              },
+            }}
+          >
+            <IconButton onClick={() => navigate("/profile/wishlist")}>
+              <FavoriteBorderOutlinedIcon />
+            </IconButton>
+          </Badge>
           <IconButton onClick={() => navigate("/profile")}>
             <PersonOutlinedIcon />
           </IconButton>

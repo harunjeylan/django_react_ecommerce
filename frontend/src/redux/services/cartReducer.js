@@ -15,7 +15,14 @@ export const cartSlice = createSlice({
     },
 
     addToCart: (state, action) => {
-      state.cart = [...state.cart, action.payload.product];
+      const item = state.cart.find((product) => {
+        console.log(product.id);
+        return product.id === action.payload.id;
+      });
+
+      if (item === undefined) {
+        state.cart = [...state.cart, action.payload.product];
+      }
     },
 
     removeFromCart: (state, action) => {
