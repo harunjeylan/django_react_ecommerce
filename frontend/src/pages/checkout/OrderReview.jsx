@@ -1,19 +1,13 @@
 import React from "react";
-import { Typography, Divider, Box, useTheme } from "@mui/material";
-import { tokens } from "../../theme";
-import { useNavigate } from "react-router-dom";
+import { Typography, Divider, Box } from "@mui/material";
 
 import { useSelector } from "react-redux";
 
-import {} from "../../redux/services/cartReducer";
-
 const OrderReview = () => {
   const cart = useSelector((state) => state.cart.cart);
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const navigate = useNavigate();
+
   return (
-    <Box className="w-full">
+    <Box className="w-full my-4">
       {cart.map((item, ind) => (
         <Box key={`${item.title}-${item.id}-${ind}`}>
           <Box className="flex gap-2 items-center pb-4">

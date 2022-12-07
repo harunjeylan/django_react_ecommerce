@@ -1,55 +1,27 @@
-import { useState, useEffact, SyntheticEvent } from "react";
-import ShoppingList from "../../components/ShoppingList";
+import { useState, useEffect } from "react";
 import Service from "../../components/Service";
 import Subscribe from "../../components/Subscribe";
-import Header2 from "../../components/Header2";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import PriceCheckIcon from "@mui/icons-material/PriceCheck";
-import MoneyIcon from "@mui/icons-material/Money";
-import SupportAgentIcon from "@mui/icons-material/SupportAgent";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import BeachAccessIcon from "@mui/icons-material/BeachAccess";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import PaletteIcon from "@mui/icons-material/Palette";
 import PaletteOutlinedIcon from "@mui/icons-material/PaletteOutlined";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import Banner from "../../components/Banner";
 import ProductCarouse1 from "../../components/ProductCarouse1";
 import Header from "../../components/Header";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {
   Box,
-  container,
-  CardContent,
-  CardMedia,
   CardActionArea,
   Button,
   Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  List,
   FormControlLabel,
   Checkbox,
   Radio,
-  ListItem,
-  CircularProgress,
-  ListItemAvatar,
   Breadcrumbs,
   Tabs,
   Tab,
-  Link,
-  ListItemIcon,
   FormControl,
   FormLabel,
   RadioGroup,
   Rating,
-  ListItemText,
-  Avatar,
-  Collapse,
-  Slider,
   IconButton,
   TextField,
   ButtonGroup,
@@ -60,20 +32,14 @@ import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import { tokens } from "../../theme";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
-import ProductCard from "../../components/ProductCard";
 import Reviews from "../../components/Reviews";
 import ReviewForm from "../../components/ReviewForm";
 import { reviews } from "../../data/reviews";
 import { addToCart } from "../../redux/services/cartReducer";
-import {
-  useGetProductsByCategoryQuery,
-  useGetProductsDetailesQuery,
-} from "../../redux/services/products";
+
+import { useGetProductsDetailesQuery } from "../../redux/services/products";
 
 const ProductDetails = () => {
-  const isNoneMobile = useMediaQuery("(min-width:1024px)");
-  const [openCategory, setOpenCategory] = useState(false);
-  const [openFilter, setOpenFilter] = useState(false);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
@@ -88,14 +54,12 @@ const ProductDetails = () => {
   };
   console.log(productId);
 
-  const {
-    data: product,
-    isFetching: productIsFetching,
-    error: productError,
-  } = useGetProductsDetailesQuery({ productId });
+  const { data: product } = useGetProductsDetailesQuery({ productId });
 
   const [activeImage, setActiveImage] = useState(product?.thumbnail);
-
+  useEffect(() => {
+    setActiveImage(product?.thumbnail);
+  }, [product?.thumbnail]);
   return (
     <Box className={`flex flex-col gap-8 mt-[100px] `}>
       <Box className={`container mx-auto my-[80px] px-8`}>
@@ -355,6 +319,7 @@ const ProductDetails = () => {
           <Box className={` flex flex-col gap-4 w-full lg:max-w-[50%]`}>
             <Box className={`my-4 max-h-[600px] overflow-hidden`}>
               <img
+                alt="product thamnail"
                 style={{
                   objectFit: "cover",
                   backgroundAttachment: "fixed",
@@ -379,6 +344,7 @@ const ProductDetails = () => {
                   } bg-opacity-90 p-1  rounded-md  ease-in-out duration-300 `}
                 >
                   <img
+                    alt="product"
                     key={index}
                     src={image}
                     className={` rounded-md h-[100%] w-[100%]`}

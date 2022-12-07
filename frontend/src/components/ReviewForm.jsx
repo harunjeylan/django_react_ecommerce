@@ -1,13 +1,18 @@
 import React from "react";
-import { Box, Button, TextField,useTheme, Rating,Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  useTheme,
+  Rating,
+  Typography,
+} from "@mui/material";
 import Header from "./Header";
-import { useMediaQuery } from "@mui/material";
 import { tokens } from "../theme";
 import { Formik } from "formik";
 import * as yup from "yup";
 
 const ReviewForm = () => {
-  const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const phoneRegExp =
@@ -50,15 +55,15 @@ const ReviewForm = () => {
           handleChange,
           handleSubmit,
         }) => (
-          <form onSubmit={handleSubmit} >
+          <form onSubmit={handleSubmit}>
             <Box className={`grid grid-cols-2 gap-4 my-4`}>
-                <Rating
-                    name="rating"
-                    value={values.rating}
-                    onChange={handleChange}
-                    size="large" 
-                    className={`col-span-2`}
-                />
+              <Rating
+                name="rating"
+                value={values.rating}
+                onChange={handleChange}
+                size="large"
+                className={`col-span-2`}
+              />
               <TextField
                 fullWidth
                 variant="filled"
@@ -126,30 +131,33 @@ const ReviewForm = () => {
               />
             </Box>
             <Box>
-              <Button type="submit" variant="outlined"
+              <Button
+                type="submit"
+                variant="outlined"
                 color="secondary"
                 className={`bg-opacity-0 hover:bg-opacity-100 px-[40px] py-2 ${
-                "hover:bg-" + colors.greenAccent[400]
-                }`}>
+                  "hover:bg-" + colors.greenAccent[400]
+                }`}
+              >
                 Post Review
               </Button>
-              
             </Box>
-            
           </form>
         )}
       </Formik>
       <Box className="flex my-4">
-
         <Typography
-        variant="subtitle"
-        color={colors.grey[100]}
-        fontWeight="bold"
-    >
-        <span className="bg-green-400/5 text-green-500 px-2 py-1 rounded-md">Note</span> This form shows usage of the classic Bootstrap form controls, not their underlined variants. You can choose whichever variant you want.
-    </Typography>
-        
-    </Box>
+          variant="subtitle"
+          color={colors.grey[100]}
+          fontWeight="bold"
+        >
+          <span className="bg-green-400/5 text-green-500 px-2 py-1 rounded-md">
+            Note
+          </span>{" "}
+          This form shows usage of the classic Bootstrap form controls, not
+          their underlined variants. You can choose whichever variant you want.
+        </Typography>
+      </Box>
     </Box>
   );
 };

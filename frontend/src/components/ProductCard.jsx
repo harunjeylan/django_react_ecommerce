@@ -1,5 +1,12 @@
-import { useState, useEffect } from "react";
-import { Box, Checkbox, IconButton, Rating, Typography } from "@mui/material";
+import { useState } from "react";
+import {
+  Box,
+  Checkbox,
+  IconButton,
+  Rating,
+  Typography,
+  CardActionArea,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../theme";
@@ -29,10 +36,8 @@ const ProductCard = ({ product }) => {
   const [isInWishlist, setIsInWishlist] = useState(findInWishlist(product));
   const changeWishlist = () => {
     dispatch(toggleWishlist({ product }));
-  };
-  useEffect(() => {
     setIsInWishlist(findInWishlist(product));
-  }, [wishlist]);
+  };
 
   return (
     <Box
@@ -45,29 +50,30 @@ const ProductCard = ({ product }) => {
       <Box
         className={`relative overflow-hidden rounded-t-md w-[100%] h-[300px]`}
       >
-        <img
-          style={{
-            objectFit: "cover",
-            backgroundAttachment: "fixed",
-          }}
-          alt={`${product?.title} image`}
-          className={`absolute top-0 left-0 rounded-t-md w-[100%] h-[300px] hover:scale-105  ease-in-out duration-500 ${
-            isHovered ? "opacity-0" : "opacity-100"
-          } `}
-          src={product?.thumbnail}
-        />
-        <img
-          style={{
-            objectFit: "cover",
-            backgroundAttachment: "fixed",
-          }}
-          alt={`${product?.title} image`}
-          className={`absolute  top-0 left-0  rounded-t-md w-[100%] h-[300px] hover:scale-105  ease-in-out duration-500 ${
-            isHovered ? "opacity-100" : "opacity-0"
-          } `}
-          src={product?.images[0]}
-        />
-
+        <CardActionArea onClick={() => navigate(`/product/${product?.id}`)}>
+          <img
+            style={{
+              objectFit: "cover",
+              backgroundAttachment: "fixed",
+            }}
+            alt={`${product?.title} `}
+            className={`absolute top-0 left-0 rounded-t-md w-[100%] h-[300px] hover:scale-105  ease-in-out duration-500 ${
+              isHovered ? "opacity-0" : "opacity-100"
+            } `}
+            src={product?.thumbnail}
+          />
+          <img
+            style={{
+              objectFit: "cover",
+              backgroundAttachment: "fixed",
+            }}
+            alt={`${product?.title} `}
+            className={`absolute  top-0 left-0  rounded-t-md w-[100%] h-[300px] hover:scale-105  ease-in-out duration-500 ${
+              isHovered ? "opacity-100" : "opacity-0"
+            } `}
+            src={product?.images[0]}
+          />
+        </CardActionArea>
         <Box
           className={` absolute bottom-0 flex justify-between w-full max-w-[100%] items-center ${
             isHovered ? "h-[60px] " : "lg:h-0 h-[60px]"

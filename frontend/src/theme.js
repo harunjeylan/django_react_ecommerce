@@ -1,5 +1,5 @@
 import { createTheme } from "@mui/material/styles";
-import { createContext, useState, useMemo } from "react";
+import { createContext, useState, useMemo, useEffect } from "react";
 
 export const tokens = (mode) => ({
   ...(mode === "dark"
@@ -145,15 +145,15 @@ export const themeSettings = (mode) => {
   const colors = tokens(mode);
   return {
     breakpoints: {
-    values: {
-      xs: 0,
-      sm: 640,
-      md: 768,
-      lg: 1024,
-      xl: 1280,
-      "2xl": 1536,
+      values: {
+        xs: 0,
+        sm: 640,
+        md: 768,
+        lg: 1024,
+        xl: 1280,
+        "2xl": 1536,
+      },
     },
-  },
     palette: {
       mode: mode,
       ...(mode === "dark"
@@ -229,7 +229,14 @@ export const ColorModeContext = createContext({
 });
 
 export const useMode = () => {
-  const [mode, setMode] = useState("dark");
+  const themeMode =
+    localStorage.getItem("themeMode") !== null
+      ? localStorage.getItem("themeMode")
+      : "dark";
+  const [mode, setMode] = useState(themeMode);
+  useEffect(() => {
+    localStorage.setItem("themeMode", mode);
+  }, [mode]);
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () =>

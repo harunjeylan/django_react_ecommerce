@@ -11,6 +11,7 @@ const Header = ({ review }) => {
     <Box className="flex gap-8 mb-4 border-b w-full">
       <Box className={`w-[160px]`}>
         <img
+          alt={author?.fullName}
           src={author?.image}
           className={`h-[100px] w-[100px] rounded-[50%]`}
         />

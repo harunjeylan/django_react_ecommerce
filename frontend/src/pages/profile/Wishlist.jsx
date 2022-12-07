@@ -7,7 +7,6 @@ import {
   Breadcrumbs,
   Button,
   IconButton,
-  TextField,
   CardActionArea,
 } from "@mui/material";
 import { tokens } from "../../theme";
@@ -16,8 +15,6 @@ import Header3 from "../../components/Header3";
 
 import { useSelector, useDispatch } from "react-redux";
 import CloseIcon from "@mui/icons-material/Close";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
 
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 
@@ -27,18 +24,11 @@ import { addToCart } from "../../redux/services/cartReducer";
 import { removeFromWishlist } from "../../redux/services/wishlistReducer";
 import ProfileCard from "./ProfileCard";
 
-import {
-  decreaseCount,
-  setCount,
-  increaseCount,
-  removeFromCart,
-} from "../../redux/services/cartReducer";
 import Service from "../../components/Service";
 
 const Wishlist = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const cart = useSelector((state) => state.cart.cart);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const wishlist = useSelector((state) => state.wishlist.wishlist);
@@ -70,7 +60,7 @@ const Wishlist = () => {
           <Box className="w-full md:max-w-[60%] lg:max-w-[70%]">
             {wishlist.length ? (
               <Box className="drop-shadow-md">
-                <Box className="flex justfiy-between items-center gap-2 bg-slate-400/10 py-8 mb-4">
+                <Box className="flex xxs:hidden  sm:flex md:hidden lg:flex  justfiy-between items-center gap-2 bg-slate-400/10 py-8 mb-4">
                   <Box className="text-center w-[40%]">Item</Box>
                   <Box className="flex justfiy-between items-center w-[60%]">
                     <Box className="text-center w-full">Price</Box>
@@ -82,12 +72,12 @@ const Wishlist = () => {
 
                 <Box className="flex flex-col justfiy-between">
                   {wishlist.map((item, ind) => (
-                    <Box className="hover:bg-white/10  ease-in-out duration-300">
+                    <Box className="hover:bg-white/10  ease-in-out duration-300 px-2">
                       <Box
                         key={`${item.title}-${item.id}-${ind}`}
                         className="flex justfiy-between items-center gap-2 w-full py-4 h-full"
                       >
-                        <Box className="flex justfiy-start gap-4 items-center w-[40%]">
+                        <Box className="flex xxs:flex-col sm:flex-row w-full md:flex-col lg:flex-row justfiy-start gap-4 lg:items-center">
                           <CardActionArea
                             onClick={() => navigate(`/product/${item.id}`)}
                             className={`${
@@ -113,7 +103,7 @@ const Wishlist = () => {
                             </Typography>
                           </Box>
                         </Box>
-                        <Box className="flex justfiy-between items-center w-[60%]">
+                        <Box className="flex justfiy-between items-center w-[60%] xxs:flex-col-reverse xxs:gap-4 xxs:w-[30%] sm:flex-row sm:w-[60%] md:flex-col-reverse md:gap-4 md:w-[30%] lg:flex-row lg:w-[60%]  ">
                           <Box className="text-center w-full">
                             <Typography>${item?.price}</Typography>
                           </Box>
@@ -173,7 +163,7 @@ const Wishlist = () => {
                 className={`container mx-auto py-[80px] rounded-lg`}
               >
                 <Box className="flex flex-col gap-4 justify-center items-center">
-                  <ShoppingBagOutlinedIcon size="large" className="size-lg" />
+                  <ShoppingBagOutlinedIcon size="large" className="text-8xl" />
                   <Typography
                     variant="h2"
                     color={colors.grey[100]}

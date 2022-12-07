@@ -11,13 +11,13 @@ import {
 } from "@mui/material";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
-import Header2 from "../../components/Header2";
+import Header3 from "../../components/Header3";
 
 import { useSelector, useDispatch } from "react-redux";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-
+import OrderSummery from "../../components/OrderSummery";
 import {
   decreaseCount,
   setCount,
@@ -50,13 +50,10 @@ const ViewCart = () => {
           </Button>
           <Typography color="text.primary">View Shoping Cart</Typography>
         </Breadcrumbs>
-        <Box
-          backgroundColor={colors.primary[400]}
-          className={`container mx-auto py-[80px] rounded-lg my-4`}
-        >
-          <Header2
+        <Box className={`container mx-auto py-[20px] rounded-lg my-4`}>
+          <Header3
             title="Shopping cart"
-            bodyText="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt."
+            subtitle="Lorem ipsum dolor sit amet, consectetur adipisicing elit,"
           />
         </Box>
       </Box>
@@ -151,66 +148,16 @@ const ViewCart = () => {
             </Box>
 
             <Box className="w-full md:max-w-[40%] ">
-              <Box className="flex flex-col gap-8 drop-shadow-lg bg-slate-400/10 rounded-lg">
-                <Box
-                  className="px-4 py-4 "
-                  backgroundColor={colors.primary[400]}
+              <OrderSummery totalPrice={totalPrice} />
+              <Box className="flex justify-between pt-4 ">
+                <Button
+                  onClick={() => navigate(`/checkout`)}
+                  variant="outlined"
+                  color="secondary"
+                  className={` px-[40px] py-4 w-full  `}
                 >
-                  <Typography variant="h5" fontWeight="bold">
-                    Order Summary
-                  </Typography>
-                </Box>
-                <Box className="flex flex-col gap-4 px-4 py-4 border-b">
-                  <Typography variant="h5" fontWeight="bold">
-                    Order Summary
-                  </Typography>
-                  <Typography className="">
-                    Shipping and additional costs are calculated based on values
-                    you have entered.
-                  </Typography>
-                  <Box className="flex justify-between mt-4">
-                    <Typography variant="h5" fontWeight="bold">
-                      Order Subtotal
-                    </Typography>
-                    <Typography variant="h5" fontWeight="bold">
-                      ${totalPrice}
-                    </Typography>
-                  </Box>
-                </Box>
-                <Box className="flex justify-between px-4 py-4 border-b">
-                  <Typography variant="h5" fontWeight="bold">
-                    Shipping and handling
-                  </Typography>
-                  <Typography variant="h5" fontWeight="bold">
-                    $10.00
-                  </Typography>
-                </Box>
-                <Box className="flex justify-between px-4 py-4 border-b">
-                  <Typography variant="h5" fontWeight="bold">
-                    Tax
-                  </Typography>
-                  <Typography variant="h5" fontWeight="bold">
-                    $0.00
-                  </Typography>
-                </Box>
-                <Box className="flex justify-between px-4 py-4 ">
-                  <Typography variant="h5" fontWeight="bold">
-                    Total
-                  </Typography>
-                  <Typography variant="h5" fontWeight="bold">
-                    ${totalPrice + 10}
-                  </Typography>
-                </Box>
-                <Box className="flex justify-between pt-4 ">
-                  <Button
-                    onClick={() => navigate(`/checkout`)}
-                    variant="outlined"
-                    color="secondary"
-                    className={` px-[40px] py-4 w-full  `}
-                  >
-                    PROCEED TO CHECKOUT
-                  </Button>
-                </Box>
+                  PROCEED TO CHECKOUT
+                </Button>
               </Box>
             </Box>
           </Box>
