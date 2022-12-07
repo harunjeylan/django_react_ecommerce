@@ -22,7 +22,7 @@ import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import SwitchRightOutlinedIcon from "@mui/icons-material/SwitchRightOutlined";
 import SwitchLeftOutlinedIcon from "@mui/icons-material/SwitchLeftOutlined";
-
+import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -84,7 +84,7 @@ const MyProSidebar = () => {
         rtl={sidebarRTL}
         backgroundColor={colors.primary[400]}
         image={sidebarImage}
-        width={broken ? "270px" : "320px"}
+        width={broken ? "240px" : "280px"}
       >
         <Menu iconshape="square">
           <MenuItem
@@ -204,6 +204,20 @@ const MyProSidebar = () => {
               title="Invoices Balances"
               to="/admin/invoices"
               icon={<ReceiptOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "15px 20px 5px 20px" }}
+            >
+              Products
+            </Typography>
+            <Item
+              title="Add New Products"
+              to="/admin/products/new"
+              icon={<CategoryOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
