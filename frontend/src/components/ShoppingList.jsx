@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { Box, Tabs, Tab, CircularProgress } from "@mui/material";
-import { useTheme } from "@emotion/react";
-import { tokens } from "../theme";
 import ProductCard from "../components/ProductCard";
 import {
   useGetAllProductsQuery as getAllProductsQuery,
@@ -71,9 +69,6 @@ const ProductsList = ({ category }) => {
   );
 };
 const ShoppingList = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-
   const { data: allCategory, isFetching: isFetchingAllCategory } =
     getAllCategoryQuery();
 

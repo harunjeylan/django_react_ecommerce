@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import {  useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Navbar from "./global/Navbar";
 import Footer from "./global/Footer";
 import CartMenu from "./global/CartMenu";
@@ -13,15 +13,15 @@ const ScrollToTop = () => {
   return null;
 };
 
-function Customer({children}) {
+function Customer({ children }) {
   return (
-    <div className="app">
+    <main>
       <Navbar />
       <ScrollToTop />
       {children}
       <CartMenu />
       <Footer />
-    </div>
+    </main>
   );
 }
 

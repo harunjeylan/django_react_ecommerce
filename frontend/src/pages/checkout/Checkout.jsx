@@ -1,3 +1,8 @@
+import Payment from "./Payment";
+import Shipping from "../../components//Shipping";
+import Delivery from "./Delivery";
+import OrderReview from "./OrderReview";
+import Header3 from "../../components/Header3";
 import { useSelector } from "react-redux";
 import {
   Box,
@@ -12,19 +17,9 @@ import {
 import { Formik } from "formik";
 import { useState } from "react";
 import * as yup from "yup";
-import { colors } from "../../theme";
-import Payment from "./Payment";
-import Shipping from "../../components//Shipping";
-import Delivery from "./Delivery";
-import OrderReview from "./OrderReview";
-import { loadStripe } from "@stripe/stripe-js";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
-import Header2 from "../../components/Header2";
-const stripePromise = loadStripe(
-  "pk_test_51LgU7yConHioZHhlAcZdfDAnV9643a7N1CMpxlKtzI1AUWLsRyrord79GYzZQ6m8RzVnVQaHsgbvN1qSpiDegoPi006QkO0Mlc"
-);
 
 const Checkout = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -52,27 +47,7 @@ const Checkout = () => {
     actions.setTouched({});
   };
 
-  async function makePayment(values) {
-    const stripe = await stripePromise;
-    const requestBody = {
-      userName: [values.firstName, values.lastName].join(" "),
-      email: values.email,
-      products: cart.map(({ id, count }) => ({
-        id,
-        count,
-      })),
-    };
-
-    const response = await fetch("http://localhost:2000/api/orders", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody),
-    });
-    const session = await response.json();
-    await stripe.redirectToCheckout({
-      sessionId: session.id,
-    });
-  }
+  async function makePayment(values) {}
   const totalPrice = cart.reduce((total, item) => {
     return total + item.count * item.price;
   }, 0);
@@ -98,14 +73,8 @@ const Checkout = () => {
           </Button>
           <Typography color="text.primary">View Shoping Cart</Typography>
         </Breadcrumbs>
-        <Box
-          backgroundColor={colors.primary[400]}
-          className={`container mx-auto py-[80px] rounded-lg my-4`}
-        >
-          <Header2
-            title="Shopping cart"
-            bodyText="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt."
-          />
+        <Box className={`container mx-auto py-4 rounded-lg my-4`}>
+          <Header3 title="Checkout" subtitle="Choose the payment method." />
         </Box>
       </Box>
 
@@ -185,15 +154,8 @@ const Checkout = () => {
                       {!isFirstStep && (
                         <Button
                           fullWidth
-                          color="primary"
-                          variant="contained"
-                          sx={{
-                            backgroundColor: colors.primary[200],
-                            boxShadow: "none",
-                            color: "white",
-                            borderRadius: 0,
-                            padding: "15px 40px",
-                          }}
+                          color="secondary"
+                          className={` px-[40px] py-2`}
                           onClick={() => setActiveStep(activeStep - 1)}
                         >
                           Back
@@ -202,15 +164,9 @@ const Checkout = () => {
                       <Button
                         fullWidth
                         type="submit"
-                        color="primary"
-                        variant="contained"
-                        sx={{
-                          backgroundColor: colors.primary[400],
-                          boxShadow: "none",
-                          color: "white",
-                          borderRadius: 0,
-                          padding: "15px 40px",
-                        }}
+                        variant="outlined"
+                        color="secondary"
+                        className={` px-[40px] py-2`}
                       >
                         {!isLastStep ? "Next" : "Place Order"}
                       </Button>
@@ -302,6 +258,7 @@ const initialValues = {
     state: "",
     zipCode: "",
   },
+  deliveryMethod: "none",
   email: "",
   phoneNumber: "",
 };
@@ -351,6 +308,7 @@ const checkoutSchema = [
       }),
     }),
   }),
+  yup.object().shape({ deliveryMethod: yup.string() }),
   yup.object().shape({
     email: yup.string().required("required"),
     phoneNumber: yup.string().required("required"),

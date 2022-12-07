@@ -1,23 +1,18 @@
-import { useDispatch, useSelector } from "react-redux";
-import { useTheme, InputBase, Badge, Box, IconButton } from "@mui/material";
-import { useContext, useState, useRef } from "react";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import SearchIcon from "@mui/icons-material/Search";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
+import { useDispatch, useSelector } from "react-redux";
+import { useTheme, InputBase, Badge, Box, IconButton } from "@mui/material";
+import { useContext, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { colors } from "../../theme";
 import { setIsCartOpen } from "../../redux/services/cartReducer";
 import { ColorModeContext, tokens } from "../../theme";
-import { Link } from "react-router-dom";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -45,7 +40,7 @@ function Navbar() {
       position="fixed"
       top="0"
       left="0"
-      zIndex="10"
+      zIndex="100"
       className="drop-shadow-md"
     >
       <Box

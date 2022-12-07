@@ -12,8 +12,15 @@ module.exports = {
     extend: {},
     screens: {
       xs: "475px",
-      xxs: "475px",
+      xxs: "0px",
+     
       ...defaultTheme.screens,
+    },
+    container: {
+      padding: {
+        DEFAULT: "1rem",
+      },
+      ...defaultTheme.container,
     },
   },
   plugins: [],

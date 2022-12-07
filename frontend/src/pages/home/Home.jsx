@@ -1,30 +1,27 @@
-import { useState, SyntheticEvent } from "react";
 import ShoppingList from "../../components/ShoppingList";
 import Service from "../../components/Service";
 import Subscribe from "../../components/Subscribe";
 import MainCarousel from "./MainCarousel";
 import ProductCarouse1 from "../../components/ProductCarouse1";
-import { Box } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import {
-  CardContent,
-  CardMedia,
-  CardActionArea,
-  Button,
-  Typography,
-} from "@mui/material";
-import { useTheme } from "@emotion/react";
-import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import Header2 from "../../components/Header2";
 import Banner from "../../components/Banner";
+import { Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { CardActionArea, Button, Typography } from "@mui/material";
+import { useTheme } from "@emotion/react";
+import { tokens } from "../../theme";
+
+import childerenImage from "../../data/images/childeren.webp";
+import manImage from "../../data/images/man.webp";
+import womenImage from "../../data/images/women.webp";
+
 function Home() {
-  const [value, setValue] = useState(0);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   return (
-    <Box className="flex flex-col gap-8">
+    <Box className="flex flex-col gap-8 ">
       <Box className="mb-4 bg-black/5 bg-opacity-80">
         <MainCarousel />
         <Box
@@ -32,48 +29,54 @@ function Home() {
           px-[12px] py-[96px]`}
         >
           <CardActionArea
+            onClick={() => navigate(`/shopping`)}
             className={`relative mx-auto  md:h-auto overflow-hidden`}
           >
             <img
-              src="https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=770&q=80"
+              alt="women"
+              src={womenImage}
               className={`h-[100%] w-[100%] hover:scale-[102%] ease-in-out duration-300`}
             />
             <Box>
               <Typography
                 variant="h1"
                 fontWeight="bold"
-                className={`absolute text-2xl md:text-3xl lg:text-4xl top-[50%] text-6xl w-full px-auto text-center my-auto`}
+                className={`absolute text-white text-2xl md:text-3xl lg:text-4xl top-[50%] text-6xl w-full px-auto text-center my-auto`}
               >
                 Women
               </Typography>
             </Box>
           </CardActionArea>
           <CardActionArea
+            onClick={() => navigate(`/shopping`)}
             className={`relative mx-auto   md:h-auto overflow-hidden`}
           >
             <img
-              src="https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=765&q=80"
+              alt="men"
+              src={manImage}
               className={`h-[100%] w-[100%] hover:scale-[102%] ease-in-out duration-300`}
             />
             <Typography
               variant="h1"
               fontWeight="bold"
-              className={`absolute text-2xl md:text-3xl lg:text-4xl top-[50%] text-6xl w-full px-auto text-center my-auto`}
+              className={`absolute text-white text-2xl md:text-3xl lg:text-4xl top-[50%] text-6xl w-full px-auto text-center my-auto`}
             >
               Man
             </Typography>
           </CardActionArea>
           <CardActionArea
+            onClick={() => navigate(`/shopping`)}
             className={`relative mx-auto   md:h-auto overflow-hidden`}
           >
             <img
-              src="https://images.unsplash.com/photo-1554342321-0776d282ceac?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80"
+              alt="childeren"
+              src={childerenImage}
               className={`h-[100%] w-[100%] hover:scale-[102%] ease-in-out duration-300`}
             />
             <Typography
               variant="h1"
               fontWeight="bold"
-              className={`absolute text-2xl md:text-3xl lg:text-4xl top-[50%] text-6xl w-full px-auto text-center my-auto`}
+              className={`absolute text-white text-2xl md:text-3xl lg:text-4xl top-[50%] text-6xl w-full px-auto text-center my-auto`}
             >
               Childeren
             </Typography>
@@ -83,7 +86,7 @@ function Home() {
       <Box backgroundColor={colors.primary[400]} className={`mb-[50px]`}>
         <Banner />
       </Box>
-      <Box class={`container mx-auto p-[48px] max-w-xl`}>
+      <Box className={`container mx-auto p-[48px] max-w-xl`}>
         <Header2
           title="New Arrivals"
           subtitle="One morning"

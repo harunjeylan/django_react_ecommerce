@@ -11,6 +11,7 @@ const Payment = ({ values, touched, errors, handleBlur, handleChange }) => {
         </Typography>
         <TextField
           fullWidth
+          variant="filled"
           type="text"
           label="Email"
           onBlur={handleBlur}
@@ -23,6 +24,7 @@ const Payment = ({ values, touched, errors, handleBlur, handleChange }) => {
         />
         <TextField
           fullWidth
+          variant="filled"
           type="text"
           label="Phone Number"
           onBlur={handleBlur}

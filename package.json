@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "dropzone": "^6.0.0-beta.2",
     "react-countdown": "^2.3.5",
     "swiper": "^8.4.4"
   }

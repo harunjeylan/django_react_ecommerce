@@ -1,33 +1,39 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+const cartItems =
+  localStorage.getItem("cartItems") !== null
+    ? JSON.parse(localStorage.getItem("cartItems"))
+    : [];
 const initialState = {
   isCartOpen: false,
-  cart: [],
-  products: [],
+  cart: cartItems,
 };
 
 export const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    setItems: (state, action) => {
-      state.products = action.payload;
-    },
-
     addToCart: (state, action) => {
       const item = state.cart.find((product) => {
         console.log(product.id);
-        return product.id === action.payload.id;
+        return product.id === action.payload.product.id;
       });
 
       if (item === undefined) {
         state.cart = [...state.cart, action.payload.product];
       }
+      localStorage.setItem(
+        "cartItems",
+        JSON.stringify(state.cart.map((item) => item))
+      );
     },
 
     removeFromCart: (state, action) => {
       state.cart = state.cart.filter(
         (product) => product.id !== action.payload.id
+      );
+      localStorage.setItem(
+        "cartItems",
+        JSON.stringify(state.cart.map((item) => item))
       );
     },
 
@@ -38,6 +44,10 @@ export const cartSlice = createSlice({
         }
         return product;
       });
+      localStorage.setItem(
+        "cartItems",
+        JSON.stringify(state.cart.map((item) => item))
+      );
     },
 
     decreaseCount: (state, action) => {
@@ -47,6 +57,10 @@ export const cartSlice = createSlice({
         }
         return product;
       });
+      localStorage.setItem(
+        "cartItems",
+        JSON.stringify(state.cart.map((item) => item))
+      );
     },
 
     setCount: (state, action) => {
@@ -57,6 +71,10 @@ export const cartSlice = createSlice({
         }
         return product;
       });
+      localStorage.setItem(
+        "cartItems",
+        JSON.stringify(state.cart.map((item) => item))
+      );
     },
 
     setIsCartOpen: (state) => {
@@ -66,7 +84,6 @@ export const cartSlice = createSlice({
 });
 
 export const {
-  setItems,
   addToCart,
   setCount,
   removeFromCart,

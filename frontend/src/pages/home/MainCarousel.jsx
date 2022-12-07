@@ -1,8 +1,7 @@
-import { Box, Typography, IconButton, useMediaQuery } from "@mui/material";
-import { Carousel } from "react-responsive-carousel";
+import { Box, Typography } from "@mui/material";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+// import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+// import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../../theme";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -26,7 +25,6 @@ export const heroTextureImports = importAll(
 );
 
 const MainCarousel = () => {
-  const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (

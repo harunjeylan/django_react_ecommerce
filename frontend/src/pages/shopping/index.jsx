@@ -1,13 +1,6 @@
-import { useState, useEffact, SyntheticEvent } from "react";
-import ShoppingList from "../../components/ShoppingList";
+import { useState } from "react";
 import Service from "../../components/Service";
-import Header2 from "../../components/Header2";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import PriceCheckIcon from "@mui/icons-material/PriceCheck";
-import MoneyIcon from "@mui/icons-material/Money";
-import SupportAgentIcon from "@mui/icons-material/SupportAgent";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import BeachAccessIcon from "@mui/icons-material/BeachAccess";
+import Header3 from "../../components/Header3";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import PaletteIcon from "@mui/icons-material/Palette";
@@ -19,30 +12,22 @@ import Header from "../../components/Header";
 
 import {
   Box,
-  container,
-  CardContent,
-  CardMedia,
-  CardActionArea,
   Button,
   Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  List,
+
+  // List,
+  // ListItem,
+  // ListItemAvatar,
+  // ListItemText,
+  // ListItemIcon,
   FormControlLabel,
   Checkbox,
   Radio,
-  ListItem,
   CircularProgress,
-  ListItemAvatar,
   Breadcrumbs,
-  Link,
-  ListItemIcon,
   FormControl,
   FormLabel,
   RadioGroup,
-  ListItemText,
-  Avatar,
   Collapse,
   Slider,
 } from "@mui/material";
@@ -126,23 +111,20 @@ const Shopping = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
-  // useEffact(()=>{
-  //     setOpenCategory(!openCategory)
-  //     setOpenFilter(!openFilter)
-  // },[isNoneMobile])
+
   const { data: allCategory, isFetching: isFetchingAllCategory } =
     getAllCategoryQuery();
 
-  const [categoryValue, setCategoryValue] = useState("all");
+  // const [categoryValue, setCategoryValue] = useState("all");
 
-  const handleChange = (event, newValue) => {
-    setCategoryValue(newValue);
-  };
+  // const handleChange = (event, newValue) => {
+  //   setCategoryValue(newValue);
+  // };
   const [priceValue, setPriceValue] = useState([20, 37]);
 
   return (
     <Box className={`flex flex-col gap-8 mt-[100px] `}>
-      <Box className={`container mx-auto my-[80px]`}>
+      <Box className={`container mx-auto my-[40px]`}>
         <Breadcrumbs aria-label="breadcrumb">
           <Button
             onClick={() => navigate(`/`)}
@@ -157,16 +139,13 @@ const Shopping = () => {
           <Typography color="text.primary">Shoping</Typography>
         </Breadcrumbs>
       </Box>
-      <Box
-        backgroundColor={colors.primary[400]}
-        className={`container mx-auto py-[80px] rounded-lg`}
-      >
-        <Header2
+      <Box className={`container mx-auto py-[20px] rounded-lg my-4`}>
+        <Header3
           title="Jackets and tops"
-          bodyText="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt."
+          subtitle="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt."
         />
       </Box>
-      <Box className="container mx-auto my-[40px] overflow-heddin">
+      <Box className="container mx-auto my-4 overflow-heddin">
         <Box className="flex justify-between items-center">
           <Header
             title="Recommended"
@@ -177,9 +156,7 @@ const Shopping = () => {
             onClick={() => navigate(`/shopping`)}
             variant="outlined"
             color="secondary"
-            className={`bg-opacity-0 hover:bg-opacity-100 px-4 py-2 ${
-              "hover:bg-" + colors.greenAccent[400]
-            }`}
+            className={`px-8 py-3 `}
           >
             More
           </Button>
@@ -187,7 +164,7 @@ const Shopping = () => {
         <ProductCarouse1 />
       </Box>
 
-      <Box className={`container  mx-auto  my-[40px] space-4`}>
+      <Box className={`container  mx-auto  my-4 space-4`}>
         <Header
           title="Shopping List"
           subtitle="One morning"
@@ -217,50 +194,7 @@ const Shopping = () => {
                 </Typography>
                 {isFetchingAllCategory
                   ? null
-                  : allCategory.map((category, index) => (
-                      <Accordion
-                        className={`bg-transparent p-4 rounded-md`}
-                        defaultExpanded={index === 0}
-                      >
-                        <AccordionSummary
-                          className={`flex items-center space-x-2`}
-                          expandIcon={<ExpandMoreIcon />}
-                        >
-                          <Avatar>
-                            <BeachAccessIcon />
-                          </Avatar>
-                          <Typography
-                            color={colors.greenAccent[500]}
-                            className="ml-2"
-                            variant="h5"
-                          >
-                            <ListItemText primary={category} secondary="22" />
-                          </Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          <List className={`bg-transparent w-[100%]`}>
-                            <ListItem>
-                              <ListItemText
-                                primary="Photos"
-                                secondary="Jan 9, 2014"
-                              />
-                            </ListItem>
-                            <ListItem>
-                              <ListItemText
-                                primary="Work"
-                                secondary="Jan 7, 2014"
-                              />
-                            </ListItem>
-                            <ListItem>
-                              <ListItemText
-                                primary="Vacation"
-                                secondary="July 20, 2014"
-                              />
-                            </ListItem>
-                          </List>
-                        </AccordionDetails>
-                      </Accordion>
-                    ))}
+                  : allCategory.map((category, index) => null)}
               </Box>
             </Collapse>
             <Collapse
@@ -502,7 +436,7 @@ const Shopping = () => {
                 </Box>
               )}
             </Box>
-            <ProductsList category={categoryValue} />
+            <ProductsList category={"all"} />
           </Box>
         </Box>
       </Box>

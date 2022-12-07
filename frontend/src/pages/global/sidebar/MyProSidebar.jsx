@@ -13,7 +13,6 @@ import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
@@ -21,7 +20,6 @@ import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutl
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import SwitchRightOutlinedIcon from "@mui/icons-material/SwitchRightOutlined";
 import SwitchLeftOutlinedIcon from "@mui/icons-material/SwitchLeftOutlined";
 
@@ -64,12 +62,8 @@ const MyProSidebar = () => {
           backgroundColor: "transparent !important",
         },
         "& .menu-anchor": {
-          // padding: "5px 35px 5px 20px !important",
           backgroundColor: "transparent !important",
-        },
-        "& .menu-anchor": {
           color: "inherit !important",
-          backgroundColor: "transparent !important",
         },
         "& .menu-anchor:hover": {
           color: `${colors.blueAccent[500]} !important`,
@@ -159,12 +153,9 @@ const MyProSidebar = () => {
                 }}
               >
                 <img
-                  className="avater-image"
+                  className="avater-image w-[100px] h-[100px] pointer rounded-[50%]"
                   alt="profile user"
-                  width="100px"
-                  height="100px"
                   src={adminImage}
-                  style={{ cursor: "pointer", borderRadius: "50%" }}
                 />
               </Box>
               <Box textAlign="center">

@@ -1,12 +1,7 @@
 import React from "react";
 import { Typography, Box, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import {
-  List,
-  ListItemText,
-  ListItemIcon,
-  ListItemButton,
-} from "@mui/material";
+import { List, ListItemIcon, ListItemButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
@@ -14,7 +9,7 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import userImage from "../../data/images/user.png";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 const ProfileCard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -27,7 +22,11 @@ const ProfileCard = () => {
         className={`flex flex-col justify-between items-center gap-4 py-4 px-auto`}
       >
         <Box className="h-[200px] w-[200px] rounded-[50%] bg-slate-400/10">
-          <img src={userImage} className="h-[200px] w-[200px] rounded-[50%]" />
+          <img
+            alt="user avater"
+            src={userImage}
+            className="h-[200px] w-[200px] rounded-[50%]"
+          />
         </Box>
 
         <Box className="flex flex-col justify-between items-center gap-2">

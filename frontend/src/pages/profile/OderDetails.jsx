@@ -6,39 +6,25 @@ import {
   useTheme,
   Breadcrumbs,
   Button,
-  IconButton,
-  TextField,
   CardActionArea,
 } from "@mui/material";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
 import Header3 from "../../components/Header3";
+import OrderSummery from "../../components/OrderSummery";
 
-import { useSelector, useDispatch } from "react-redux";
-import CloseIcon from "@mui/icons-material/Close";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
+import { useSelector } from "react-redux";
+
 import ProfileCard from "./ProfileCard";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
-import useMediaQuery from "@mui/material/useMediaQuery";
 
-import {
-  decreaseCount,
-  setCount,
-  increaseCount,
-  removeFromCart,
-} from "../../redux/services/cartReducer";
 import Service from "../../components/Service";
-
-import { DataGrid } from "@mui/x-data-grid";
 
 const OderDetails = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.cart);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const isNoneMobile = useMediaQuery("(min-width:768px)");
 
   const totalPrice = cart.reduce((total, item) => {
     return total + item.count * item.price;
@@ -73,7 +59,6 @@ const OderDetails = () => {
             bodyText="If you have any questions, please feel free to contact us, our
             customer service center is working for you 24/7."
           />
-
         </Box>
       </Box>
       <Box className={`container mx-auto`}>
@@ -142,129 +127,68 @@ const OderDetails = () => {
                   ))}
                 </Box>
                 <Box className="flex flex-col lg:flex-row justify-between gap-4 py-2 mt-4">
-                  <Box className="w-full">
-                    <Box className="flex flex-col gap-4 drop-shadow-lg bg-slate-400/10 rounded-lg">
-                      <Box
-                        className="px-4 py-4 "
-                        backgroundColor={colors.primary[400]}
-                      >
-                        <Typography variant="h5" fontWeight="bold">
-                          Order Summary
-                        </Typography>
-                      </Box>
-                      <Box className="flex flex-col gap-4 px-4 py-2 ">
-                        <Typography variant="h5" fontWeight="bold">
-                          Order Summary
-                        </Typography>
-                        <Typography className="">
-                          Shipping and additional costs are calculated based on
-                          values you have entered.
-                        </Typography>
-                        <Box className="flex justify-between mt-4">
-                          <Typography variant="h5" fontWeight="bold">
-                            Order Subtotal
-                          </Typography>
-                          <Typography variant="h5" fontWeight="bold">
-                            ${totalPrice}
-                          </Typography>
-                        </Box>
-                      </Box>
-                      <Divider />
-                      <Box className="flex justify-between px-4 pt-2 ">
-                        <Typography variant="h5" fontWeight="bold">
-                          Shipping and handling
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          $10.00
-                        </Typography>
-                      </Box>
-                      <Divider />
-                      <Box className="flex justify-between px-4 pt-2 ">
-                        <Typography variant="h5" fontWeight="bold">
-                          Tax
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          $0.00
-                        </Typography>
-                      </Box>
-                      <Divider />
-                      <Box className="flex justify-between px-4 pt-2 ">
-                        <Typography variant="h5" fontWeight="bold">
-                          Total
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          ${totalPrice + 10}
-                        </Typography>
-                      </Box>
-                      <Divider />
+                  <OrderSummery totalPrice={totalPrice} />
+                  <Box className="flex flex-col gap-4 drop-shadow-lg bg-slate-400/10 rounded-lg">
+                    <Box
+                      className="px-4 py-4 "
+                      backgroundColor={colors.primary[400]}
+                    >
+                      <Typography variant="h5" fontWeight="bold">
+                        Invoice address
+                      </Typography>
+                    </Box>
+                    <Box className="flex flex-col gap-4 px-4 py-2">
+                      <Typography variant="h5" fontWeight="bold">
+                        John Brown
+                      </Typography>
+                      <Typography variant="h5" fontWeight="bold">
+                        13/25 New Avenue
+                      </Typography>
+                      <Typography variant="h5" fontWeight="bold">
+                        New Heaven
+                      </Typography>
+                      <Typography variant="h5" fontWeight="bold">
+                        45Y 73J
+                      </Typography>
+                      <Typography variant="h5" fontWeight="bold">
+                        England
+                      </Typography>
+                      <Typography variant="h5" fontWeight="bold">
+                        Great Britain
+                      </Typography>
                     </Box>
                   </Box>
-                  <Box className="w-full">
-                    <Box className="flex flex-col gap-4 drop-shadow-lg bg-slate-400/10 rounded-lg">
-                      <Box
-                        className="px-4 py-4 "
-                        backgroundColor={colors.primary[400]}
-                      >
-                        <Typography variant="h5" fontWeight="bold">
-                          Invoice address
-                        </Typography>
-                      </Box>
-                      <Box className="flex flex-col gap-4 px-4 py-2">
-                        <Typography variant="h5" fontWeight="bold">
-                          John Brown
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          13/25 New Avenue
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          New Heaven
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          45Y 73J
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          England
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          Great Britain
-                        </Typography>
-                      </Box>
+                  <Box className="flex flex-col gap-4 drop-shadow-lg bg-slate-400/10 rounded-lg">
+                    <Box
+                      className="px-4 py-4 "
+                      backgroundColor={colors.primary[400]}
+                    >
+                      <Typography variant="h5" fontWeight="bold">
+                        Invoice address
+                      </Typography>
                     </Box>
-                  </Box>
-                  <Box className="w-full">
-                    <Box className="flex flex-col gap-4 drop-shadow-lg bg-slate-400/10 rounded-lg">
-                      <Box
-                        className="px-4 py-4 "
-                        backgroundColor={colors.primary[400]}
-                      >
-                        <Typography variant="h5" fontWeight="bold">
-                          Invoice address
-                        </Typography>
-                      </Box>
-                      <Box className="flex flex-col gap-4 px-4 py-2">
-                        <Typography variant="h5" fontWeight="bold">
-                          John Brown
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          13/25 New Avenue
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          New Heaven
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          45Y 73J
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          England
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          Great Britain
-                        </Typography>
-                      </Box>
+                    <Box className="flex flex-col gap-4 px-4 py-2">
+                      <Typography variant="h5" fontWeight="bold">
+                        John Brown
+                      </Typography>
+                      <Typography variant="h5" fontWeight="bold">
+                        13/25 New Avenue
+                      </Typography>
+                      <Typography variant="h5" fontWeight="bold">
+                        New Heaven
+                      </Typography>
+                      <Typography variant="h5" fontWeight="bold">
+                        45Y 73J
+                      </Typography>
+                      <Typography variant="h5" fontWeight="bold">
+                        England
+                      </Typography>
+                      <Typography variant="h5" fontWeight="bold">
+                        Great Britain
+                      </Typography>
                     </Box>
                   </Box>
                 </Box>
-               
               </Box>
             ) : (
               <Box

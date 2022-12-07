@@ -1,45 +1,23 @@
 import React from "react";
-import {
-  Typography,
-  Divider,
-  Box,
-  useTheme,
-  Breadcrumbs,
-  Button,
-  IconButton,
-  TextField,
-} from "@mui/material";
+import { Typography, Box, useTheme, Breadcrumbs, Button } from "@mui/material";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
 import Header3 from "../../components/Header3";
 
-import { useSelector, useDispatch } from "react-redux";
-import CloseIcon from "@mui/icons-material/Close";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
 import ProfileCard from "./ProfileCard";
-import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import * as yup from "yup";
 import { Formik } from "formik";
 import PersonalDetailsForm from "./PersonalDetailsForm";
 import ChangePasswordForm from "./ChangePasswordForm";
-import {
-  decreaseCount,
-  setCount,
-  increaseCount,
-  removeFromCart,
-} from "../../redux/services/cartReducer";
+
 import Service from "../../components/Service";
 
 const Wishlist = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const cart = useSelector((state) => state.cart.cart);
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const totalPrice = cart.reduce((total, item) => {
-    return total + item.count * item.price;
-  }, 0);
+
   const handleFormSubmit = async (values, actions) => {
     actions.setTouched({});
   };
@@ -114,7 +92,7 @@ const Wishlist = () => {
           </Button>
           <Typography color="text.primary">Profile</Typography>
         </Breadcrumbs>
-       <Box className={`container mx-auto py-[20px] rounded-lg my-4`}>
+        <Box className={`container mx-auto py-[20px] rounded-lg my-4`}>
           <Header3
             title="Your Profile"
             subtitle="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt."

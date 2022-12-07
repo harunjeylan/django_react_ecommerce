@@ -17,11 +17,16 @@ export const productApi = createApi({
     getProductsByCategory: builder.query({
       query: ({ category }) => `products/category/${category}`,
     }),
-    getProductsByCategory: builder.query({
-      query: ({ category }) => `products/category/${category}`,
-    }),
     getLimitAndSkipProducts: builder.query({
       query: ({ limit, skip }) => `products?limit=${limit}&skip=${skip}`,
+    }),
+
+    addProduct: builder.mutation({
+      query: ({ post }) => ({
+        url: `products/add`,
+        method: "POST",
+        body: post,
+      }),
     }),
   }),
 });
@@ -32,4 +37,6 @@ export const {
   useGetProductsByCategoryQuery,
   useGetAllCategoryQuery,
   useGetLimitAndSkipProductsQuery,
+
+  useAddProductMutation,
 } = productApi;
