@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route,  } from "react-router-dom";
 
 import { ColorModeContext, useMode } from "./theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
@@ -28,7 +27,9 @@ import Line from "./pages/line";
 import Pie from "./pages/pie";
 import FAQ from "./pages/faq";
 import Form from "./pages/form";
-import { ShoppingBag } from "@mui/icons-material";
+
+import NewProduct from "./pages/products/NewProduct";
+
 function App() {
   const [theme, colorMode] = useMode();
 
@@ -139,6 +140,24 @@ function App() {
             />
           </Route>
           <Route path="admin">
+            <Route path="products">
+              <Route
+                index
+                element={
+                  <Admin>
+                    <Dashboard />
+                  </Admin>
+                }
+              />
+              <Route
+                path="new"
+                element={
+                  <Admin>
+                    <NewProduct />
+                  </Admin>
+                }
+              />
+            </Route>
             <Route
               index
               element={

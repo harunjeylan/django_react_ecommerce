@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 //https://varkala-react-2.vercel.app/
+//https://prium.github.io/phoenix/v1.6.0/
 export const productApi = createApi({
   reducerPath: "productApi",
   baseQuery: fetchBaseQuery({
