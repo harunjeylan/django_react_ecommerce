@@ -33,10 +33,10 @@ const AddressForm = ({
       sx={{
         "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
       }}
-      
     >
       <TextField
         fullWidth
+        color="secondary"
         variant="filled"
         type="text"
         label="First Name"
@@ -50,6 +50,7 @@ const AddressForm = ({
       />
       <TextField
         fullWidth
+        color="secondary"
         variant="filled"
         type="text"
         label="Last Name"
@@ -63,6 +64,7 @@ const AddressForm = ({
       />
       <TextField
         fullWidth
+        color="secondary"
         variant="filled"
         type="text"
         label="Country"
@@ -76,6 +78,7 @@ const AddressForm = ({
       />
       <TextField
         fullWidth
+        color="secondary"
         variant="filled"
         type="text"
         label="Street Address"
@@ -89,6 +92,7 @@ const AddressForm = ({
       />
       <TextField
         fullWidth
+        color="secondary"
         variant="filled"
         type="text"
         label="Street Address 2 (optional)"
@@ -102,6 +106,7 @@ const AddressForm = ({
       />
       <TextField
         fullWidth
+        color="secondary"
         variant="filled"
         type="text"
         label="City"
@@ -115,6 +120,7 @@ const AddressForm = ({
       />
       <TextField
         fullWidth
+        color="secondary"
         variant="filled"
         type="text"
         label="State"
@@ -128,6 +134,7 @@ const AddressForm = ({
       />
       <TextField
         fullWidth
+        color="secondary"
         variant="filled"
         type="text"
         label="Zip Code"
