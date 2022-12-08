@@ -37,7 +37,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
-
+import { constants } from "./constants";
 const InventoryForm = ({
   values,
   errors,
@@ -168,17 +168,17 @@ const InventoryForm = ({
                     label="Regular price"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.price}
-                    name="price"
-                    error={!!touched.price && !!errors.price}
-                    helperText={touched.price && errors.price}
-                    sx={{ gridColumn: "span 2" }}
+                    value={values.regularPrice}
+                    name="regularPrice"
+                    error={!!touched.regularPrice && !!errors.regularPrice}
+                    helperText={touched.regularPrice && errors.regularPrice}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">$</InputAdornment>
                       ),
                     }}
                   />
+
                   <TextField
                     color="secondary"
                     fullWidth
@@ -187,11 +187,10 @@ const InventoryForm = ({
                     label="Sale price"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.price}
-                    name="price"
-                    error={!!touched.price && !!errors.price}
-                    helperText={touched.price && errors.price}
-                    sx={{ gridColumn: "span 2" }}
+                    value={values.salePrice}
+                    name="salePrice"
+                    error={!!touched.salePrice && !!errors.salePrice}
+                    helperText={touched.salePrice && errors.salePrice}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">$</InputAdornment>
@@ -404,16 +403,27 @@ const InventoryForm = ({
                             "globalDelivery",
                             "selectedCountries"
                           )}
+                          error={formattedError(
+                            "globalDelivery",
+                            "selectedCountries",
+                            touched,
+                            errors
+                          )}
+                          helperText={formattedHelper(
+                            "globalDelivery",
+                            "selectedCountries",
+                            touched,
+                            errors
+                          )}
                         >
-                          <MenuItem value="">
-                            <em>None</em>
-                          </MenuItem>
-                          <MenuItem value={10}>Ehiopia</MenuItem>
-                          <MenuItem value="Kenya">Kenya</MenuItem>
-                          <MenuItem value="Sudan">Sudan</MenuItem>
-                          <MenuItem value="Nigaria">Nigaria</MenuItem>
-                          <MenuItem value="Uganda">Uganda</MenuItem>
-                          <MenuItem value="Egipt">Egipt</MenuItem>
+                          {constants.countries.map((country, index) => (
+                            <MenuItem
+                              key={`country-${country.code}-${index}`}
+                              value={country.code}
+                            >
+                              {country.name}
+                            </MenuItem>
+                          ))}
                         </Select>
                       </FormControl>
                     </Box>
