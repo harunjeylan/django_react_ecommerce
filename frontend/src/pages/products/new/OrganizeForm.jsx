@@ -28,7 +28,10 @@ const OrganizeForm = ({
   const colors = tokens(theme.palette.mode);
 
   return (
-    <Box className="drop-shadow-lg bg-slate-400/10 rounded-lg p-4">
+    <Box
+      backgroundColor={colors.primary[400]}
+      className="drop-shadow-lg  rounded-lg p-4"
+    >
       <FormControl
         className="h-full w-full"
         component="fieldset"
