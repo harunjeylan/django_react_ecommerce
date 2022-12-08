@@ -1,10 +1,11 @@
-import { Routes, Route,  } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import { ColorModeContext, useMode } from "./theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import Home from "./pages/home/Home";
 
-import ProductDetails from "./pages/productDetails/ProductDetails";
+import NewProduct from "./pages/products/new/NewProduct";
+import ProductDetails from "./pages/products/details/ProductDetails";
 import Checkout from "./pages/checkout/Checkout";
 import ViewCart from "./pages/viewcart/ViewCart";
 import Confirmation from "./pages/checkout/Confirmation";
@@ -27,8 +28,6 @@ import Line from "./pages/line";
 import Pie from "./pages/pie";
 import FAQ from "./pages/faq";
 import Form from "./pages/form";
-
-import NewProduct from "./pages/products/NewProduct";
 
 function App() {
   const [theme, colorMode] = useMode();

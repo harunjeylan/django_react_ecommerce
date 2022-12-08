@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import Service from "../../components/Service";
-import Subscribe from "../../components/Subscribe";
+import Service from "../../../components/Service";
+import Subscribe from "../../../components/Subscribe";
 import PaletteIcon from "@mui/icons-material/Palette";
 import PaletteOutlinedIcon from "@mui/icons-material/PaletteOutlined";
-import ProductCarouse1 from "../../components/ProductCarouse1";
-import Header from "../../components/Header";
+import ProductCarouse1 from "../../../components/ProductCarouse1";
+import Header from "../../../components/Header";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {
@@ -29,15 +29,15 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import { tokens } from "../../theme";
+import { tokens } from "../../../theme";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
-import Reviews from "../../components/Reviews";
-import ReviewForm from "../../components/ReviewForm";
-import { reviews } from "../../data/reviews";
-import { addToCart } from "../../redux/services/cartReducer";
+import Reviews from "../../../components/Reviews";
+import ReviewForm from "../../../components/ReviewForm";
+import { reviews } from "../../../data/reviews";
+import { addToCart } from "../../../redux/services/cartReducer";
 
-import { useGetProductsDetailesQuery } from "../../redux/services/products";
+import { useGetProductsDetailesQuery } from "../../../redux/services/products";
 
 const ProductDetails = () => {
   const theme = useTheme();
