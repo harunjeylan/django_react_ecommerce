@@ -1,51 +1,17 @@
 import React from "react";
 import {
   Box,
-  Button,
   TextField,
-  MenuItem,
-  InputLabel,
   Typography,
-  Breadcrumbs,
-  Tab,
-  Tabs,
-  Divider,
-  FormControlLabel,
-  Radio,
   FormControl,
   FormLabel,
-  RadioGroup,
   FormGroup,
-  Chip,
-  Checkbox,
-  OutlinedInput,
 } from "@mui/material";
-import InputAdornment from "@mui/material/InputAdornment";
-import Select from "@mui/material/Select";
-import Header from "../../../components/Header";
-import { useMediaQuery } from "@mui/material";
-import { useAddProductMutation } from "../../../redux/services/products";
-import { Formik } from "formik";
-import { getIn } from "formik";
 
 import { Dropzone, FileItem, FullScreenPreview } from "@dropzone-ui/react";
 import { useState } from "react";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../../../theme";
-import { useNavigate } from "react-router-dom";
-import PhoneMissedIcon from "@mui/icons-material/PhoneMissed";
-
-import Stack from "@mui/material/Stack";
-
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
-
-import { newProductSchema } from "./newProductSchema";
-import { initialValues } from "./initialValues";
-import { constants } from "./constants";
 
 const ProductInformationForm = ({
   values,
@@ -53,7 +19,6 @@ const ProductInformationForm = ({
   touched,
   handleBlur,
   handleChange,
-  handleSubmit,
   setFieldValue,
 }) => {
   const theme = useTheme();
@@ -63,17 +28,7 @@ const ProductInformationForm = ({
   const handleClean = (image) => {
     console.log("list cleaned", image);
   };
-  const formattedName = (type, field) => `${type}.${field}`;
 
-  const formattedError = (type, field, touched, errors) =>
-    Boolean(
-      getIn(touched, formattedName(type, field)) &&
-        getIn(errors, formattedName(type, field))
-    );
-
-  const formattedHelper = (type, field, touched, errors) =>
-    getIn(touched, formattedName(type, field)) &&
-    getIn(errors, formattedName(type, field));
   return (
     <Box className="w-full">
       <FullScreenPreview
@@ -125,9 +80,7 @@ const ProductInformationForm = ({
               multiline
               rows={4}
               onBlur={handleBlur}
-              onChange={(incommingImages) =>
-                setFieldValue("images", incommingImages)
-              }
+              onChange={handleChange}
               value={values.description}
               name="description"
               error={!!touched.description && !!errors.description}
