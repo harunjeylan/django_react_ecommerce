@@ -41,9 +41,9 @@ const NewProduct = () => {
               "hover:bg-" + colors.greenAccent[400]
             }`}
           >
-            Home
+            Admin Dashboadrd
           </Button>
-          <Typography color="text.primary">Shoping</Typography>
+          <Typography color="text.primary">New Product</Typography>
         </Breadcrumbs>
       </Box>
       <Box className={`container mx-auto py-[20px] rounded-lg my-4`}>

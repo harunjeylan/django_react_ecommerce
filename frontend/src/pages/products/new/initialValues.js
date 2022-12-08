@@ -6,7 +6,8 @@ import { constants } from "./constants";
 export const initialValues = {
   title: "",
   description: "",
-  price: 0,
+  regularPrice: 0,
+  salePrice: 0,
   brand: "",
   thumbnail: [],
   images: [],

@@ -5,6 +5,9 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import Home from "./pages/home/Home";
 
 import NewProduct from "./pages/products/new/NewProduct";
+import OrdersForAdmin from "./pages/orders/OrdersForAdmin";
+import ProductsForAdmin from "./pages/products";
+import Customers from "./pages/customers";
 import ProductDetails from "./pages/products/details/ProductDetails";
 import Checkout from "./pages/checkout/Checkout";
 import ViewCart from "./pages/viewcart/ViewCart";
@@ -144,7 +147,7 @@ function App() {
                 index
                 element={
                   <Admin>
-                    <Dashboard />
+                    <ProductsForAdmin />
                   </Admin>
                 }
               />
@@ -162,6 +165,22 @@ function App() {
               element={
                 <Admin>
                   <Dashboard />
+                </Admin>
+              }
+            />
+            <Route
+              path="orders"
+              element={
+                <Admin>
+                  <OrdersForAdmin />
+                </Admin>
+              }
+            />
+            <Route
+              path="customers"
+              element={
+                <Admin>
+                  <Customers />
                 </Admin>
               }
             />

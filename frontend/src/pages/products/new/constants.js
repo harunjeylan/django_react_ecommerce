@@ -1,3 +1,5 @@
+import countries from "./countries";
+
 export const constants = {
   categories: [
     { name: "Men's Clothing", value: "Men" },
@@ -28,4 +30,5 @@ export const constants = {
       options: ["large", "medium", "small", "xsmall"],
     },
   ],
+  countries: countries,
 };

@@ -8,6 +8,7 @@ import { useSidebarContext } from "./SidebarContext";
 import { Link } from "react-router-dom";
 import { tokens } from "../../../theme";
 import { useTheme, Box, Typography, IconButton } from "@mui/material";
+import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
@@ -23,6 +24,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import SwitchRightOutlinedIcon from "@mui/icons-material/SwitchRightOutlined";
 import SwitchLeftOutlinedIcon from "@mui/icons-material/SwitchLeftOutlined";
 import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -128,7 +130,7 @@ const MyProSidebar = () => {
                   variant="h3"
                   color={colors.grey[100]}
                 >
-                  <Link to="/">ADMINIS</Link>
+                  ADMINIS
                 </Typography>
                 <IconButton
                   onClick={
@@ -153,7 +155,7 @@ const MyProSidebar = () => {
                 }}
               >
                 <img
-                  className="avater-image w-[100px] h-[100px] pointer rounded-[50%]"
+                  className="avater-image w-[100px] h-[100px]  rounded-[50%]"
                   alt="profile user"
                   src={adminImage}
                 />
@@ -174,11 +176,17 @@ const MyProSidebar = () => {
             <Item
               title="Dashboard"
               to="/admin/"
+              icon={<DashboardOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Landing"
+              to="/"
               icon={<HomeOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -212,15 +220,34 @@ const MyProSidebar = () => {
               color={colors.grey[300]}
               sx={{ m: "15px 20px 5px 20px" }}
             >
-              Products
+              E commerce
             </Typography>
-            <Item
-              title="Add New Products"
-              to="/admin/products/new"
-              icon={<CategoryOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            <SubMenu label="Ecommerce" icon={<ShoppingCartOutlinedIcon />}>
+              <Item
+                title="Add New Products"
+                to="/admin/products/new"
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Products"
+                to="/admin/products"
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Customers"
+                to="/admin/customers"
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Orders"
+                to="/admin/orders"
+                selected={selected}
+                setSelected={setSelected}
+              />
+            </SubMenu>
 
             <Typography
               variant="h6"

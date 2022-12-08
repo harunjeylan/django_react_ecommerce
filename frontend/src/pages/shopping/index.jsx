@@ -243,7 +243,6 @@ const Shopping = () => {
                         getAriaLabel={() => "Temperature range"}
                         value={priceValue}
                         onChange={(event, newValue) => setPriceValue(newValue)}
-                        valueLabelDisplay={true}
                         getAriaValueText={(value) => `$${value}`}
                       />
                     </Box>
