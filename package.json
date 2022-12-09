@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@nivo/radial-bar": "^0.80.0",
     "react-countdown": "^2.3.5",
     "swiper": "^8.4.4"
   }
