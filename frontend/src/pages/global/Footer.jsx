@@ -8,20 +8,11 @@ function Footer() {
 
   return (
     <Box
-      marginTop="70px"
-      padding="40px 0"
+      className="py-8 pt-[70px] mt-[70px]"
       backgroundColor={colors.primary[400]}
     >
-      <Box
-        width="80%"
-        margin="auto"
-        display="flex"
-        justifyContent="space-between"
-        flexWrap="wrap"
-        rowGap="30px"
-        columnGap="clamp(20px, 30px, 40px)"
-      >
-        <Box width="clamp(20%, 30%, 40%)">
+      <Box className="w-[80%] mx-auto grid grid-cols-12 gap-8">
+        <Box className="col-span-12 lg:col-span-6">
           <Typography
             variant="h4"
             fontWeight="bold"
@@ -38,7 +29,7 @@ function Footer() {
           </div>
         </Box>
 
-        <Box>
+        <Box className="col-span-4 lg:col-span-2">
           <Typography variant="h4" fontWeight="bold" mb="30px">
             About Us
           </Typography>
@@ -48,7 +39,7 @@ function Footer() {
           <Typography mb="30px">Privacy Policy</Typography>
         </Box>
 
-        <Box>
+        <Box className="col-span-4 lg:col-span-2">
           <Typography variant="h4" fontWeight="bold" mb="30px">
             Customer Care
           </Typography>
@@ -58,7 +49,7 @@ function Footer() {
           <Typography mb="30px">Returns & Refunds</Typography>
         </Box>
 
-        <Box width="clamp(20%, 25%, 30%)">
+        <Box className="col-span-4 lg:col-span-2">
           <Typography variant="h4" fontWeight="bold" mb="30px">
             Contact Us
           </Typography>
