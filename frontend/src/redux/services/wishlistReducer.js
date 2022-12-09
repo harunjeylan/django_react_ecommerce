@@ -19,7 +19,6 @@ export const wishlistSlice = createSlice({
     },
     toggleWishlist: (state, action) => {
       const item = state.wishlist.find((product) => {
-        console.log(product.id);
         return product.id === action.payload.product.id;
       });
 
@@ -31,7 +30,6 @@ export const wishlistSlice = createSlice({
         state.wishlist = [...state.wishlist, action.payload.product];
       }
     },
-
   },
 });
 
