@@ -6,9 +6,13 @@ import Home from "./pages/home/Home";
 
 import NewProduct from "./pages/products/new/NewProduct";
 import OrdersForAdmin from "./pages/orders/OrdersForAdmin";
+import OrderDetailsForAdmin from "./pages/orders/OrderDetailsForAdmin";
 import ProductsForAdmin from "./pages/products";
 import Customers from "./pages/customers";
+import CustomerDetails from "./pages/customers/customerDetails";
+
 import ProductDetails from "./pages/products/details/ProductDetails";
+
 import Checkout from "./pages/checkout/Checkout";
 import ViewCart from "./pages/viewcart/ViewCart";
 import Confirmation from "./pages/checkout/Confirmation";
@@ -40,6 +44,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Routes>
+          {/* CUSTOMER SAITE SAITE */}
           <Route path="/">
             <Route
               index
@@ -58,23 +63,25 @@ function App() {
                   </Customer>
                 }
               />
-              <Route
-                path="orders"
-                element={
-                  <Customer>
-                    <Orders />
-                  </Customer>
-                }
-              />
+              <Route path="orders">
+                <Route
+                  index
+                  element={
+                    <Customer>
+                      <Orders />
+                    </Customer>
+                  }
+                />
+                <Route
+                  path="orders/:orderId"
+                  element={
+                    <Customer>
+                      <OderDetails />
+                    </Customer>
+                  }
+                />
+              </Route>
 
-              <Route
-                path="orders/:orderId"
-                element={
-                  <Customer>
-                    <OderDetails />
-                  </Customer>
-                }
-              />
               <Route
                 path="address"
                 element={
@@ -92,14 +99,7 @@ function App() {
                 }
               />
             </Route>
-            <Route
-              index
-              element={
-                <Customer>
-                  <Home />
-                </Customer>
-              }
-            />
+
             <Route
               path="product/:productId"
               element={
@@ -141,7 +141,27 @@ function App() {
               }
             />
           </Route>
+
+          {/* ADMINIS SAITE */}
           <Route path="admin">
+            <Route path="orders/">
+              <Route
+                index
+                element={
+                  <Admin>
+                    <OrdersForAdmin />
+                  </Admin>
+                }
+              />
+              <Route
+                path=":orderId"
+                element={
+                  <Admin>
+                    <OrderDetailsForAdmin />
+                  </Admin>
+                }
+              />
+            </Route>
             <Route path="products">
               <Route
                 index
@@ -159,6 +179,14 @@ function App() {
                   </Admin>
                 }
               />
+              <Route
+                path=":productId"
+                element={
+                  <Admin>
+                    <ProductDetails />
+                  </Admin>
+                }
+              />
             </Route>
             <Route
               index
@@ -168,22 +196,25 @@ function App() {
                 </Admin>
               }
             />
-            <Route
-              path="orders"
-              element={
-                <Admin>
-                  <OrdersForAdmin />
-                </Admin>
-              }
-            />
-            <Route
-              path="customers"
-              element={
-                <Admin>
-                  <Customers />
-                </Admin>
-              }
-            />
+            <Route path="customers">
+              <Route
+                index
+                element={
+                  <Admin>
+                    <Customers />
+                  </Admin>
+                }
+              />
+              <Route
+                path=":customerId"
+                element={
+                  <Admin>
+                    <CustomerDetails />
+                  </Admin>
+                }
+              />
+            </Route>
+
             <Route
               path="bar"
               element={

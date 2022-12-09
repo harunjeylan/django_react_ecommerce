@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography, Box, useTheme,  Divider, } from "@mui/material";
+import { Typography, Box, useTheme, Divider } from "@mui/material";
 import { tokens } from "../theme";
 
 const OrderSummery = ({ totalPrice }) => {
@@ -7,9 +7,17 @@ const OrderSummery = ({ totalPrice }) => {
   const colors = tokens(theme.palette.mode);
 
   return (
-    <Box className="flex flex-col gap-4 drop-shadow-lg bg-slate-400/10 rounded-lg">
-      <Box className="px-4 py-4 " backgroundColor={colors.primary[400]}>
-        <Typography variant="h5" fontWeight="bold">
+    <Box
+      backgroundColor={colors.primary[400]}
+      className="flex flex-col gap-4 drop-shadow-lg  rounded-lg"
+    >
+      <Box className="px-4 py-4 ">
+        <Typography
+          variant="h1"
+          color={colors.grey[100]}
+          fontWeight="bold"
+          className={`text-xl md:text-2xl  text-left my-4`}
+        >
           Order Summary
         </Typography>
       </Box>

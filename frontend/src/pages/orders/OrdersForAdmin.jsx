@@ -5,11 +5,13 @@ import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import { mockDataOrders } from "../../data/mockData";
-
-const Customers = () => {
+import { Link } from "react-router-dom";
+import { applyInitialState } from "@mui/x-data-grid/hooks/features/columns/gridColumnsUtils";
+const OrdersForAdmin = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
+
   const columns = [
     {
       field: "id",
@@ -17,12 +19,14 @@ const Customers = () => {
       width: 100,
       renderCell: ({ row: { id } }) => {
         return (
-          <Typography
-            className="cursor-pointer"
-            color={colors.greenAccent[500]}
-          >
-            # {id}
-          </Typography>
+          <Link to={`/admin/orders/${id}`}>
+            <Typography
+              className="cursor-pointer"
+              color={colors.greenAccent[500]}
+            >
+              # {id}
+            </Typography>
+          </Link>
         );
       },
     },
@@ -41,18 +45,22 @@ const Customers = () => {
       hieght: 200,
       renderCell: ({ row: { first_name, last_name, avator } }) => {
         return (
-          <Box className="flex gap-4 items-center py-2 w-full h-full">
-            <img
-              className="h-[60px] w-[60px] cursor-pointer rounded-[50%]"
-              src={avator}
-              alt={`${first_name}-${last_name}`}
-            />
-            <Typography
-              className="cursor-pointer"
-              color={colors.greenAccent[500]}
-            >
-              {first_name} {last_name}
-            </Typography>
+          <Box className="flex justify-start gap-4 items-center py-2 w-full h-full">
+            <Link to={`/admin/customers/${1}`}>
+              <img
+                className="h-[60px] w-[60px] cursor-pointer rounded-[50%]"
+                src={avator}
+                alt={`${first_name}-${last_name}`}
+              />{" "}
+            </Link>
+            <Link to={`/admin/customers/${1}`}>
+              <Typography
+                className="cursor-pointer"
+                color={colors.greenAccent[500]}
+              >
+                {first_name} {last_name}
+              </Typography>
+            </Link>
           </Box>
         );
       },
@@ -148,4 +156,4 @@ const Customers = () => {
   );
 };
 
-export default Customers;
+export default OrdersForAdmin;
