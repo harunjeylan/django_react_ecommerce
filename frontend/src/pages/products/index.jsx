@@ -5,7 +5,7 @@ import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import { mockDataProducts } from "../../data/mockData";
-
+import { Link } from "react-router-dom";
 const ProductsForAdmin = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -18,13 +18,30 @@ const ProductsForAdmin = () => {
     {
       field: "title",
       headerName: "Product Name",
-      width: 200,
+      width: 360,
+      renderCell: ({ row: { id, title, thumbnail } }) => {
+        return (
+          <Box className="flex gap-4 items-center py-2 w-full h-full">
+            <Link to={`/admin/products/${id}`}>
+              <img
+                style={{ backgroundColor: colors.primary[400] }}
+                className="h-[60px] w-[60px] pointer rounded-md border-[1px]"
+                src={thumbnail}
+                alt={`${title}`}
+              />
+            </Link>
+            <Link to={`/admin/products/${id}`}>
+              <Typography color={colors.greenAccent[500]}>{title}</Typography>
+            </Link>
+          </Box>
+        );
+      },
     },
     {
       field: "price",
       headerName: "price",
       renderCell: ({ row: { price } }) => {
-        return <Typography color={colors.greenAccent[500]}>{price}</Typography>;
+        return <Typography>{price}</Typography>;
       },
     },
     { field: "category", headerName: "Category", width: 150 },
@@ -33,7 +50,7 @@ const ProductsForAdmin = () => {
       field: "tags",
       headerName: "Tags",
       renderCell: ({ row: { tags } }) => {
-        return <Typography color={colors.greenAccent[500]}>{tags}</Typography>;
+        return <Typography>{tags}</Typography>;
       },
     },
     { field: "publishd_on", headerName: "Publishd on" },
@@ -112,11 +129,11 @@ const ProductsForAdmin = () => {
           }}
         >
           <DataGrid
-            //   autoHeight
-            rows={mockDataProducts}
+            density="comfortable"
+            rows={mockDataProducts.slice(0, 10)}
+            columns={columns}
             autoPageSize
             checkboxSelection
-            columns={columns}
             components={{ Toolbar: GridToolbar }}
           />
         </Box>
