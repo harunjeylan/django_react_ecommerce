@@ -73,7 +73,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="orders/:orderId"
+                  path=":orderId"
                   element={
                     <Customer>
                       <OderDetails />

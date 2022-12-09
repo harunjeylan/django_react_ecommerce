@@ -114,7 +114,8 @@ const ProductDetails = () => {
                 <span>${product?.price}</span>
               </Typography>
               <Box className="flex gap-4 items-center text-sm">
-                <Rating name="read-only" value={product?.rating} readOnly />
+                <Rating name="read-only" defaultValue={4} readOnly />
+
                 <Typography variant="h5" color={colors.greenAccent[400]}>
                   25 reviews
                 </Typography>
@@ -327,6 +328,7 @@ const ProductDetails = () => {
             >
               {product?.images?.map((image, index) => (
                 <CardActionArea
+                  key={index}
                   onClick={() => setActiveImage(image)}
                   className={`${
                     theme.palette.mode === "dark" ? "bg-white/5" : "bg-black/5"
@@ -338,7 +340,6 @@ const ProductDetails = () => {
                 >
                   <img
                     alt="product"
-                    key={index}
                     src={image}
                     className={` rounded-md h-[100%] w-[100%]`}
                   />
@@ -374,8 +375,8 @@ const ProductDetails = () => {
             {value === "description" && <Box>{product?.description}</Box>}
             {value === "reviews" && (
               <Box className={`flex flex-col gap-4 w-full`}>
-                {reviews.map((review) => (
-                  <Reviews review={review} />
+                {reviews.map((review, index) => (
+                  <Reviews key={`reviews-${index}`} review={review} />
                 ))}
                 <ReviewForm />
               </Box>

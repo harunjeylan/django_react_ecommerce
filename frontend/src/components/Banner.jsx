@@ -111,9 +111,7 @@ const Banner = ({ title, subtitle }) => {
             onClick={() => navigate(`/shopping`)}
             variant="outlined"
             color="secondary"
-            className={`bg-opacity-0 hover:bg-opacity-100 px-[40px] py-4 ${
-              "hover:bg-" + colors.greenAccent[400]
-            }`}
+            className={`bg-opacity-0 hover:bg-opacity-100 px-[40px] py-4`}
           >
             Shop now
           </Button>

@@ -75,9 +75,7 @@ const Customers = () => {
             onClick={() => navigate(`/`)}
             variant="text"
             color="secondary"
-            className={`bg-opacity-0 hover:bg-opacity-100 px-4 py-2 ${
-              "hover:bg-" + colors.greenAccent[400]
-            }`}
+            className={`bg-opacity-0 hover:bg-opacity-100 px-4 py-2`}
           >
             Admin Dashboadrd
           </Button>
@@ -107,8 +105,9 @@ const Customers = () => {
           </Box>
         </Box>
         <Box
-          className="h-[80vh]"
           height="80vh"
+          backgroundColor={colors.primary[400]}
+          className="h-[80vh] rounded-lg p-4"
           sx={{
             "& .MuiDataGrid-root": {
               border: "none",
@@ -116,25 +115,20 @@ const Customers = () => {
             "& .MuiDataGrid-cell": {
               borderBottom: "none",
             },
-            "& .name-column--cell": {
-              color: colors.greenAccent[300],
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: colors.blueAccent[700],
-              borderBottom: "none",
-            },
-            "& .MuiDataGrid-virtualScroller": {
-              backgroundColor: colors.primary[400],
-            },
-            "& .MuiDataGrid-footerContainer": {
-              borderTop: "none",
-              backgroundColor: colors.blueAccent[700],
-            },
             "& .MuiCheckbox-root": {
               color: `${colors.greenAccent[200]} !important`,
             },
             "& .MuiChackbox-root": {
               color: `${colors.greenAccent[200]} !important`,
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              borderBottom: "none",
+            },
+            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+              color: `${colors.grey[100]} !important`,
+            },
+            "& .MuiDataGrid-cell": {
+              width: "100%",
             },
           }}
         >

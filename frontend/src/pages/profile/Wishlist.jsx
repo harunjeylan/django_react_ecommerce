@@ -72,7 +72,7 @@ const Wishlist = () => {
 
                 <Box className="flex flex-col justfiy-between">
                   {wishlist.map((item, ind) => (
-                    <Box className="hover:bg-white/10  ease-in-out duration-300 px-2">
+                    <Box className="hover:bg-white/10  ease-in-out px-2">
                       <Box
                         key={`${item.title}-${item.id}-${ind}`}
                         className="flex justfiy-between items-center gap-2 w-full py-4 h-full"

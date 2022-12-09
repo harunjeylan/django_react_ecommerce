@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Checkbox,
@@ -31,14 +31,16 @@ const ProductCard = ({ product }) => {
     const itemsFoundedIndex = wishlist.find(
       (wishlistProduct) => wishlistProduct.id === product.id
     );
-    return itemsFoundedIndex !== undefined;
+    return !(itemsFoundedIndex === undefined);
   };
-  const [isInWishlist, setIsInWishlist] = useState(findInWishlist(product));
+  const [isInWishlist, setIsInWishlist] = useState(false);
   const changeWishlist = () => {
     dispatch(toggleWishlist({ product }));
     setIsInWishlist(findInWishlist(product));
   };
-
+  useEffect(() => {
+    setIsInWishlist(findInWishlist(product));
+  }, [wishlist]);
   return (
     <Box
       onMouseOver={() => setIsHovered(true)}
@@ -124,7 +126,7 @@ const ProductCard = ({ product }) => {
             <s className="me-2 text-gray-500 mr-1">$40.00</s>
             <span>${product?.price}</span>
           </Typography>
-          <Rating name="read-only" value={product?.rating} readOnly />
+          <Rating name="read-only" defaultValue={product?.rating} readOnly />
         </Box>
       </Box>
     </Box>
