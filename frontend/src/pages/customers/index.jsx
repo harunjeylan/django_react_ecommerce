@@ -5,7 +5,7 @@ import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import { mockDataCustomers } from "../../data/mockData";
-
+import { Link } from "react-router-dom";
 const Customers = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -19,19 +19,34 @@ const Customers = () => {
       renderCell: ({ row: { first_name, last_name, avator } }) => {
         return (
           <Box className="flex gap-4 items-center py-2 w-full h-full">
-            <img
-              className="h-[60px] w-[60px] pointer rounded-[50%]"
-              src={avator}
-              alt={`${first_name}-${last_name}`}
-            />
-            <Typography color={colors.grey[100]}>
-              {first_name} {last_name}
-            </Typography>
+            <Link to={`/admin/customers/${1}`}>
+              <img
+                className="h-[60px] w-[60px] pointer rounded-[50%]"
+                src={avator}
+                alt={`${first_name}-${last_name}`}
+              />
+            </Link>
+            <Link to={`/admin/customers/${1}`}>
+              <Typography color={colors.greenAccent[500]}>
+                {first_name} {last_name}
+              </Typography>
+            </Link>
           </Box>
         );
       },
     },
-    { field: "email", headerName: "Email", width: 200 },
+    {
+      field: "email",
+      headerName: "Email",
+      width: 200,
+      renderCell: ({ row: { email } }) => {
+        return (
+          <Link to={`/admin/customers/${1}`}>
+            <Typography color={colors.greenAccent[500]}>{email}</Typography>
+          </Link>
+        );
+      },
+    },
     { field: "orders", headerName: "Orders", width: 100 },
 
     {
@@ -39,11 +54,15 @@ const Customers = () => {
       headerName: "Total spent",
       width: 100,
       renderCell: ({ row: { total_spent } }) => {
-        return <Typography color={colors.greenAccent[500]}>${total_spent}</Typography>;
+        return (
+          <Typography color={colors.greenAccent[500]}>
+            ${total_spent}
+          </Typography>
+        );
       },
     },
     { field: "city", headerName: "City", width: 200 },
-    
+
     { field: "last_seen", headerName: "Last seen", width: 100 },
     { field: "last_order", headerName: "Last order", width: 100 },
   ];
