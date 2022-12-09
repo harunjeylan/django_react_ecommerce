@@ -77,7 +77,7 @@ const OderDetails = () => {
 
                 <Box className="flex flex-col justfiy-between">
                   {cart.map((item, ind) => (
-                    <Box className="hover:bg-white/10  ease-in-out duration-300">
+                    <Box className="hover:bg-white/10  ease-in-out">
                       <Box
                         key={`${item.title}-${item.id}-${ind}`}
                         className="flex justfiy-between items-center gap-2 w-full h-full py-4"
