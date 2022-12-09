@@ -52,7 +52,6 @@ const ProductDetails = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  console.log(productId);
 
   const { data: product } = useGetProductsDetailesQuery({ productId });
 
@@ -62,7 +61,7 @@ const ProductDetails = () => {
   }, [product?.thumbnail]);
   return (
     <Box className={`flex flex-col gap-8 mt-[100px] `}>
-      <Box className={`container mx-auto my-[80px] px-8`}>
+      <Box className={`container mx-auto px-8`}>
         <Breadcrumbs aria-label="breadcrumb">
           <Button
             onClick={() => navigate(`/`)}
@@ -86,6 +85,12 @@ const ProductDetails = () => {
           </Button>
           <Typography color="text.primary">{product?.title}</Typography>
         </Breadcrumbs>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Header
+            title={`Product details`}
+            subtitle={`Product ID : ${productId}`}
+          />
+        </Box>
       </Box>
 
       <Box className="container mx-auto px-8">
@@ -316,21 +321,9 @@ const ProductDetails = () => {
               </Box>
             </Box>
           </Box>
-          <Box className={` flex flex-col gap-4 w-full lg:max-w-[50%]`}>
-            <Box className={`my-4 max-h-[600px] overflow-hidden`}>
-              <img
-                alt="product thamnail"
-                style={{
-                  objectFit: "cover",
-                  backgroundAttachment: "fixed",
-                }}
-                src={activeImage}
-                className={` max-w-[600px] max-h-[600px] rounded-md mx-auto`}
-              />
-            </Box>
-
+          <Box className={` flex  gap-4 w-full lg:max-w-[50%]`}>
             <Box
-              className={`flex flex-wrap gap-4 my-4 justify-center items-center w-full px-auto`}
+              className={`flex flex-col gap-4 my-4 justify-center items-center w-[120px] px-auto`}
             >
               {product?.images?.map((image, index) => (
                 <CardActionArea
@@ -351,6 +344,17 @@ const ProductDetails = () => {
                   />
                 </CardActionArea>
               ))}
+            </Box>
+            <Box className={`my-4 w-full overflow-hidden`}>
+              <img
+                alt="product thamnail"
+                style={{
+                  objectFit: "cover",
+                  backgroundAttachment: "fixed",
+                }}
+                src={activeImage}
+                className={` max-w-[600px] max-h-[600px] rounded-md mx-auto`}
+              />
             </Box>
           </Box>
         </Box>
