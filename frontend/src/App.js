@@ -1,40 +1,48 @@
+//IMORTING LIBRARYS
 import { Routes, Route } from "react-router-dom";
-
-import { ColorModeContext, useMode } from "./theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import Home from "./pages/home/Home";
 
-import NewProduct from "./pages/products/new/NewProduct";
-import OrdersForAdmin from "./pages/orders/OrdersForAdmin";
-import OrderDetailsForAdmin from "./pages/orders/OrderDetailsForAdmin";
-import ProductsForAdmin from "./pages/products";
-import Customers from "./pages/customers";
-import CustomerDetails from "./pages/customers/customerDetails";
+//IMORTING APP SETUP
+import { ColorModeContext, useMode } from "./theme";
+import AdminLayout from "./site/admin/layout";
+import CustomerLayout from "./site/customers/layout";
 
-import ProductDetails from "./pages/products/details/ProductDetails";
+//IMORTING ADMIN PAGE COMPONENTS
 
-import Checkout from "./pages/checkout/Checkout";
-import ViewCart from "./pages/viewcart/ViewCart";
-import Confirmation from "./pages/checkout/Confirmation";
-import Shopping from "./pages/shopping";
+import Dashboard from "./site/admin/pages/dashboard";
+import Team from "./site/admin/pages/team";
+import Invoices from "./site/admin/pages/invoices";
+import Contacts from "./site/admin/pages/contacts";
+import FAQ from "./site/admin/pages/faq";
+import { BarChart, LineChart, PieChart } from "./site/admin/pages/charts";
+import { OrdersListAdmin, OrderDetailsAdmin } from "./site/admin/pages/orders";
+import {
+  ProductsListAdmin,
+  NewProduct,
+  ProductDetailsAdmin,
+} from "./site/admin/pages/products";
+import {
+  CustomersList,
+  CustomerDetails,
+  NewCustomer,
+} from "./site/admin/pages/customers";
 
-import Profile from "./pages/profile/Profile";
-import Address from "./pages/profile/Address";
-import Orders from "./pages/profile/Orders";
-import Wishlist from "./pages/profile/Wishlist";
-import OderDetails from "./pages/profile/OderDetails";
-
-import Admin from "./pages/Admin";
-import Customer from "./pages/Customer";
-import Dashboard from "./pages/dashboard";
-import Team from "./pages/team";
-import Invoices from "./pages/invoices";
-import Contacts from "./pages/contacts";
-import Bar from "./pages/bar";
-import Line from "./pages/line";
-import Pie from "./pages/pie";
-import FAQ from "./pages/faq";
-import Form from "./pages/form";
+//IMORTING CUSTOMERS PAGE COMPONENTS
+import {
+  Checkout,
+  ViewCart,
+  Confirmation,
+} from "./site/customers/pages/checkout";
+import {
+  Profile,
+  Address,
+  Wishlist,
+  OrdersListCustomer,
+  OrderDetailsCustomer,
+} from "./site/customers/pages/profile";
+import Home from "./site/customers/pages/home";
+import Shopping from "./site/customers/pages/shopping";
+import { ProductDetailsCustomer } from "./site/customers/pages/products";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -44,121 +52,101 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Routes>
-          {/* CUSTOMER SAITE SAITE */}
-          <Route path="/">
+          {/* ADMINIS SAITE */}
+          <Route path="admin">
             <Route
               index
               element={
-                <Customer>
-                  <Home />
-                </Customer>
+                <AdminLayout>
+                  <Dashboard />
+                </AdminLayout>
               }
             />
-            <Route path="profile">
+            <Route path="charts">
               <Route
-                index
+                path="bar"
                 element={
-                  <Customer>
-                    <Profile />
-                  </Customer>
-                }
-              />
-              <Route path="orders">
-                <Route
-                  index
-                  element={
-                    <Customer>
-                      <Orders />
-                    </Customer>
-                  }
-                />
-                <Route
-                  path=":orderId"
-                  element={
-                    <Customer>
-                      <OderDetails />
-                    </Customer>
-                  }
-                />
-              </Route>
-
-              <Route
-                path="address"
-                element={
-                  <Customer>
-                    <Address />
-                  </Customer>
+                  <AdminLayout>
+                    <BarChart />
+                  </AdminLayout>
                 }
               />
               <Route
-                path="wishlist"
+                path="pie"
                 element={
-                  <Customer>
-                    <Wishlist />
-                  </Customer>
+                  <AdminLayout>
+                    <PieChart />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path="line"
+                element={
+                  <AdminLayout>
+                    <LineChart />
+                  </AdminLayout>
                 }
               />
             </Route>
-
-            <Route
-              path="product/:productId"
-              element={
-                <Customer>
-                  <ProductDetails />
-                </Customer>
-              }
-            />
-            <Route
-              path="checkout"
-              element={
-                <Customer>
-                  <Checkout />
-                </Customer>
-              }
-            />
-            <Route
-              path="viewcart"
-              element={
-                <Customer>
-                  <ViewCart />
-                </Customer>
-              }
-            />
-            <Route
-              path="shopping"
-              element={
-                <Customer>
-                  <Shopping />
-                </Customer>
-              }
-            />
-            <Route
-              path="checkout/success"
-              element={
-                <Customer>
-                  <Confirmation />
-                </Customer>
-              }
-            />
-          </Route>
-
-          {/* ADMINIS SAITE */}
-          <Route path="admin">
+            <Route path="pages">
+              <Route
+                path="faq"
+                element={
+                  <AdminLayout>
+                    <FAQ />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path="newusers"
+                element={
+                  <AdminLayout>
+                    <NewCustomer />
+                  </AdminLayout>
+                }
+              />
+            </Route>
+            <Route path="data">
+              <Route
+                path="contacts"
+                element={
+                  <AdminLayout>
+                    <Contacts />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path="invoices"
+                element={
+                  <AdminLayout>
+                    <Invoices />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path="team"
+                element={
+                  <AdminLayout>
+                    <Team />
+                  </AdminLayout>
+                }
+              />
+            </Route>
             <Route path="orders/">
               <Route
                 index
                 element={
-                  <Admin>
-                    <OrdersForAdmin />
-                  </Admin>
+                  <AdminLayout>
+                    <OrdersListAdmin />
+                  </AdminLayout>
                 }
               />
               <Route
                 path=":orderId"
                 element={
-                  <Admin>
-                    <OrderDetailsForAdmin />
-                  </Admin>
+                  <AdminLayout>
+                    <OrderDetailsAdmin />
+                  </AdminLayout>
                 }
               />
             </Route>
@@ -166,117 +154,141 @@ function App() {
               <Route
                 index
                 element={
-                  <Admin>
-                    <ProductsForAdmin />
-                  </Admin>
+                  <AdminLayout>
+                    <ProductsListAdmin />
+                  </AdminLayout>
                 }
               />
               <Route
                 path="new"
                 element={
-                  <Admin>
+                  <AdminLayout>
                     <NewProduct />
-                  </Admin>
+                  </AdminLayout>
                 }
               />
               <Route
                 path=":productId"
                 element={
-                  <Admin>
-                    <ProductDetails />
-                  </Admin>
+                  <AdminLayout>
+                    <ProductDetailsAdmin />
+                  </AdminLayout>
                 }
               />
             </Route>
-            <Route
-              index
-              element={
-                <Admin>
-                  <Dashboard />
-                </Admin>
-              }
-            />
             <Route path="customers">
               <Route
                 index
                 element={
-                  <Admin>
-                    <Customers />
-                  </Admin>
+                  <AdminLayout>
+                    <CustomersList />
+                  </AdminLayout>
                 }
               />
               <Route
                 path=":customerId"
                 element={
-                  <Admin>
+                  <AdminLayout>
                     <CustomerDetails />
-                  </Admin>
+                  </AdminLayout>
                 }
               />
             </Route>
+          </Route>
+          {/* CUSTOMER SAITE SAITE */}
+          <Route path="/">
+            <Route
+              index
+              element={
+                <CustomerLayout>
+                  <Home />
+                </CustomerLayout>
+              }
+            />
+            <Route path="profile">
+              <Route
+                index
+                element={
+                  <CustomerLayout>
+                    <Profile />
+                  </CustomerLayout>
+                }
+              />
+              <Route path="orders">
+                <Route
+                  index
+                  element={
+                    <CustomerLayout>
+                      <OrdersListCustomer />
+                    </CustomerLayout>
+                  }
+                />
+                <Route
+                  path=":orderId"
+                  element={
+                    <CustomerLayout>
+                      <OrderDetailsCustomer />
+                    </CustomerLayout>
+                  }
+                />
+              </Route>
+
+              <Route
+                path="address"
+                element={
+                  <CustomerLayout>
+                    <Address />
+                  </CustomerLayout>
+                }
+              />
+              <Route
+                path="wishlist"
+                element={
+                  <CustomerLayout>
+                    <Wishlist />
+                  </CustomerLayout>
+                }
+              />
+            </Route>
+            <Route
+              path="shopping"
+              element={
+                <CustomerLayout>
+                  <Shopping />
+                </CustomerLayout>
+              }
+            />
+            <Route
+              path="product/:productId"
+              element={
+                <CustomerLayout>
+                  <ProductDetailsCustomer />
+                </CustomerLayout>
+              }
+            />
+            <Route
+              path="viewcart"
+              element={
+                <CustomerLayout>
+                  <ViewCart />
+                </CustomerLayout>
+              }
+            />
+            <Route
+              path="checkout"
+              element={
+                <CustomerLayout>
+                  <Checkout />
+                </CustomerLayout>
+              }
+            />
 
             <Route
-              path="bar"
+              path="checkout/success"
               element={
-                <Admin>
-                  <Bar />
-                </Admin>
-              }
-            />
-            <Route
-              path="pie"
-              element={
-                <Admin>
-                  <Pie />
-                </Admin>
-              }
-            />
-            <Route
-              path="line"
-              element={
-                <Admin>
-                  <Line />
-                </Admin>
-              }
-            />
-            <Route
-              path="faq"
-              element={
-                <Admin>
-                  <FAQ />
-                </Admin>
-              }
-            />
-            <Route
-              path="form"
-              element={
-                <Admin>
-                  <Form />
-                </Admin>
-              }
-            />
-            <Route
-              path="contacts"
-              element={
-                <Admin>
-                  <Contacts />
-                </Admin>
-              }
-            />
-            <Route
-              path="invoices"
-              element={
-                <Admin>
-                  <Invoices />
-                </Admin>
-              }
-            />
-            <Route
-              path="team"
-              element={
-                <Admin>
-                  <Team />
-                </Admin>
+                <CustomerLayout>
+                  <Confirmation />
+                </CustomerLayout>
               }
             />
           </Route>
