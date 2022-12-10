@@ -6,7 +6,7 @@ import { Provider } from "react-redux";
 
 import { BrowserRouter } from "react-router-dom";
 import { StyledEngineProvider } from "@mui/material";
-import store from "./redux/services/store";
+import store from "./lib/redux/services/store";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
