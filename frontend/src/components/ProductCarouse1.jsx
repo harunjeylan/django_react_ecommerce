@@ -55,7 +55,7 @@ const ProductCarouse = () => {
           products?.products.map((product, index) => (
             <SwiperSlide
               key={`carousel-${index}`}
-              className={`relative h-[200px] w-[300px] md:h-[300px] md:w-[400px] rounded-lg
+              className={`relative rounded-lg
                bg-opacity-[90%] 
                ${
                  theme.palette.mode === "dark" ? "bg-white/5" : "bg-black/10"

@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
 import { Box, Tabs, Tab } from "@mui/material";
 import ProductsList from "./ProductsList";
-
-import { useGetAllCategoryQuery } from "../import";
+import {
+  useGetProductsByCategoryQuery,
+  useGetAllCategoryQuery,
+} from "../import";
 
 const ShoppingList = () => {
   const { data: allCategory, isFetching: isFetchingAllCategory } =
     useGetAllCategoryQuery();
 
   const [categoryValue, setCategoryValue] = useState("all");
+  const { data: productsByCategory } = useGetProductsByCategoryQuery({
+    category: categoryValue,
+  });
 
   const handleChange = (event, newValue) => {
     setCategoryValue(newValue);
@@ -39,7 +45,7 @@ const ShoppingList = () => {
             ))}
         </Tabs>
       </Box>
-      <ProductsList category={categoryValue} />
+      <ProductsList products={productsByCategory?.products} />
     </Box>
   );
 };

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 
+import { useNavigate } from "react-router-dom";
 import { ResponsiveBar } from "@nivo/bar";
 import { ResponsiveLine } from "@nivo/line";
 import { ResponsivePie } from "@nivo/pie";
@@ -12,6 +13,7 @@ import {
   Typography,
   useTheme,
   useMediaQuery,
+  Breadcrumbs,
 } from "@mui/material";
 
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
@@ -73,8 +75,8 @@ const MiniBarChart = ({ data }) => {
       }}
       keys={["kebab", "fries", "donut"]}
       indexBy="country"
-      margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
-      padding={0.9}
+      margin={{ top: 20, right: 20, bottom: 60, left: 30 }}
+      padding={0.8}
       valueScale={{ type: "linear" }}
       indexScale={{ type: "band", round: true }}
       colors={{ scheme: "nivo" }}
@@ -132,29 +134,30 @@ const MiniBarChart = ({ data }) => {
       }}
       legends={[
         {
-          dataFrom: "keys",
-          anchor: "right",
-          direction: "column",
+          anchor: "bottom",
+          direction: "row",
           justify: false,
-          translateX: 136,
-          translateY: 1,
+          translateX: 25,
+          translateY: 50,
           itemsSpacing: 0,
-          itemWidth: 101,
-          itemHeight: 26,
+          itemWidth: 100,
+          itemHeight: 0,
+          itemTextColor: "#999",
           itemDirection: "left-to-right",
-          itemOpacity: 0.85,
-          symbolSize: 14,
+          itemOpacity: 1,
+          symbolSize: 15,
+          symbolShape: "circle",
           effects: [
             {
               on: "hover",
               style: {
-                itemOpacity: 1,
                 itemTextColor: colors.greenAccent[400],
               },
             },
           ],
         },
       ]}
+      enableLabel={false}
       role="application"
       ariaLabel="Nivo bar chart demo"
       barAriaLabel={function (e) {
@@ -203,7 +206,7 @@ const MiniLineChart = ({ data }) => {
           },
         },
       }}
-      margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+      margin={{ top: 20, right: 20, bottom: 60, left: 30 }}
       xScale={{ type: "point" }}
       yScale={{
         type: "linear",
@@ -247,25 +250,24 @@ const MiniLineChart = ({ data }) => {
       useMesh={true}
       legends={[
         {
-          anchor: "right",
-          direction: "column",
+          anchor: "bottom",
+          direction: "row",
           justify: false,
-          translateX: 100,
-          translateY: 0,
+          translateX: 25,
+          translateY: 50,
           itemsSpacing: 0,
+          itemWidth: 100,
+          itemHeight: 0,
+          itemTextColor: "#999",
           itemDirection: "left-to-right",
-          itemWidth: 80,
-          itemHeight: 20,
-          itemOpacity: 0.75,
-          symbolSize: 12,
+          itemOpacity: 1,
+          symbolSize: 15,
           symbolShape: "circle",
-          symbolBorderColor: "rgba(0, 0, 0, .5)",
           effects: [
             {
               on: "hover",
               style: {
-                itemBackground: "rgba(0, 0, 0, .03)",
-                itemOpacity: 1,
+                itemTextColor: colors.greenAccent[400],
               },
             },
           ],
@@ -337,7 +339,7 @@ const MiniPieChart = ({ data }) => {
           },
         },
       }}
-      margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+      margin={{ top: 20, right: 20, bottom: 60, left: 30 }}
       innerRadius={0.85}
       activeOuterRadiusOffset={8}
       colors={{ scheme: "category10" }}
@@ -381,11 +383,11 @@ const MiniPieChart = ({ data }) => {
           anchor: "bottom",
           direction: "row",
           justify: false,
-          translateX: 0,
+          translateX: 25,
           translateY: 50,
           itemsSpacing: 0,
           itemWidth: 100,
-          itemHeight: 10,
+          itemHeight: 0,
           itemTextColor: "#999",
           itemDirection: "left-to-right",
           itemOpacity: 1,
@@ -407,6 +409,7 @@ const MiniPieChart = ({ data }) => {
 };
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const smScreen = useMediaQuery(theme.breakpoints.up("sm"));
@@ -518,114 +521,6 @@ const Dashboard = () => {
     },
   ];
   const MiniLineChartData = [
-    {
-      id: "japan",
-      color: "hsl(7, 70%, 50%)",
-      data: [
-        {
-          x: "plane",
-          y: 256,
-        },
-        {
-          x: "helicopter",
-          y: 140,
-        },
-        {
-          x: "boat",
-          y: 54,
-        },
-        {
-          x: "train",
-          y: 261,
-        },
-        {
-          x: "subway",
-          y: 0,
-        },
-        {
-          x: "bus",
-          y: 18,
-        },
-        {
-          x: "car",
-          y: 129,
-        },
-        {
-          x: "moto",
-          y: 191,
-        },
-        {
-          x: "bicycle",
-          y: 39,
-        },
-        {
-          x: "horse",
-          y: 70,
-        },
-        {
-          x: "skateboard",
-          y: 153,
-        },
-        {
-          x: "others",
-          y: 217,
-        },
-      ],
-    },
-    {
-      id: "france",
-      color: "hsl(52, 70%, 50%)",
-      data: [
-        {
-          x: "plane",
-          y: 145,
-        },
-        {
-          x: "helicopter",
-          y: 189,
-        },
-        {
-          x: "boat",
-          y: 219,
-        },
-        {
-          x: "train",
-          y: 75,
-        },
-        {
-          x: "subway",
-          y: 160,
-        },
-        {
-          x: "bus",
-          y: 250,
-        },
-        {
-          x: "car",
-          y: 242,
-        },
-        {
-          x: "moto",
-          y: 195,
-        },
-        {
-          x: "bicycle",
-          y: 25,
-        },
-        {
-          x: "horse",
-          y: 13,
-        },
-        {
-          x: "skateboard",
-          y: 27,
-        },
-        {
-          x: "others",
-          y: 218,
-        },
-      ],
-    },
     {
       id: "us",
       color: "hsl(186, 70%, 50%)",
@@ -791,18 +686,6 @@ const Dashboard = () => {
   ];
   const MiniPieChartData = [
     {
-      id: "go",
-      label: "go",
-      value: 515,
-      color: "hsl(249, 70%, 50%)",
-    },
-    {
-      id: "css",
-      label: "css",
-      value: 485,
-      color: "hsl(227, 70%, 50%)",
-    },
-    {
       id: "sass",
       label: "sass",
       value: 449,
@@ -936,487 +819,471 @@ const Dashboard = () => {
     { field: "date", headerName: "Date", width: 100 },
   ];
   return (
-    <Box m="20px">
+    <Box className="flex flex-col gap-4 md:gap-8 md:mt-20 ">
       {/* HEADER */}
-
-      <Box
-        display={smScreen ? "flex" : "block"}
-        flexDirection={smScreen ? "row" : "column"}
-        justifyContent={smScreen ? "space-between" : "start"}
-        alignItems={smScreen ? "center" : "start"}
-        m="10px 0"
-      >
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
-
-        <Box>
-          <Button
-            variant="outlined"
-            color="secondary"
-            className={`bg-opacity-0 hover:bg-opacity-100 px-[40px] py-4`}
-          >
-            <DownloadOutlinedIcon sx={{ mr: "10px" }} />
-            Download Reports
-          </Button>
-        </Box>
       </Box>
 
       {/* GRID & CHARTS */}
-      <Box className="grid grid-cols-12 grid-rows-12 gap-4">
-        <Box className="col-span-12 row-span-1 lg:col-span-6">
-          <Box
-            width="100%"
-            backgroundColor={colors.primary[400]}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <StatBox
-              title="431,225"
-              subtitle="Sales Obtained"
-              progress="0.50"
-              increase="+21%"
-              icon={
-                <PointOfSaleIcon
-                  sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-                />
-              }
-            />
-          </Box>
-        </Box>
-        <Box className="col-span-12 row-span-1 lg:col-span-6">
-          <Box
-            width="100%"
-            backgroundColor={colors.primary[400]}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <StatBox
-              title="1,325,134"
-              subtitle="Traffic Received"
-              progress="0.80"
-              increase="+43%"
-              icon={
-                <TrafficIcon
-                  sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-                />
-              }
-            />
-          </Box>
-        </Box>
-        <Box className="col-span-12 row-span-1 lg:col-span-4">
-          <Box
-            width="100%"
-            backgroundColor={colors.primary[400]}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <StatBox
-              title="12,361"
-              subtitle="Emails Sent"
-              progress="0.75"
-              increase="+14%"
-              icon={
-                <EmailIcon
-                  sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-                />
-              }
-            />
-          </Box>
-        </Box>
-        <Box className="col-span-12 row-span-1 lg:col-span-4">
-          <Box
-            width="100%"
-            backgroundColor={colors.primary[400]}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <StatBox
-              title="32,441"
-              subtitle="New Clients"
-              progress="0.30"
-              increase="+5%"
-              icon={
-                <PersonAddIcon
-                  sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-                />
-              }
-            />
-          </Box>
-        </Box>
-        <Box className="col-span-12 row-span-1 lg:col-span-4">
-          <Box
-            width="100%"
-            backgroundColor={colors.primary[400]}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <StatBox
-              title="32,441"
-              subtitle="New Clients"
-              progress="0.30"
-              increase="+5%"
-              icon={
-                <PersonAddIcon
-                  sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-                />
-              }
-            />
-          </Box>
-        </Box>
-        <Box className="col-span-12 row-span-3 xl:col-span-8">
-          <Box className="grid grid-cols-12 gap-4">
-            <Box className="col-span-12 lg:col-span-6">
-              <Box
-                backgroundColor={colors.primary[400]}
-                className="p-4 rounded-md"
-              >
-                <Box className="flex flex-col gap-2">
-                  <Box className="flex justify-between">
-                    <Box className="">
-                      <Typography
-                        variant="h6"
-                        fontWeight="bold"
-                        className="my-2"
-                      >
-                        Total orders{" "}
-                        <span className="bg-[#eab308]/20 rounded-r-xl rounded-l-xl py-[1pz] px-2 border-[1px] border-[#eab308] text-[#eab308]">
-                          -6.8%
-                        </span>
-                      </Typography>
-                      <Typography
-                        variant="h6"
-                        fontWeight="subtitle1"
-                        className={`my-2 cursor-pointer `}
-                      >
-                        Last 7 days
-                      </Typography>
-                    </Box>
-                    <Box className="">
-                      <Typography
-                        variant="h6"
-                        fontWeight="bold"
-                        className="my-2"
-                      >
-                        16,247
-                      </Typography>
-                    </Box>
-                  </Box>
-                  <Box className="h-[300px] p-4">
-                    <MiniBarChart data={miniBarChartData} />
-                  </Box>
-                </Box>
-              </Box>
-            </Box>
-            <Box className="col-span-12 lg:col-span-6">
-              <Box
-                backgroundColor={colors.primary[400]}
-                className="p-4 rounded-md"
-              >
-                <Box className="flex flex-col gap-2">
-                  <Box className="flex justify-between">
-                    <Box className="">
-                      <Typography
-                        variant="h6"
-                        fontWeight="bold"
-                        className="my-2"
-                      >
-                        New customers {` `}
-                        <span className="bg-[#eab308]/20 rounded-r-xl rounded-l-xl py-[1pz] px-2 border-[1px] border-[#eab308] text-[#eab308]">
-                          +26.5%
-                        </span>
-                      </Typography>
-                      <Typography
-                        variant="h6"
-                        fontWeight="subtitle1"
-                        className={`my-2 cursor-pointer `}
-                      >
-                        Last 7 days
-                      </Typography>
-                    </Box>
-                    <Box className="">
-                      <Typography
-                        variant="h6"
-                        fontWeight="bold"
-                        className="my-2"
-                      >
-                        356
-                      </Typography>
-                    </Box>
-                  </Box>
-                  <Box className="h-[300px] p-4">
-                    <MiniLineChart data={MiniLineChartData} />
-                  </Box>
-                </Box>
-              </Box>
-            </Box>
-            <Box className="col-span-12 lg:col-span-6">
-              <Box
-                backgroundColor={colors.primary[400]}
-                className="p-4 rounded-md"
-              >
-                <Box className="flex flex-col gap-2">
-                  <Box className="flex justify-between">
-                    <Box className="">
-                      <Typography
-                        variant="h6"
-                        fontWeight="bold"
-                        className="my-2"
-                      >
-                        Top coupons
-                      </Typography>
-                      <Typography
-                        variant="h6"
-                        fontWeight="subtitle1"
-                        className={`my-2 cursor-pointer `}
-                      >
-                        Last 7 days
-                      </Typography>
-                    </Box>
-                    <Box className="">
-                      <Typography
-                        variant="h6"
-                        fontWeight="bold"
-                        className="my-2"
-                      >
-                        16,247
-                      </Typography>
-                    </Box>
-                  </Box>
-                  <Box className="h-[300px] p-4">
-                    <MiniPieChart data={MiniPieChartData} />
-                  </Box>
-                </Box>
-              </Box>
-            </Box>
-            <Box className="col-span-12 lg:col-span-6">
-              <Box
-                backgroundColor={colors.primary[400]}
-                className="p-4 rounded-md"
-              >
-                <Box className="flex flex-col gap-2">
-                  <Box className="flex justify-between">
-                    <Box className="">
-                      <Typography
-                        variant="h6"
-                        fontWeight="bold"
-                        className="my-2"
-                      >
-                        Paying vs non paying{" "}
-                      </Typography>
-                      <Typography
-                        variant="h6"
-                        fontWeight="subtitle1"
-                        className={`my-2 cursor-pointer `}
-                      >
-                        Last 7 days
-                      </Typography>
-                    </Box>
-                    <Box className="">
-                      <Typography
-                        variant="h6"
-                        fontWeight="bold"
-                        className="my-2"
-                      >
-                        16,247
-                      </Typography>
-                    </Box>
-                  </Box>
-                  <Box className="h-[300px] p-4">
-                    <MiniPieChart data={MiniPieChartData} />
-                  </Box>
-                </Box>
-              </Box>
-            </Box>
-          </Box>
-        </Box>
-        <Box className="col-span-12 row-span-3 xl:col-span-4">
-          <Box
-            backgroundColor={colors.primary[400]}
-            className="w-full flex flex-col gap-4 drop-shadow-lg  rounded-lg p-4"
-          >
-            <Typography
-              variant="h1"
-              color={colors.grey[100]}
-              fontWeight="bold"
-              className={`text-xl md:text-2xl  text-left my-4`}
-            >
-              New Customers (43)
-            </Typography>
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
+        <Box className="grid grid-cols-12 grid-rows-12 gap-4">
+          <Box className="col-span-12 row-span-1 lg:col-span-6">
             <Box
-              className="h-[400px] xl:h-[720px]"
-              height="400px"
-              sx={{
-                "& .MuiDataGrid-root": {
-                  border: "none",
-                },
-                "& .MuiDataGrid-cell": {
-                  borderBottom: "none",
-                },
-                "& .MuiCheckbox-root": {
-                  color: `${colors.greenAccent[200]} !important`,
-                },
-                "& .MuiChackbox-root": {
-                  color: `${colors.greenAccent[200]} !important`,
-                },
-                "& .MuiDataGrid-columnHeaders": {
-                  borderBottom: "none",
-                },
-                "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                  color: `${colors.grey[100]} !important`,
-                },
-                "& .MuiDataGrid-cell": {
-                  width: "100%",
-                },
-              }}
+              width="100%"
+              backgroundColor={colors.primary[400]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
             >
-              <DataGrid
-                density="comfortable"
-                rows={mockDataCustomers}
-                columns={columns}
-                autoPageSize
-                checkboxSelection
-                components={{ Toolbar: GridToolbar }}
+              <StatBox
+                title="431,225"
+                subtitle="Sales Obtained"
+                progress="0.50"
+                increase="+21%"
+                icon={
+                  <PointOfSaleIcon
+                    sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                  />
+                }
               />
             </Box>
           </Box>
-        </Box>
-        <Box className="col-span-12 row-span-6 xl:col-span-5">
-          <Box
-            backgroundColor={colors.primary[400]}
-            className="w-full flex flex-col gap-4 drop-shadow-lg  rounded-lg p-4"
-          >
-            <Typography
-              variant="h1"
-              color={colors.grey[100]}
-              fontWeight="bold"
-              className={`text-xl md:text-2xl  text-left my-4`}
-            >
-              New Orders (100)
-            </Typography>
+          <Box className="col-span-12 row-span-1 lg:col-span-6">
             <Box
-              className="h-[400px] xl:h-[1020px]"
-              height="400px"
-              sx={{
-                "& .MuiDataGrid-root": {
-                  border: "none",
-                },
-                "& .MuiDataGrid-cell": {
-                  borderBottom: "none",
-                },
-                "& .MuiCheckbox-root": {
-                  color: `${colors.greenAccent[200]} !important`,
-                },
-                "& .MuiChackbox-root": {
-                  color: `${colors.greenAccent[200]} !important`,
-                },
-                "& .MuiDataGrid-columnHeaders": {
-                  borderBottom: "none",
-                },
-                "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                  color: `${colors.grey[100]} !important`,
-                },
-                "& .MuiDataGrid-cell": {
-                  width: "100%",
-                },
-              }}
+              width="100%"
+              backgroundColor={colors.primary[400]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
             >
-              <DataGrid
-                density="comfortable"
-                rows={mockDataOrders.slice(0, 10)}
-                columns={orderColumns}
-                autoPageSize
-                checkboxSelection
-                components={{ Toolbar: GridToolbar }}
+              <StatBox
+                title="1,325,134"
+                subtitle="Traffic Received"
+                progress="0.80"
+                increase="+43%"
+                icon={
+                  <TrafficIcon
+                    sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                  />
+                }
               />
             </Box>
           </Box>
-        </Box>
-        <Box className="col-span-12 row-span-6 xl:col-span-7">
-          <Box className="flex flex-col gap-4">
-            <Box className="w-full">
-              <Box
-                backgroundColor={colors.primary[400]}
-                className="p-4 rounded-md"
-              >
-                <Box className="flex flex-col gap-2">
-                  <Box className="flex justify-between">
-                    <Box className="">
-                      <Typography
-                        variant="h6"
-                        fontWeight="bold"
-                        className="my-2"
-                      >
-                        Total orders{" "}
-                        <span className="bg-[#eab308]/20 rounded-r-xl rounded-l-xl py-[1pz] px-2 border-[1px] border-[#eab308] text-[#eab308]">
-                          -6.8%
-                        </span>
-                      </Typography>
-                      <Typography
-                        variant="h6"
-                        fontWeight="subtitle1"
-                        className={`my-2 cursor-pointer `}
-                      >
-                        Last 7 days
-                      </Typography>
+          <Box className="col-span-12 row-span-1 lg:col-span-4">
+            <Box
+              width="100%"
+              backgroundColor={colors.primary[400]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <StatBox
+                title="12,361"
+                subtitle="Emails Sent"
+                progress="0.75"
+                increase="+14%"
+                icon={
+                  <EmailIcon
+                    sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                  />
+                }
+              />
+            </Box>
+          </Box>
+          <Box className="col-span-12 row-span-1 lg:col-span-4">
+            <Box
+              width="100%"
+              backgroundColor={colors.primary[400]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <StatBox
+                title="32,441"
+                subtitle="New Clients"
+                progress="0.30"
+                increase="+5%"
+                icon={
+                  <PersonAddIcon
+                    sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                  />
+                }
+              />
+            </Box>
+          </Box>
+          <Box className="col-span-12 row-span-1 lg:col-span-4">
+            <Box
+              width="100%"
+              backgroundColor={colors.primary[400]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <StatBox
+                title="32,441"
+                subtitle="New Clients"
+                progress="0.30"
+                increase="+5%"
+                icon={
+                  <PersonAddIcon
+                    sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                  />
+                }
+              />
+            </Box>
+          </Box>
+          <Box className="col-span-12 row-span-3 xl:col-span-8">
+            <Box className="grid grid-cols-12 gap-4">
+              <Box className="col-span-12 lg:col-span-6">
+                <Box
+                  backgroundColor={colors.primary[400]}
+                  className="p-4 rounded-md"
+                >
+                  <Box className="flex flex-col gap-2">
+                    <Box className="flex justify-between">
+                      <Box className="">
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          className="my-2"
+                        >
+                          Total orders{" "}
+                          <span className="bg-[#eab308]/20 rounded-r-xl rounded-l-xl py-[1pz] px-2 border-[1px] border-[#eab308] text-[#eab308]">
+                            -6.8%
+                          </span>
+                        </Typography>
+                        <Typography
+                          variant="h6"
+                          fontWeight="subtitle1"
+                          className={`my-2 cursor-pointer `}
+                        >
+                          Last 7 days
+                        </Typography>
+                      </Box>
+                      <Box className="">
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          className="my-2"
+                        >
+                          16,247
+                        </Typography>
+                      </Box>
                     </Box>
-                    <Box className="">
-                      <Typography
-                        variant="h6"
-                        fontWeight="bold"
-                        className="my-2"
-                      >
-                        16,247
-                      </Typography>
+                    <Box className="h-[300px] p-4">
+                      <MiniBarChart data={miniBarChartData} />
                     </Box>
                   </Box>
-                  <Box className="h-[400px] xl:h-[450px] p-4">
-                    <LineChart isDashboard={true} />
+                </Box>
+              </Box>
+              <Box className="col-span-12 lg:col-span-6">
+                <Box
+                  backgroundColor={colors.primary[400]}
+                  className="p-4 rounded-md"
+                >
+                  <Box className="flex flex-col gap-2">
+                    <Box className="flex justify-between">
+                      <Box className="">
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          className="my-2"
+                        >
+                          New customers {` `}
+                          <span className="bg-[#eab308]/20 rounded-r-xl rounded-l-xl py-[1pz] px-2 border-[1px] border-[#eab308] text-[#eab308]">
+                            +26.5%
+                          </span>
+                        </Typography>
+                        <Typography
+                          variant="h6"
+                          fontWeight="subtitle1"
+                          className={`my-2 cursor-pointer `}
+                        >
+                          Last 7 days
+                        </Typography>
+                      </Box>
+                      <Box className="">
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          className="my-2"
+                        >
+                          356
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Box className="h-[300px] p-4">
+                      <MiniLineChart data={MiniLineChartData} />
+                    </Box>
+                  </Box>
+                </Box>
+              </Box>
+              <Box className="col-span-12 lg:col-span-6">
+                <Box
+                  backgroundColor={colors.primary[400]}
+                  className="p-4 rounded-md"
+                >
+                  <Box className="flex flex-col gap-2">
+                    <Box className="flex justify-between">
+                      <Box className="">
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          className="my-2"
+                        >
+                          Top coupons
+                        </Typography>
+                        <Typography
+                          variant="h6"
+                          fontWeight="subtitle1"
+                          className={`my-2 cursor-pointer `}
+                        >
+                          Last 7 days
+                        </Typography>
+                      </Box>
+                      <Box className="">
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          className="my-2"
+                        >
+                          16,247
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Box className="h-[300px] p-4">
+                      <MiniPieChart data={MiniPieChartData} />
+                    </Box>
+                  </Box>
+                </Box>
+              </Box>
+              <Box className="col-span-12 lg:col-span-6">
+                <Box
+                  backgroundColor={colors.primary[400]}
+                  className="p-4 rounded-md"
+                >
+                  <Box className="flex flex-col gap-2">
+                    <Box className="flex justify-between">
+                      <Box className="">
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          className="my-2"
+                        >
+                          Paying vs non paying{" "}
+                        </Typography>
+                        <Typography
+                          variant="h6"
+                          fontWeight="subtitle1"
+                          className={`my-2 cursor-pointer `}
+                        >
+                          Last 7 days
+                        </Typography>
+                      </Box>
+                      <Box className="">
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          className="my-2"
+                        >
+                          16,247
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Box className="h-[300px] p-4">
+                      <MiniPieChart data={MiniPieChartData} />
+                    </Box>
                   </Box>
                 </Box>
               </Box>
             </Box>
-            <Box className="w-full">
-              <Box
-                backgroundColor={colors.primary[400]}
-                className="p-4 rounded-md"
+          </Box>
+          <Box className="col-span-12 row-span-3 xl:col-span-4">
+            <Box
+              backgroundColor={colors.primary[400]}
+              className="w-full flex flex-col gap-4 drop-shadow-lg  rounded-lg p-4"
+            >
+              <Typography
+                variant="h1"
+                color={colors.grey[100]}
+                fontWeight="bold"
+                className={`text-xl md:text-2xl  text-left my-4`}
               >
-                <Box className="flex flex-col gap-2">
-                  <Box className="flex justify-between">
-                    <Box className="">
-                      <Typography
-                        variant="h6"
-                        fontWeight="bold"
-                        className="my-2"
-                      >
-                        New customers {` `}
-                        <span className="bg-[#eab308]/20 rounded-r-xl rounded-l-xl py-[1pz] px-2 border-[1px] border-[#eab308] text-[#eab308]">
-                          +26.5%
-                        </span>
-                      </Typography>
-                      <Typography
-                        variant="h6"
-                        fontWeight="subtitle1"
-                        className={`my-2 cursor-pointer `}
-                      >
-                        Last 7 days
-                      </Typography>
+                New Customers (43)
+              </Typography>
+              <Box
+                className="h-[400px] xl:h-[720px]"
+                height="400px"
+                sx={{
+                  "& .MuiDataGrid-root": {
+                    border: "none",
+                  },
+                  "& .MuiDataGrid-cell": {
+                    borderBottom: "none",
+                  },
+                  "& .MuiCheckbox-root": {
+                    color: `${colors.greenAccent[200]} !important`,
+                  },
+                  "& .MuiChackbox-root": {
+                    color: `${colors.greenAccent[200]} !important`,
+                  },
+                  "& .MuiDataGrid-columnHeaders": {
+                    borderBottom: "none",
+                  },
+                  "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+                    color: `${colors.grey[100]} !important`,
+                  },
+                  "& .MuiDataGrid-cell": {
+                    width: "100%",
+                  },
+                }}
+              >
+                <DataGrid
+                  density="comfortable"
+                  rows={mockDataCustomers}
+                  columns={columns}
+                  autoPageSize
+                  checkboxSelection
+                  components={{ Toolbar: GridToolbar }}
+                />
+              </Box>
+            </Box>
+          </Box>
+          <Box className="col-span-12 row-span-6 xl:col-span-5">
+            <Box
+              backgroundColor={colors.primary[400]}
+              className="w-full flex flex-col gap-4 drop-shadow-lg  rounded-lg p-4"
+            >
+              <Typography
+                variant="h1"
+                color={colors.grey[100]}
+                fontWeight="bold"
+                className={`text-xl md:text-2xl  text-left my-4`}
+              >
+                New Orders (100)
+              </Typography>
+              <Box
+                className="h-[400px] xl:h-[1020px]"
+                height="400px"
+                sx={{
+                  "& .MuiDataGrid-root": {
+                    border: "none",
+                  },
+                  "& .MuiDataGrid-cell": {
+                    borderBottom: "none",
+                  },
+                  "& .MuiCheckbox-root": {
+                    color: `${colors.greenAccent[200]} !important`,
+                  },
+                  "& .MuiChackbox-root": {
+                    color: `${colors.greenAccent[200]} !important`,
+                  },
+                  "& .MuiDataGrid-columnHeaders": {
+                    borderBottom: "none",
+                  },
+                  "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+                    color: `${colors.grey[100]} !important`,
+                  },
+                  "& .MuiDataGrid-cell": {
+                    width: "100%",
+                  },
+                }}
+              >
+                <DataGrid
+                  density="comfortable"
+                  rows={mockDataOrders.slice(0, 10)}
+                  columns={orderColumns}
+                  autoPageSize
+                  checkboxSelection
+                  components={{ Toolbar: GridToolbar }}
+                />
+              </Box>
+            </Box>
+          </Box>
+          <Box className="col-span-12 row-span-6 xl:col-span-7">
+            <Box className="flex flex-col gap-4">
+              <Box className="w-full">
+                <Box
+                  backgroundColor={colors.primary[400]}
+                  className="p-4 rounded-md"
+                >
+                  <Box className="flex flex-col gap-2">
+                    <Box className="flex justify-between">
+                      <Box className="">
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          className="my-2"
+                        >
+                          Total orders{" "}
+                          <span className="bg-[#eab308]/20 rounded-r-xl rounded-l-xl py-[1pz] px-2 border-[1px] border-[#eab308] text-[#eab308]">
+                            -6.8%
+                          </span>
+                        </Typography>
+                        <Typography
+                          variant="h6"
+                          fontWeight="subtitle1"
+                          className={`my-2 cursor-pointer `}
+                        >
+                          Last 7 days
+                        </Typography>
+                      </Box>
+                      <Box className="">
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          className="my-2"
+                        >
+                          16,247
+                        </Typography>
+                      </Box>
                     </Box>
-                    <Box className="">
-                      <Typography
-                        variant="h6"
-                        fontWeight="bold"
-                        className="my-2"
-                      >
-                        356
-                      </Typography>
+                    <Box className="h-[400px] xl:h-[450px] p-4">
+                      <LineChart isDashboard={true} />
                     </Box>
                   </Box>
-                  <Box className="h-[400px] xl:h-[450px] p-4">
-                    <BarChart isDashboard={true} />
+                </Box>
+              </Box>
+              <Box className="w-full">
+                <Box
+                  backgroundColor={colors.primary[400]}
+                  className="p-4 rounded-md"
+                >
+                  <Box className="flex flex-col gap-2">
+                    <Box className="flex justify-between">
+                      <Box className="">
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          className="my-2"
+                        >
+                          New customers {` `}
+                          <span className="bg-[#eab308]/20 rounded-r-xl rounded-l-xl py-[1pz] px-2 border-[1px] border-[#eab308] text-[#eab308]">
+                            +26.5%
+                          </span>
+                        </Typography>
+                        <Typography
+                          variant="h6"
+                          fontWeight="subtitle1"
+                          className={`my-2 cursor-pointer `}
+                        >
+                          Last 7 days
+                        </Typography>
+                      </Box>
+                      <Box className="">
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          className="my-2"
+                        >
+                          356
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Box className="h-[400px] xl:h-[450px] p-4">
+                      <BarChart isDashboard={true} />
+                    </Box>
                   </Box>
                 </Box>
               </Box>

@@ -71,16 +71,13 @@ const ProductDetails = () => {
   }, [product?.thumbnail]);
 
   return (
-    <Box className={`flex flex-col gap-8 mt-[100px] `}>
-      <Box className={`container mx-auto px-8`}>
+    <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Breadcrumbs aria-label="breadcrumb">
           <Button
             onClick={() => navigate(`/`)}
             variant="text"
             color="secondary"
-            className={`bg-opacity-0 hover:bg-opacity-100 px-4 py-2 ${
-              "hover:bg-" + colors.greenAccent[400]
-            }`}
           >
             Home
           </Button>
@@ -96,15 +93,15 @@ const ProductDetails = () => {
           </Button>
           <Typography color="text.primary">{product?.title}</Typography>
         </Breadcrumbs>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Header
-            title={`Product details`}
-            subtitle={`Product ID : ${productId}`}
-          />
-        </Box>
+      </Box>
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
+        <Header
+          title={`Product details`}
+          subtitle={`Product ID : ${productId}`}
+        />
       </Box>
 
-      <Box className="container mx-auto px-8">
+      <Box className="md:container px-2 md:mx-auto md:px-auto">
         <Box className={`flex flex-col gap-8 lg:flex-row-reverse`}>
           <Box className={``}>
             <Typography
@@ -297,13 +294,10 @@ const ProductDetails = () => {
             <Box className="flex-col w-full px-4  md:px-2 md:py-1 space-y-2">
               <Box className="flex justify-between items-center w-full">
                 <ButtonGroup
-                  size="large"
-                  variant="contained"
+                  variant="outlined"
+                  color="secondary"
                   aria-label="outlined primary button group"
-                  sx={{
-                    backgroundColor: colors.primary[400],
-                    color: colors.grey[100],
-                  }}
+                  sx={{ backgroundColor: colors.primary[400] }}
                   className="border-1 w-full"
                 >
                   <IconButton
@@ -317,23 +311,19 @@ const ProductDetails = () => {
                     type="number"
                     value={count}
                     onChange={(event) => setCount(event.target.value)}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
+                    // InputLabelProps={{
+                    //   shrink: true,
+                    // }}
                   />
                   <IconButton size="large" onClick={() => setCount(count + 1)}>
                     <AddIcon />
                   </IconButton>
                   <Button
                     startIcon={<AddShoppingCartIcon />}
-                    variant="contained"
                     onClick={() => {
                       dispatch(addToCart({ product: { ...product, count } }));
                     }}
-                    className={`w-full
-                        text-[${colors.grey[100]}] 
-                        bg-[#3da58a] 
-                        hover:bg-[#2e7c67]`}
+                    className={`w-full `}
                   >
                     Add to Cart
                   </Button>
@@ -341,9 +331,11 @@ const ProductDetails = () => {
               </Box>
             </Box>
           </Box>
-          <Box className={` flex  gap-4 w-full lg:max-w-[50%]`}>
+          <Box
+            className={`w-full flex flex-col-reverse lg:flex-row gap-4 w-full lg:max-w-[50%]`}
+          >
             <Box
-              className={`flex flex-col gap-4 my-4 justify-center items-center w-[120px] px-auto`}
+              className={`w-full flex flex-row-wrap lg:flex-col gap-4 my-4 justify-center items-center lg:w-[120px] px-auto`}
             >
               {product?.images?.map((image, index) => (
                 <CardActionArea
@@ -365,7 +357,7 @@ const ProductDetails = () => {
                 </CardActionArea>
               ))}
             </Box>
-            <Box className={`my-4 w-full overflow-hidden`}>
+            <Box className={`my-4 w-full  overflow-hidden`}>
               <img
                 alt="product thamnail"
                 style={{
@@ -407,7 +399,7 @@ const ProductDetails = () => {
         </Box>
       </Box>
 
-      <Box className="container mx-auto">
+      <Box className="md:container px-2 md:mx-auto md:px-auto">
         <Box className="flex justify-between items-center">
           <Header
             title="You might also like these"
@@ -434,7 +426,7 @@ const ProductDetails = () => {
 
       <Box
         backgroundColor={colors.primary[400]}
-        className="px-4 flex justify-center lg:px-auto py-[80px] items-center mb-[50px]"
+        className="px-2 md:px-4 flex justify-center lg:px-auto py-[80px] items-center mb-[50px]"
       >
         <Service />
       </Box>

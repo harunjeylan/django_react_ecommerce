@@ -1,5 +1,6 @@
 import React from "react";
-import { Box, useTheme } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Box, Typography, useTheme, Button, Breadcrumbs } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../../../theme";
 import { mockDataContacts } from "../../../../data/mockData";
@@ -7,6 +8,7 @@ import Header from "../../../../components/Header";
 
 const Contacts = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const colors = tokens(theme.palette.mode);
   const columns = [
     { field: "id", headerName: "Id", width: 100 },
@@ -32,8 +34,20 @@ const Contacts = () => {
     { field: "zipCode", headerName: "Zip Code", width: 100 },
   ];
   return (
-    <Box m="20px">
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+    <Box className="flex flex-col gap-4 md:gap-8 md:mt-20">
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
+        <Breadcrumbs aria-label="breadcrumb">
+          <Button
+            onClick={() => navigate(`/`)}
+            variant="text"
+            color="secondary"
+          >
+            Admin Dashboadrd
+          </Button>
+          <Typography color="text.primary">New Product</Typography>
+        </Breadcrumbs>
+      </Box>
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Header title="CONTACTS" subtitle="welcome to you Contacts" />
       </Box>
       <Box

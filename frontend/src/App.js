@@ -98,7 +98,7 @@ function App() {
                 }
               />
               <Route
-                path="newusers"
+                path="newuser"
                 element={
                   <AdminLayout>
                     <NewCustomer />

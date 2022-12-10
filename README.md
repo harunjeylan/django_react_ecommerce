@@ -13,3 +13,15 @@ https://prium.github.io/phoenix/v1.6.0/
 ## Api
 
 https://dummyjson.com/
+
+
+## Run JSON server
+<code>
+npx json-server -p 3500 -w jsonServer/db.json
+</code>
+<br>
+or
+<br>
+<code>
+json-server --watch jsonServer/db.json --port 3500
+</code>

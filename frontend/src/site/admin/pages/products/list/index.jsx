@@ -57,26 +57,23 @@ const ProductsForAdmin = () => {
     { field: "publishd_on", headerName: "Publishd on" },
   ];
   return (
-    <Box className="">
-      <Box className={`container mx-auto my-[40px]`}>
+    <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20`}>
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Breadcrumbs aria-label="breadcrumb">
           <Button
             onClick={() => navigate(`/`)}
             variant="text"
             color="secondary"
-            className={`bg-opacity-0 hover:bg-opacity-100 px-4 py-2 ${
-              "hover:bg-" + colors.greenAccent[400]
-            }`}
           >
             Admin Dashboadrd
           </Button>
-          <Typography color="text.primary">Products</Typography>
+          <Typography color="text.primary">New Product</Typography>
         </Breadcrumbs>
       </Box>
-      <Box className={`container mx-auto py-[20px] my-4 flex flex-col gap-4`}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Header title="Products" subtitle="welcome to you Products" />
-        </Box>
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
+        <Header title="Products" subtitle="welcome to you Products" />
+      </Box>
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Box className="flex gap-4">
           <Box className="flex gap-1">
             <Typography>All</Typography>

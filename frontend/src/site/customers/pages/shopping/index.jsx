@@ -31,6 +31,7 @@ import { tokens, Header } from "../../import";
 
 import {
   useGetAllCategoryQuery,
+  useGetProductsByCategoryQuery,
   useGetLimitAndSkipProductsQuery,
 } from "../../import";
 
@@ -42,12 +43,22 @@ const Shopping = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
 
+  const [categoryValue, setCategoryValue] = useState("all");
+  const { data: productsByCategory } = useGetProductsByCategoryQuery({
+    category: categoryValue,
+  });
+
+  const handleChangeCategory = (event, newValue) => {
+    setCategoryValue(newValue);
+  };
   const { data: allCategory, isFetching: isFetchingAllCategory } =
     useGetAllCategoryQuery();
+
   const {
     data: RecommendedProducts,
     isFetching: isFetchingRecommendedProducts,
   } = useGetLimitAndSkipProductsQuery({ limit: 20, skip: 10 });
+
   const [priceValue, setPriceValue] = useState([20, 37]);
 
   return (
@@ -359,7 +370,10 @@ const Shopping = () => {
                 </Box>
               )}
             </Box>
-            <ProductsList category={"all"} isShopping={true} />
+            <ProductsList
+              products={productsByCategory?.products}
+              isShopping={true}
+            />
           </Box>
         </Box>
       </Box>

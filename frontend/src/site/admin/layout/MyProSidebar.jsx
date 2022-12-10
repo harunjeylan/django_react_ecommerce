@@ -197,21 +197,21 @@ const MyProSidebar = () => {
             </Typography>
             <Item
               title="Manage Team"
-              to="/admin/team"
+              to="/admin/data/team"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Contacts Information"
-              to="/admin/contacts"
+              to="/admin/data/contacts"
               icon={<ContactsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Invoices Balances"
-              to="/admin/invoices"
+              to="/admin/data/invoices"
               icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -259,14 +259,14 @@ const MyProSidebar = () => {
             </Typography>
             <Item
               title="Profile Form"
-              to="/admin/form"
+              to="/admin/pages/newuser"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="FAQ Page"
-              to="/admin/faq"
+              to="/admin/pages/faq"
               icon={<HelpOutlineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -282,21 +282,21 @@ const MyProSidebar = () => {
             <SubMenu label="Charts" icon={<BarChartOutlinedIcon />}>
               <Item
                 title="Bar Chart"
-                to="/admin/bar"
+                to="/admin/charts/bar"
                 icon={<BarChartOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
                 title="Line Chart"
-                to="/admin/line"
+                to="/admin/charts/line"
                 icon={<TimelineOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
                 title="Pie Chart"
-                to="/admin/pie"
+                to="/admin/charts/pie"
                 icon={<PieChartOutlineOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}

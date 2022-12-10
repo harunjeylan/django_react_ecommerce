@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "@emotion/react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 import {
   Box,
   CardActionArea,
@@ -22,21 +23,16 @@ import {
   TextField,
   ButtonGroup,
 } from "@mui/material";
+
+import PaletteIcon from "@mui/icons-material/Palette";
+import PaletteOutlinedIcon from "@mui/icons-material/PaletteOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import PaletteOutlinedIcon from "@mui/icons-material/PaletteOutlined";
-import PaletteIcon from "@mui/icons-material/Palette";
 
-import {
-  Header,
-  addToCart,
-  useGetProductsDetailesQuery,
-  mockDataReviews,
-  tokens,
-  ReviewForm,
-  ProductCarouse,
-} from "../../../import";
+import { mockDataReviews } from "../../../import";
+import { addToCart, useGetProductsDetailesQuery } from "../../../import";
+import { tokens, Reviews, ReviewForm, Header } from "../../../import";
 
 const ProductDetails = () => {
   const theme = useTheme();
@@ -52,23 +48,24 @@ const ProductDetails = () => {
     setValue(newValue);
   };
 
-  const { data: product } = useGetProductsDetailesQuery({ productId });
+  const { data: product, isFetching: isFetchingProduct } =
+    useGetProductsDetailesQuery({ productId });
+
+  const [priceValue, setPriceValue] = useState([20, 37]);
 
   const [activeImage, setActiveImage] = useState(product?.thumbnail);
   useEffect(() => {
     setActiveImage(product?.thumbnail);
   }, [product?.thumbnail]);
+
   return (
-    <Box className={`flex flex-col gap-8 mt-[100px] `}>
-      <Box className={`container mx-auto px-8`}>
+    <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Breadcrumbs aria-label="breadcrumb">
           <Button
             onClick={() => navigate(`/`)}
             variant="text"
             color="secondary"
-            className={`bg-opacity-0 hover:bg-opacity-100 px-4 py-2 ${
-              "hover:bg-" + colors.greenAccent[400]
-            }`}
           >
             Home
           </Button>
@@ -84,15 +81,15 @@ const ProductDetails = () => {
           </Button>
           <Typography color="text.primary">{product?.title}</Typography>
         </Breadcrumbs>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Header
-            title={`Product details`}
-            subtitle={`Product ID : ${productId}`}
-          />
-        </Box>
+      </Box>
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
+        <Header
+          title={`Product details`}
+          subtitle={`Product ID : ${productId}`}
+        />
       </Box>
 
-      <Box className="container mx-auto px-8">
+      <Box className="md:container px-2 md:mx-auto md:px-auto">
         <Box className={`flex flex-col gap-8 lg:flex-row-reverse`}>
           <Box className={``}>
             <Typography
@@ -113,7 +110,15 @@ const ProductDetails = () => {
                 <span>${product?.price}</span>
               </Typography>
               <Box className="flex gap-4 items-center text-sm">
-                <Rating name="read-only" defaultValue={4} readOnly />
+                {!isFetchingProduct ? (
+                  <Rating
+                    name="read-only"
+                    defaultValue={product?.rating}
+                    readOnly
+                  />
+                ) : (
+                  <Box></Box>
+                )}
 
                 <Typography variant="h5" color={colors.greenAccent[400]}>
                   25 reviews
@@ -321,9 +326,11 @@ const ProductDetails = () => {
               </Box>
             </Box>
           </Box>
-          <Box className={` flex  gap-4 w-full lg:max-w-[50%]`}>
+          <Box
+            className={`w-full flex flex-col-reverse lg:flex-row gap-4 w-full lg:max-w-[50%]`}
+          >
             <Box
-              className={`flex flex-col gap-4 my-4 justify-center items-center w-[120px] px-auto`}
+              className={`w-full flex flex-row-wrap lg:flex-col gap-4 my-4 justify-center items-center lg:w-[120px] px-auto`}
             >
               {product?.images?.map((image, index) => (
                 <CardActionArea
@@ -345,7 +352,7 @@ const ProductDetails = () => {
                 </CardActionArea>
               ))}
             </Box>
-            <Box className={`my-4 w-full overflow-hidden`}>
+            <Box className={`my-4 w-full  overflow-hidden`}>
               <img
                 alt="product thamnail"
                 style={{
@@ -385,27 +392,6 @@ const ProductDetails = () => {
             )}
           </Box>
         </Box>
-      </Box>
-
-      <Box className="container mx-auto">
-        <Box className="flex justify-between items-center">
-          <Header
-            title="You might also like these"
-            subtitle="One morning"
-            bodyText={`One morning, when Gregor Samsa `}
-          />
-          <Button
-            onClick={() => navigate(`/shopping`)}
-            variant="outlined"
-            color="secondary"
-            className={`bg-opacity-0 hover:bg-opacity-100 px-4 py-2 ${
-              "hover:bg-" + colors.greenAccent[400]
-            }`}
-          >
-            More
-          </Button>
-        </Box>
-        <ProductCarouse1 />
       </Box>
     </Box>
   );

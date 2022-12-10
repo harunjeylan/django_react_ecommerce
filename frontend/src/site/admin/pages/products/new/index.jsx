@@ -30,26 +30,23 @@ const NewProduct = () => {
   };
 
   return (
-    <Box className={``}>
-      <Box className={`container mx-auto my-[40px]`}>
+    <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20`}>
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Breadcrumbs aria-label="breadcrumb">
           <Button
             onClick={() => navigate(`/`)}
             variant="text"
             color="secondary"
-            className={`bg-opacity-0 hover:bg-opacity-100 px-4 py-2 ${
-              "hover:bg-" + colors.greenAccent[400]
-            }`}
           >
             Admin Dashboadrd
           </Button>
           <Typography color="text.primary">New Product</Typography>
         </Breadcrumbs>
       </Box>
-      <Box className={`container mx-auto py-[20px] rounded-lg my-4`}>
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Header title="CREATE PRODUCT" subtitle="Create a New product" />
       </Box>
-      <Box className="container mx-auto">
+      <Box className="md:container px-2 md:mx-auto md:px-auto">
         <Box
           sx={{
             "& .image-container": {
