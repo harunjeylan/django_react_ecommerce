@@ -2,15 +2,16 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { Formik } from "formik";
+import { useParams } from "react-router-dom";
 import { Typography, Box, useTheme, Breadcrumbs, Button } from "@mui/material";
-import Service from "../../../components/Service";
 
+import Service from "../../../components/Service";
 import ProfileCard from "../global/ProfileCard";
-import profileDetailsForm from "./profileDetailsForm";
+import ProfileDetailsForm from "./ProfileDetailsForm";
 import ChangePasswordForm from "./ChangePasswordForm";
 
 import { tokens, Header } from "../../../import";
-
+import { useGetusersDetailesQuery } from "../../../import";
 const Wishlist = () => {
   const navigate = useNavigate();
 
@@ -20,6 +21,13 @@ const Wishlist = () => {
   const handleFormSubmit = async (values, actions) => {
     actions.setTouched({});
   };
+
+  const userId = 1;
+  const { data: user, isFetching: isFetchingUser } = useGetusersDetailesQuery({
+    userId,
+  });
+  // console.log(user);
+
   const initialValues = {
     PersonalDetails: {
       firstName: "",
@@ -27,9 +35,9 @@ const Wishlist = () => {
       country: "",
       street1: "",
       street2: "",
-      city: "",
-      state: "",
-      zipCode: "",
+      city: user?.address.address.city,
+      state: user?.address.address.state,
+      zipCode: user?.address.address.postalCode,
       email: "",
       phoneNumber: "",
     },
@@ -120,7 +128,7 @@ const Wishlist = () => {
                     onSubmit={handleSubmit}
                     className="flex flex-col  gap-4"
                   >
-                    <profileDetailsForm
+                    <ProfileDetailsForm
                       type="PersonalDetails"
                       values={values.PersonalDetails}
                       touched={touched}
@@ -188,7 +196,7 @@ const Wishlist = () => {
           </Box>
 
           <Box className="w-full md:max-w-[40%]   lg:max-w-[30%]">
-            <ProfileCard />
+            {!isFetchingUser && <ProfileCard user={user} />}
           </Box>
         </Box>
       </Box>

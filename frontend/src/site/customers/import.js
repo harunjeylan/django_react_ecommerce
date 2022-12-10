@@ -9,7 +9,11 @@ export {
   useGetLimitAndSkipProductsQuery,
   useGetProductsDetailesQuery,
 } from "../../lib/redux/services/products";
-
+export {
+  useGetAllusersQuery,
+  useGetusersDetailesQuery,
+  useAddUserMutation,
+} from "../../lib/redux/services/users";
 export {
   decreaseCount,
   setCount,

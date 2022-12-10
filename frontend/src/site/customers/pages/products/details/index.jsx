@@ -35,7 +35,11 @@ import Service from "../../../components/Service";
 import Subscribe from "../../../components/Subscribe";
 
 import { mockDataReviews } from "../../../import";
-import { addToCart, useGetProductsDetailesQuery } from "../../../import";
+import {
+  addToCart,
+  useGetProductsDetailesQuery,
+  useGetProductsByCategoryQuery,
+} from "../../../import";
 import { tokens, Reviews, ReviewForm, Header } from "../../../import";
 
 const ProductDetails = () => {
@@ -52,12 +56,20 @@ const ProductDetails = () => {
     setValue(newValue);
   };
 
-  const { data: product } = useGetProductsDetailesQuery({ productId });
+  const { data: product, isFetching: isFetchingProduct } =
+    useGetProductsDetailesQuery({ productId });
+  const {
+    data: RecommendedProducts,
+    isFetching: isFetchingRecommendedProducts,
+  } = useGetProductsByCategoryQuery({ category: product?.category });
+
+  const [priceValue, setPriceValue] = useState([20, 37]);
 
   const [activeImage, setActiveImage] = useState(product?.thumbnail);
   useEffect(() => {
     setActiveImage(product?.thumbnail);
   }, [product?.thumbnail]);
+
   return (
     <Box className={`flex flex-col gap-8 mt-[100px] `}>
       <Box className={`container mx-auto px-8`}>
@@ -113,7 +125,15 @@ const ProductDetails = () => {
                 <span>${product?.price}</span>
               </Typography>
               <Box className="flex gap-4 items-center text-sm">
-                <Rating name="read-only" defaultValue={4} readOnly />
+                {!isFetchingProduct ? (
+                  <Rating
+                    name="read-only"
+                    defaultValue={product?.rating}
+                    readOnly
+                  />
+                ) : (
+                  <Box></Box>
+                )}
 
                 <Typography variant="h5" color={colors.greenAccent[400]}>
                   25 reviews
@@ -405,7 +425,11 @@ const ProductDetails = () => {
             More
           </Button>
         </Box>
-        <ProductCarouse />
+        <Box className="">
+          {!isFetchingRecommendedProducts && (
+            <ProductCarouse products={RecommendedProducts} />
+          )}
+        </Box>
       </Box>
 
       <Box
