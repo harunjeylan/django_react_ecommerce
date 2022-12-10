@@ -23,4 +23,6 @@ export { default as Header } from "../../components/Header";
 export { default as OrderSummery } from "../../components/OrderSummery";
 export { default as Reviews } from "../../components/Reviews";
 export { default as ReviewForm } from "../../components/ReviewForm";
+
 export { default as adminImage } from "../../data/images/user.png";
+export { default as logo } from "../../data/logo.png";

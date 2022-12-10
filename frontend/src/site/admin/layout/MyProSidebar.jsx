@@ -2,11 +2,7 @@
 import { useState } from "react";
 import { Menu, Sidebar, SubMenu, MenuItem } from "react-pro-sidebar";
 import { useProSidebar } from "react-pro-sidebar";
-import adminImage from "../../../data/images/user.png";
-import { useSidebarContext } from "./SidebarContext";
-// import { NavLink } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { tokens } from "../../../theme";
 import { useTheme, Box, Typography, IconButton } from "@mui/material";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
@@ -25,6 +21,11 @@ import SwitchRightOutlinedIcon from "@mui/icons-material/SwitchRightOutlined";
 import SwitchLeftOutlinedIcon from "@mui/icons-material/SwitchLeftOutlined";
 import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+
+import { useSidebarContext } from "./SidebarContext";
+import { adminImage, logo2 } from "../import";
+import { tokens } from "../import";
+
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
