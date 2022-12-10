@@ -8,7 +8,7 @@ const ProductCarouse = ({ products }) => {
   return (
     <Box sx={{ maxWidth: "calc(var(--vw, 1vw)*100 - 5px )" }}>
       <Swiper
-        centeredSlides={false}
+        centeredSlides={true}
         grabCursor={true}
         spaceBetween={40}
         slidesPerView={"auto"}
@@ -21,7 +21,7 @@ const ProductCarouse = ({ products }) => {
         modules={[Autoplay]} //Autoplay
       >
         {products?.products.map((product, index) => (
-          <SwiperSlide key={`carousel-${index}`} className={`h-auto w-[260px]`}>
+          <SwiperSlide key={`carousel-${index}`} className={`h-auto w-[240px]`}>
             <ProductCard
               product={product}
               key={`${product?.title}-${product?.id}`}

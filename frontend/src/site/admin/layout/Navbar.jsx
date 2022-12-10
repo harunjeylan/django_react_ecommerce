@@ -1,4 +1,5 @@
-import React,{ useContext } from "react";
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
@@ -7,15 +8,23 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { useProSidebar } from "react-pro-sidebar";
-import { useTheme, Box, IconButton, InputBase } from "@mui/material";
+import {
+  useTheme,
+  Box,
+  IconButton,
+  InputBase,
+  CardActionArea,
+} from "@mui/material";
 
-import { ColorModeContext, tokens } from "../import";
+import { ColorModeContext, tokens, logo } from "../import";
 const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const { toggleSidebar, broken, rtl } = useProSidebar();
-
+  const navigate = useNavigate();
+  
+  
   return (
     <Box display="flex" justifyContent="space-between" p={2}>
       <Box display="flex">
@@ -27,16 +36,29 @@ const Topbar = () => {
             <MenuOutlinedIcon />
           </IconButton>
         )}
-        <Box
-          display="flex"
-          backgroundColor={colors.primary[400]}
-          p={0.2}
-          borderRadius={1}
-        >
-          <InputBase sx={{ ml: 1, flex: 1 }} placeholder="Search" />
-          <IconButton type="button">
-            <SearchIcon />
-          </IconButton>
+        <Box className="flex gap-4">
+          <Box>
+            <CardActionArea
+              className="w-[50px] h-[50px] rounded-full"
+              onClick={() => navigate("/")}
+              color="secondary"
+            >
+              <img
+                alg="logo"
+                src={logo}
+                className="w-[50px] h-[50px] rounded-full"
+              />
+            </CardActionArea>
+          </Box>
+          <Box
+            backgroundColor={colors.primary[400]}
+            className="flex p-2 rounded-md"
+          >
+            <InputBase className="px-2" placeholder="Search" />
+            <IconButton>
+              <SearchIcon />
+            </IconButton>
+          </Box>
         </Box>
       </Box>
       <Box display="flex">

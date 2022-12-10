@@ -2,11 +2,7 @@
 import { useState } from "react";
 import { Menu, Sidebar, SubMenu, MenuItem } from "react-pro-sidebar";
 import { useProSidebar } from "react-pro-sidebar";
-import adminImage from "../../../data/images/user.png";
-import { useSidebarContext } from "./SidebarContext";
-// import { NavLink } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { tokens } from "../../../theme";
 import { useTheme, Box, Typography, IconButton } from "@mui/material";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
@@ -25,6 +21,11 @@ import SwitchRightOutlinedIcon from "@mui/icons-material/SwitchRightOutlined";
 import SwitchLeftOutlinedIcon from "@mui/icons-material/SwitchLeftOutlined";
 import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+
+import { useSidebarContext } from "./SidebarContext";
+import { adminImage, logo2 } from "../import";
+import { tokens } from "../import";
+
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -196,21 +197,21 @@ const MyProSidebar = () => {
             </Typography>
             <Item
               title="Manage Team"
-              to="/admin/team"
+              to="/admin/data/team"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Contacts Information"
-              to="/admin/contacts"
+              to="/admin/data/contacts"
               icon={<ContactsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Invoices Balances"
-              to="/admin/invoices"
+              to="/admin/data/invoices"
               icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -258,14 +259,14 @@ const MyProSidebar = () => {
             </Typography>
             <Item
               title="Profile Form"
-              to="/admin/form"
+              to="/admin/pages/newuser"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="FAQ Page"
-              to="/admin/faq"
+              to="/admin/pages/faq"
               icon={<HelpOutlineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -281,21 +282,21 @@ const MyProSidebar = () => {
             <SubMenu label="Charts" icon={<BarChartOutlinedIcon />}>
               <Item
                 title="Bar Chart"
-                to="/admin/bar"
+                to="/admin/charts/bar"
                 icon={<BarChartOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
                 title="Line Chart"
-                to="/admin/line"
+                to="/admin/charts/line"
                 icon={<TimelineOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
                 title="Pie Chart"
-                to="/admin/pie"
+                to="/admin/charts/pie"
                 icon={<PieChartOutlineOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}

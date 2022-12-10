@@ -1,27 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Box } from "@mui/material";
 import ProductCard from "./ProductCard";
-import {
-  useGetAllProductsQuery,
-  useGetProductsByCategoryQuery,
-} from "../import";
 
-const ProductsList = ({ category, isShopping = false }) => {
-  const { data: productsByCategory } = useGetProductsByCategoryQuery({
-    category,
-  });
-  const { data: allProducts } = useGetAllProductsQuery();
-
-  const [products, setProduct] = useState([]);
-
-  useEffect(() => {
-    if (category === "all") {
-      setProduct(allProducts?.products);
-    } else {
-      setProduct(productsByCategory?.products);
-    }
-  }, [category, productsByCategory, allProducts]);
-
+const ProductsList = ({ products, isShopping = false }) => {
   return (
     <Box
       className={`h-full grid grid-cols-12 ${

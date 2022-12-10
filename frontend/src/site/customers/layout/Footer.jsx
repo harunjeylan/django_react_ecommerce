@@ -11,8 +11,8 @@ function Footer() {
       className="py-8 pt-[70px] mt-[70px] px-2 lg:px-4"
       backgroundColor={colors.primary[400]}
     >
-      <Box className="w-full lg:w-[80%] mx-auto grid grid-cols-3lg:grid-cols-12 gap-1 lg:gap-8">
-        <Box className="col-span-3  pb-4 lg:pb-0  lg:col-span-6">
+      <Box className="w-full lg:w-[80%] mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-12 gap-1 lg:gap-8">
+        <Box className="col-span-1 md:col-span-3  pb-4 lg:pb-0  lg:col-span-6">
           <Typography
             variant="h4"
             fontWeight="bold"

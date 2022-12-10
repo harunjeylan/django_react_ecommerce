@@ -68,8 +68,8 @@ const Customers = () => {
   ];
 
   return (
-    <Box className="">
-      <Box className={`container mx-auto my-[40px]`}>
+    <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20`}>
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Breadcrumbs aria-label="breadcrumb">
           <Button
             onClick={() => navigate(`/`)}
@@ -82,10 +82,10 @@ const Customers = () => {
           <Typography color="text.primary">Customers</Typography>
         </Breadcrumbs>
       </Box>
-      <Box className={`container mx-auto py-[20px] my-4 flex flex-col gap-4`}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Header title="Customers" subtitle="welcome to you Customers" />
-        </Box>
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
+        <Header title="Customers" subtitle="welcome to you Customers" />
+      </Box>
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Box className="flex gap-4">
           <Box className="flex gap-1">
             <Typography>All</Typography>

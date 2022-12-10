@@ -1,4 +1,4 @@
-import { useContext, useState, useRef } from "react";
+import { useContext, useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -16,12 +16,12 @@ import {
   InputBase,
   Badge,
   Box,
-  Button,
+  CardActionArea,
   IconButton,
   Typography,
 } from "@mui/material";
 import { setIsCartOpen } from "../import";
-import { ColorModeContext, tokens } from "../import";
+import { ColorModeContext, tokens, logo } from "../import";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -38,16 +38,44 @@ function Navbar() {
     console.log(activeSearch);
     searchRef.current.focus();
   };
+
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [confetti, setConfetti] = useState(false);
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [scrollPosition]);
+  const handleScroll = () => {
+    const position = window.pageYOffset;
+    if (position <= 400) {
+      setConfetti(true);
+    } else {
+      setConfetti(false);
+    }
+  };
+
   return (
     <Box
-      className="flex items-center w-full h-[60px] top-0 left-0 z-20 drop-shadow-md"
+      className={`${
+        confetti ? "" : "fixed top-0"
+      } flex items-center w-full h-[60px]  left-0 z-20 drop-shadow-md ease-in-out duration-500`}
       backgroundColor={colors.primary[400]}
     >
       <Box className="w-[80%] m-auto flex justify-between items-center">
         <Box>
-          <Button onClick={() => navigate("/")} color="secondary">
-            ALIF
-          </Button>
+          <CardActionArea
+            className="w-[50px] h-[50px] rounded-full"
+            onClick={() => navigate("/")}
+            color="secondary"
+          >
+            <img
+              alg="logo"
+              src={logo}
+              className="w-[50px] h-[50px] rounded-full"
+            />
+          </CardActionArea>
         </Box>
         <Box className="justify-center flex gap-1">
           <Box

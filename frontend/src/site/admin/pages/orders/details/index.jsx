@@ -5,8 +5,6 @@ import { useParams } from "react-router-dom";
 import * as yup from "yup";
 import { Formik } from "formik";
 
-
-
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import {
   Box,
@@ -20,10 +18,11 @@ import {
   FormControl,
   FormLabel,
   FormGroup,
-  Select,List,
-ListItem,
-ListItemText,
-ListItemIcon,
+  Select,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
 } from "@mui/material";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
@@ -34,9 +33,12 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import CardGiftcardOutlinedIcon from "@mui/icons-material/CardGiftcardOutlined";
 import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 
-import { tokens ,Header,OrderSummery,mockDataProducts} from "../../../import";
-
-
+import {
+  tokens,
+  Header,
+  OrderSummery,
+  mockDataProducts,
+} from "../../../import";
 
 const OrderDetailsForAdmin = () => {
   const theme = useTheme();
@@ -102,28 +104,22 @@ const OrderDetailsForAdmin = () => {
 
   return (
     <Box className="">
-      <Box className={`container mx-auto my-[40px]`}>
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Breadcrumbs aria-label="breadcrumb">
           <Button
             onClick={() => navigate(`/`)}
             variant="text"
             color="secondary"
-            className={`bg-opacity-0 hover:bg-opacity-100 px-4 py-2 ${
-              "hover:bg-" + colors.greenAccent[400]
-            }`}
           >
             Admin Dashboadrd
           </Button>
           <Typography color="text.primary">Order # {orderId}</Typography>
         </Breadcrumbs>
       </Box>
-      <Box className={`container mx-auto py-[20px] my-4 `}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Header
-            title={`Order # ${orderId}`}
-            subtitle="Customer ID : 2364847"
-          />
-        </Box>
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
+        <Header title={`Order # ${orderId}`} subtitle="Customer ID : 2364847" />
+      </Box>
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Box className="flex flex-col lg:flex-row gap-4">
           <Box className="w-full lg:w-[70%]">
             <Box className="flex flex-col gap-8">

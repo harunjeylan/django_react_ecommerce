@@ -23,6 +23,7 @@ function Home() {
     data: RecommendedProducts,
     isFetching: isFetchingRecommendedProducts,
   } = useGetLimitAndSkipProductsQuery({ limit: 20, skip: 10 });
+  
   return (
     <Box className="flex flex-col gap-4 md:gap-8">
       <Box backgroundColor={colors.primary[400]} className="">

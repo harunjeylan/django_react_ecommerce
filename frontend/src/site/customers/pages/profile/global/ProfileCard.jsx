@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
+import { useGetusersDetailesQuery } from "../../../import";
 import {
   Typography,
   Box,
@@ -25,6 +25,10 @@ const ProfileCard = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const wishlist = useSelector((state) => state.wishlist.wishlist);
+  const userId = 1;
+  const { data: user, isFetching: isFetchingUser } = useGetusersDetailesQuery({
+    userId,
+  });
   return (
     <Box className="flex flex-col gap-8 drop-shadow-lg bg-slate-400/10 rounded-lg">
       <Box
@@ -34,7 +38,7 @@ const ProfileCard = () => {
         <Box className="h-[200px] w-[200px] rounded-[50%] bg-slate-400/10">
           <img
             alt="user avater"
-            src={userImage}
+            src={user?.image}
             className="h-[200px] w-[200px] rounded-[50%]"
           />
         </Box>
@@ -46,14 +50,14 @@ const ProfileCard = () => {
             fontWeight="bold"
             className={``}
           >
-            Harun Jeylan
+            {user?.firstName} {user?.lastName}
           </Typography>
           <Typography
             variant="subtitle1"
             color={colors.greenAccent[500]}
             className={``}
           >
-            web developer
+            {user?.email}
           </Typography>
         </Box>
       </Box>

@@ -1,14 +1,15 @@
 import React from "react";
-
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, Typography, useTheme } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Box, Typography, useTheme, Button, Breadcrumbs } from "@mui/material";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 
-import { tokens,mockDataTeam ,Header} from "../../import";
+import { tokens, mockDataTeam, Header } from "../../import";
 
 const Team = () => {
+  const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const columns = [
@@ -59,13 +60,23 @@ const Team = () => {
     },
   ];
   return (
-    <Box m="20px">
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+    <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20`}>
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
+        <Breadcrumbs aria-label="breadcrumb">
+          <Button
+            onClick={() => navigate(`/`)}
+            variant="text"
+            color="secondary"
+          >
+            Admin Dashboadrd
+          </Button>
+          <Typography color="text.primary">New Product</Typography>
+        </Breadcrumbs>
+      </Box>
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Header title="TEAM" subtitle="welcome to you Team" />
       </Box>
       <Box
-        m="8px 0 0 0"
-        height="80vh"
         backgroundColor={colors.primary[400]}
         className="h-[80vh] rounded-lg p-4"
         sx={{
