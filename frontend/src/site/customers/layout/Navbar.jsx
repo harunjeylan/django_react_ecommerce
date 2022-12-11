@@ -5,12 +5,12 @@ import { useNavigate } from "react-router-dom";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+// import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-
+import { LayoutContext } from "./LayoutContext";
 import {
   useTheme,
   InputBase,
@@ -18,11 +18,14 @@ import {
   Box,
   CardActionArea,
   IconButton,
-  Typography,
+  // Typography,
+  // Button,
+  Avatar,
+  Tooltip,
 } from "@mui/material";
 import { setIsCartOpen } from "../import";
 import { ColorModeContext, tokens, logo } from "../import";
-
+// import AccountDialog from "./AccountDialog";
 function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -31,6 +34,12 @@ function Navbar() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
+
+  const { openAccountMemu } = useContext(LayoutContext);
+  const { handleClickAccountMemu } = useContext(LayoutContext);
+  const { handleCloseAccountMemu } = useContext(LayoutContext);
+  const { handleClickOpenAccountDialog } = useContext(LayoutContext);
+
   const [activeSearch, setActiveSearch] = useState(false);
   const searchRef = useRef(null);
   const hundleSearchClick = () => {
@@ -139,10 +148,21 @@ function Navbar() {
               <FavoriteBorderOutlinedIcon />
             </IconButton>
           </Badge>
-          <IconButton onClick={() => navigate("/profile")}>
+          {/* <IconButton onClick={() => navigate("/profile")}>
             <PersonOutlinedIcon />
-          </IconButton>
-
+          </IconButton> */}
+          <Tooltip title="Account settings">
+            <IconButton
+              onClick={handleClickAccountMemu}
+              size="small"
+              sx={{ ml: 2 }}
+              aria-controls={openAccountMemu ? "account-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={openAccountMemu ? "true" : undefined}
+            >
+              <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            </IconButton>
+          </Tooltip>
           <IconButton onClick={() => navigate("/admin/")}>
             <MenuOutlinedIcon />
           </IconButton>
