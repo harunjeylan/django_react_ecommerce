@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
@@ -17,19 +18,20 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
 
 import { LayoutContext } from "./LayoutContext";
-
+import { selectCurrentToke, logOut } from "../import";
 import { tokens } from "../import";
 export default function AccountMenu() {
+  const token = useSelector(selectCurrentToke);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { openAccountMemu } = useContext(LayoutContext);
   const { handleClickAccountMemu } = useContext(LayoutContext);
   const { handleCloseAccountMemu } = useContext(LayoutContext);
-  const { isUserLogedIn } = useContext(LayoutContext);
   const { anchorEl } = useContext(LayoutContext);
   const { handleClickOpenAccountDialog } = useContext(LayoutContext);
-  return isUserLogedIn ? (
+  return token ? (
     <Menu
       anchorEl={anchorEl}
       id="account-menu"
@@ -114,7 +116,7 @@ export default function AccountMenu() {
         </ListItemIcon>
         Settings
       </MenuItem>
-      <MenuItem>
+      <MenuItem onClick={() => dispatch(logOut())}>
         <ListItemIcon>
           <LogoutOutlinedIcon fontSize="small" />
         </ListItemIcon>

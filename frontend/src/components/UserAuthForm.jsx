@@ -1,7 +1,8 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import * as yup from "yup";
 import { Formik } from "formik";
-import { useSelector, useDispatch,createSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   TextField,
   Box,
@@ -13,39 +14,66 @@ import {
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
 import { tokens } from "../theme";
-import { useLoginMutation } from "../lib/redux/services/authReducer";
 
-import {userAuth} from "../lib/redux/services/authReducer"
+import { setCredentials, setUser } from "../features/auth/authSlice";
+import { useLoginMutation } from "../features/authApiSlice";
 
-const UserLoginForm = () => {
+const UserLoginForm = ({ handleCloseAccountDialog = null }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const userRef = useRef();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+  const [errorMessage, setErrormessage] = useState("");
+  useEffect(() => {
+    userRef.current.focus();
+  }, []);
+
   const initialValues = {
     username: "",
     password: "",
   };
-  const checkoutSchema = yup.object().shape({
+
+  const loginSchema = yup.object().shape({
     username: yup.string().required("required"),
     password: yup.string().required("required"),
   });
-  const [ login, result ] = useLoginMutation();
-  const handleFormSubmit = (values) => {
-    console.log(values);
-    login({ authPost: values }).then((res) => {
-      console.log(res.data);
-    }).catch((err)=>{
-      console.log(err);
-    });
-  };
-  const data = useSelector((state) => state)
 
-  console.log(data)
+  const [login, { isLoading }] = useLoginMutation();
+
+  const handleFormSubmit = async (values, { setFieldValue }) => {
+    try {
+      const userData = await login({ ...values }).unwrap();
+      dispatch(setCredentials(userData));
+      setErrormessage("");
+      setFieldValue("username", "");
+      setFieldValue("password", "");
+      if (handleCloseAccountDialog !== null) {
+        handleCloseAccountDialog();
+      }
+      navigate(from, { replace: true });
+    } catch (err) {
+      if (!err?.response) {
+        setErrormessage("No Server Response");
+      } else if (err.response?.status === 400) {
+        setErrormessage("Missing Username or Password");
+      } else if (err.response?.status === 401) {
+        setErrormessage("Unauthorized");
+      } else {
+        setErrormessage("Login failed");
+      }
+      console.log(err);
+    }
+  };
+
   return (
     <Box>
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={initialValues}
-        validationSchema={checkoutSchema}
+        validationSchema={loginSchema}
       >
         {({
           values,
@@ -54,12 +82,18 @@ const UserLoginForm = () => {
           handleBlur,
           handleChange,
           handleSubmit,
+          setFieldValue,
+          resetForm,
         }) => (
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={(newValues) => handleSubmit(newValues, resetForm)}>
             <Box className="flex flex-col gap-4 drop-shadow-lg  rounded-lg">
               <Box className="flex flex-col gap-4 px-4 py-2 ">
+                <Box>
+                  <Typography>{errorMessage}</Typography>
+                </Box>
                 <TextField
                   fullWidth
+                  ref={userRef}
                   variant="filled"
                   type="username"
                   label="User name"

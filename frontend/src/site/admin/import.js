@@ -11,13 +11,13 @@ export {
   mockDataTeam,
 } from "../../data/mockData";
 
-export { addToCart } from "../../lib/redux/services/cartReducer";
+export { addToCart } from "../../features/services/cartReducer";
 export {
   useGetProductsDetailesQuery,
   useAddProductMutation,
-} from "../../lib/redux/services/products";
+} from "../../features/services/products";
 
-export { toggleWishlist } from "../../lib/redux/services/wishlistReducer";
+export { toggleWishlist } from "../../features/services/wishlistReducer";
 
 export { default as Header } from "../../components/Header";
 export { default as OrderSummery } from "../../components/OrderSummery";

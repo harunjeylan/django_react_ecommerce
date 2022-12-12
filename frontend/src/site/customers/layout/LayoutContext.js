@@ -18,14 +18,13 @@ const LayoutProvider = ({ children }) => {
   const handleCloseAccountDialog = () => {
     setOpenAccountDialog(false);
   };
-  const isUserLogedIn = false;
+
   const values = {
+    anchorEl,
     openAccountMemu,
+    openAccountDialog,
     handleClickAccountMemu,
     handleCloseAccountMemu,
-    isUserLogedIn,
-    anchorEl,
-    openAccountDialog,
     setOpenAccountDialog,
     handleClickOpenAccountDialog,
     handleCloseAccountDialog,

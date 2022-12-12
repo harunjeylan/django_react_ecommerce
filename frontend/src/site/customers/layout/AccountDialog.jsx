@@ -30,7 +30,7 @@ const AccountDialog = () => {
     <Box
       className={`${
         openAccountDialog ? "fixed" : "hidden"
-      } bg-black/20 z-[1000] w-full h-full left-0 top-[60px] ease-in-out`}
+      } bg-black/20 z-[1000] w-full h-full left-0 top-0 pt-[60px] ease-in-out`}
     >
       <Box
         backgroundColor={colors.primary[400]}
@@ -53,7 +53,7 @@ const AccountDialog = () => {
             </IconButton>
           </Box>
         </Box>
-        <UserLoginForm />
+        <UserLoginForm handleCloseAccountDialog={handleCloseAccountDialog} />
 
       </Box>
     </Box>

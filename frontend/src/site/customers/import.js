@@ -8,11 +8,11 @@ export {
   useGetProductsByCategoryQuery,
   useGetLimitAndSkipProductsQuery,
   useGetProductsDetailesQuery,
-} from "../../lib/redux/services/products";
+} from "../../features/services/products";
 export {
   useGetUseDetailesQuery,
   useLoginMutation,
-} from "../../lib/redux/services/authReducer";
+} from "../../features/services/authReducer";
 export {
   decreaseCount,
   setCount,
@@ -21,12 +21,14 @@ export {
   removeFromCart,
   toggleCart,
   setIsCartOpen,
-} from "../../lib/redux/services/cartReducer";
+} from "../../features/services/cartReducer";
 
 export {
   toggleWishlist,
   removeFromWishlist,
-} from "../../lib/redux/services/wishlistReducer";
+} from "../../features/services/wishlistReducer";
+
+export { selectCurrentToke, logOut } from "../../features/auth/authSlice";
 
 export { UserLoginForm } from "../../components/UserAuthForm";
 export { default as Header } from "../../components/Header";
