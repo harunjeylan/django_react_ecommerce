@@ -11,7 +11,7 @@ import ProfileDetailsForm from "./ProfileDetailsForm";
 import ChangePasswordForm from "./ChangePasswordForm";
 
 import { tokens, Header } from "../../../import";
-import { useGetusersDetailesQuery } from "../../../import";
+import { useGetUseDetailesQuery } from "../../../import";
 const Wishlist = () => {
   const navigate = useNavigate();
 
@@ -23,7 +23,7 @@ const Wishlist = () => {
   };
 
   const userId = 1;
-  const { data: user, isFetching: isFetchingUser } = useGetusersDetailesQuery({
+  const { data: user, isFetching: isFetchingUser } = useGetUseDetailesQuery({
     userId,
   });
   // console.log(user);

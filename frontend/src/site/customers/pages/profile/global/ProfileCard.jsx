@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useGetusersDetailesQuery } from "../../../import";
+import { useGetUseDetailesQuery } from "../../../import";
 import {
   Typography,
   Box,
@@ -26,7 +26,7 @@ const ProfileCard = () => {
   const navigate = useNavigate();
   const wishlist = useSelector((state) => state.wishlist.wishlist);
   const userId = 1;
-  const { data: user, isFetching: isFetchingUser } = useGetusersDetailesQuery({
+  const { data: user, isFetching: isFetchingUser } = useGetUseDetailesQuery({
     userId,
   });
   return (
