@@ -38,7 +38,7 @@ const ProductCard = ({ product }) => {
 
   const [isInCart, setIsInCart] = useState(false);
   const changeCart = () => {
-    dispatch(toggleCart({ product }));
+    dispatch(toggleCart({ product: { ...product, count: 1 } }));
     setIsInCart(findInCart(product));
   };
 

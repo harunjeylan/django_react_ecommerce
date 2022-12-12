@@ -33,7 +33,7 @@ const CartMenu = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const totalPrice = cart.reduce((total, item) => {
-    return total + item.count * item.price;
+    return total + item?.count * item?.price;
   }, 0);
 
   return (
@@ -62,10 +62,10 @@ const CartMenu = () => {
                 className={`overflow-auto px-8 flex flex-col gap-4`}
               >
                 {cart.map((item, ind) => (
-                  <Box key={`${item.title}-${item.id}-${ind}`}>
+                  <Box key={`${item?.title}-${item?.id}-${ind}`}>
                     <Box className="flex flex-col md:flex-row gap-2 items-center pb-4">
                       <CardActionArea
-                        onClick={() => navigate(`/product/${item.id}`)}
+                        onClick={() => navigate(`/product/${item?.id}`)}
                         className={`${
                           theme.palette.mode === "dark"
                             ? "bg-white/5"
@@ -82,18 +82,18 @@ const CartMenu = () => {
                       <Box className="flex flex-col px-2 w-full">
                         <Box className="flex justify-between items-center">
                           <Typography fontWeight="bold">
-                            {item.title}
+                            {item?.title}
                           </Typography>
                           <IconButton
                             onClick={() =>
-                              dispatch(removeFromCart({ id: item.id }))
+                              dispatch(removeFromCart({ id: item?.id }))
                             }
                           >
                             <CloseIcon />
                           </IconButton>
                         </Box>
                         <Typography className="mr-4">
-                          {item.description.slice(0, 60)}
+                          {item?.description.slice(0, 60)}
                         </Typography>
                         <Box className="flex justify-between items-center">
                           <Box
@@ -105,7 +105,7 @@ const CartMenu = () => {
                             <IconButton
                               size="small"
                               onClick={() =>
-                                dispatch(decreaseCount({ id: item.id }))
+                                dispatch(decreaseCount({ id: item?.id }))
                               }
                             >
                               <RemoveIcon />
@@ -115,11 +115,11 @@ const CartMenu = () => {
                               className="w-[100px]"
                               id="outlined-number"
                               type="number"
-                              value={item.count}
+                              value={item?.count}
                               onChange={(event) =>
                                 dispatch(
                                   setCount({
-                                    id: item.id,
+                                    id: item?.id,
                                     count: event.target.value,
                                   })
                                 )
@@ -131,14 +131,14 @@ const CartMenu = () => {
                             <IconButton
                               size="small"
                               onClick={() =>
-                                dispatch(increaseCount({ id: item.id }))
+                                dispatch(increaseCount({ id: item?.id }))
                               }
                             >
                               <AddIcon />
                             </IconButton>
                           </Box>
                           <Typography fontWeight="bold">
-                            ${item.price}
+                            ${item?.price}
                           </Typography>
                         </Box>
                       </Box>
