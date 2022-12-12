@@ -36,6 +36,7 @@ export default function AccountMenu() {
       open={openAccountMemu}
       onClose={handleCloseAccountMemu}
       onClick={handleCloseAccountMemu}
+      className="w-[200px] md:w-[300px]"
       PaperProps={{
         elevation: 0,
         sx: {

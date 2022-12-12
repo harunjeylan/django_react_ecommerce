@@ -53,6 +53,7 @@ const CartMenu = () => {
               <CloseIcon />
             </IconButton>
           </Box>
+
           {/* CART LIST */}
           {cart.length ? (
             <>
