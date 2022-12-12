@@ -21,20 +21,12 @@ export const cartSlice = createSlice({
       if (item === undefined) {
         state.cart = [...state.cart, action.payload.product];
       }
-      // localStorage.setItem(
-      //   "cartItems",
-      //   JSON.stringify(state.cart.map((item) => item))
-      // );
     },
 
     removeFromCart: (state, action) => {
       state.cart = state.cart.filter(
         (product) => product.id !== action.payload.id
       );
-      // localStorage.setItem(
-      //   "cartItems",
-      //   JSON.stringify(state.cart.map((item) => item))
-      // );
     },
     toggleCart: (state, action) => {
       const item = state.cart.find((product) => {
@@ -56,10 +48,6 @@ export const cartSlice = createSlice({
         }
         return product;
       });
-      // localStorage.setItem(
-      //   "cartItems",
-      //   JSON.stringify(state.cart.map((item) => item))
-      // );
     },
 
     decreaseCount: (state, action) => {
@@ -69,10 +57,6 @@ export const cartSlice = createSlice({
         }
         return product;
       });
-      // localStorage.setItem(
-      //   "cartItems",
-      //   JSON.stringify(state.cart.map((item) => item))
-      // );
     },
 
     setCount: (state, action) => {
@@ -83,10 +67,6 @@ export const cartSlice = createSlice({
         }
         return product;
       });
-      // localStorage.setItem(
-      //   "cartItems",
-      //   JSON.stringify(state.cart.map((item) => item))
-      // );
     },
 
     setIsCartOpen: (state) => {
