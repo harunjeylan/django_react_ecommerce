@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import * as yup from "yup";
 import { Formik } from "formik";
-
+import { useSelector, useDispatch,createSelector } from "react-redux";
 import {
   TextField,
   Box,
@@ -13,6 +13,9 @@ import {
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
 import { tokens } from "../theme";
+import { useLoginMutation } from "../lib/redux/services/authReducer";
+
+import {userAuth} from "../lib/redux/services/authReducer"
 
 const UserLoginForm = () => {
   const theme = useTheme();
@@ -25,9 +28,18 @@ const UserLoginForm = () => {
     username: yup.string().required("required"),
     password: yup.string().required("required"),
   });
+  const [ login, result ] = useLoginMutation();
   const handleFormSubmit = (values) => {
     console.log(values);
+    login({ authPost: values }).then((res) => {
+      console.log(res.data);
+    }).catch((err)=>{
+      console.log(err);
+    });
   };
+  const data = useSelector((state) => state)
+
+  console.log(data)
   return (
     <Box>
       <Formik

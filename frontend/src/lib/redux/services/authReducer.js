@@ -1,32 +1,33 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { createSlice } from "@reduxjs/toolkit";
 
+
 export const userAuth = createApi({
   reducerPath: "userAuth",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://localhost:8000/",
-    prepareHeaders: (headers, { getState }) => {
-      const token = getState().auth.token;
-      headers = { ...headers, "Content-Type": "application/json" };
-      // If we have a token set in state, let's assume that we should be passing it.
-      if (token) {
-        headers.set("authorization", `Bearer ${token}`);
-      }
+    baseUrl: "http://127.0.0.1:8000/",
+    // prepareHeaders: (headers, { getState }) => {
+    //   const token = getState()?.auth?.token;
+    //   headers = { ...headers, "Content-Type": "application/json" };
+    //   // If we have a token set in state, let's assume that we should be passing it.
+    //   if (token) {
+    //     headers.set("authorization", `Bearer ${token}`);
+    //   }
 
-      return headers;
-    },
+    //   return headers;
+    // },
   }),
-  tagTypes: ["user"],
+  tagTypes: ["userAuth"],
   endpoints: (builder) => ({
     // getToken: builder.query({ query: () => "api/token" }),
     // refreshToken: builder.query({ query: () => "api/token/refrash" }),
     login: builder.mutation({
-      query: ({ post }) => ({
+      query: ({ authPost }) => ({
         url: `api/token`,
         method: "POST",
-        body: post,
+        body: authPost,
       }),
-      invalidatesTags: ["user"],
+      invalidatesTags: ["userAuth"],
     }),
     getUseDetailes: builder.query({
       query: ({ productId }) => `users/${productId}`,
@@ -35,25 +36,4 @@ export const userAuth = createApi({
 });
 
 export const { useLoginMutation, useGetUseDetailesQuery } = userAuth;
-
-// const initialState = {
-//   token: "",
-//   refiresh: "",
-//   user: {},
-// };
-// export const userSlice = createSlice({
-//   name: "user",
-//   initialState,
-//   reducers: {
-
-//     login: async (state, action) => {
-//       state.user = [...state.user, action.payload.product];
-//     },
-
-//     logout: (state, action) => {
-//       state.user = state.user.filter(
-//         (product) => product.id !== action.payload.product.id
-//       );
-//     },
-//   },
-// });
+export const { endpoints, reducerPath, reducer, middleware } = userAuth;

@@ -12,8 +12,8 @@ from api import api
 urlpatterns = [
     path("", api.getRoutes, name="getRoutes"),
 
-    path('api/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 router = routers.DefaultRouter()
 router.register('api/products', ProductViewSet, 'products')
