@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 
 //IMORTING APP SETUP
+import PrivateRoutes from "./utils/PrivateRoutes";
 import { ColorModeContext, useMode } from "./theme";
 import AdminLayout from "./site/admin/layout";
 import CustomerLayout from "./site/customers/layout";
@@ -16,6 +17,7 @@ import Contacts from "./site/admin/pages/contacts";
 import FAQ from "./site/admin/pages/faq";
 import { BarChart, LineChart, PieChart } from "./site/admin/pages/charts";
 import { OrdersListAdmin, OrderDetailsAdmin } from "./site/admin/pages/orders";
+
 import {
   ProductsListAdmin,
   NewProduct,
@@ -26,6 +28,11 @@ import {
   CustomerDetails,
   NewCustomer,
 } from "./site/admin/pages/customers";
+
+// IMORTING Authentcation pages
+
+import Login from "./site/auth/pages/Login";
+import Register from "./site/auth/pages/Register";
 
 //IMORTING CUSTOMERS PAGE COMPONENTS
 import {
@@ -52,8 +59,14 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Routes>
+          {/* Authentcation pages */}
+
+          <Route path="/auth">
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+          </Route>
           {/* ADMINIS SAITE */}
-          <Route path="admin">
+          <Route element={<PrivateRoutes />} path="admin">
             <Route
               index
               element={
@@ -205,7 +218,23 @@ function App() {
                 </CustomerLayout>
               }
             />
-            <Route path="profile">
+            <Route
+              path="shopping"
+              element={
+                <CustomerLayout>
+                  <Shopping />
+                </CustomerLayout>
+              }
+            />
+            <Route
+              path="product/:productId"
+              element={
+                <CustomerLayout>
+                  <ProductDetailsCustomer />
+                </CustomerLayout>
+              }
+            />
+            <Route element={<PrivateRoutes />} path="profile">
               <Route
                 index
                 element={
@@ -250,47 +279,34 @@ function App() {
                 }
               />
             </Route>
-            <Route
-              path="shopping"
-              element={
-                <CustomerLayout>
-                  <Shopping />
-                </CustomerLayout>
-              }
-            />
-            <Route
-              path="product/:productId"
-              element={
-                <CustomerLayout>
-                  <ProductDetailsCustomer />
-                </CustomerLayout>
-              }
-            />
-            <Route
-              path="viewcart"
-              element={
-                <CustomerLayout>
-                  <ViewCart />
-                </CustomerLayout>
-              }
-            />
-            <Route
-              path="checkout"
-              element={
-                <CustomerLayout>
-                  <Checkout />
-                </CustomerLayout>
-              }
-            />
 
-            <Route
-              path="checkout/success"
-              element={
-                <CustomerLayout>
-                  <Confirmation />
-                </CustomerLayout>
-              }
-            />
+            <Route element={<PrivateRoutes />} path="checkout">
+              <Route
+                index
+                element={
+                  <CustomerLayout>
+                    <Checkout />
+                  </CustomerLayout>
+                }
+              />
+              <Route
+                path="viewcart"
+                element={
+                  <CustomerLayout>
+                    <ViewCart />
+                  </CustomerLayout>
+                }
+              />
+
+              <Route
+                path="checkout/success"
+                element={
+                  <CustomerLayout>
+                    <Confirmation />
+                  </CustomerLayout>
+                }
+              />
+            </Route>
           </Route>
         </Routes>
       </ThemeProvider>
