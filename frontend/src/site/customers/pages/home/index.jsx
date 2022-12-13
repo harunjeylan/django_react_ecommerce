@@ -12,7 +12,10 @@ import ProductCarouse from "../../components/ProductCarouse";
 
 import Banner from "../../components/Banner";
 
-import { useGetLimitAndSkipProductsQuery } from "../../import";
+import {
+  useGetLimitAndSkipProductsQuery,
+  useGetProductsQuery,
+} from "../../import";
 import { Header, Header2, tokens } from "../../import";
 
 function Home() {
@@ -23,7 +26,8 @@ function Home() {
     data: RecommendedProducts,
     isFetching: isFetchingRecommendedProducts,
   } = useGetLimitAndSkipProductsQuery({ limit: 20, skip: 10 });
-  
+  const { data } = useGetProductsQuery();
+  console.log(data);
   return (
     <Box className="flex flex-col gap-4 md:gap-8">
       <Box backgroundColor={colors.primary[400]} className="">

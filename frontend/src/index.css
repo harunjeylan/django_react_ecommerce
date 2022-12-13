@@ -39,3 +39,12 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+#side-bar--disabled-anchor {
+  text-decoration: none !important;
+  color: inherit !important;
+}
+#side-bar--disabled-anchor:hover {
+  color: none !important;
+}
+

@@ -1,10 +1,10 @@
 import { useLocation, Outlet, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectCurrentToke } from "../features/auth/authSlice";
+import { selectCurrentToken } from "../features/auth/authSlice";
 
 function PrivateRoutes({ children, ...rest }) {
   console.log("private route is working");
-  const token = useSelector(selectCurrentToke);
+  const token = useSelector(selectCurrentToken);
   const location = useLocation();
   return token ? (
     <Outlet />

@@ -15,8 +15,8 @@ const authSlice = createSlice({
       state.token = access;
       state.refresh = refresh;
       state.user = jwt_decode(access);
-      console.log(action.payload);
     },
+
     logOut: (state, action) => {
       state.token = null;
       state.refresh = null;
@@ -28,10 +28,11 @@ const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, logOut, setUser } = authSlice.actions;
+export const { setCredentials, logOut, setUser } =
+  authSlice.actions;
 
 export default authSlice.reducer;
 
 export const selectCurrentUser = (state) => state.auth.user;
-export const selectCurrentToke = (state) => state.auth.token;
+export const selectCurrentToken = (state) => state.auth.token;
 export const selectCurrentRefresh = (state) => state.auth.refresh;

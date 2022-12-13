@@ -6,7 +6,7 @@ import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 
 // import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
@@ -23,12 +23,13 @@ import {
   Avatar,
   Tooltip,
 } from "@mui/material";
-import { setIsCartOpen } from "../import";
+import { setIsCartOpen, selectCurrentUser } from "../import";
 import { ColorModeContext, tokens, logo } from "../import";
 // import AccountDialog from "./AccountDialog";
 function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const user = useSelector(selectCurrentUser);
   const cart = useSelector((state) => state.cart.cart);
   const wishlist = useSelector((state) => state.wishlist.wishlist);
   const theme = useTheme();
@@ -148,10 +149,12 @@ function Navbar() {
               <FavoriteBorderOutlinedIcon />
             </IconButton>
           </Badge>
-          {/* <IconButton onClick={() => navigate("/profile")}>
-            <PersonOutlinedIcon />
-          </IconButton> */}
-          <Tooltip title="Account settings">
+
+          {user?.userRole === "superuser" ? (
+            <IconButton onClick={() => navigate("/admin/")}>
+              <DashboardOutlinedIcon />
+            </IconButton>
+          ) : user === null ? (
             <IconButton
               onClick={handleClickAccountMemu}
               size="small"
@@ -162,10 +165,20 @@ function Navbar() {
             >
               <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
             </IconButton>
-          </Tooltip>
-          <IconButton onClick={() => navigate("/admin/")}>
-            <MenuOutlinedIcon />
-          </IconButton>
+          ) : (
+            <Tooltip title="Account settings">
+              <IconButton
+                onClick={handleClickAccountMemu}
+                size="small"
+                sx={{ ml: 2 }}
+                aria-controls={openAccountMemu ? "account-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={openAccountMemu ? "true" : undefined}
+              >
+                <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+              </IconButton>
+            </Tooltip>
+          )}
         </Box>
       </Box>
     </Box>

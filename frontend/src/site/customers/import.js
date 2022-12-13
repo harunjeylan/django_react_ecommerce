@@ -9,10 +9,10 @@ export {
   useGetLimitAndSkipProductsQuery,
   useGetProductsDetailesQuery,
 } from "../../features/services/products";
-export {
-  useGetUseDetailesQuery,
-  useLoginMutation,
-} from "../../features/services/authReducer";
+export { useGetAllProductsQuery as useGetProductsQuery } from "../../features/services/productApiSlice";
+export { useGetUseDetailesQuery } from "../../features/services/authReducer";
+export { useLoginMutation } from "../../features/auth/authApiSlice";
+export { authApi } from "../../app/api/authApi";
 export {
   decreaseCount,
   setCount,
@@ -28,7 +28,11 @@ export {
   removeFromWishlist,
 } from "../../features/services/wishlistReducer";
 
-export { selectCurrentToke, logOut } from "../../features/auth/authSlice";
+export {
+  selectCurrentToken,
+  selectCurrentUser,
+  logOut,
+} from "../../features/auth/authSlice";
 
 export { UserLoginForm } from "../../components/UserAuthForm";
 export { default as Header } from "../../components/Header";

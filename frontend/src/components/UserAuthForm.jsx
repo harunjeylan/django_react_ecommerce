@@ -11,12 +11,13 @@ import {
   IconButton,
   Divider,
   Button,
+  Alert,
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
 import { tokens } from "../theme";
 
 import { setCredentials, setUser } from "../features/auth/authSlice";
-import { useLoginMutation } from "../features/authApiSlice";
+import { useLoginMutation } from "../features/auth/authApiSlice";
 
 const UserLoginForm = ({ handleCloseAccountDialog = null }) => {
   const theme = useTheme();
@@ -55,14 +56,12 @@ const UserLoginForm = ({ handleCloseAccountDialog = null }) => {
       }
       navigate(from, { replace: true });
     } catch (err) {
-      if (!err?.response) {
-        setErrormessage("No Server Response");
-      } else if (err.response?.status === 400) {
+      if (err?.status === 400) {
         setErrormessage("Missing Username or Password");
-      } else if (err.response?.status === 401) {
+      } else if (err?.status === 401) {
         setErrormessage("Unauthorized");
       } else {
-        setErrormessage("Login failed");
+        setErrormessage(err?.date?.detail);
       }
       console.log(err);
     }
@@ -89,7 +88,9 @@ const UserLoginForm = ({ handleCloseAccountDialog = null }) => {
             <Box className="flex flex-col gap-4 drop-shadow-lg  rounded-lg">
               <Box className="flex flex-col gap-4 px-4 py-2 ">
                 <Box>
-                  <Typography>{errorMessage}</Typography>
+                  {errorMessage !== "" && (
+                    <Alert severity="error">{errorMessage}</Alert>
+                  )}
                 </Box>
                 <TextField
                   fullWidth

@@ -1,7 +1,7 @@
 //IMORTING LIBRARYS
 import { Routes, Route } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-
+import { useEffect } from "react";
 //IMORTING APP SETUP
 import PrivateRoutes from "./utils/PrivateRoutes";
 import { ColorModeContext, useMode } from "./theme";
@@ -50,9 +50,31 @@ import {
 import Home from "./site/customers/pages/home";
 import Shopping from "./site/customers/pages/shopping";
 import { ProductDetailsCustomer } from "./site/customers/pages/products";
-
+import {
+  selectCurrentToken,
+  selectCurrentRefresh,
+} from "./features/auth/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setCredentials } from "./features/auth/authSlice";
+import { logOut } from "./features/auth/authSlice";
+import { authApi } from "./app/api/authApi";
+import { refreshAccessToken } from "./app/api/authApi";
+import store from "./app/store";
 function App() {
   const [theme, colorMode] = useMode();
+  const dispatch = useDispatch();
+  const accessToken = useSelector(selectCurrentToken);
+  const refreshToken = useSelector(selectCurrentRefresh);
+  const fiveMinute = 1000 * 60 * 5;
+  
+  useEffect(() => {
+    let interval = setInterval(() => {
+      if (refreshToken) {
+        refreshAccessToken(store);
+      }
+    }, fiveMinute);
+    return () => clearInterval(interval);
+  }, [accessToken]);
 
   return (
     <ColorModeContext.Provider value={colorMode}>

@@ -8,6 +8,8 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { useProSidebar } from "react-pro-sidebar";
+import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
+import { useSelector, useDispatch } from "react-redux";
 import {
   useTheme,
   Box,
@@ -15,7 +17,7 @@ import {
   InputBase,
   CardActionArea,
 } from "@mui/material";
-
+import { logOut } from "../import";
 import { ColorModeContext, tokens, logo } from "../import";
 const Topbar = () => {
   const theme = useTheme();
@@ -23,7 +25,7 @@ const Topbar = () => {
   const colorMode = useContext(ColorModeContext);
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const navigate = useNavigate();
-  
+  const dispatch = useDispatch();
   
   return (
     <Box display="flex" justifyContent="space-between" p={2}>
@@ -75,8 +77,8 @@ const Topbar = () => {
         <IconButton>
           <SettingsOutlinedIcon />
         </IconButton>
-        <IconButton>
-          <PersonOutlinedIcon />
+        <IconButton onClick={() => dispatch(logOut())}>
+          <LoginOutlinedIcon />
         </IconButton>
 
         {broken && rtl && (

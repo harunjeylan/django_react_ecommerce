@@ -90,61 +90,50 @@ const MyProSidebar = () => {
         width={broken ? "240px" : "280px"}
       >
         <Menu iconshape="square">
-          <MenuItem
-            icon={
-              collapsed ? (
-                <MenuOutlinedIcon onClick={() => collapseSidebar()} />
-              ) : sidebarRTL ? (
-                <SwitchLeftOutlinedIcon
-                  onClick={() => setSidebarRTL(!sidebarRTL)}
-                />
-              ) : (
-                <SwitchRightOutlinedIcon
-                  onClick={() => setSidebarRTL(!sidebarRTL)}
-                />
-              )
-            }
-            style={{
-              margin: "10px 0 20px 0",
-              color: colors.grey[100],
-            }}
+          <Box
+            backgroundColor={colors.primary[400]}
+            className="sticky h-[60px] top-0 z-[200] drop-shadow-md"
           >
-            {!collapsed && (
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                ml="15px"
-              >
-                <Typography
-                  sx={{
-                    "& a": {
-                      color: "inherit !important",
-                      backgroundColor: "transparent !important",
-                      textDecoration: "none",
-                    },
-                    "& a:hover": {
-                      color: `none !important`,
-                      backgroundColor: "none !important",
-                    },
-                  }}
-                  variant="h3"
-                  color={colors.grey[100]}
-                >
-                  ADMINIS
-                </Typography>
-                <IconButton
-                  onClick={
-                    broken ? () => toggleSidebar() : () => collapseSidebar()
-                  }
-                >
-                  <CloseOutlinedIcon />
-                </IconButton>
-              </Box>
-            )}
-          </MenuItem>
+            <MenuItem
+              icon={
+                collapsed ? (
+                  <IconButton onClick={() => collapseSidebar()}>
+                    <MenuOutlinedIcon />
+                  </IconButton>
+                ) : (
+                  <IconButton onClick={() => setSidebarRTL(!sidebarRTL)}>
+                    {sidebarRTL ? (
+                      <SwitchLeftOutlinedIcon />
+                    ) : (
+                      <SwitchRightOutlinedIcon />
+                    )}
+                  </IconButton>
+                )
+              }
+              style={{
+                margin: "10px 0 20px 0",
+                color: colors.grey[100],
+              }}
+              id="side-bar--disabled-anchor"
+            >
+              {!collapsed && (
+                <Box className="flex items-center">
+                  <Typography
+                    variant="h3"
+                    fontWeight="bold"
+                    className="mx-auto"
+                  >
+                    ADMIN
+                  </Typography>
+                  <IconButton onClick={() => collapseSidebar()}>
+                    <CloseOutlinedIcon />
+                  </IconButton>
+                </Box>
+              )}
+            </MenuItem>
+          </Box>
           {!collapsed && (
-            <Box mb="25px">
+            <Box mb="25px" className="mt-4">
               <Box
                 display="flex"
                 justifyContent="center"

@@ -11,6 +11,7 @@ export {
   mockDataTeam,
 } from "../../data/mockData";
 
+export { logOut } from "../customers/import";
 export { addToCart } from "../../features/services/cartReducer";
 export {
   useGetProductsDetailesQuery,
@@ -26,3 +27,13 @@ export { default as ReviewForm } from "../../components/ReviewForm";
 
 export { default as adminImage } from "../../data/images/user.png";
 export { default as logo } from "../../data/logo.png";
+
+
+
+
+
+
+
+
+
+

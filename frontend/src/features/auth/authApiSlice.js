@@ -1,6 +1,9 @@
-import { authApi } from "../app/api/authApi";
+import { authApi } from "../../app/api/authApi";
+import store from "../../app/store";
 
+const state = store.getState();
 export const authApiSlice = authApi.injectEndpoints({
+  tagTypes: ["accessToken"],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({
@@ -9,7 +12,9 @@ export const authApiSlice = authApi.injectEndpoints({
         body: credentials,
       }),
     }),
+    
   }),
 });
 
 export const { useLoginMutation } = authApiSlice;
+export const { endpoints, reducerPath, reducer, middleware } = authApiSlice;

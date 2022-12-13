@@ -18,10 +18,11 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
 
 import { LayoutContext } from "./LayoutContext";
-import { selectCurrentToke, logOut } from "../import";
+import { selectCurrentToken, logOut } from "../import";
 import { tokens } from "../import";
 export default function AccountMenu() {
-  const token = useSelector(selectCurrentToke);
+  const token = useSelector(selectCurrentToken);
+  
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
@@ -71,6 +72,7 @@ export default function AccountMenu() {
       transformOrigin={{ horizontal: "right", vertical: "top" }}
       anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
     >
+      
       <MenuItem>
         <Avatar /> Profile
       </MenuItem>
