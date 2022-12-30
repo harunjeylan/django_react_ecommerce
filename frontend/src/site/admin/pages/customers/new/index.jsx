@@ -19,6 +19,7 @@ const Form = () => {
     address1: "",
     address2: "",
   };
+
   const checkoutSchema = yup.object().shape({
     firstName: yup.string().required("Required"),
     lastName: yup.string().required("Required"),

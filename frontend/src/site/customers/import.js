@@ -34,7 +34,7 @@ export {
   logOut,
 } from "../../features/auth/authSlice";
 
-export { UserLoginForm } from "../../components/UserAuthForm";
+export { UserLoginForm, UserRegisterForm } from "../../components/UserAuthForm";
 export { default as Header } from "../../components/Header";
 export { default as Header2 } from "../../components/Header2";
 export { default as Header3 } from "../../components/Header3";

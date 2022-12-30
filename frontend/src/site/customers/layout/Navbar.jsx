@@ -16,6 +16,7 @@ import {
   InputBase,
   Badge,
   Box,
+  Button,
   CardActionArea,
   IconButton,
   // Typography,
@@ -38,7 +39,6 @@ function Navbar() {
 
   const { openAccountMemu } = useContext(LayoutContext);
   const { handleClickAccountMemu } = useContext(LayoutContext);
-  const { handleCloseAccountMemu } = useContext(LayoutContext);
   const { handleClickOpenAccountDialog } = useContext(LayoutContext);
 
   const [activeSearch, setActiveSearch] = useState(false);
@@ -81,7 +81,7 @@ function Navbar() {
             color="secondary"
           >
             <img
-              alg="logo"
+              alt="logo"
               src={logo}
               className="w-[50px] h-[50px] rounded-full"
             />
@@ -155,16 +155,22 @@ function Navbar() {
               <DashboardOutlinedIcon />
             </IconButton>
           ) : user === null ? (
-            <IconButton
-              onClick={handleClickAccountMemu}
-              size="small"
-              sx={{ ml: 2 }}
-              aria-controls={openAccountMemu ? "account-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={openAccountMemu ? "true" : undefined}
-            >
-              <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
-            </IconButton>
+            <Box className="flex gap-2">
+              <Button
+                onClick={() => handleClickOpenAccountDialog("login")}
+                color="secondary"
+                variant="contained"
+              >
+                Login
+              </Button>
+              <Button
+                onClick={() => handleClickOpenAccountDialog("register")}
+                color="secondary"
+                variant="contained"
+              >
+                Register
+              </Button>
+            </Box>
           ) : (
             <Tooltip title="Account settings">
               <IconButton

@@ -1,22 +1,10 @@
 import React, { useContext } from "react";
-import * as yup from "yup";
-import { Formik } from "formik";
 
-import {
-  TextField,
-  Box,
-  useTheme,
-  Typography,
-  IconButton,
-  Divider,
-  Button,
-} from "@mui/material";
+import { Box, useTheme, Typography, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-import { tokens, UserLoginForm } from "../import";
+import { tokens, UserLoginForm, UserRegisterForm } from "../import";
 import { LayoutContext } from "./LayoutContext";
-import { selectCurrentUser } from "../import";
-
 
 const AccountDialog = () => {
   const theme = useTheme();
@@ -24,17 +12,16 @@ const AccountDialog = () => {
 
   const { openAccountDialog } = useContext(LayoutContext);
   const { handleCloseAccountDialog } = useContext(LayoutContext);
-
-
+  const { handleClickOpenAccountDialog } = useContext(LayoutContext);
   return (
     <Box
       className={`${
-        openAccountDialog ? "fixed" : "hidden"
+        openAccountDialog.isOpen ? "fixed" : "hidden"
       } bg-black/20 z-[1000] w-full h-full left-0 top-0 pt-[60px] ease-in-out`}
     >
       <Box
         backgroundColor={colors.primary[400]}
-        open={openAccountDialog}
+        open={openAccountDialog.isOpen}
         onClose={handleCloseAccountDialog}
         className="mx-auto mt-4 w-[400px] max-w-[90%] rounded-lg"
       >
@@ -45,7 +32,8 @@ const AccountDialog = () => {
             fontWeight="bold"
             className={`text-xl md:text-2xl  text-left my-4`}
           >
-            Login
+            {openAccountDialog.mode === "login" && "Login"}
+            {openAccountDialog.mode === "register" && "Register"}
           </Typography>
           <Box>
             <IconButton onClick={handleCloseAccountDialog}>
@@ -53,8 +41,18 @@ const AccountDialog = () => {
             </IconButton>
           </Box>
         </Box>
-        <UserLoginForm handleCloseAccountDialog={handleCloseAccountDialog} />
-
+        {openAccountDialog.mode === "login" && (
+          <UserLoginForm
+            handleCloseAccountDialog={handleCloseAccountDialog}
+            handleClickOpenAccountDialog={handleClickOpenAccountDialog}
+          />
+        )}
+        {openAccountDialog.mode === "register" && (
+          <UserRegisterForm
+            handleCloseAccountDialog={handleCloseAccountDialog}
+            handleClickOpenAccountDialog={handleClickOpenAccountDialog}
+          />
+        )}
       </Box>
     </Box>
   );

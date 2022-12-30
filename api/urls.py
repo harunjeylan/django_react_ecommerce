@@ -12,6 +12,7 @@ from api import api
 
 urlpatterns = [
     path("", api.getRoutes, name="getRoutes"),
+    path("user/register/", api.userRegister, name="userRegister"),
     path("api/products/", api.getProducts, name="getProducts"),
 
     path('api/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),

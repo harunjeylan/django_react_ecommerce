@@ -11,12 +11,21 @@ const LayoutProvider = ({ children }) => {
   const handleCloseAccountMemu = () => {
     setAnchorEl(null);
   };
-  const [openAccountDialog, setOpenAccountDialog] = useState(false);
-  const handleClickOpenAccountDialog = () => {
-    setOpenAccountDialog(true);
+  const [openAccountDialog, setOpenAccountDialog] = useState({
+    isOpen: false,
+    mode: "login",
+  });
+  const handleClickOpenAccountDialog = (mode) => {
+    setOpenAccountDialog({
+      isOpen: true,
+      mode: mode,
+    });
   };
   const handleCloseAccountDialog = () => {
-    setOpenAccountDialog(false);
+    setOpenAccountDialog({
+      isOpen: false,
+      mode: "login",
+    });
   };
 
   const values = {
