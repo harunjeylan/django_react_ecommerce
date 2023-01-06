@@ -38,9 +38,23 @@ class RegistrationSerializer(serializers.ModelSerializer):
         validators.validate_password(password=data, user=User)
         return data
 
+    def validate_email(self, value: str) -> str:
+        """Normalize and validate email address."""
+        valid, error_text = email_is_valid(value)
+        if not valid:
+            raise serializers.ValidationError(error_text)
+        try:
+            email_name, domain_part = value.strip().rsplit('@', 1)
+        except ValueError:
+            pass
+        else:
+            value = '@'.join([email_name, domain_part.lower()])
+
+        return value
+
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
-        user.is_active = False
+        # user.is_active = False
         user.save()
         return user   
 #===========================================================================
@@ -51,11 +65,12 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            'id', 'username', 'password', 'first_name', 'last_name', 'email'
+            'id', 'username', 'first_name', 'last_name', 'email', 'is_superuser'
         )
         extra_kwargs = {
-            'password': {'write_only': True},
-            'username': {'read_only': True}
+            'username': {'read_only': True},
+            'email': {'read_only': True},
+            'is_superuser': {'read_only': True}
         }
 
     def validate_password(self, value):

@@ -150,7 +150,7 @@ function Navbar() {
             </IconButton>
           </Badge>
 
-          {user?.userRole === "superuser" ? (
+          {user?.is_superuser ? (
             <IconButton onClick={() => navigate("/admin/")}>
               <DashboardOutlinedIcon />
             </IconButton>

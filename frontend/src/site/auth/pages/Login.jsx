@@ -10,7 +10,8 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
   return (
     <Box
       backgroundColor={colors.primary[400]}
@@ -18,7 +19,10 @@ const Login = () => {
     >
       <Box className="w-full h-full">
         <Box className="flex flex-col py-4 items-center w-full">
-          <CardActionArea onClick={()=>navigate("/")} className="w-[120px] h-[120px] rounded-full border-1">
+          <CardActionArea
+            onClick={() => navigate("/")}
+            className="w-[120px] h-[120px] rounded-full border-1"
+          >
             <img alt="logo" src={logo} className="w-full h-full rounded-full" />
           </CardActionArea>
           <Typography

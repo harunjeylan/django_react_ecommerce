@@ -2,7 +2,7 @@ import React from "react";
 
 import { Box, useTheme, Typography, CardActionArea } from "@mui/material";
 
-import { UserLoginForm } from "../../../components/UserAuthForm";
+import { UserRegisterForm } from "../../../components/UserAuthForm";
 import { tokens } from "../../../theme";
 import logo from "../../../data/logo.png";
 
@@ -30,7 +30,7 @@ const Register = () => {
         </Box>
       </Box>
       <Box className="pb-20">
-        <UserLoginForm />
+        <UserRegisterForm />
       </Box>
     </Box>
   );

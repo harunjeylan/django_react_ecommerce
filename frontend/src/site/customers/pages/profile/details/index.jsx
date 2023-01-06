@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { Formik } from "formik";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 import { Typography, Box, useTheme, Breadcrumbs, Button } from "@mui/material";
 
 import Service from "../../../components/Service";
@@ -11,7 +13,9 @@ import ProfileDetailsForm from "./ProfileDetailsForm";
 import ChangePasswordForm from "./ChangePasswordForm";
 
 import { tokens, Header } from "../../../import";
-import { useGetUseDetailesQuery } from "../../../import";
+// import { useGetUseDetailesQuery } from "../../../import";
+import { selectCurrentUser } from "../../../import";
+
 const Wishlist = () => {
   const navigate = useNavigate();
 
@@ -22,11 +26,7 @@ const Wishlist = () => {
     actions.setTouched({});
   };
 
-  const userId = 1;
-  const { data: user, isFetching: isFetchingUser } = useGetUseDetailesQuery({
-    userId,
-  });
-  // console.log(user);
+  const user = useSelector(selectCurrentUser);
 
   const initialValues = {
     PersonalDetails: {
@@ -196,7 +196,7 @@ const Wishlist = () => {
           </Box>
 
           <Box className="w-full md:max-w-[40%]   lg:max-w-[30%]">
-            {!isFetchingUser && <ProfileCard user={user} />}
+            {user && <ProfileCard user={user} />}
           </Box>
         </Box>
       </Box>

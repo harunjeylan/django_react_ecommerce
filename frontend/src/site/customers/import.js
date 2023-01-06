@@ -10,7 +10,7 @@ export {
   useGetProductsDetailesQuery,
 } from "../../features/services/products";
 export { useGetAllProductsQuery as useGetProductsQuery } from "../../features/services/productApiSlice";
-export { useGetUseDetailesQuery } from "../../features/services/authReducer";
+export { useGetUseUseDataQuery } from "../../features/services/authReducer";
 export { useLoginMutation } from "../../features/auth/authApiSlice";
 export { authApi } from "../../app/api/authApi";
 export {

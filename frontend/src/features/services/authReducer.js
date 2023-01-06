@@ -18,11 +18,11 @@ export const userAuth = createApi({
       }),
       invalidatesTags: ["userAuth"],
     }),
-    getUseDetailes: builder.query({
-      query: ({ productId }) => `users/${productId}`,
+    getUseData: builder.query({
+      query: ({ productId }) => `api/user/`,
     }),
   }),
 });
 
-export const { useLoginMutation, useGetUseDetailesQuery } = userAuth;
+export const { useLoginMutation, useGetUseUseDataQuery } = userAuth;
 export const { endpoints, reducerPath, reducer, middleware } = userAuth;

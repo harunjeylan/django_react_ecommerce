@@ -203,16 +203,16 @@ const UserRegisterForm = ({
         /(?=.*[a-z])/,
         "The string must contain at least 1 lowercase alphabetical character"
       )
-      .matches(
-        /(?=.*[A-Z])/,
-        "The string must contain at least 1 uppercase alphabetical character"
-      )
+      // .matches(
+      //   /(?=.*[A-Z])/,
+      //   "The string must contain at least 1 uppercase alphabetical character"
+      // )
       .matches(
         /(?=.*[0-9])/,
         "The string must contain at least 1 numeric character"
       )
       .matches(
-        /(?=.*[!@#%^&*<>/_?])/,
+        /(?=.*[!@#%^&*<>/_?,.:"'$%^&*)=+()])/,
         "The string must contain at least one special character, but we are escaping reserved RegEx characters to avoid conflict"
       )
       .matches(/(?=.{8,})/, "The string must be eight characters or longer"),
@@ -227,15 +227,15 @@ const UserRegisterForm = ({
     try {
       const userData = await register({ ...values }).unwrap();
 
-      if (userData.isCreated) {
-        dispatch(setCredentials(userData));
+      if (userData.access && userData.user) {
+        dispatch(setUser(userData));
         setErrormessage("");
         setFieldValue("username", "");
         setFieldValue("first_name", "");
         setFieldValue("last_name", "");
         setFieldValue("password", "");
         setFieldValue("password2", "");
-        if (handleCloseAccountDialog !== null) {
+        if (handleCloseAccountDialog) {
           handleCloseAccountDialog();
         }
         navigate(from, { replace: true });
