@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 // import { useGetUseUseDataQuery } from "../../../import";
 import {
@@ -10,14 +10,18 @@ import {
   ListItemIcon,
   ListItemButton,
 } from "@mui/material";
-
+import { useEffect } from "react";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 
-import { selectCurrentUser } from "../../../import";
+import {
+  selectCurrentUser,
+  setUserData,
+  useGetUseDataQuery,
+} from "../../../import";
 import { tokens } from "../../../import";
 
 const ProfileCard = () => {
@@ -25,7 +29,7 @@ const ProfileCard = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const wishlist = useSelector((state) => state.wishlist.wishlist);
-  const user = useSelector(selectCurrentUser);
+  const userData = useSelector(selectCurrentUser);
 
   return (
     <Box className="flex flex-col gap-8 drop-shadow-lg bg-slate-400/10 rounded-lg">
@@ -36,7 +40,7 @@ const ProfileCard = () => {
         <Box className="h-[200px] w-[200px] rounded-[50%] bg-slate-400/10">
           <img
             alt="user avater"
-            src={user?.image}
+            src={userData?.image}
             className="h-[200px] w-[200px] rounded-[50%]"
           />
         </Box>
@@ -48,14 +52,14 @@ const ProfileCard = () => {
             fontWeight="bold"
             className={``}
           >
-            {user?.first_name} {user?.last_name}
+            {userData?.first_name} {userData?.last_name}
           </Typography>
           <Typography
             variant="subtitle1"
             color={colors.greenAccent[500]}
             className={``}
           >
-            {user?.email ? user?.email : user?.username}
+            {userData?.email ? userData?.email : userData?.username}
           </Typography>
         </Box>
       </Box>

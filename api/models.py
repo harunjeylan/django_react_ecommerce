@@ -69,7 +69,8 @@ class Inventory(models.Model):
     frozen_product = models.BooleanField(default=False,blank=True)
     expiry_date  = models.DateField(null=True, blank=True)
     product = models.OneToOneField(Product, on_delete=models.CASCADE)
-
+    def __str__(self):
+        return f"{self.product.title}"
 
 class Order(models.Model):
     customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -94,5 +95,11 @@ class Order(models.Model):
     countries = models.ForeignKey(Countries, on_delete=models.SET_NULL, null=True)
     date = models.DateField(auto_created=True)
 
+    def __str__(self):
+        return f"{self.customer.get_full_name: self.date}"
+
+class WishList(models.Model):
+    customer = models.OneToOneField(User, on_delete=models.CASCADE)
+    products = models.ManyToManyField(Product)
     def __str__(self):
         return f"{self.customer.get_full_name: self.date}"

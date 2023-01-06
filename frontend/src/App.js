@@ -53,20 +53,29 @@ import { ProductDetailsCustomer } from "./site/customers/pages/products";
 import {
   selectCurrentToken,
   selectCurrentRefresh,
+  selectCurrentUser,
 } from "./features/auth/authSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { setCredentials } from "./features/auth/authSlice";
-import { logOut } from "./features/auth/authSlice";
-import { authApi } from "./app/api/authApi";
+import { useSelector, useDispatch } from "react-redux";
+import { useGetUseDataQuery } from "./features/auth/authApiSlice";
 import { refreshAccessToken } from "./app/api/authApi";
+import { setUserData } from "./features/auth/authSlice";
 import store from "./app/store";
 function App() {
   const [theme, colorMode] = useMode();
-  const dispatch = useDispatch();
   const accessToken = useSelector(selectCurrentToken);
   const refreshToken = useSelector(selectCurrentRefresh);
+  const userData = useSelector(selectCurrentUser);
+  const dispatch = useDispatch();
+  const { data: newUserData } = useGetUseDataQuery();
+
+  useEffect(() => {
+    if (newUserData) dispatch(setUserData(newUserData));
+    console.log(newUserData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refreshToken, newUserData]);
+
   const fiveMinute = 1000 * 60 * 5;
-  
+
   useEffect(() => {
     let interval = setInterval(() => {
       if (refreshToken) {
@@ -74,6 +83,7 @@ function App() {
       }
     }, fiveMinute);
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken]);
 
   return (
@@ -81,13 +91,13 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Routes>
-          {/* Authentcation pages */}
+          {/* Authentication pages */}
 
           <Route path="/auth">
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
           </Route>
-          {/* ADMINIS SAITE */}
+          {/* ADMINS SITE */}
           <Route element={<PrivateRoutes />} path="admin">
             <Route
               index
@@ -230,7 +240,7 @@ function App() {
               />
             </Route>
           </Route>
-          {/* CUSTOMER SAITE SAITE */}
+          {/* CUSTOMER SITE SITE */}
           <Route path="/">
             <Route
               index

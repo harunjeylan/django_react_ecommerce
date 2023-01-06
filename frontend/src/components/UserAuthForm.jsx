@@ -16,12 +16,15 @@ import {
 import GoogleIcon from "@mui/icons-material/Google";
 import { tokens } from "../theme";
 
-import { setCredentials, setUser } from "../features/auth/authSlice";
+import {
+  setCredentials,
+  setUser,
+  setUserData,
+} from "../features/auth/authSlice";
 import {
   useLoginMutation,
   useRegisterMutation,
 } from "../features/auth/authApiSlice";
-
 const UserLoginForm = ({
   handleCloseAccountDialog,
   handleClickOpenAccountDialog,
@@ -225,10 +228,10 @@ const UserRegisterForm = ({
   const [register, { isLoading }] = useRegisterMutation();
   const handleFormSubmit = async (values, { setFieldValue }) => {
     try {
-      const userData = await register({ ...values }).unwrap();
+      const user = await register({ ...values }).unwrap();
 
-      if (userData.access && userData.user) {
-        dispatch(setUser(userData));
+      if (user.access && user.user) {
+        dispatch(setUser(user));
         setErrormessage("");
         setFieldValue("username", "");
         setFieldValue("first_name", "");
@@ -238,9 +241,10 @@ const UserRegisterForm = ({
         if (handleCloseAccountDialog) {
           handleCloseAccountDialog();
         }
+
         navigate(from, { replace: true });
       } else {
-        console.log(userData);
+        console.log(user);
       }
     } catch (err) {
       if (err?.status === 400) {

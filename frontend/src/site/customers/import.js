@@ -10,8 +10,10 @@ export {
   useGetProductsDetailesQuery,
 } from "../../features/services/products";
 export { useGetAllProductsQuery as useGetProductsQuery } from "../../features/services/productApiSlice";
-export { useGetUseUseDataQuery } from "../../features/services/authReducer";
-export { useLoginMutation } from "../../features/auth/authApiSlice";
+export {
+  useLoginMutation,
+  useGetUseDataQuery,
+} from "../../features/auth/authApiSlice";
 export { authApi } from "../../app/api/authApi";
 export {
   decreaseCount,
@@ -31,6 +33,7 @@ export {
 export {
   selectCurrentToken,
   selectCurrentUser,
+  setUserData,
   logOut,
 } from "../../features/auth/authSlice";
 

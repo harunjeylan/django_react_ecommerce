@@ -7,20 +7,24 @@ export const authApiSlice = authApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({
-        url: "/api/token/",
+        url: "/account/api/token/",
         method: "POST",
         body: credentials,
       }),
     }),
     register: builder.mutation({
       query: (credentials) => ({
-        url: "/api/user/register/",
+        url: "/account/api/user/register/",
         method: "POST",
         body: credentials,
       }),
     }),
+    getUseData: builder.query({
+      query: () => `/account/api/user/profile/`,
+    }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation } = authApiSlice;
+export const { useLoginMutation, useRegisterMutation, useGetUseDataQuery } =
+  authApiSlice;
 export const { endpoints, reducerPath, reducer, middleware } = authApiSlice;

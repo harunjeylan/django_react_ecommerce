@@ -1,6 +1,9 @@
 import { useLocation, Outlet, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectCurrentToken } from "../features/auth/authSlice";
+import {
+  selectCurrentToken,
+  selectCurrentRefresh,
+} from "../features/auth/authSlice";
 
 function PrivateRoutes({ children, ...rest }) {
   console.log("private route is working");

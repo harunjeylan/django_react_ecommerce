@@ -40,7 +40,6 @@ function Navbar() {
   const { openAccountMemu } = useContext(LayoutContext);
   const { handleClickAccountMemu } = useContext(LayoutContext);
   const { handleClickOpenAccountDialog } = useContext(LayoutContext);
-
   const [activeSearch, setActiveSearch] = useState(false);
   const searchRef = useRef(null);
   const hundleSearchClick = () => {
@@ -181,7 +180,9 @@ function Navbar() {
                 aria-haspopup="true"
                 aria-expanded={openAccountMemu ? "true" : undefined}
               >
-                <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+                <Avatar sx={{ width: 32, height: 32 }}>
+                  <img alt="A" src={user?.image} />
+                </Avatar>
               </IconButton>
             </Tooltip>
           )}

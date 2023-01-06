@@ -12,11 +12,9 @@ import ProfileCard from "../global/ProfileCard";
 import ProfileDetailsForm from "./ProfileDetailsForm";
 import ChangePasswordForm from "./ChangePasswordForm";
 
-import { tokens, Header } from "../../../import";
-// import { useGetUseDetailesQuery } from "../../../import";
-import { selectCurrentUser } from "../../../import";
+import { tokens, Header, selectCurrentUser } from "../../../import";
 
-const Wishlist = () => {
+const Profile = () => {
   const navigate = useNavigate();
 
   const theme = useTheme();
@@ -26,8 +24,7 @@ const Wishlist = () => {
     actions.setTouched({});
   };
 
-  const user = useSelector(selectCurrentUser);
-
+  const userData = useSelector(selectCurrentUser);
   const initialValues = {
     PersonalDetails: {
       firstName: "",
@@ -35,9 +32,9 @@ const Wishlist = () => {
       country: "",
       street1: "",
       street2: "",
-      city: user?.address.address.city,
-      state: user?.address.address.state,
-      zipCode: user?.address.address.postalCode,
+      city: userData?.address?.address?.city,
+      state: userData?.address?.address?.state,
+      zipCode: userData?.address?.address?.postalCode,
       email: "",
       phoneNumber: "",
     },
@@ -196,7 +193,7 @@ const Wishlist = () => {
           </Box>
 
           <Box className="w-full md:max-w-[40%]   lg:max-w-[30%]">
-            {user && <ProfileCard user={user} />}
+            {userData && <ProfileCard userData={userData} />}
           </Box>
         </Box>
       </Box>
@@ -211,4 +208,4 @@ const Wishlist = () => {
   );
 };
 
-export default Wishlist;
+export default Profile;
