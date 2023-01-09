@@ -42,10 +42,10 @@ def getRoutes(request):
 def userRegister(request):
     username = request.data["username"]
     # print(request.data)
-    # users = User.objects.filter(username = username)
+    users = User.objects.filter(username = username)
 
-    # if users.exists():
-    #     return Response({"isCreated":False,"message":"user is already exist"}, status.HTTP_208_ALREADY_REPORTED)
+    if users.exists():
+        return Response({"detail":"user is already exist with this username"}, status.HTTP_208_ALREADY_REPORTED)
     serializer = RegistrationSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()

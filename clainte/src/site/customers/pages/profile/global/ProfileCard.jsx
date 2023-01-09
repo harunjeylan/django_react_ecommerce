@@ -37,11 +37,15 @@ const ProfileCard = () => {
         backgroundColor={colors.primary[400]}
         className={`flex flex-col justify-between items-center gap-4 py-4 px-auto`}
       >
-        <Box className="h-[200px] w-[200px] rounded-[50%] bg-slate-400/10">
+        <Box className="h-[200px] w-[200px] rounded-full bg-slate-400/10 ">
           <img
             alt="user avater"
-            src={userData?.image}
-            className="h-[200px] w-[200px] rounded-[50%]"
+            src={
+              userData?.image
+                ? userData?.image
+                : "https://robohash.org/utetasperiores.png?size=200x200"
+            }
+            className="h-[200px] w-[200px] rounded-full"
           />
         </Box>
 

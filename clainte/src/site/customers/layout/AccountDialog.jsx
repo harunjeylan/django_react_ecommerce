@@ -16,14 +16,14 @@ const AccountDialog = () => {
   return (
     <Box
       className={`${
-        openAccountDialog.isOpen ? "fixed" : "hidden"
+        openAccountDialog.isOpen ? "fixed " : "hidden"
       } bg-black/20 z-[1000] w-full h-full left-0 top-0 pt-[60px] ease-in-out`}
     >
       <Box
         backgroundColor={colors.primary[400]}
         open={openAccountDialog.isOpen}
         onClose={handleCloseAccountDialog}
-        className="mx-auto mt-4 w-[400px] max-w-[90%] rounded-lg"
+        className="mx-auto mt-4 w-[400px] max-w-[90%] rounded-lg "
       >
         <Box className="px-4 py-4 flex justify-between items-center ease-in-out">
           <Typography

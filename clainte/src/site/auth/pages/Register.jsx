@@ -1,8 +1,7 @@
 import React from "react";
 
 import { Box, useTheme, Typography, CardActionArea } from "@mui/material";
-
-import { UserRegisterForm } from "../../../components/UserAuthForm";
+import UserRegisterForm from "../../../components/UserRegisterForm";
 import { tokens } from "../../../theme";
 import logo from "../../../data/logo.png";
 

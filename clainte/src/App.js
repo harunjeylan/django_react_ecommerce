@@ -50,6 +50,7 @@ import {
 import Home from "./site/customers/pages/home";
 import Shopping from "./site/customers/pages/shopping";
 import { ProductDetailsCustomer } from "./site/customers/pages/products";
+import Page_404 from "./components/Page_404";
 import {
   selectCurrentToken,
   selectCurrentRefresh,
@@ -340,6 +341,7 @@ function App() {
               />
             </Route>
           </Route>
+          <Route path="*" element={<Page_404 />} />
         </Routes>
       </ThemeProvider>
     </ColorModeContext.Provider>

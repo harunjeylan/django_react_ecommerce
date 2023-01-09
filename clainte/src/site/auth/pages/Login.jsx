@@ -1,8 +1,7 @@
 import React from "react";
 
 import { Box, useTheme, Typography, CardActionArea } from "@mui/material";
-
-import { UserLoginForm } from "../../../components/UserAuthForm";
+import UserLoginForm from "../../../components/UserLoginForm";
 import { tokens } from "../../../theme";
 import logo from "../../../data/logo.png";
 import { useNavigate } from "react-router-dom";
