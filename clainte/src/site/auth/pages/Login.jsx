@@ -34,7 +34,7 @@ const Login = () => {
           </Typography>
         </Box>
       </Box>
-      <Box className="pb-20">
+      <Box className="">
         <UserLoginForm />
       </Box>
     </Box>

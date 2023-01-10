@@ -16,6 +16,7 @@ import {
   tokens,
   Header,
   selectCurrentUser,
+  useUpdatePasswordMutation,
   useUpdatePersonalInfoMutation,
 } from "../../../import";
 
@@ -35,10 +36,18 @@ const Profile = () => {
   // console.log(userData);
 
   const [updatePersonalInfo] = useUpdatePersonalInfoMutation();
+  const [updatePassword] = useUpdatePasswordMutation();
   const handlePersonalInfoFormSubmit = async (values, actions) => {
     // console.log(values);
+    await updatePersonalInfo(values);
     actions.setTouched({});
-    updatePersonalInfo(values);
+    // actions.resetForm();
+  };
+  const handlePasswordSubmit = async (values, actions) => {
+    // console.log(values);
+    await updatePassword(values);
+    actions.setTouched({});
+    actions.resetForm();
   };
   const PersonalDetailsInitialValues = {
     first_name: getValue(userData?.first_name),
@@ -54,9 +63,9 @@ const Profile = () => {
     phone_number: getValue(userData?.phone_number),
   };
   const changeYourPasswordInitialValues = {
-    oldPassword: "",
-    newPassword: "",
-    retypeNewPassword: "",
+    old_password: "",
+    new_password: "",
+    passwordConfirmation: "",
   };
 
   const phoneRegExp =
@@ -78,8 +87,8 @@ const Profile = () => {
       .matches(phoneRegExp, "phone number is not valid!"),
   });
   const changeYourPasswordCheckoutSchema = yup.object().shape({
-    oldPassword: yup.string().required("required"),
-    newPassword: yup
+    old_password: yup.string().required("required"),
+    new_password: yup
       .string()
       .required("required")
       .matches(
@@ -102,8 +111,8 @@ const Profile = () => {
 
     passwordConfirmation: yup
       .string()
-      .oneOf([yup.ref("newPassword"), null], "Passwords must match")
-      .required("required"),
+      .required("required")
+      .oneOf([yup.ref("new_password"), null], "Passwords must match"),
   });
   return (
     <Box className={`flex flex-col gap-8 mt-20 md:mt-40c`}>
@@ -133,7 +142,7 @@ const Profile = () => {
               <Formik
                 onSubmit={handlePersonalInfoFormSubmit}
                 initialValues={PersonalDetailsInitialValues}
-                // validationSchema={PersonalDetailsCheckoutSchema}
+                validationSchema={PersonalDetailsCheckoutSchema}
               >
                 {({
                   values,
@@ -149,7 +158,6 @@ const Profile = () => {
                     className="flex flex-col  gap-4"
                   >
                     <ProfileDetailsForm
-                      type="PersonalDetails"
                       values={values}
                       touched={touched}
                       errors={errors}
@@ -174,9 +182,9 @@ const Profile = () => {
                 Change your password
               </Typography>
               <Formik
-                onSubmit={handleFormSubmit}
-                initialValues={changeYourPasswordCheckoutSchema}
-                // validationSchema={checkoutSchema}
+                onSubmit={handlePasswordSubmit}
+                initialValues={changeYourPasswordInitialValues}
+                validationSchema={changeYourPasswordCheckoutSchema}
               >
                 {({
                   values,
@@ -192,7 +200,6 @@ const Profile = () => {
                     className="flex flex-col  gap-4"
                   >
                     <ChangePasswordForm
-                      type="changeYourPassword"
                       values={values}
                       touched={touched}
                       errors={errors}

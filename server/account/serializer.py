@@ -11,14 +11,21 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['first_name','last_name','username', 'password']
+        extra_kwargs = {
+            'password': {'write_only': True},
+        }
 
 #===========================================================================
 class PassChangeFormSerializer(serializers.ModelSerializer):
-    old_password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
-    password1 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
+    old_password = serializers.CharField(required=True,style={'input_type': 'password'}, write_only=True)
+    new_password = serializers.CharField(required=True, style={'input_type': 'password'}, write_only=True)
     class Meta:
         model = User
-        fields = ['old_password','password1']
+        fields = ['old_password','new_password']
+        extra_kwargs = {
+            'old_password': {'write_only': True},
+            'new_password': {'write_only': True},
+        }
 
 #===========================================================================
 class ProfileSerializer(serializers.ModelSerializer):
@@ -29,10 +36,16 @@ class ProfileSerializer(serializers.ModelSerializer):
 #===========================================================================
 class UpdateProfileFormSerializer(serializers.ModelSerializer):
     # phone_number = serializers.CharField()
+    email = serializers.EmailField(allow_blank=True)
     class Meta:
         model = Profile
-        fields = ["phone_number"]
+        fields = ["phone_number","email"]
 
+#===========================================================================
+class UpdateUserFormSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = "username"
 
 #===========================================================================
 class AddressSerializer(serializers.ModelSerializer):
@@ -52,17 +65,10 @@ class UpdateAddressSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
-        fields = (
-            'id', 'username', 'first_name', 'last_name', 'email', 'is_superuser'
-        )
-        extra_kwargs = {
-            'username': {'read_only': True},
-            'email': {'read_only': True},
-            'is_superuser': {'read_only': True}
-        }
+        fields = [ 'id', 'username', 'first_name', 'last_name', 'email', 'is_superuser']
+
     # def __init__(self,user, *args, **kwargs):
     #     profile = Profile.objects.get(user=user)
     #     serializer = ProfileSerializer(profile)

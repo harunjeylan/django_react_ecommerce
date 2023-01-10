@@ -18,6 +18,7 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 
 import {
+  logOut,
   selectCurrentUser,
   setUserData,
   useGetUseDataQuery,
@@ -30,7 +31,7 @@ const ProfileCard = () => {
   const navigate = useNavigate();
   const wishlist = useSelector((state) => state.wishlist.wishlist);
   const userData = useSelector(selectCurrentUser);
-
+  const dispatch = useDispatch();
   return (
     <Box className="flex flex-col gap-8 drop-shadow-lg bg-slate-400/10 rounded-lg">
       <Box
@@ -116,7 +117,7 @@ const ProfileCard = () => {
             </Typography>
           </Box>
         </ListItemButton>
-        <ListItemButton onClick={() => {}}>
+        <ListItemButton onClick={() => dispatch(logOut())}>
           <ListItemIcon>
             <LogoutOutlinedIcon fontSize="large" />
           </ListItemIcon>

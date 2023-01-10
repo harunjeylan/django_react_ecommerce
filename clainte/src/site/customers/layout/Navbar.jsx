@@ -40,22 +40,20 @@ function Navbar() {
   const { openAccountMemu } = useContext(LayoutContext);
   const { handleClickAccountMemu } = useContext(LayoutContext);
   const { handleClickOpenAccountDialog } = useContext(LayoutContext);
-  const [activeSearch, setActiveSearch] = useState(false);
-  const searchRef = useRef(null);
-  const hundleSearchClick = () => {
-    setActiveSearch(!activeSearch);
-    console.log(activeSearch);
-    searchRef.current.focus();
-  };
+  // const [activeSearch, setActiveSearch] = useState(false);
+  // const searchRef = useRef(null);
+  // const handleSearchClick = () => {
+  //   setActiveSearch(!activeSearch);
+  //   searchRef.current.focus();
+  // };
 
-  const [scrollPosition, setScrollPosition] = useState(0);
   const [confetti, setConfetti] = useState(false);
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [scrollPosition]);
+  }, []);
   const handleScroll = () => {
     const position = window.pageYOffset;
     if (position <= 400) {
@@ -86,8 +84,8 @@ function Navbar() {
             />
           </CardActionArea>
         </Box>
-        <Box className="justify-center flex gap-1">
-          <Box
+        <Box className="justify-center flex gap-2">
+          {/* <Box
             display="flex"
             backgroundColor={colors.primary[400]}
             p={0.2}
@@ -100,10 +98,10 @@ function Navbar() {
                 placeholder="Search"
               />
             )}
-            <IconButton onClick={hundleSearchClick} type="button">
+            <IconButton onClick={handleSearchClick} type="button">
               <SearchOutlinedIcon />
             </IconButton>
-          </Box>
+          </Box> */}
           <IconButton onClick={colorMode.toggleColorMode}>
             {theme.palette.mode === "dark" ? (
               <LightModeOutlinedIcon />
@@ -158,14 +156,14 @@ function Navbar() {
               <Button
                 onClick={() => handleClickOpenAccountDialog("login")}
                 color="secondary"
-                variant="contained"
+                variant="outlined"
               >
                 Login
               </Button>
               <Button
                 onClick={() => handleClickOpenAccountDialog("register")}
                 color="secondary"
-                variant="contained"
+                variant="outlined"
               >
                 Register
               </Button>

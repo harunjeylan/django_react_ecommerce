@@ -4,8 +4,10 @@ import { Box, useTheme, Typography, CardActionArea } from "@mui/material";
 import UserRegisterForm from "../../../components/UserRegisterForm";
 import { tokens } from "../../../theme";
 import logo from "../../../data/logo.png";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
@@ -15,7 +17,10 @@ const Register = () => {
     >
       <Box className="w-full h-full">
         <Box className="flex flex-col py-4 items-center w-full">
-          <CardActionArea className="w-[120px] h-[120px] rounded-full border-1">
+          <CardActionArea
+            onClick={() => navigate("/")}
+            className="w-[120px] h-[120px] rounded-full border-1"
+          >
             <img alt="logo" src={logo} className="w-full h-full rounded-full" />
           </CardActionArea>
           <Typography
@@ -28,7 +33,7 @@ const Register = () => {
           </Typography>
         </Box>
       </Box>
-      <Box className="pb-20">
+      <Box className="">
         <UserRegisterForm />
       </Box>
     </Box>

@@ -1,14 +1,13 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { Navigate, useNavigate, useLocation, Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import * as yup from "yup";
 import { Formik } from "formik";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   TextField,
   Box,
   useTheme,
   Typography,
-  IconButton,
   Divider,
   Button,
   Alert,
@@ -16,16 +15,8 @@ import {
 import GoogleIcon from "@mui/icons-material/Google";
 import { tokens } from "../theme";
 
-import {
-  logOut,
-  setCredentials,
-  setUser,
-  setUserData,
-} from "../features/auth/authSlice";
-import {
-  useLoginMutation,
-  useRegisterMutation,
-} from "../features/auth/authApiSlice";
+import { logOut, setUser } from "../features/auth/authSlice";
+import { useRegisterMutation } from "../features/auth/authApiSlice";
 
 const UserRegisterForm = ({
   handleCloseAccountDialog = undefined,
@@ -33,7 +24,7 @@ const UserRegisterForm = ({
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const userRef = useRef();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -78,24 +69,19 @@ const UserRegisterForm = ({
       .oneOf([yup.ref("password"), null], "Passwords must match"),
   });
 
-  const [register, { isLoading }] = useRegisterMutation();
-  const handleFormSubmit = async (values, { setFieldValue }) => {
+  const [register] = useRegisterMutation();
+  const handleFormSubmit = async (values, { resetForm }) => {
     try {
       const user = await register({ ...values }).unwrap();
 
       if (user.access && user.user) {
         dispatch(setUser(user));
         setErrorMessage("");
-        setFieldValue("username", "");
-        setFieldValue("first_name", "");
-        setFieldValue("last_name", "");
-        setFieldValue("password", "");
-        setFieldValue("password2", "");
         console.log(handleCloseAccountDialog);
         if (handleCloseAccountDialog !== undefined) {
           handleCloseAccountDialog();
         }
-
+        resetForm();
         navigate(from, { replace: true });
       } else {
         setErrorMessage(user?.detail);
@@ -196,7 +182,7 @@ const UserRegisterForm = ({
                   color="secondary"
                   className="w-full py-2"
                 >
-                  Login
+                  Register
                 </Button>
 
                 <Box className="flex justify-start px-4 pt-2 ">

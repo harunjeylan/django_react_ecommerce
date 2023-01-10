@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { useTheme } from "@mui/material";
@@ -23,6 +23,7 @@ import { LayoutContext } from "./LayoutContext";
 import { logOut } from "../import";
 
 import { tokens } from "../import";
+import { setIsCartOpen, selectCurrentUser } from "../import";
 
 export default function AccountMenu() {
   const theme = useTheme();
@@ -32,6 +33,7 @@ export default function AccountMenu() {
   const { openAccountMemu } = useContext(LayoutContext);
   const { handleCloseAccountMemu } = useContext(LayoutContext);
   const { anchorEl } = useContext(LayoutContext);
+  const userData = useSelector(selectCurrentUser);
   return (
     <Menu
       anchorEl={anchorEl}
@@ -73,11 +75,12 @@ export default function AccountMenu() {
       anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
     >
       <MenuItem onClick={() => navigate("/profile/")}>
-        <Avatar /> Profile
+        <Avatar sx={{ width: 32, height: 32 }}>
+          <img alt="A" src={userData?.image} />
+        </Avatar>
+        My account
       </MenuItem>
-      <MenuItem>
-        <Avatar /> My account
-      </MenuItem>
+
       <Divider />
       <MenuItem onClick={() => navigate("/profile/address/")}>
         <ListItemIcon>
@@ -85,13 +88,13 @@ export default function AccountMenu() {
         </ListItemIcon>
         Address
       </MenuItem>
-      <MenuItem onClick={() => navigate("/profile/wishlist")}>
+      <MenuItem onClick={() => navigate("/profile/wishlist/")}>
         <ListItemIcon>
           <FavoriteBorderOutlinedIcon fontSize="small" />
         </ListItemIcon>
         Wishlist
       </MenuItem>
-      <MenuItem onClick={() => navigate("/viewcart")}>
+      <MenuItem onClick={() => navigate("/checkout/viewcart/")}>
         <ListItemIcon>
           <ShoppingBagOutlinedIcon fontSize="small" />
         </ListItemIcon>
@@ -105,17 +108,11 @@ export default function AccountMenu() {
       </MenuItem>
       <Divider />
 
-      <MenuItem>
+      <MenuItem onClick={() => navigate("/auth/register/")}>
         <ListItemIcon>
           <PersonAddAltOutlinedIcon fontSize="small" />
         </ListItemIcon>
         Add another account
-      </MenuItem>
-      <MenuItem>
-        <ListItemIcon>
-          <SettingsOutlinedIcon fontSize="small" />
-        </ListItemIcon>
-        Settings
       </MenuItem>
       <MenuItem onClick={() => dispatch(logOut())}>
         <ListItemIcon>

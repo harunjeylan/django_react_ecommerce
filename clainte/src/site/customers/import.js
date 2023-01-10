@@ -13,6 +13,7 @@ export { useGetAllProductsQuery as useGetProductsQuery } from "../../features/se
 export {
   useLoginMutation,
   useGetUseDataQuery,
+  useUpdatePasswordMutation,
   useUpdatePersonalInfoMutation,
 } from "../../features/auth/authApiSlice";
 export { authApi } from "../../app/api/authApi";

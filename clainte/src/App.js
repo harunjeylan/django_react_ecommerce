@@ -2,6 +2,7 @@
 import { Routes, Route } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { useEffect } from "react";
+import jwt_decode from "jwt-decode";
 //IMORTING APP SETUP
 import PrivateRoutes from "./utils/PrivateRoutes";
 import { ColorModeContext, useMode } from "./theme";
@@ -61,6 +62,7 @@ import { useGetUseDataQuery } from "./features/auth/authApiSlice";
 import { refreshAccessToken } from "./app/api/authApi";
 import { setUserData } from "./features/auth/authSlice";
 import store from "./app/store";
+import dayjs from "dayjs";
 function App() {
   const [theme, colorMode] = useMode();
   const accessToken = useSelector(selectCurrentToken);
@@ -68,21 +70,21 @@ function App() {
   const userData = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
   const { data: newUserData } = useGetUseDataQuery();
-  // console.log(refreshToken);
-  useEffect(() => {
-    if (newUserData) dispatch(setUserData(newUserData));
-    console.log(newUserData);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refreshToken, newUserData]);
 
-  const fiveMinute = 1000 * 60 * 5;
+  useEffect(() => {
+    if (userData && newUserData) dispatch(setUserData(newUserData));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessToken, newUserData]);
+  const timeOut = accessToken
+    ? dayjs.unix(jwt_decode(accessToken).exp).diff(dayjs())
+    : 1000 * 60 * 5;
 
   useEffect(() => {
     let interval = setInterval(() => {
       if (refreshToken) {
         refreshAccessToken(store);
       }
-    }, fiveMinute);
+    }, timeOut);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken]);

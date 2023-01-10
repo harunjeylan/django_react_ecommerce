@@ -11,13 +11,14 @@ from account import api
 
 
 urlpatterns = [
-    path("", api.getRoutes, name="getRoutes"),
-    path("api/profile/", api.getUserData, name="user"),
-    path("api/register/", api.userRegister, name="userRegister"),
+    path("", api.getRoutes, name="get_routes"),
+    path("api/profile/", api.getUserData, name="profile"),
+    path("api/register/", api.userRegister, name="register"),
 
     path('api/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    path('api/profile/update_address/', api.updateAddress, name='token_refresh'),
+    path('api/profile/update_address/', api.updateAddress, name='update_address'),
+    path('api/profile/update_password/', api.updatePassword, name='update_password'),
 
 ]

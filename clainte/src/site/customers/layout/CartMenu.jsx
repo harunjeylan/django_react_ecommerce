@@ -163,7 +163,7 @@ const CartMenu = () => {
                     className={`w-full py-2`}
                     color="secondary"
                     onClick={() => {
-                      navigate("/checkout/viewcart");
+                      navigate("/checkout/viewcart/");
                       dispatch(setIsCartOpen({}));
                     }}
                   >
@@ -174,7 +174,7 @@ const CartMenu = () => {
                     className={`w-full py-2`}
                     color="secondary"
                     onClick={() => {
-                      navigate("/checkout");
+                      navigate("/checkout/");
                       dispatch(setIsCartOpen({}));
                     }}
                   >

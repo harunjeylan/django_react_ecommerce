@@ -4,7 +4,6 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 import TextField from "@mui/material/TextField";
 const ChangePasswordForm = ({
-  type,
   values,
   touched,
   errors,
@@ -14,7 +13,7 @@ const ChangePasswordForm = ({
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   // these functions allow for better code readability
-  const formattedName = (field) => `${type}.${field}`;
+  const formattedName = (field) => `${field}`;
 
   const formattedError = (field) =>
     Boolean(
@@ -41,10 +40,10 @@ const ChangePasswordForm = ({
         label="Old password"
         onBlur={handleBlur}
         onChange={handleChange}
-        value={values.oldPassword}
-        name={formattedName("oldPassword")}
-        error={formattedError("oldPassword")}
-        helperText={formattedHelper("oldPassword")}
+        value={values.old_password}
+        name={formattedName("old_password")}
+        error={formattedError("old_password")}
+        helperText={formattedHelper("old_password")}
         sx={{ gridColumn: "span 4" }}
       />
       <TextField
@@ -54,10 +53,10 @@ const ChangePasswordForm = ({
         label="New password"
         onBlur={handleBlur}
         onChange={handleChange}
-        value={values.newPassword}
-        name={formattedName("newPassword")}
-        error={formattedError("newPassword")}
-        helperText={formattedHelper("newPassword")}
+        value={values.new_password}
+        name={formattedName("new_password")}
+        error={formattedError("new_password")}
+        helperText={formattedHelper("new_password")}
         sx={{ gridColumn: "span 4" }}
       />
       <TextField

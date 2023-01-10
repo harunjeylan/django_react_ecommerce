@@ -1,14 +1,13 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { Navigate, useNavigate, useLocation, Link } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import * as yup from "yup";
 import { Formik } from "formik";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   TextField,
   Box,
   useTheme,
   Typography,
-  IconButton,
   Divider,
   Button,
   Alert,
@@ -19,13 +18,10 @@ import { tokens } from "../theme";
 import {
   logOut,
   setCredentials,
-  setUser,
   setUserData,
 } from "../features/auth/authSlice";
-import {
-  useLoginMutation,
-  useRegisterMutation,
-} from "../features/auth/authApiSlice";
+import { useLoginMutation } from "../features/auth/authApiSlice";
+import { endpoints as authEndpoints } from "../features/auth/authApiSlice";
 const UserLoginForm = ({
   handleCloseAccountDialog = undefined,
   handleClickOpenAccountDialog = undefined,
@@ -52,18 +48,24 @@ const UserLoginForm = ({
     password: yup.string().required("required"),
   });
 
-  const [login, { isLoading }] = useLoginMutation();
+  const [login] = useLoginMutation();
 
-  const handleFormSubmit = async (values, { setFieldValue }) => {
+  const handleFormSubmit = async (values, { resetForm }) => {
     try {
-      const userData = await login({ ...values }).unwrap();
-      dispatch(setCredentials(userData));
+      const user = await login({ ...values }).unwrap();
+      dispatch(setCredentials(user));
       setErrorMessage("");
-      setFieldValue("username", "");
-      setFieldValue("password", "");
       if (handleCloseAccountDialog !== undefined) {
         handleCloseAccountDialog();
       }
+      await dispatch(authEndpoints.getUseData.initiate()).then((response) => {
+        if (response.isSuccess) {
+          dispatch(setUserData(response.data));
+        } else {
+          console.log(response);
+        }
+      });
+      resetForm();
       navigate(from, { replace: true });
     } catch (err) {
       setErrorMessage(err?.data?.detail);
@@ -132,7 +134,7 @@ const UserLoginForm = ({
                   Login
                 </Button>
                 <Box className="flex justify-end px-4 pt-2 ">
-                  <Typography>Forgate Password</Typography>
+                  <Typography>Forgat Password</Typography>
                 </Box>
               </Box>
             </Box>

@@ -49,4 +49,7 @@ class Profile(models.Model):
 
 
     def get_image(self):
-        return self.image.url
+        if self.image:
+            return self.image.url
+        else:
+            return None
