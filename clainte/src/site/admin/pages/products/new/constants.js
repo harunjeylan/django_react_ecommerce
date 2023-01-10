@@ -6,6 +6,11 @@ export const constants = {
     { name: "Womens's Clothing", value: "Wom" },
     { name: "Kid's Clothing", value: "Kid" },
   ],
+  collections: [
+    { name: "Men's Clothing", value: "Men" },
+    { name: "Womens's Clothing", value: "Wom" },
+    { name: "Kid's Clothing", value: "Kid" },
+  ],
   vendors: [
     { name: "Men's Clothing", value: "Men" },
     { name: "Womens's Clothing", value: "Wom" },

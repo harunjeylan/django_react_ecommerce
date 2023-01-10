@@ -21,7 +21,8 @@ import SwitchRightOutlinedIcon from "@mui/icons-material/SwitchRightOutlined";
 import SwitchLeftOutlinedIcon from "@mui/icons-material/SwitchLeftOutlined";
 import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-
+import { selectCurrentUser } from "../../../features/auth/authSlice";
+import { useSelector, useDispatch } from "react-redux";
 import { useSidebarContext } from "./SidebarContext";
 import { adminImage, logo2 } from "../import";
 import { tokens } from "../import";
@@ -49,6 +50,8 @@ const MyProSidebar = () => {
   const [selected, setSelected] = useState("Dashboard");
   const { sidebarRTL, setSidebarRTL, sidebarImage } = useSidebarContext();
   const { collapseSidebar, toggleSidebar, collapsed, broken } = useProSidebar();
+  const userData = useSelector(selectCurrentUser);
+
   return (
     <Box
       sx={{
@@ -87,7 +90,7 @@ const MyProSidebar = () => {
         rtl={sidebarRTL}
         backgroundColor={colors.primary[400]}
         image={sidebarImage}
-        width={broken ? "240px" : "280px"}
+        width={broken ? "280px" : "320px"}
       >
         <Menu iconshape="square">
           <Box
@@ -133,31 +136,35 @@ const MyProSidebar = () => {
             </MenuItem>
           </Box>
           {!collapsed && (
-            <Box mb="25px" className="mt-4">
+            <Box mb="25px" className="my-8">
               <Box
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
-                sx={{
-                  "& .avater-image": {
-                    backgroundColor: colors.primary[500],
-                  },
-                }}
+                className="py-4"
               >
                 <img
-                  className="avater-image w-[100px] h-[100px]  rounded-[50%]"
+                  style={{ backgroundColor: colors.primary[500] }}
+                  className="w-[100px] h-[100px]  rounded-full"
                   alt="profile user"
-                  src={adminImage}
+                  src={
+                    userData?.image
+                      ? userData?.image
+                      : "https://robohash.org/utetasperiores.png?size=200x200"
+                  }
                 />
               </Box>
-              <Box textAlign="center">
+              <Box textAlign="center" className="my-4">
                 <Typography
                   variant="h3"
                   color={colors.grey[100]}
                   fontWeight="bold"
-                  sx={{ m: "10px 0 0 0" }}
+                  className=""
                 >
-                  Harun Jeylan
+                  {userData?.first_name} {userData?.last_name}
+                </Typography>
+                <Typography variant="subtitle2" color="secondary" className="">
+                  {userData?.email ? userData?.email : userData?.username}
                 </Typography>
               </Box>
             </Box>
@@ -171,7 +178,7 @@ const MyProSidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title="Landing"
+              title="Public"
               to="/"
               icon={<HomeOutlinedIcon />}
               selected={selected}

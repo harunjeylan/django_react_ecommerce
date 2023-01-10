@@ -14,7 +14,7 @@ export const initialValues = {
   category: "",
   collection: "",
   vendor: "",
-  tags: "",
+  tags: [],
   variants: constants.variants,
   restockQuantity: 0,
   globalDelivery: {

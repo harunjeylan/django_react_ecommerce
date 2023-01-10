@@ -10,6 +10,9 @@ import {
   FormLabel,
   FormGroup,
   Select,
+  OutlinedInput,
+  Chip,
+  Button,
 } from "@mui/material";
 
 import { tokens } from "../../../import";
@@ -22,6 +25,7 @@ const OrganizeForm = ({
   touched,
   handleBlur,
   handleChange,
+  handleOpenModel,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -53,6 +57,12 @@ const OrganizeForm = ({
                 Category
               </Typography>
               <Typography
+                onClick={() =>
+                  handleOpenModel({
+                    inputLabel: "category",
+                    modelTitle: "Add Category",
+                  })
+                }
                 variant="h6"
                 fontWeight="bold"
                 className={`my-2 cursor-pointer hover:text-green-400`}
@@ -67,7 +77,7 @@ const OrganizeForm = ({
                 fullWidth
                 color="secondary"
                 labelId="category-select-label"
-                id="category-select"
+                id="categories-select"
                 variant="filled"
                 value={values.category}
                 onBlur={handleBlur}
@@ -88,6 +98,12 @@ const OrganizeForm = ({
                 Vendor
               </Typography>
               <Typography
+                onClick={() =>
+                  handleOpenModel({
+                    inputLabel: "vender",
+                    modelTitle: "Add Vender",
+                  })
+                }
                 variant="h6"
                 fontWeight="bold"
                 className={`my-2 cursor-pointer hover:text-green-400`}
@@ -123,6 +139,12 @@ const OrganizeForm = ({
                 Collection
               </Typography>
               <Typography
+                onClick={() =>
+                  handleOpenModel({
+                    inputLabel: "collection",
+                    modelTitle: "Add Collection",
+                  })
+                }
                 variant="h6"
                 fontWeight="bold"
                 className={`my-2 cursor-pointer hover:text-green-400`}
@@ -131,27 +153,41 @@ const OrganizeForm = ({
                 Add new collection
               </Typography>
             </Box>
-            <TextField
-              color="secondary"
-              fullWidth
-              variant="filled"
-              type="text"
-              label="Collection"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              value={values.collection}
-              name="collection"
-              error={!!touched.collection && !!errors.collection}
-              helperText={touched.collection && errors.collection}
-            />
+            <FormControl variant="filled" className="w-full">
+              <InputLabel id="collections-select-label">Collection</InputLabel>
+              <Select
+                fullWidth
+                color="secondary"
+                labelId="collections-select-label"
+                id="collections-select"
+                variant="filled"
+                value={values.collection}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                name="collection"
+              >
+                {constants.collections.map((collection) => (
+                  <MenuItem key={collection.value} value={collection.value}>
+                    {collection.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
           <Box className="w-full">
-            <Box className="w-full flex justify-between px-1 gap-2">
+            <Box className="w-full flex justify-between px-1 gap-2 items-center">
               <Typography variant="h6" fontWeight="bold" className="my-2">
                 Tags
               </Typography>
+
               <Typography
-                variant="h6"
+                onClick={() =>
+                  handleOpenModel({
+                    inputLabel: "tags",
+                    modelTitle: "Add Tags",
+                  })
+                }
+                variant="subtitle"
                 fontWeight="bold"
                 className={`my-2 cursor-pointer hover:text-green-400`}
                 color={colors.blueAccent[400]}
@@ -163,11 +199,26 @@ const OrganizeForm = ({
               <InputLabel id="tags-select-label">Tags</InputLabel>
               <Select
                 fullWidth
+                multiple
                 color="secondary"
                 labelId="tags-select-label"
                 id="tags-select"
                 variant="filled"
                 value={values.tags}
+                input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+                renderValue={(selected) => (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 0.5,
+                    }}
+                  >
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
                 onBlur={handleBlur}
                 onChange={handleChange}
                 name="tags"

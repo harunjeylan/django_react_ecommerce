@@ -8,7 +8,7 @@ export const newProductSchema = yup.object().shape({
   category: yup.string().required("Required"),
   collection: yup.string(),
   vendor: yup.string(),
-  tags: yup.string(),
+  tags: yup.array.of(yup.string()),
   restockQuantity: yup.number(),
   globalDelivery: {
     type: yup.string(),

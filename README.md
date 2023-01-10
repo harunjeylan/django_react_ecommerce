@@ -1,10 +1,5 @@
 # Django + react eCommerce
 
-## Demo
-
-https://f93k2n-2001.preview.csb.app/
-
-
 ## Refrenses
 
 https://varkala-react-2.vercel.app/
