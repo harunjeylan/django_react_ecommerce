@@ -68,7 +68,7 @@ const Team = () => {
             variant="text"
             color="secondary"
           >
-            Admin Dashboadrd
+            Admin Dashboard
           </Button>
           <Typography color="text.primary">New Product</Typography>
         </Breadcrumbs>
@@ -76,34 +76,35 @@ const Team = () => {
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Header title="TEAM" subtitle="welcome to you Team" />
       </Box>
-      <Box
-        backgroundColor={colors.primary[400]}
-        className="h-[80vh] rounded-lg p-4"
-        sx={{
-          "& .MuiDataGrid-root": {
-            border: "none",
-          },
-          "& .MuiDataGrid-cell": {
-            borderBottom: "none",
-          },
-          "& .MuiCheckbox-root": {
-            color: `${colors.greenAccent[200]} !important`,
-          },
-          "& .MuiChackbox-root": {
-            color: `${colors.greenAccent[200]} !important`,
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-            color: `${colors.grey[100]} !important`,
-          },
-          "& .MuiDataGrid-cell": {
-            width: "100%",
-          },
-        }}
-      >
-        <DataGrid rows={mockDataTeam} columns={columns} />
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
+        <Box
+          height="80vh"
+          backgroundColor={colors.primary[400]}
+          className="h-[80vh] rounded-lg p-4"
+          sx={{
+            "& .MuiDataGrid-root": {
+              border: "none",
+            },
+            "& .MuiDataGrid-cell": {
+              borderBottom: "none",
+              width: "100%",
+            },
+            "& .MuiCheckbox-root": {
+              color: `${colors.greenAccent[200]} !important`,
+            },
+            "& .MuiChackbox-root": {
+              color: `${colors.greenAccent[200]} !important`,
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              borderBottom: "none",
+            },
+            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+              color: `${colors.grey[100]} !important`,
+            },
+          }}
+        >
+          <DataGrid rows={mockDataTeam} columns={columns} />
+        </Box>
       </Box>
     </Box>
   );

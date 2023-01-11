@@ -127,9 +127,6 @@ const Customers = () => {
             "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
               color: `${colors.grey[100]} !important`,
             },
-            "& .MuiDataGrid-cell": {
-              width: "100%",
-            },
           }}
         >
           <DataGrid

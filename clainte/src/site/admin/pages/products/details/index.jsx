@@ -59,7 +59,7 @@ const ProductDetails = () => {
   }, [product?.thumbnail]);
 
   return (
-    <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
+    <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20 mb-10`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Breadcrumbs aria-label="breadcrumb">
           <Button
@@ -189,7 +189,7 @@ const ProductDetails = () => {
                       </FormLabel>
                       <Box>
                         <RadioGroup
-                          aria-labelledby="demo-radio-buttons-group-label"
+                          labelled="demo-radio-buttons-group-label"
                           defaultValue="female"
                           name="radio-buttons-group"
                         >

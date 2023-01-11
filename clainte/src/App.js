@@ -1,4 +1,5 @@
 //IMORTING LIBRARYS
+import React, { useRef } from "react";
 import { Routes, Route } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { useEffect } from "react";
@@ -70,21 +71,24 @@ function App() {
   const userData = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
   const { data: newUserData } = useGetUseDataQuery();
-
+  const timeOutRef = useRef(1000 * 60 * 4);
   useEffect(() => {
     if (userData && newUserData) dispatch(setUserData(newUserData));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken, newUserData]);
-  const timeOut = accessToken
-    ? dayjs.unix(jwt_decode(accessToken).exp).diff(dayjs())
-    : 1000 * 60 * 5;
+  useEffect(() => {
+    timeOutRef.current = accessToken
+      ? dayjs.unix(jwt_decode(accessToken).exp).diff(dayjs()) - 30000
+      : 1000 * 60 * 4;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessToken]);
 
   useEffect(() => {
     let interval = setInterval(() => {
       if (refreshToken) {
         refreshAccessToken(store);
       }
-    }, timeOut);
+    }, timeOutRef.current);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken]);

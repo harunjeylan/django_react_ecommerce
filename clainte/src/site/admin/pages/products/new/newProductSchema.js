@@ -8,35 +8,26 @@ export const newProductSchema = yup.object().shape({
   category: yup.string().required("Required"),
   collection: yup.string(),
   vendor: yup.string(),
-  tags: yup.array.of(yup.string()),
+  tags: yup.array().of(yup.string()),
   restockQuantity: yup.number(),
-  globalDelivery: {
+  globalDelivery: yup.object().shape({
     type: yup.string(),
-    selectedCountries: yup.array().of(
-      yup.string().when("globalDelivery.type", {
-        is: (type) => type === "selectedCountries",
-        then: yup.string().required("required for 'Selected Countries' option"),
-      })
-    ),
-  },
-  attributes: {
+    selectedCountries: yup.array().of(yup.string()),
+  }),
+  attributes: yup.object().shape({
     fragileProduct: yup.boolean(),
     biodegradable: yup.boolean(),
-    frozenProduct: {
+    frozenProduct: yup.object().shape({
       selected: yup.boolean(),
       maxAllowedTemperature: yup.string(),
-      maxAllowedTemperature: yup.string().when("selected", {
-        is: (selected) => selected,
-        then: yup.string().required("required for 'Frozen Product' option"),
-      }),
-    },
-    expiryDate: {
+    }),
+    expiryDate: yup.object().shape({
       selected: yup.boolean(),
-      date: yup.date().default(() => new Date()),
-    },
-  },
-  advanced: {
+      date: yup.date(),
+    }),
+  }),
+  advanced: yup.object().shape({
     productIDType: yup.string(),
     productID: yup.string(),
-  },
+  }),
 });

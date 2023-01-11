@@ -52,12 +52,12 @@ const OrderDetailsForAdmin = () => {
   const handleFormSubmit = (values) => {
     console.log(values);
   };
-  const produtCtolumns = [
+  const productColumns = [
     {
       field: "name",
       headerName: "Product Name",
       width: 360,
-      hieght: 200,
+      height: 200,
       renderCell: ({ row: { title, thumbnail } }) => {
         return (
           <Box className="flex gap-4 items-center py-2 w-full h-full">
@@ -155,7 +155,7 @@ const OrderDetailsForAdmin = () => {
     { field: "date", headerName: "Date", width: 100 },
   ];
   return (
-    <Box className="">
+    <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20 mb-10`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Breadcrumbs aria-label="breadcrumb">
           <Button
@@ -592,7 +592,7 @@ const OrderDetailsForAdmin = () => {
                   <DataGrid
                     density="comfortable"
                     rows={mockDataProducts.slice(0, 10)}
-                    columns={produtCtolumns}
+                    columns={productColumns}
                     autoPageSize
                     checkboxSelection
                     components={{ Toolbar: GridToolbar }}
@@ -641,7 +641,7 @@ const OrderDetailsForAdmin = () => {
                   <DataGrid
                     density="comfortable"
                     rows={mockDataProducts.slice(0, 10)}
-                    columns={produtCtolumns}
+                    columns={productColumns}
                     autoPageSize
                     checkboxSelection
                     components={{ Toolbar: GridToolbar }}

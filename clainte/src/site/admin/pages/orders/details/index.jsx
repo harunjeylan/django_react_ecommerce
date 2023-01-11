@@ -103,7 +103,7 @@ const OrderDetailsForAdmin = () => {
   ];
 
   return (
-    <Box className="">
+    <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20 mb-10`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Breadcrumbs aria-label="breadcrumb">
           <Button

@@ -15,7 +15,7 @@ export const initialValues = {
   collection: "",
   vendor: "",
   tags: [],
-  variants: constants.variants,
+  variants: [],
   restockQuantity: 0,
   globalDelivery: {
     type: "",
@@ -30,7 +30,7 @@ export const initialValues = {
     },
     expiryDate: {
       selected: false,
-      date: "",
+      date: new Date(),
     },
   },
   advanced: {

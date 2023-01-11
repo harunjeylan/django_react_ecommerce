@@ -201,7 +201,7 @@ const ProductDetails = () => {
                       </FormLabel>
                       <Box>
                         <RadioGroup
-                          aria-labelledby="demo-radio-buttons-group-label"
+                          labelled="demo-radio-buttons-group-label"
                           defaultValue="female"
                           name="radio-buttons-group"
                         >
