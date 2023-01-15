@@ -1,5 +1,5 @@
 
-# Alif - E-commerce Django App Project
+# Alif - E-commerce ReactJs and Django App Project
 
 [![Build Status](https://travis-ci.org/adrian80z/e-commerce.svg?branch=master)](https://github.com/harunjeylan/alif_django_react_ecommerce.git)
 
