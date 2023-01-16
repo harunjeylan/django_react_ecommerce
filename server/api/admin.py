@@ -1,10 +1,22 @@
 from django.contrib import admin
 
-from .models import Category, Tag, Option, Variants, Image, Product, Countries, Inventory, Order
+from .models import Category, Vendor, Collection, Tag, Option, Variant, VariantOption, Image, Organize, Product, Countries, Inventory, Order, WishList
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
+    list_display = ( 'name',)
+    search_fields = ('name',)
+
+
+@admin.register(Vendor)
+class VendorAdmin(admin.ModelAdmin):
+    list_display = ( 'name',)
+    search_fields = ('name',)
+
+
+@admin.register(Collection)
+class CollectionAdmin(admin.ModelAdmin):
     list_display = ( 'name',)
     search_fields = ('name',)
 
@@ -19,35 +31,47 @@ class OptionAdmin(admin.ModelAdmin):
     list_display = ( 'label',)
 
 
-@admin.register(Variants)
-class VariantsAdmin(admin.ModelAdmin):
+@admin.register(Variant)
+class VariantAdmin(admin.ModelAdmin):
     list_display = ( 'label',)
-    raw_id_fields = ('options',)
+   
+
+
+@admin.register(VariantOption)
+class VariantOptionAdmin(admin.ModelAdmin):
+    list_display = ('option', 'variant')
+    list_filter = ('option', 'variant')
 
 
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
-    list_display = ( 'image',)
+    list_display = ('image',)
+
+
+@admin.register(Organize)
+class OrganizeAdmin(admin.ModelAdmin):
+    list_display = ('category', 'collection', 'vendor')
+    list_filter = ('category', 'collection', 'vendor')
+    raw_id_fields = ('tags',)
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
-        
         'title',
         'brand',
         'description',
-        'category',
         'price',
         'thumbnail',
+        'organize',
     )
-    list_filter = ('category',)
-    raw_id_fields = ('images', 'organize', 'variants')
+    list_filter = ('organize',)
+    raw_id_fields = ('images', 'variants')
 
 
 @admin.register(Countries)
 class CountriesAdmin(admin.ModelAdmin):
-    list_display = ( 'name', 'code')
+    list_display = ('name', 'code')
     search_fields = ('name',)
 
 
@@ -79,7 +103,7 @@ class InventoryAdmin(admin.ModelAdmin):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = (
-        
+      
         'date',
         'customer',
         'email',
@@ -88,4 +112,11 @@ class OrderAdmin(admin.ModelAdmin):
         'countries',
     )
     list_filter = ('date', 'customer', 'countries')
+    raw_id_fields = ('products',)
+
+
+@admin.register(WishList)
+class WishListAdmin(admin.ModelAdmin):
+    list_display = ('id', 'customer')
+    list_filter = ('customer',)
     raw_id_fields = ('products',)

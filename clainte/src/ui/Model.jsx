@@ -36,9 +36,9 @@ const AccountDialog = ({
   };
   return (
     <Box
-      className={`${openModel ? "fixed " : "hidden"} bg-black/20 z-[1000] 
+      className={`${openModel ? "fixed " : "hidden"} bg-black/20
       w-full h-full left-0 top-0 justify-between items-center
-      pt-[60px] ease-in-out`}
+      pt-[60px] ease-in-out z-[10000000]`}
     >
       <Box
         width={getWidth()}
@@ -60,7 +60,7 @@ const AccountDialog = ({
             </IconButton>
           </Box>
         </Box>
-        <Box className="p-4 pb-8">{children}</Box>
+        <Box className="px-4 pb-8">{children}</Box>
       </Box>
     </Box>
   );

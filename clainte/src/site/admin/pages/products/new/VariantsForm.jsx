@@ -15,6 +15,8 @@ import {
   Divider,
   Tabs,
   Tab,
+  List,
+  ListItem,
 } from "@mui/material";
 import { constants } from "./constants";
 
@@ -61,9 +63,73 @@ const Item = ({ item, itemName, handleUpdate, handleDelete }) => {
     </Box>
   );
 };
-const VariantsForm = ({ values, handleBlur, handleChange }) => {
+const VariantList = ({ setIsEditing }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  return (
+    <Box className="w-full h-full grid grid-cols-4 gap-4">
+      <Box
+        backgroundColor={colors.primary[500]}
+        className="w-full h-full flex flex-col gap-2 p-4 rounded-md"
+      >
+        <Box>
+          <Typography variant="h5" fontWeight="bold">
+            Valiant Label
+          </Typography>
+        </Box>
+        <List>
+          <ListItem>Option 1</ListItem>
+          <ListItem>Option 2</ListItem>
+          <ListItem>Option 3</ListItem>
+        </List>
+      </Box>
+      <Box
+        backgroundColor={colors.primary[500]}
+        className="w-full h-full flex flex-col gap-2 p-4 rounded-md"
+      >
+        <Box>
+          <Typography variant="h5" fontWeight="bold">
+            Valiant Label
+          </Typography>
+        </Box>
+        <List>
+          <ListItem>Option 1</ListItem>
+          <ListItem>Option 2</ListItem>
+          <ListItem>Option 3</ListItem>
+        </List>
+      </Box>
+      <Box
+        backgroundColor={colors.primary[500]}
+        className="w-full h-full flex flex-col gap-2 p-4 rounded-md"
+      >
+        <Box>
+          <Typography variant="h5" fontWeight="bold">
+            Valiant Label
+          </Typography>
+        </Box>
+        <List>
+          <ListItem>Option 1</ListItem>
+          <ListItem>Option 2</ListItem>
+          <ListItem>Option 3</ListItem>
+        </List>
+      </Box>
+      <Box
+        backgroundColor={colors.primary[500]}
+        className="w-full h-full flex flex-col items-center justify-center p-4 rounded-md"
+      >
+        <IconButton
+          onClick={() => setIsEditing(true)}
+          size="large"
+          className="w-20 h-20"
+        >
+          +
+        </IconButton>
+      </Box>
+    </Box>
+  );
+};
+const EditVariant = ({ valiant, setIsEditing }) => {
+  const modelInputRef = useRef();
   const [openModel, setOpenModel] = useState(false);
   const [modelTitle, setModelTitle] = useState("");
   const [modelInputLabel, setModelInputLabel] = useState("");
@@ -74,13 +140,6 @@ const VariantsForm = ({ values, handleBlur, handleChange }) => {
     setInitialItems(constants.categories);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [constants.categories]);
-
-  const modelInputRef = useRef();
-  const handleOpenModel = () => {
-    setModelInputLabel("option");
-    setModelTitle("Add Variants");
-    setOpenModel(true);
-  };
   const handleAdd = () => {
     const data = {
       name: modelInputLabel,
@@ -109,6 +168,111 @@ const VariantsForm = ({ values, handleBlur, handleChange }) => {
     setTapValue(newValue);
   };
   return (
+    <Box className="w-full">
+      <Button
+        // onClick={handleOpenModel}
+        type="button"
+        color="secondary"
+        variant="outlined"
+        className={`w-full mt-4`}
+      >
+        Add another variants
+      </Button>
+      <Box>
+        <Typography variant="h5" fontWeight="bold" className="py-2">
+          Name
+        </Typography>
+        <Box className="flex justify-between items-center gap-2 mb-4">
+          <TextField
+            size="small"
+            color="secondary"
+            fullWidth
+            variant="filled"
+            type="text"
+            label={modelInputLabel}
+            inputRef={modelInputRef}
+          />
+          <IconButton onClick={handleAdd}>
+            <SaveAsIcon />
+          </IconButton>
+          <IconButton onClick={handleAdd}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+        <Divider />
+        <Typography variant="h5" fontWeight="bold" className="py-2">
+          Options
+        </Typography>
+        <Box className="flex flex-col gap-4 mt-4">
+          {initialItems.map((item) => (
+            <Item
+              key={item.value}
+              item={item}
+              itemName={modelInputLabel}
+              handleUpdate={handleUpdate}
+              handleDelete={handleDelete}
+            />
+          ))}
+          <Box className="flex justify-between items-center gap-2">
+            <TextField
+              size="small"
+              color="secondary"
+              fullWidth
+              type="text"
+              // variant="standard"
+              // value={item.value}
+              label="new option"
+            />
+            <IconButton>
+              <SaveAsIcon />
+            </IconButton>
+            <IconButton>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </Box>
+        <Box className="flex flex-row gap-4 mt-4">
+          <Button
+            // onClick={handleOpenModel}
+            type="button"
+            color="secondary"
+            variant="outlined"
+            className={` mt-4`}
+          >
+            Save Change
+          </Button>
+          <Button
+            // onClick={handleOpenModel}
+            type="button"
+            color="secondary"
+            variant="outlined"
+            className={` mt-4`}
+            onClick={() => setIsEditing(false)}
+          >
+            cancel
+          </Button>
+        </Box>
+      </Box>
+    </Box>
+  );
+};
+const VariantsForm = ({ values, handleBlur, handleChange }) => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const [openModel, setOpenModel] = useState(false);
+  const [modelTitle, setModelTitle] = useState("");
+  const [modelInputLabel, setModelInputLabel] = useState("");
+  const [initialItems, setInitialItems] = useState([]);
+  const [tapValue, setTapValue] = useState(0);
+  const [isEditing, setIsEditing] = useState(true);
+
+  const handleOpenModel = () => {
+    setModelInputLabel("option");
+    setModelTitle("Add Variants");
+    setOpenModel(true);
+  };
+
+  return (
     <>
       <Model
         width="md"
@@ -117,86 +281,13 @@ const VariantsForm = ({ values, handleBlur, handleChange }) => {
         modelTitle={modelTitle}
       >
         {openModel && (
-          <Box className="max-w-fit">
-            <Button
-              // onClick={handleOpenModel}
-              type="button"
-              color="secondary"
-              variant="outlined"
-              className={`w-full mt-4`}
-            >
-              Add another variants
-            </Button>
-            <Tabs
-              value={tapValue}
-              onChange={handleChangeTaps}
-              variant="scrollable"
-              scrollButtons
-              textColor="secondary"
-              indicatorColor="secondary"
-              allowScrollButtonsMobile
-              aria-label="scrollable tabs example"
-            >
-              <Tab value={0} label="Item One" />
-              <Tab value={1} label="Item Two" />
-              <Tab value={2} label="Item Three" />
-              <Tab value={3} label="Item Four" />
-              <Tab value={4} label="Item Five" />
-              <Tab value={5} label="Item Six" />
-              <Tab value={6} label="Item Seven" />
-              <Tab value={7} label="Item Three" />
-              <Tab value={8} label="Item Four" />
-              <Tab value={9} label="Item Five" />
-              <Tab value={10} label="Item Six" />
-              <Tab value={11} label="Item Seven" />
-            </Tabs>
-            <Box>
-              <Typography variant="h5" fontWeight="bold" className="py-2">
-                Name
-              </Typography>
-              <Box className="flex justify-between items-center gap-2 mb-4">
-                <TextField
-                  size="small"
-                  color="secondary"
-                  fullWidth
-                  variant="filled"
-                  type="text"
-                  label={modelInputLabel}
-                  inputRef={modelInputRef}
-                />
-                <IconButton onClick={handleAdd}>
-                  <SaveAsIcon />
-                </IconButton>
-                <IconButton onClick={handleAdd}>
-                  <CloseIcon />
-                </IconButton>
-              </Box>
-              <Divider />
-              <Typography variant="h5" fontWeight="bold" className="py-2">
-                Options
-              </Typography>
-              <Box className="flex flex-col gap-4 mt-4">
-                {initialItems.map((item) => (
-                  <Item
-                    key={item.value}
-                    item={item}
-                    itemName={modelInputLabel}
-                    handleUpdate={handleUpdate}
-                    handleDelete={handleDelete}
-                  />
-                ))}
-              </Box>
-              <Button
-                // onClick={handleOpenModel}
-                type="button"
-                color="secondary"
-                variant="outlined"
-                className={`w-full mt-4`}
-              >
-                Add another option
-              </Button>
-            </Box>
-          </Box>
+          <>
+            {isEditing ? (
+              <EditVariant setIsEditing={setIsEditing} />
+            ) : (
+              <VariantList setIsEditing={setIsEditing} />
+            )}{" "}
+          </>
         )}
       </Model>
       <Box

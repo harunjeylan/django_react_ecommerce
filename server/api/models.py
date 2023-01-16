@@ -4,50 +4,71 @@ from django.contrib.auth.models import  User
 # Create your models here.
 
 class Category(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(unique=True,max_length=100)
+    def __str__(self):
+        return f"{self.name}" 
+class Vendor(models.Model):
+    name = models.CharField(unique=True,max_length=100)
+    def __str__(self):
+        return f"{self.name}" 
+class Collection(models.Model):
+    name = models.CharField(unique=True,max_length=100)
     def __str__(self):
         return f"{self.name}" 
 
-
 class Tag(models.Model):
-    label = models.CharField(max_length=100)
+    label = models.CharField(unique=True,max_length=100)
     def __str__(self):
         return f"{self.label}" 
 
 
 class Option(models.Model):
-    label = models.CharField(max_length=100)
+    label = models.CharField(unique=True, max_length=100)
     def __str__(self):
         return f"{self.label}" 
-class Variants(models.Model):
+
+
+class Variant(models.Model):
     label = models.CharField(max_length=100)
     options = models.ManyToManyField(Option)
     def __str__(self):
         return f"{self.label}" 
 
 
+class VariantOption(models.Model):
+    option = models.ForeignKey(Option, on_delete=models.CASCADE)
+    variant = models.ForeignKey(Variant, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.variant} -> {self.option}" 
+
 class Image(models.Model):
     image = models.ImageField(null=True, blank=True, upload_to="product-images")
     def __str__(self):
         return f"{self.image.name}"
+class Organize(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    collection = models.ForeignKey(Collection,null=True, blank=True, on_delete=models.SET_NULL)
+    vendor = models.ForeignKey(Vendor,null=True, blank=True, on_delete=models.SET_NULL)
+    tags = models.ManyToManyField(Tag)
+
 class Product(models.Model):
     title = models.CharField(max_length=100)
     brand = models.CharField(max_length=100,null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     price = models.FloatField()
     thumbnail = models.ImageField(null=True, blank=True, upload_to="product-images")
     images = models.ManyToManyField(Image, blank=True)
-    organize = models.ManyToManyField(Variants, related_name="organize")
-    variants = models.ManyToManyField(Variants, related_name="variants")
+    organize = models.ForeignKey(Organize, on_delete=models.CASCADE)
+    variants = models.ManyToManyField(VariantOption)
     def __str__(self):
         return f"{self.name}"
 
 class Countries(models.Model):
     name = models.CharField(max_length=40)
-    code = models.CharField(max_length=10)
+    code = models.CharField(unique=True,max_length=10)
     def __str__(self):
         return f"{self.name}"
+
 class Inventory(models.Model):
     regular_pricing = models.FloatField()
     sale_pricing = models.FloatField()
