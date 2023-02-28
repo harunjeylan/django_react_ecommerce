@@ -1,8 +1,24 @@
 from rest_framework import serializers
-from api.models import Order, Product, Image
 from django.contrib.auth.models import  User
 import django.contrib.auth.password_validation as validators
 
+from api.models import (
+    Order, 
+    Product, 
+    Image,
+    Vendor,
+    Category,
+    Collection,
+    Tag,
+    Option,
+    Variant,
+    VariantOption,
+    Image,
+    Organize,
+    Country,
+    Inventory,
+    WishList
+    )
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -11,10 +27,71 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+
 class ProductSerializer(serializers.ModelSerializer):
     images = ImageSerializer(many=True)
     class Meta:
         model = Product
+        fields = "__all__"
+class VendorSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True)
+    class Meta:
+        model = Vendor
+        fields = "__all__"
+class CategorySerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True)
+    class Meta:
+        model = Category
+        fields = "__all__"
+class CollectionSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True)
+    class Meta:
+        model = Collection
+        fields = "__all__"
+class TagSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True)
+    class Meta:
+        model = Tag
+        fields = "__all__"
+class OptionSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True)
+    class Meta:
+        model = Option
+        fields = "__all__"
+class VariantSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True)
+    class Meta:
+        model = Variant
+        fields = "__all__"
+class VariantOptionSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True)
+    class Meta:
+        model = VariantOption
+        fields = "__all__"
+class ImageSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True)
+    class Meta:
+        model = Image
+        fields = "__all__"
+class OrganizeSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True)
+    class Meta:
+        model = Organize
+        fields = "__all__"
+class CountrySerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True)
+    class Meta:
+        model = Country
+        fields = "__all__"
+class InventorySerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True)
+    class Meta:
+        model = Inventory
+        fields = "__all__"
+class WishListSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True)
+    class Meta:
+        model = WishList
         fields = "__all__"
 
 class OrderSerializer(serializers.ModelSerializer):

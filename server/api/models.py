@@ -45,6 +45,8 @@ class Image(models.Model):
     image = models.ImageField(null=True, blank=True, upload_to="product-images")
     def __str__(self):
         return f"{self.image.name}"
+
+
 class Organize(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     collection = models.ForeignKey(Collection,null=True, blank=True, on_delete=models.SET_NULL)
@@ -55,15 +57,14 @@ class Product(models.Model):
     title = models.CharField(max_length=100)
     brand = models.CharField(max_length=100,null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    price = models.FloatField()
     thumbnail = models.ImageField(null=True, blank=True, upload_to="product-images")
+    organize = models.ForeignKey(Organize, on_delete=models.SET_NULL, null=True, blank=True)
     images = models.ManyToManyField(Image, blank=True)
-    organize = models.ForeignKey(Organize, on_delete=models.CASCADE)
-    variants = models.ManyToManyField(VariantOption)
+    variants = models.ManyToManyField(VariantOption, blank=True)
     def __str__(self):
         return f"{self.name}"
 
-class Countries(models.Model):
+class Country(models.Model):
     name = models.CharField(max_length=40)
     code = models.CharField(unique=True,max_length=10)
     def __str__(self):
@@ -84,12 +85,16 @@ class Inventory(models.Model):
         ("local_delivery","Local Delivery")
     ]
     global_delivery = models.CharField(choices=GLOBAL_DELIVERY,default="worldwide_delivery",max_length=25,)
-    countries = models.ManyToManyField(Countries)
+    
     fragile_product = models.BooleanField(default=False,blank=True)
+    max_allowed_temperature = models.CharField(null=True, blank=True,max_length=25,)
+    
     biodegradable = models.BooleanField(default=False,blank=True)
     frozen_product = models.BooleanField(default=False,blank=True)
     expiry_date  = models.DateField(null=True, blank=True)
+
     product = models.OneToOneField(Product, on_delete=models.CASCADE)
+    countries = models.ManyToManyField(Country)
     def __str__(self):
         return f"{self.product.title}"
 
@@ -113,8 +118,8 @@ class Order(models.Model):
         ("local_delivery","Local Delivery")
     ]
     delivery_type = models.CharField(choices=DELIVERY_TYPE,default="local_delivery",max_length=25)
-    countries = models.ForeignKey(Countries, on_delete=models.SET_NULL, null=True)
-    date = models.DateField(auto_created=True)
+    countries = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True)
+    date = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.customer.get_full_name: self.date}"

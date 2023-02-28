@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const productApi = createApi({
   reducerPath: "productApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://dummyjson.com/",
+    baseUrl: "http://localhost:8000/",
   }),
   endpoints: (builder) => ({
     getAllProducts: builder.query({ query: () => "products/" }),
@@ -21,20 +21,8 @@ export const productApi = createApi({
     getLimitAndSkipProducts: builder.query({
       query: ({ limit, skip }) => `products?limit=${limit}&skip=${skip}`,
     }),
-
-    addProduct: builder.mutation({
-      query: ({ post }) => ({
-        url: `products/add`,
-        method: "POST",
-        body: post,
-      }),
-    }),
   }),
 });
-
-
-
-
 
 export const {
   useGetAllProductsQuery,
@@ -43,5 +31,4 @@ export const {
   useGetAllCategoryQuery,
   useGetLimitAndSkipProductsQuery,
 
-  useAddProductMutation,
 } = productApi;

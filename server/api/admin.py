@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, Vendor, Collection, Tag, Option, Variant, VariantOption, Image, Organize, Product, Countries, Inventory, Order, WishList
+from .models import Category, Vendor, Collection, Tag, Option, Variant, VariantOption, Image, Organize, Product, Country, Inventory, Order, WishList
 
 
 @admin.register(Category)
@@ -61,7 +61,6 @@ class ProductAdmin(admin.ModelAdmin):
         'title',
         'brand',
         'description',
-        'price',
         'thumbnail',
         'organize',
     )
@@ -69,8 +68,8 @@ class ProductAdmin(admin.ModelAdmin):
     raw_id_fields = ('images', 'variants')
 
 
-@admin.register(Countries)
-class CountriesAdmin(admin.ModelAdmin):
+@admin.register(Country)
+class CountryAdmin(admin.ModelAdmin):
     list_display = ('name', 'code')
     search_fields = ('name',)
 

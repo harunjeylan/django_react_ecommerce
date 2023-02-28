@@ -47,8 +47,9 @@ def userRegister(request):
         return Response({"detail":"user is already exist with this username"}, status.HTTP_208_ALREADY_REPORTED)
     serializer = RegistrationSerializer(data=request.data)
     if serializer.is_valid():
+        password = request.data["password"]
         serializer.save()
-        user = User.objects.get(username = username)
+        user = User.objects.create_user(username = username, password=password)
         auth_data = get_tokens_for_user(user)
         userSerializer = UserSerializer(user)
         auth_data["user"] = userSerializer.data

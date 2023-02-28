@@ -166,7 +166,7 @@ const OrganizeForm = ({
               fontWeight="bold"
               className={`text-xl md:text-2xl  text-left my-4`}
             >
-              Organize
+              Organize?
             </Typography>
           </FormLabel>
           <FormGroup className="w-full grid grid-cols-2  lg:grid-cols-1 xl:grid-cols-2 gap-2">
@@ -198,11 +198,13 @@ const OrganizeForm = ({
                   labelId="category-select-label"
                   id="categories-select"
                   variant="filled"
-                  value={values.category}
+                  value={values.organize?.category}
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  name="category"
-                  error={!!touched.category && !!errors.category}
+                  name="organize.category"
+                  error={
+                    !!touched.organize?.category && !!errors.organize?.category
+                  }
                 >
                   {constants.categories.map((category) => (
                     <MenuItem key={category.value} value={category.value}>
@@ -240,10 +242,10 @@ const OrganizeForm = ({
                   labelId="vendor-select-label"
                   id="vendor-select"
                   variant="filled"
-                  value={values.vendor}
+                  value={values.organize?.vendor}
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  name="vendor"
+                  name="organize.vendor"
                 >
                   {constants.vendors.map((vendor) => (
                     <MenuItem key={vendor.value} value={vendor.value}>
@@ -283,10 +285,10 @@ const OrganizeForm = ({
                   labelId="collections-select-label"
                   id="collections-select"
                   variant="filled"
-                  value={values.collection}
+                  value={values.organize?.collection}
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  name="collection"
+                  name="organize.collection"
                 >
                   {constants.collections.map((collection) => (
                     <MenuItem key={collection.value} value={collection.value}>
@@ -326,7 +328,7 @@ const OrganizeForm = ({
                   labelId="tags-select-label"
                   id="tags-select"
                   variant="filled"
-                  value={values.tags}
+                  value={values.organize?.tags}
                   input={
                     <OutlinedInput id="select-multiple-chip" label="Chip" />
                   }
@@ -345,7 +347,7 @@ const OrganizeForm = ({
                   )}
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  name="tags"
+                  name="organize.tags"
                 >
                   {constants.tags.map((tag) => (
                     <MenuItem key={tag.value} value={tag.value}>

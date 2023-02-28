@@ -5,11 +5,13 @@ export const newProductSchema = yup.object().shape({
   regularPrice: yup.number().required("Required"),
   salePrice: yup.number().required("Required"),
   brand: yup.string().required("Required"),
-  category: yup.string().required("Required"),
-  collection: yup.string(),
-  vendor: yup.string(),
-  tags: yup.array().of(yup.string()),
   restockQuantity: yup.number(),
+  organize: yup.object().shape({
+    category: yup.string().required("Required"),
+    collection: yup.string(),
+    vendor: yup.string(),
+    tags: yup.array().of(yup.string()),
+  }),
   globalDelivery: yup.object().shape({
     type: yup.string(),
     selectedCountries: yup.array().of(yup.string()),
