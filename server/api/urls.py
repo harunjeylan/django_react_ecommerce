@@ -5,7 +5,13 @@ from api import api
 
 
 urlpatterns = [
-  path("products/add/", api.newProduct , name="new_products")
+  
+  path("products/", api.getProducts , name="products"),
+  path("products/add/", api.newProduct , name="new_products"),
+  
+  
+  path("organize/", api.getOrganizes , name="organize"),
+  path("organize/add/", api.addOrganize , name="new_organize"),
 ]
 # router = routers.DefaultRouter()
 # router.register('api/products', ProductViewSet, 'products')

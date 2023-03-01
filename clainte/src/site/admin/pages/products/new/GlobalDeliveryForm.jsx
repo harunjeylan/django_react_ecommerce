@@ -53,7 +53,7 @@ const GlobalDeliveryForm = ({
         </FormLabel>
         <RadioGroup
           labelled="globalDelivery-radio-buttons-group-label"
-          defaultValue="worldwideDelivery"
+          defaultValue="worldwide_delivery"
           name={formattedName("globalDelivery", "type")}
           className="flex h-full w-full gap-4 "
           value={values.globalDelivery.type}
@@ -61,7 +61,7 @@ const GlobalDeliveryForm = ({
         >
           <Box className="flex flex-col">
             <FormControlLabel
-              value="worldwideDelivery"
+              value="worldwide_delivery"
               control={<Radio color="secondary" />}
               label="Worldwide delivery"
               onChange={handleChange}
@@ -72,7 +72,7 @@ const GlobalDeliveryForm = ({
           </Box>
           <Box className="flex flex-col">
             <FormControlLabel
-              value="selectedCountries"
+              value="selected_countries"
               control={<Radio color="secondary" />}
               label="Selected Countries"
               onChange={handleChange}
@@ -119,7 +119,7 @@ const GlobalDeliveryForm = ({
                     errors
                   )}
                 >
-                  {constants.countries.map((country, index) => (
+                  {constants.countries?.map((country, index) => (
                     <MenuItem
                       key={`country-${country.code}-${index}`}
                       value={country.code}
@@ -133,7 +133,7 @@ const GlobalDeliveryForm = ({
           </Box>
           <Box className="flex flex-col">
             <FormControlLabel
-              value="localDelivery"
+              value="local_delivery"
               control={<Radio color="secondary" />}
               label="Local delivery"
             />

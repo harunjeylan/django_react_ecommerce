@@ -13,8 +13,14 @@ export {
 
 export { logOut } from "../customers/import";
 export { addToCart } from "../../features/services/cartReducer";
-export { useGetProductsDetailesQuery } from "../../features/services/products";
+export { useGetProductsDetailesQuery } from "../../features/services/old-products";
 export { useAddProductMutation } from "../../features/services/productApiSlice";
+
+export {
+  useGetAllOrganizeQuery,
+  useAddOrganizeMutation,
+} from "../../features/services/organizeApiSlice";
+
 export { toggleWishlist } from "../../features/services/wishlistReducer";
 
 export { default as Header } from "../../components/Header";

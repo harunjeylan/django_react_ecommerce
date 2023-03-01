@@ -8,7 +8,7 @@ export {
   useGetProductsByCategoryQuery,
   useGetLimitAndSkipProductsQuery,
   useGetProductsDetailesQuery,
-} from "../../features/services/products";
+} from "../../features/services/old-products";
 export { useGetAllProductsQuery as useGetProductsQuery } from "../../features/services/productApiSlice";
 export {
   useLoginMutation,

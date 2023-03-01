@@ -19,6 +19,11 @@ import {
 
 import { tokens } from "../../../import";
 
+import {
+  useAddOrganizeMutation,
+  useGetAllOrganizeQuery,
+} from "../../../import";
+
 import { constants } from "./constants";
 import Model from "../../../../../ui/Model";
 import CloseIcon from "@mui/icons-material/Close";
@@ -29,8 +34,8 @@ const Item = ({ item, itemName, handleUpdate, handleDelete }) => {
   const InputRef = useRef();
 
   useEffect(() => {
-    InputRef.current.value = item.value;
-  }, [item.value]);
+    InputRef.current.value = item.name;
+  }, [item.name]);
 
   return (
     <Box className="flex justify-between items-center gap-2">
@@ -40,7 +45,7 @@ const Item = ({ item, itemName, handleUpdate, handleDelete }) => {
         fullWidth
         type="text"
         // value={item.value}
-        defaultValue={item.value}
+        defaultValue={item.name}
         label={itemName}
         inputRef={InputRef}
       />
@@ -48,16 +53,14 @@ const Item = ({ item, itemName, handleUpdate, handleDelete }) => {
         onClick={() =>
           handleUpdate({
             name: itemName,
-            id: item.value,
+            id: item.id,
             value: InputRef.current.value,
           })
         }
       >
         <SaveAsIcon />
       </IconButton>
-      <IconButton
-        onClick={() => handleDelete({ name: itemName, id: item.value })}
-      >
+      <IconButton onClick={() => handleDelete({ name: itemName, id: item.id })}>
         <CloseIcon />
       </IconButton>
     </Box>
@@ -77,6 +80,9 @@ const OrganizeForm = ({
   const [modelTitle, setModelTitle] = useState("");
   const [modelInputLabel, setModelInputLabel] = useState("");
   const [initialItems, setInitialItems] = useState([]);
+  const [addOrganize] = useAddOrganizeMutation();
+  const { data: organizes, isFetching: organizesIsFetching } =
+    useGetAllOrganizeQuery();
 
   useEffect(() => {
     setInitialItems(constants.categories);
@@ -92,8 +98,9 @@ const OrganizeForm = ({
   const handleAdd = () => {
     const data = {
       name: modelInputLabel,
-      value: modelInputRef.current.value,
+      label: modelInputRef.current.value,
     };
+    addOrganize({ post: data });
     console.log(data);
     modelInputRef.current.value = "";
     // setOpenModel(false);
@@ -129,6 +136,7 @@ const OrganizeForm = ({
               fullWidth
               variant="filled"
               type="text"
+              name={modelInputLabel}
               label={modelInputLabel}
               inputRef={modelInputRef}
             />
@@ -138,15 +146,17 @@ const OrganizeForm = ({
           </Box>
           <Divider />
           <Box className="flex flex-col gap-4 mt-4">
-            {initialItems.map((item) => (
-              <Item
-                key={item.value}
-                item={item}
-                itemName={modelInputLabel}
-                handleUpdate={handleUpdate}
-                handleDelete={handleDelete}
-              />
-            ))}
+            {!organizesIsFetching &&
+              organizes &&
+              organizes[modelInputLabel]?.map((item) => (
+                <Item
+                  key={item.id}
+                  item={item}
+                  itemName={modelInputLabel}
+                  handleUpdate={handleUpdate}
+                  handleDelete={handleDelete}
+                />
+              ))}
           </Box>
         </Box>
       </Model>
@@ -206,11 +216,13 @@ const OrganizeForm = ({
                     !!touched.organize?.category && !!errors.organize?.category
                   }
                 >
-                  {constants.categories.map((category) => (
-                    <MenuItem key={category.value} value={category.value}>
-                      {category.name}
-                    </MenuItem>
-                  ))}
+                  {!organizesIsFetching &&
+                    organizes &&
+                    organizes.category?.map((category) => (
+                      <MenuItem key={category.id} value={category.name}>
+                        {category.name}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
             </Box>
@@ -222,7 +234,7 @@ const OrganizeForm = ({
                 <Typography
                   onClick={() =>
                     handleOpenModel({
-                      inputLabel: "vender",
+                      inputLabel: "vendor",
                       modelTitle: "Add Vender",
                     })
                   }
@@ -247,11 +259,13 @@ const OrganizeForm = ({
                   onChange={handleChange}
                   name="organize.vendor"
                 >
-                  {constants.vendors.map((vendor) => (
-                    <MenuItem key={vendor.value} value={vendor.value}>
-                      {vendor.name}
-                    </MenuItem>
-                  ))}
+                  {!organizesIsFetching &&
+                    organizes &&
+                    organizes.vendor?.map((vendor) => (
+                      <MenuItem key={vendor.id} value={vendor.name}>
+                        {vendor.name}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
             </Box>
@@ -290,11 +304,13 @@ const OrganizeForm = ({
                   onChange={handleChange}
                   name="organize.collection"
                 >
-                  {constants.collections.map((collection) => (
-                    <MenuItem key={collection.value} value={collection.value}>
-                      {collection.name}
-                    </MenuItem>
-                  ))}
+                  {!organizesIsFetching &&
+                    organizes &&
+                    organizes.collection?.map((collection) => (
+                      <MenuItem key={collection.id} value={collection.name}>
+                        {collection.name}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
             </Box>
@@ -307,7 +323,7 @@ const OrganizeForm = ({
                 <Typography
                   onClick={() =>
                     handleOpenModel({
-                      inputLabel: "tags",
+                      inputLabel: "tag",
                       modelTitle: "Add Tags",
                     })
                   }
@@ -340,7 +356,7 @@ const OrganizeForm = ({
                         gap: 0.5,
                       }}
                     >
-                      {selected.map((value) => (
+                      {selected?.map((value) => (
                         <Chip key={value} label={value} />
                       ))}
                     </Box>
@@ -349,11 +365,13 @@ const OrganizeForm = ({
                   onChange={handleChange}
                   name="organize.tags"
                 >
-                  {constants.tags.map((tag) => (
-                    <MenuItem key={tag.value} value={tag.value}>
-                      {tag.name}
-                    </MenuItem>
-                  ))}
+                  {!organizesIsFetching &&
+                    organizes &&
+                    organizes.tag?.map((tag) => (
+                      <MenuItem key={tag.id} value={tag.name}>
+                        {tag.name}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
             </Box>

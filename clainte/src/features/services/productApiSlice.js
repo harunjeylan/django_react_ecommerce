@@ -1,7 +1,7 @@
 import { authApi } from "../../app/api/authApi";
 
 export const productApi = authApi.injectEndpoints({
-  tagTypes: ["userData", "accessToken"],
+  tagTypes: ["products"],
   endpoints: (builder) => ({
     getAllProducts: builder.query({
       query: () => "api/products/",

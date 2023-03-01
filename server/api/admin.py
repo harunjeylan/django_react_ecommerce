@@ -23,7 +23,7 @@ class CollectionAdmin(admin.ModelAdmin):
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display = ( 'label',)
+    list_display = ( 'name',)
 
 
 @admin.register(Option)
