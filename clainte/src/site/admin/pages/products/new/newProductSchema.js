@@ -6,6 +6,12 @@ export const newProductSchema = yup.object().shape({
   salePrice: yup.number().required("Required"),
   brand: yup.string().required("Required"),
   restockQuantity: yup.number(),
+  variants: yup.array().of(
+    yup.object().shape({
+      optionId: yup.number(),
+      variantId: yup.number(),
+    })
+  ),
   organize: yup.object().shape({
     category: yup.string().required("Required"),
     collection: yup.string(),

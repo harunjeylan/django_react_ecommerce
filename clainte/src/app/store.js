@@ -12,7 +12,8 @@ import {
 import storage from "redux-persist/lib/storage";
 
 import { authApi } from "./api/authApi";
-import { productApi } from "../features/services/products";
+import { productApi } from "../features/services/productApiSlice";
+import { organizeApi } from "../features/services/organizeApiSlice";
 
 import authReducer from "../features/auth/authSlice";
 import productReducer from "../features/services/productSlice";
@@ -42,6 +43,7 @@ const store = configureStore({
     cart: persistedCartReducer,
     wishlist: persistedWishlistReducer,
     product: persistedProductReducer,
+    [organizeApi.reducerPath]: organizeApi.reducer,
     [productApi.reducerPath]: productApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
   },
@@ -51,6 +53,7 @@ const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     })
+      .concat(organizeApi.middleware)
       .concat(productApi.middleware)
       .concat(authApi.middleware);
   },

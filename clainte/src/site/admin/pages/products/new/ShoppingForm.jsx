@@ -41,16 +41,16 @@ const ShoppingForm = ({
 
         <RadioGroup
           labelled="shipping-type-radio-buttons-group-label"
-          defaultValue="fulfilledBySeller"
+          defaultValue="fulfilled_by_seller"
           name={formattedName("shoppingType", "type")}
           className="flex h-full w-full gap-4 "
         >
           <Box className="flex flex-col">
             <FormControlLabel
-              value="fulfilledBySeller"
+              value="fulfilled_by_seller"
               control={<Radio color="secondary" />}
               label="Fulfilled by Seller"
-              name="shoppingType"
+              name={formattedName("shoppingType", "type")}
             />
             <Typography className="ml-[25px]" variant="p">
               You’ll be responsible for product delivery. Any damage or delay
@@ -59,10 +59,10 @@ const ShoppingForm = ({
           </Box>
           <Box className="flex flex-col">
             <FormControlLabel
-              value="fulfilledByPhoenix"
+              value="fulfilled_by_phoenix"
               control={<Radio color="secondary" />}
               label="Fulfilled by Phoenix"
-              name="shoppingType"
+              name={formattedName("shoppingType", "type")}
             />
             <Typography className="ml-[25px]" variant="p">
               Your product, Our responsibility. For a measly fee, we will handle

@@ -204,7 +204,7 @@ const EditVariant = ({ valiant, setIsEditing }) => {
           Options
         </Typography>
         <Box className="flex flex-col gap-4 mt-4">
-          {initialItems.map((item) => (
+          {initialItems?.map((item) => (
             <Item
               key={item.value}
               item={item}
@@ -310,8 +310,13 @@ const VariantsForm = ({ values, handleBlur, handleChange }) => {
             </Typography>
           </FormLabel>
           <FormGroup className="w-full grid grid-cols-2  lg:grid-cols-1 xl:grid-cols-2 gap-2">
-            {constants.variants.map((variant, index) => (
+            {constants.variants?.map((variant, index) => (
               <Box key={`variant-${variant.name}-${index}`} className="w-full">
+                <input
+                  type="hidden"
+                  name={`variants[${index}].variantId`}
+                  value={variant.id}
+                />
                 <Box className="w-full flex justify-between px-1 gap-2">
                   <Typography variant="h6" fontWeight="bold" className="my-2">
                     {variant.name}
@@ -338,12 +343,12 @@ const VariantsForm = ({ values, handleBlur, handleChange }) => {
                     defaultValue={variant.value}
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    name={`variants[${index}].value`}
+                    name={`variants[${index}].optionId`}
                   >
-                    {variant.options.map((option, index) => (
+                    {variant.options?.map((option, index) => (
                       <MenuItem
                         key={`option-${option}-${index}`}
-                        value={option}
+                        value={option.id}
                       >
                         {option}
                       </MenuItem>

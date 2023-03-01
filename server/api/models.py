@@ -17,9 +17,9 @@ class Collection(models.Model):
         return f"{self.name}" 
 
 class Tag(models.Model):
-    label = models.CharField(unique=True,max_length=100)
+    name = models.CharField(unique=True,max_length=100)
     def __str__(self):
-        return f"{self.label}" 
+        return f"{self.name}" 
 
 
 class Option(models.Model):
@@ -61,8 +61,10 @@ class Product(models.Model):
     organize = models.ForeignKey(Organize, on_delete=models.SET_NULL, null=True, blank=True)
     images = models.ManyToManyField(Image, blank=True)
     variants = models.ManyToManyField(VariantOption, blank=True)
+    date = models.DateField(auto_now_add=True)
+    
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.title}"
 
 class Country(models.Model):
     name = models.CharField(max_length=40)
@@ -94,7 +96,7 @@ class Inventory(models.Model):
     expiry_date  = models.DateField(null=True, blank=True)
 
     product = models.OneToOneField(Product, on_delete=models.CASCADE)
-    countries = models.ManyToManyField(Country)
+    countries = models.ManyToManyField(Country,blank=True)
     def __str__(self):
         return f"{self.product.title}"
 
@@ -118,7 +120,7 @@ class Order(models.Model):
         ("local_delivery","Local Delivery")
     ]
     delivery_type = models.CharField(choices=DELIVERY_TYPE,default="local_delivery",max_length=25)
-    countries = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True)
+    countries = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True, blank=True)
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):

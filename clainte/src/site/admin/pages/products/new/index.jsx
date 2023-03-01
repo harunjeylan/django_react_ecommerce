@@ -23,8 +23,23 @@ const NewProduct = () => {
   const [addProduct] = useAddProductMutation();
 
   const handleFormSubmit = (values) => {
-    console.log(values);
-    addProduct({ post: values }).then((res) => {
+    let data = values?.attributes?.expiryDate?.date;
+    console.log(data);
+    const post = {
+      ...values,
+      attributes: {
+        ...values?.attributes,
+        expiryDate: {
+          ...values?.attributes?.expiryDate,
+          data:
+            typeof data == "string"
+              ? new Date(data)
+              : data.format("YYYY-MM-DD"),
+        },
+      },
+    };
+    console.log(post);
+    addProduct({ post: post }).then((res) => {
       console.log(res.data);
     });
   };

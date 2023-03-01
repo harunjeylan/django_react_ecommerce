@@ -68,7 +68,7 @@ const AttributesForm = ({
               <Checkbox
                 color="secondary"
                 onChange={handleChange}
-                checked={values.attributes.fragileProduct}
+                checked={values.attributes?.fragileProduct}
                 name={formattedName("attributes", "fragileProduct")}
               />
             }
@@ -79,7 +79,7 @@ const AttributesForm = ({
               <Checkbox
                 color="secondary"
                 onChange={handleChange}
-                checked={values.attributes.biodegradable}
+                checked={values.attributes?.biodegradable}
                 name={formattedName("attributes", "biodegradable")}
               />
             }
@@ -90,7 +90,7 @@ const AttributesForm = ({
             control={
               <Checkbox
                 color="secondary"
-                checked={values.attributes.frozenProduct.selected}
+                checked={values.attributes?.frozenProduct?.selected}
                 onChange={handleChange}
                 name={formattedName("attributes.frozenProduct", "selected")}
               />
@@ -103,7 +103,7 @@ const AttributesForm = ({
                 <Checkbox
                   color="secondary"
                   onChange={handleChange}
-                  checked={values.attributes.expiryDate.selected}
+                  checked={values.attributes?.expiryDate?.selected}
                   name={formattedName("attributes.expiryDate", "selected")}
                 />
               }
@@ -116,7 +116,7 @@ const AttributesForm = ({
                     <DesktopDatePicker
                       label="Date desktop"
                       inputFormat="MM/DD/YYYY"
-                      value={values.attributes.expiryDate.date}
+                      value={values.attributes?.expiryDate?.date}
                       onChange={(newValue) =>
                         setFieldValue("attributes.expiryDate.date", newValue)
                       }
@@ -147,7 +147,7 @@ const AttributesForm = ({
                     <MobileDatePicker
                       label="Date mobile"
                       inputFormat="MM/DD/YYYY"
-                      value={values.attributes.expiryDate.date}
+                      value={values?.attributes?.expiryDate.date}
                       onChange={(newValue) =>
                         setFieldValue("attributes.expiryDate.date", newValue)
                       }
