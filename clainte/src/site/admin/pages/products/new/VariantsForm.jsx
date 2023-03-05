@@ -17,6 +17,7 @@ import {
   Tab,
   List,
   ListItem,
+  Checkbox,
 } from "@mui/material";
 import { constants } from "./constants";
 
@@ -25,6 +26,7 @@ import Model from "../../../../../ui/Model";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
+import { useGetAllVariantsQuery } from "../../../import";
 
 const Item = ({ item, itemName, handleUpdate, handleDelete }) => {
   const InputRef = useRef();
@@ -63,68 +65,79 @@ const Item = ({ item, itemName, handleUpdate, handleDelete }) => {
     </Box>
   );
 };
-const VariantList = ({ setIsEditing }) => {
+const VariantList = ({
+  setIsEditing,
+  selected,
+  setSelected,
+  variants,
+  handleAddToProduct,
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  const handelChecked = (variantId) => {
+    if (selected.includes(variantId)) {
+      setSelected((prev) => prev.filter((id) => id !== variantId));
+    } else {
+      setSelected((prev) => [...prev, variantId]);
+    }
+  };
+
+  const variantsIsFetching = false;
   return (
-    <Box className="w-full h-full grid grid-cols-4 gap-4">
-      <Box
-        backgroundColor={colors.primary[500]}
-        className="w-full h-full flex flex-col gap-2 p-4 rounded-md"
-      >
-        <Box>
-          <Typography variant="h5" fontWeight="bold">
-            Valiant Label
-          </Typography>
-        </Box>
-        <List>
-          <ListItem>Option 1</ListItem>
-          <ListItem>Option 2</ListItem>
-          <ListItem>Option 3</ListItem>
-        </List>
-      </Box>
-      <Box
-        backgroundColor={colors.primary[500]}
-        className="w-full h-full flex flex-col gap-2 p-4 rounded-md"
-      >
-        <Box>
-          <Typography variant="h5" fontWeight="bold">
-            Valiant Label
-          </Typography>
-        </Box>
-        <List>
-          <ListItem>Option 1</ListItem>
-          <ListItem>Option 2</ListItem>
-          <ListItem>Option 3</ListItem>
-        </List>
-      </Box>
-      <Box
-        backgroundColor={colors.primary[500]}
-        className="w-full h-full flex flex-col gap-2 p-4 rounded-md"
-      >
-        <Box>
-          <Typography variant="h5" fontWeight="bold">
-            Valiant Label
-          </Typography>
-        </Box>
-        <List>
-          <ListItem>Option 1</ListItem>
-          <ListItem>Option 2</ListItem>
-          <ListItem>Option 3</ListItem>
-        </List>
-      </Box>
-      <Box
-        backgroundColor={colors.primary[500]}
-        className="w-full h-full flex flex-col items-center justify-center p-4 rounded-md"
-      >
-        <IconButton
-          onClick={() => setIsEditing(true)}
-          size="large"
-          className="w-20 h-20"
+    <Box className="w-full">
+      <Box className="w-full h-full grid grid-cols-4 gap-4">
+        {!variantsIsFetching &&
+          variants?.map((variant, index) => (
+            <Box
+              key={`variant-${variant.name}-variants-${variant.id}-${index}`}
+              backgroundColor={colors.primary[500]}
+              className="relative w-full h-full flex flex-col gap-2 p-4 rounded-md"
+            >
+              <Checkbox
+                checked={selected.includes(variant.id)}
+                onChange={() => handelChecked(variant.id)}
+                color="secondary"
+                className="absolute top-1 right-1"
+              />
+              <Box>
+                <Typography variant="h5" fontWeight="bold">
+                  {variant.label}
+                </Typography>
+              </Box>
+              <List>
+                {variant?.options?.map((option, index2) => (
+                  <ListItem
+                    key={`variant-${option.name}-options-${option.id}-${index2}`}
+                  >
+                    {option.label}
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+          ))}
+        <Box
+          backgroundColor={colors.primary[500]}
+          className="w-full h-full flex flex-col items-center justify-center p-4 rounded-md"
         >
-          +
-        </IconButton>
+          <IconButton
+            onClick={() => setIsEditing(true)}
+            size="large"
+            className="w-20 h-20"
+          >
+            +
+          </IconButton>
+        </Box>
       </Box>
+      <Button
+        onClick={handleAddToProduct}
+        type="button"
+        color="secondary"
+        variant="outlined"
+        className={`w-full mt-4`}
+      >
+        Add to produtc
+      </Button>
     </Box>
   );
 };
@@ -256,22 +269,69 @@ const EditVariant = ({ valiant, setIsEditing }) => {
     </Box>
   );
 };
-const VariantsForm = ({ values, handleBlur, handleChange }) => {
+const VariantsForm = ({ values, handleBlur, handleChange, setFieldValue }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [openModel, setOpenModel] = useState(false);
   const [modelTitle, setModelTitle] = useState("");
-  const [modelInputLabel, setModelInputLabel] = useState("");
-  const [initialItems, setInitialItems] = useState([]);
-  const [tapValue, setTapValue] = useState(0);
-  const [isEditing, setIsEditing] = useState(true);
-
+  const [selected, setSelected] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
+  // const { data: variants, isFetching: variantsIsFetching } =
+  //   useGetAllVariantsQuery();
+  const variants = [
+    {
+      label: "puma",
+      id: 1,
+      options: [
+        { label: "opion 1" },
+        { label: "opion 2" },
+        { label: "opion 3" },
+      ],
+    },
+    {
+      label: "adidas",
+      id: 2,
+      options: [
+        { label: "opion 1" },
+        { label: "opion 2" },
+        { label: "opion 3" },
+      ],
+    },
+    {
+      label: "nike",
+      id: 3,
+      options: [
+        { label: "opion 1" },
+        { label: "opion 2" },
+        { label: "opion 3" },
+      ],
+    },
+  ];
   const handleOpenModel = () => {
-    setModelInputLabel("option");
     setModelTitle("Add Variants");
     setOpenModel(true);
   };
 
+  const handleAddToProduct = () => {
+    let selected_variants = [];
+    selected.forEach((variantId) => {
+      selected_variants.push(
+        variants.find((variant) => variant.id === variantId)
+      );
+    });
+    setFieldValue("variants", selected_variants);
+    setOpenModel(false);
+  };
+  const handleRemove = (variantId) => {
+    let selected_variants = values.variants.filter(
+      (variant) => variant.id !== variantId
+    );
+    setFieldValue("variants", selected_variants);
+  };
+  const handleChangeOption = (e) => {
+    console.log(e);
+  };
+  console.log(values.variants);
   return (
     <>
       <Model
@@ -285,8 +345,15 @@ const VariantsForm = ({ values, handleBlur, handleChange }) => {
             {isEditing ? (
               <EditVariant setIsEditing={setIsEditing} />
             ) : (
-              <VariantList setIsEditing={setIsEditing} />
-            )}{" "}
+              <VariantList
+                variants={variants}
+                setIsEditing={setIsEditing}
+                setOpenModel={setOpenModel}
+                selected={selected}
+                setSelected={setSelected}
+                handleAddToProduct={handleAddToProduct}
+              />
+            )}
           </>
         )}
       </Model>
@@ -310,18 +377,14 @@ const VariantsForm = ({ values, handleBlur, handleChange }) => {
             </Typography>
           </FormLabel>
           <FormGroup className="w-full grid grid-cols-2  lg:grid-cols-1 xl:grid-cols-2 gap-2">
-            {constants.variants?.map((variant, index) => (
-              <Box key={`variant-${variant.name}-${index}`} className="w-full">
-                <input
-                  type="hidden"
-                  name={`variants[${index}].variantId`}
-                  value={variant.id}
-                />
+            {values.variants?.map((variant, index) => (
+              <Box key={`variant-${variant.label}-${index}`} className="w-full">
                 <Box className="w-full flex justify-between px-1 gap-2">
                   <Typography variant="h6" fontWeight="bold" className="my-2">
-                    {variant.name}
+                    {variant.label}
                   </Typography>
                   <Typography
+                    onClick={() => handleRemove(variant)}
                     variant="h6"
                     fontWeight="bold"
                     className={`my-2 cursor-pointer hover:text-green-400`}
@@ -332,7 +395,7 @@ const VariantsForm = ({ values, handleBlur, handleChange }) => {
                 </Box>
                 <FormControl variant="filled" className="w-full">
                   <InputLabel id="category-select-label">
-                    {variant.name}
+                    {variant.label}
                   </InputLabel>
                   <Select
                     fullWidth
@@ -340,17 +403,15 @@ const VariantsForm = ({ values, handleBlur, handleChange }) => {
                     labelId="category-select-label"
                     id="category-select"
                     variant="filled"
-                    defaultValue={variant.value}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    name={`variants[${index}].optionId`}
+                    name="option"
+                    onChange={handleChangeOption}
                   >
                     {variant.options?.map((option, index) => (
                       <MenuItem
                         key={`option-${option}-${index}`}
-                        value={option.id}
+                        value={option.label}
                       >
-                        {option}
+                        {option.label}
                       </MenuItem>
                     ))}
                   </Select>

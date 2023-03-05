@@ -30,9 +30,8 @@ import ProductsList from "../../components/ProductsList";
 import { tokens, Header } from "../../import";
 
 import {
+  useSearchAndFilterProductsQuery,
   useGetAllCategoryQuery,
-  useGetProductsByCategoryQuery,
-  useGetLimitAndSkipProductsQuery,
 } from "../../import";
 
 const Shopping = () => {
@@ -42,10 +41,13 @@ const Shopping = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
-
+  const [searchAndFilter, setSearchAndFilter] = useState("?q=all");
   const [categoryValue, setCategoryValue] = useState("all");
-  const { data: productsByCategory } = useGetProductsByCategoryQuery({
-    category: categoryValue,
+  const {
+    data: searchAndFilterProducts,
+    isFetching: isFetchingSearchAndFilterProducts,
+  } = useSearchAndFilterProductsQuery({
+    searchAndFilter,
   });
 
   const handleChangeCategory = (event, newValue) => {
@@ -54,13 +56,8 @@ const Shopping = () => {
   const { data: allCategory, isFetching: isFetchingAllCategory } =
     useGetAllCategoryQuery();
 
-  const {
-    data: RecommendedProducts,
-    isFetching: isFetchingRecommendedProducts,
-  } = useGetLimitAndSkipProductsQuery({ limit: 20, skip: 10 });
-
   const [priceValue, setPriceValue] = useState([20, 37]);
-
+  console.log(searchAndFilterProducts);
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
@@ -80,26 +77,6 @@ const Shopping = () => {
           title="Jackets and tops"
           subtitle="Lorem ipsum dolor sit amet."
         />
-      </Box>
-      <Box className="md:container px-2 md:mx-auto md:px-auto">
-        <Box className="flex justify-between items-center">
-          <Header
-            title="Recommended"
-            subtitle="One morning"
-            bodyText={`One morning, when Gregor Samsa `}
-          />
-          <Button
-            onClick={() => navigate(`/shopping`)}
-            variant="outlined"
-            color="secondary"
-            className={`px-8 py-3 `}
-          >
-            More
-          </Button>
-        </Box>
-        {!isFetchingRecommendedProducts && (
-          <ProductCarouse products={RecommendedProducts} />
-        )}
       </Box>
 
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
@@ -130,9 +107,9 @@ const Shopping = () => {
                 >
                   Category
                 </Typography>
-                {isFetchingAllCategory
+                {/* {isFetchingAllCategory
                   ? null
-                  : allCategory.map((category, index) => null)}
+                  : allCategory?.map((category, index) => null)} */}
               </Box>
             </Collapse>
             <Collapse
@@ -370,10 +347,12 @@ const Shopping = () => {
                 </Box>
               )}
             </Box>
-            <ProductsList
-              products={productsByCategory?.products}
-              isShopping={true}
-            />
+            {!isFetchingSearchAndFilterProducts && (
+              <ProductsList
+                products={searchAndFilterProducts}
+                isShopping={true}
+              />
+            )}
           </Box>
         </Box>
       </Box>

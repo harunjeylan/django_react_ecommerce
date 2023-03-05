@@ -6,6 +6,7 @@ from api.models import (
     Order, 
     Product, 
     Image,
+    RecommendedProduct,
     Vendor,
     Category,
     Collection,
@@ -17,7 +18,8 @@ from api.models import (
     Organize,
     Country,
     Inventory,
-    WishList
+    WishList,
+    Brand,
     )
 
 
@@ -43,6 +45,10 @@ class CategorySerializer(serializers.ModelSerializer):
 class CollectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Collection
+        fields = "__all__"
+class BrandSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Brand
         fields = "__all__"
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -76,9 +82,14 @@ class InventorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Inventory
         fields = "__all__"
+
 class WishListSerializer(serializers.ModelSerializer):
     class Meta:
         model = WishList
+        fields = "__all__"
+class RecommendedProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecommendedProduct
         fields = "__all__"
 
 class OrderSerializer(serializers.ModelSerializer):

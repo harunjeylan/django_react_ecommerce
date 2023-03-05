@@ -4,13 +4,13 @@ export const organizeApi = authApi.injectEndpoints({
   tagTypes: ["organize"],
   endpoints: (builder) => ({
     getAllOrganize: builder.query({
-      query: () => "api/organize/",
+      query: () => "api/products/organize/",
       providesTags: ["organize"],
     }),
 
     addOrganize: builder.mutation({
       query: ({ post }) => ({
-        url: `api/organize/add/`,
+        url: `api/products/organize/add/`,
         method: "POST",
         body: post,
       }),

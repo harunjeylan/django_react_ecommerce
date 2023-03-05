@@ -34,17 +34,6 @@ const AttributesForm = ({
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const formattedName = (type, field) => `${type}.${field}`;
-
-  const formattedError = (type, field, touched, errors) =>
-    Boolean(
-      getIn(touched, formattedName(type, field)) &&
-        getIn(errors, formattedName(type, field))
-    );
-
-  const formattedHelper = (type, field, touched, errors) =>
-    getIn(touched, formattedName(type, field)) &&
-    getIn(errors, formattedName(type, field));
   return (
     <Box className="h-full w-full">
       <FormControl
@@ -68,8 +57,8 @@ const AttributesForm = ({
               <Checkbox
                 color="secondary"
                 onChange={handleChange}
-                checked={values.attributes?.fragileProduct}
-                name={formattedName("attributes", "fragileProduct")}
+                checked={values?.fragileProduct}
+                name="fragileProduct"
               />
             }
             label="Fragile Product"
@@ -79,8 +68,10 @@ const AttributesForm = ({
               <Checkbox
                 color="secondary"
                 onChange={handleChange}
-                checked={values.attributes?.biodegradable}
-                name={formattedName("attributes", "biodegradable")}
+                checked={values?.biodegradable}
+                name="biodegradable"
+                error={!!touched.biodegradable && !!errors.biodegradable}
+                helperText={touched.biodegradable && errors.biodegradable}
               />
             }
             label="Biodegradable"
@@ -90,9 +81,9 @@ const AttributesForm = ({
             control={
               <Checkbox
                 color="secondary"
-                checked={values.attributes?.frozenProduct?.selected}
+                checked={values?.frozenProduct?.selected}
                 onChange={handleChange}
-                name={formattedName("attributes.frozenProduct", "selected")}
+                name="frozenProduct.selected"
               />
             }
             label="Frozen Product"
@@ -103,8 +94,8 @@ const AttributesForm = ({
                 <Checkbox
                   color="secondary"
                   onChange={handleChange}
-                  checked={values.attributes?.expiryDate?.selected}
-                  name={formattedName("attributes.expiryDate", "selected")}
+                  checked={values?.expiryDate?.selected}
+                  name="expiryDate.selected"
                 />
               }
               label="Expiry Date of Product"
@@ -116,9 +107,9 @@ const AttributesForm = ({
                     <DesktopDatePicker
                       label="Date desktop"
                       inputFormat="MM/DD/YYYY"
-                      value={values.attributes?.expiryDate?.date}
+                      value={values?.expiryDate?.date}
                       onChange={(newValue) =>
-                        setFieldValue("attributes.expiryDate.date", newValue)
+                        setFieldValue("expiryDate.date", newValue)
                       }
                       renderInput={(params) => (
                         <TextField
@@ -126,19 +117,14 @@ const AttributesForm = ({
                           fullWidth
                           variant="filled"
                           onBlur={handleBlur}
-                          name={formattedName("attributes.expiryDate", "date")}
-                          error={formattedError(
-                            "attributes.expiryDate",
-                            "date",
-                            touched,
-                            errors
-                          )}
-                          helperText={formattedHelper(
-                            "attributes.expiryDate",
-                            "date",
-                            touched,
-                            errors
-                          )}
+                          name="expiryDate.date"
+                          error={
+                            !!touched.expiryDate?.date &&
+                            !!errors.expiryDate?.date
+                          }
+                          helperText={
+                            touched.expiryDate?.date && errors.expiryDate?.date
+                          }
                           {...params}
                         />
                       )}
@@ -147,9 +133,9 @@ const AttributesForm = ({
                     <MobileDatePicker
                       label="Date mobile"
                       inputFormat="MM/DD/YYYY"
-                      value={values?.attributes?.expiryDate.date}
+                      value={values?.expiryDate?.date}
                       onChange={(newValue) =>
-                        setFieldValue("attributes.expiryDate.date", newValue)
+                        setFieldValue("expiryDate.date", newValue)
                       }
                       renderInput={(params) => (
                         <TextField
@@ -157,19 +143,14 @@ const AttributesForm = ({
                           fullWidth
                           variant="filled"
                           onChange={handleChange}
-                          name={formattedName("attributes.expiryDate", "date")}
-                          error={formattedError(
-                            "attributes.expiryDate",
-                            "date",
-                            touched,
-                            errors
-                          )}
-                          helperText={formattedHelper(
-                            "attributes.expiryDate",
-                            "date",
-                            touched,
-                            errors
-                          )}
+                          name="expiryDate.date"
+                          error={
+                            !!touched.expiryDate?.date &&
+                            !!errors.expiryDate?.date
+                          }
+                          helperText={
+                            touched.expiryDate?.date && errors.expiryDat?.date
+                          }
                           {...params}
                         />
                       )}

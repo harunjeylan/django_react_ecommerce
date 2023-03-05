@@ -13,9 +13,11 @@ from rest_framework import status
 # from django.contrib.auth.models import  User
 # from api.models import Order, Product
 from api.models import (
+    Brand,
     Order, 
     Product, 
     Image,
+    RecommendedProduct,
     Vendor,
     Category,
     Collection,
@@ -30,6 +32,7 @@ from api.models import (
     WishList
     )
 from api.serializer import (
+    BrandSerializer,
     ImageSerializer,
     ProductSerializer,
     VendorSerializer,
@@ -45,6 +48,7 @@ from api.serializer import (
     InventorySerializer,
     WishListSerializer,
     OrderSerializer,
+    RecommendedProductSerializer
 )
 
 @api_view(['GET'])
@@ -69,22 +73,24 @@ def getOrganizes(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def newProduct(request):
-    print(request.data)
-    category, created_category = Category.objects.get_or_create(name=request.data.get("organize")["category"])
-    collection, created_collection = Collection.objects.get_or_create(name=request.data.get("organize")["collection"])
-    vendor, created_vendor = Vendor.objects.get_or_create(name=request.data.get("organize")["category"])
+    category, created_category = Category.objects.get_or_create(name=request.data.get("category"))
+    collection, created_collection = Collection.objects.get_or_create(name=request.data.get("collection"))
+    vendor, created_vendor = Vendor.objects.get_or_create(name=request.data.get("vendor"))
 
     organize = Organize.objects.create( category=category, collection=collection, vendor=vendor)
-
-    for tag_id in request.data.get("organize")["tags"]:
-        tag, created_tag = Tag.objects.get_or_create(id=tag_id)
+    tags = []
+    for tag_name in request.data.get("tags"):
+        tag, created_tag = Tag.objects.get_or_create(name=tag_name)
         organize.tags.add(tag)
-    
-    organize.save()
-
+        tags.append(TagSerializer(tag).data),
+    # thumbnail = request.FILES
+    # print(thumbnail)
+    # print(thumbnail)
+    print(request.FILES)
+    brand,created = Brand.objects.get_or_create(name=request.data.get("brand"))
     product_feilds = {
         "title":request.data.get("title"),
-        "brand":request.data.get("brand"),
+        "brand":brand.id,
         "description":request.data.get("description"),
         # "thumbnail":request.data.get("thumbnail")[0]["file"],
         "organize":organize.id,
@@ -122,19 +128,19 @@ def newProduct(request):
 
     product.save()
 
-    frozen_product=request.data.get("attributes")["frozenProduct"]["selected"]
-    max_allowed_temperature=request.data.get("attributes")["frozenProduct"]["maxAllowedTemperature"] if frozen_product else None
+    frozen_product=request.data.get("frozenProduct")["selected"]
+    max_allowed_temperature=request.data.get("frozenProduct")["maxAllowedTemperature"] if frozen_product else None
     
-    expiry_date_selectd=request.data.get("attributes")["expiryDate"]["selected"]
-    expiry_date=request.data.get("attributes")["expiryDate"]["date"] if expiry_date_selectd else None
+    expiry_date_selectd=request.data.get("expiryDate")["selected"]
+    expiry_date=request.data.get("expiryDate")["date"] if expiry_date_selectd else None
 
     inventory_feilds = {
         "regular_pricing":request.data.get("regularPrice"),
         "sale_pricing":request.data.get("salePrice"),
         "stock":request.data.get("restockQuantity"),
         "expiry_date":expiry_date,
-        "fragile_product":request.data.get("attributes")["fragileProduct"],
-        "biodegradable":request.data.get("attributes")["biodegradable"],
+        "fragile_product":request.data.get("fragileProduct"),
+        "biodegradable":request.data.get("biodegradable"),
         "frozen_product":frozen_product,
         "max_allowed_temperature":max_allowed_temperature,
         "product":product.id,
@@ -160,20 +166,13 @@ def newProduct(request):
         return Response(inventory_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
     
     serialized_data = {
+        **InventorySerializer(inventory).data,
         **ProductSerializer(product).data,
-        "inventory":InventorySerializer(inventory).data,
+        "category":CategorySerializer(category).data,
+        "collection":CollectionSerializer(collection).data,
+        "vendor":VendorSerializer(vendor).data,
         "variants":variants,
-        "image":images,
-        "organize":{
-            **OrganizeSerializer(organize).data,
-            "category":CategorySerializer(category).data,
-            "collection":CollectionSerializer(collection).data,
-            "vendor":VendorSerializer(vendor).data,
-        },
-        "inventory":{
-            **InventorySerializer(inventory).data,
-            "countries":countries,
-        }
+        "tags":tags,
     }
 
     
@@ -219,6 +218,96 @@ def addOrganize(request):
     return Response({"error":"you have to spasify the name"}, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['GET'])
+def getRecommendedProducts(request):
+    recommendedProducts = RecommendedProduct.objects.all()
+    serialized_data = []
+    for recommendedProduct in recommendedProducts:
+        
+        products = [] 
+        for product in recommendedProduct.products.all():
+            inventory = Inventory.objects.get(product=product)
+            products.append({
+                **InventorySerializer(inventory).data, 
+                **ProductSerializer(product).data
+            })
+        serialized_data.append({
+            **RecommendedProductSerializer(recommendedProduct).data,
+            "products":products
+        })
+    return Response(serialized_data, status=status.HTTP_200_OK) 
+
+@api_view(['GET'])
+def searchAndFilterProducts(request):
+    for key, value in request.GET.items():
+        print(key,value)
+    products = [] 
+    for product in Product.objects.all():
+        inventory = Inventory.objects.get(product=product)
+        products.append({
+            **InventorySerializer(inventory).data, 
+            **ProductSerializer(product).data
+        })
+    return Response(products, status=status.HTTP_200_OK) 
+
+
+@api_view(['GET'])
+def getProductsByCategory(request,pk):
+    return Response([], status=status.HTTP_200_OK) 
+@api_view(['GET'])
+def getProductsDetailes(request,pk):
+    return Response({}, status=status.HTTP_200_OK)
+@api_view(['GET'])
+def getAllCategory(request):
+    return Response([], status=status.HTTP_200_OK)
+
+
+@api_view(['POST','PUT'])
+@permission_classes([IsAuthenticated])
+def addBrand(request):
+    brand,created = Brand.objects.get_or_create(name=request.data.get("name"))
+    print(brand)
+    return Response(BrandSerializer(brand).data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getAllBrands(request):
+    brands = BrandSerializer(Brand.objects.all(), many=True).data
+    print(">>>>>>>>>>>>>>>>>>")
+    print(brands)
+    return Response(brands, status=status.HTTP_200_OK)
+
+
+@api_view(['POST','PUT'])
+@permission_classes([IsAuthenticated])
+def addVariant(request):
+    variant,created = Variant.objects.get_or_create(name=request.data.get("variant"))
+    options = []
+    for option_label in request.data.get("options"):
+        option,created = Option.objects.get_or_create(label=option_label)
+        variant.options.add(option)
+        options.append((OptionSerializer(option.data)))
+  
+    return Response({**VariantSerializer(variant).data,"options":options}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getAllVariants(request):
+    serialized_data = []
+    for variant in Variant.objects.all():
+        options = []
+        for option_label in request.data.get("options"):
+            option,created = Option.objects.get_or_create(label=option_label)
+            variant.options.add(option)
+            options.append((OptionSerializer(option.data)))
+        serialized_data.append({
+            **VariantSerializer(variant).data,
+            "options":options,
+        })
+  
+    return Response(serialized_data, status=status.HTTP_200_OK)
 
 
 
