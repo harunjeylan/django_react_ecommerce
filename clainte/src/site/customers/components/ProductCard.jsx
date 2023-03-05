@@ -143,9 +143,11 @@ const ProductCard = ({ product }) => {
           </Typography>
         </Box>
         <Box className="flex justify-between items-center">
-          <Typography className="text-gray-600 text-sm">
-            <s className="me-2 text-gray-500 mr-1">$40.00</s>
-            <span>${product?.price}</span>
+          <Typography className="text-gray-200 text-sm">
+            <s className="me-2 text-gray-100 mr-1">
+              ${product?.regular_pricing}
+            </s>
+            <strong>${product?.sale_pricing}</strong>
           </Typography>
           <Rating name="read-only" defaultValue={product?.rating} readOnly />
         </Box>

@@ -20,7 +20,10 @@ class Tag(models.Model):
     name = models.CharField(unique=True,max_length=100)
     def __str__(self):
         return f"{self.name}" 
-
+class Brand(models.Model):
+    name = models.CharField(unique=True,max_length=100)
+    def __str__(self):
+        return f"{self.name}" 
 
 class Option(models.Model):
     label = models.CharField(unique=True, max_length=100)
@@ -55,7 +58,7 @@ class Organize(models.Model):
 
 class Product(models.Model):
     title = models.CharField(max_length=100)
-    brand = models.CharField(max_length=100,null=True, blank=True)
+    brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     thumbnail = models.ImageField(null=True, blank=True, upload_to="product-images")
     organize = models.ForeignKey(Organize, on_delete=models.SET_NULL, null=True, blank=True)
@@ -100,6 +103,14 @@ class Inventory(models.Model):
     def __str__(self):
         return f"{self.product.title}"
 
+
+class RecommendedProduct(models.Model):
+    products = models.ManyToManyField(Product, blank=True)
+    title = models.CharField(max_length=200)
+    subtitle = models.CharField(max_length=200)
+    def __str__(self):
+        return f"{self.title}"
+    
 class Order(models.Model):
     customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     products = models.ManyToManyField(Product, blank=True)

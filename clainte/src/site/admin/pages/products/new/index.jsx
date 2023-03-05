@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
@@ -23,19 +23,22 @@ const NewProduct = () => {
   const [addProduct] = useAddProductMutation();
 
   const handleFormSubmit = (values) => {
-    let data = values?.attributes?.expiryDate?.date;
-    console.log(data);
+    let data = values?.expiryDate?.date;
+    let formatedDate;
+    if (data.hasOwnProperty("format")) {
+      formatedDate = data.hasOwnProperty("format");
+    } else {
+      let objectDate = new Date();
+      formatedDate = `${objectDate.getFullYear()}-${objectDate.getMonth()}-${objectDate.getDate()}`;
+    }
+    let thumbnail = values.thumbnail[0]?.file;
+    console.log(thumbnail);
     const post = {
       ...values,
-      attributes: {
-        ...values?.attributes,
-        expiryDate: {
-          ...values?.attributes?.expiryDate,
-          data:
-            typeof data == "string"
-              ? new Date(data)
-              : data.format("YYYY-MM-DD"),
-        },
+      thumbnail,
+      expiryDate: {
+        selected: values?.expiryDate?.selected,
+        data: formatedDate,
       },
     };
     console.log(post);

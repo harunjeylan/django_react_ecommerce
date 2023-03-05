@@ -1,6 +1,23 @@
 from django.contrib import admin
 
-from .models import Category, Vendor, Collection, Tag, Option, Variant, VariantOption, Image, Organize, Product, Country, Inventory, Order, WishList
+from .models import (
+    Category, 
+    RecommendedProduct, 
+    Vendor, 
+    Collection, 
+    Tag, 
+    Option, 
+    Variant, 
+    VariantOption, 
+    Image, 
+    Organize, 
+    Product, 
+    Country, 
+    Inventory, 
+    Order, 
+    WishList,
+    Brand,
+)
 
 
 @admin.register(Category)
@@ -30,6 +47,9 @@ class TagAdmin(admin.ModelAdmin):
 class OptionAdmin(admin.ModelAdmin):
     list_display = ( 'label',)
 
+@admin.register(Brand)
+class BrandAdmin(admin.ModelAdmin):
+    list_display = ( 'name',)
 
 @admin.register(Variant)
 class VariantAdmin(admin.ModelAdmin):
@@ -97,6 +117,14 @@ class InventoryAdmin(admin.ModelAdmin):
         'product',
     )
     raw_id_fields = ('countries',)
+
+@admin.register(RecommendedProduct)
+class RecommendedProductAdmin(admin.ModelAdmin):
+    list_display = (
+        'title',
+        'subtitle',
+    )
+    list_filter = ('title',)
 
 
 @admin.register(Order)

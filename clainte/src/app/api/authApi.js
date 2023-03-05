@@ -20,14 +20,19 @@ export const refreshAccessToken = async (store) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ refresh: store.getState().auth.refresh }),
+
+      body: JSON.stringify({
+        refresh: store?.hasOwnProperty("getState")
+          ? store.getState().auth?.refresh
+          : {},
+      }),
     }
   );
   let data = await response.json();
 
   if (response.status === 200) {
     store.dispatch(setCredentials(data));
-  } else {
+  } else if (response.status === 401) {
     store.dispatch(logOut());
   }
 };

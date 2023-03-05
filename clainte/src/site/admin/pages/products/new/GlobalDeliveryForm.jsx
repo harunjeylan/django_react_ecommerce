@@ -30,14 +30,6 @@ const GlobalDeliveryForm = ({
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const formattedName = (type, field) => `${type}.${field}`;
-
-  const formattedError = (type, field, touched, errors) =>
-    Boolean(
-      getIn(touched, formattedName(type, field)) &&
-        getIn(errors, formattedName(type, field))
-    );
-
   return (
     <Box className="flex flex-col justify-between h-full w-full gap-4 p-4">
       <FormControl>
@@ -54,7 +46,7 @@ const GlobalDeliveryForm = ({
         <RadioGroup
           labelled="globalDelivery-radio-buttons-group-label"
           defaultValue="worldwide_delivery"
-          name={formattedName("globalDelivery", "type")}
+          name="globalDelivery.type"
           className="flex h-full w-full gap-4 "
           value={values.globalDelivery.type}
           onChange={handleChange}
@@ -108,16 +100,14 @@ const GlobalDeliveryForm = ({
                       ))}
                     </Box>
                   )}
-                  value={values.globalDelivery.selectedCountries}
+                  value={values.globalDelivery?.selectedCountries}
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  name={formattedName("globalDelivery", "selectedCountries")}
-                  error={formattedError(
-                    "globalDelivery",
-                    "selectedCountries",
-                    touched,
-                    errors
-                  )}
+                  name="globalDelivery.selectedCountries"
+                  error={
+                    !!touched.globalDelivery?.selectedCountries &&
+                    !!errors.globalDelivery?.selectedCountries
+                  }
                 >
                   {constants.countries?.map((country, index) => (
                     <MenuItem

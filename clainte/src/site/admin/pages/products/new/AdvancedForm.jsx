@@ -64,10 +64,12 @@ const AdvancedForm = ({
               color="secondary"
               labelId="productIDType-select-label"
               id="productIDType-select"
-              value={values.advanced?.productIDType}
+              value={values?.productIDType}
               onBlur={handleBlur}
               onChange={handleChange}
-              name={formattedName("advanced", "productIDType")}
+              name="productIDType"
+              error={!!touched.productIDType && !!errors.productIDType}
+              helperText={touched.productIDType && errors.productIDType}
             >
               <MenuItem value="">
                 <em>None</em>
@@ -86,14 +88,9 @@ const AdvancedForm = ({
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.advanced?.productID}
-            name={formattedName("advanced", "productID")}
-            error={formattedError("advanced", "productID", touched, errors)}
-            helperText={formattedHelper(
-              "advanced",
-              "productID",
-              touched,
-              errors
-            )}
+            name="productID"
+            error={!!touched.productID && !!errors.productID}
+            helperText={touched.productID && errors.productID}
             sx={{ gridColumn: "span 4" }}
           />
         </FormGroup>

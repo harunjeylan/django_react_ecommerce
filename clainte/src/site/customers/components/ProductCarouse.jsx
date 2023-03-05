@@ -20,7 +20,7 @@ const ProductCarouse = ({ products }) => {
         }}
         modules={[Autoplay]} //Autoplay
       >
-        {products?.products.map((product, index) => (
+        {products?.map((product, index) => (
           <SwiperSlide key={`carousel-${index}`} className={`h-auto w-[240px]`}>
             <ProductCard
               product={product}

@@ -2,7 +2,6 @@
 //     const today = new Date();
 //     return today.toLocaleDateString("en-US");
 //   };
-import { constants } from "./constants";
 export const initialValues = {
   title: "",
   brand: "",
@@ -14,30 +13,26 @@ export const initialValues = {
   images: [],
   variants: [],
   shoppingType: "",
-  organize: {
-    category: "",
-    collection: "",
-    vendor: "",
-    tags: [],
-  },
+  category: "",
+  collection: "",
+  vendor: "",
+  tags: [],
+
   globalDelivery: {
     type: "",
     selectedCountries: [],
   },
-  attributes: {
-    fragileProduct: false,
-    biodegradable: false,
-    frozenProduct: {
-      selected: false,
-      maxAllowedTemperature: "",
-    },
-    expiryDate: {
-      selected: false,
-      date: new Date(),
-    },
+  fragileProduct: false,
+  biodegradable: false,
+  frozenProduct: {
+    selected: false,
+    maxAllowedTemperature: "",
   },
-  advanced: {
-    productIDType: "",
-    productID: "",
+  expiryDate: {
+    selected: false,
+    date: new Date(),
   },
+
+  productIDType: "",
+  productID: "",
 };

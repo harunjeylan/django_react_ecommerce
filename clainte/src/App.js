@@ -71,24 +71,26 @@ function App() {
   const userData = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
   const { data: newUserData } = useGetUseDataQuery();
+
   const timeOutRef = useRef(1000 * 60 * 4);
   useEffect(() => {
     if (userData && newUserData) dispatch(setUserData(newUserData));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessToken, newUserData]);
-  useEffect(() => {
-    timeOutRef.current = accessToken
-      ? dayjs.unix(jwt_decode(accessToken).exp).diff(dayjs()) - 30000
-      : 1000 * 60 * 4;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken]);
 
   useEffect(() => {
+    timeOutRef.current = accessToken
+      ? dayjs.unix(jwt_decode(accessToken).exp).diff(dayjs()) - 30000
+      : 1000 * 60 * 58;
+  }, [accessToken]);
+
+  useEffect(() => {
+    let timeOut = timeOutRef.current < 0 ? 3000 : timeOutRef.current;
     let interval = setInterval(() => {
       if (refreshToken) {
-        refreshAccessToken(store);
+        refreshAccessToken();
       }
-    }, timeOutRef.current);
+    }, timeOut);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken]);

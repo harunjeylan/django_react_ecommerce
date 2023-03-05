@@ -4,11 +4,13 @@ export { mockDataReviews } from "../../data/mockData";
 
 export {
   useGetAllProductsQuery,
-  useGetAllCategoryQuery,
-  useGetProductsByCategoryQuery,
-  useGetLimitAndSkipProductsQuery,
+  useGetRecommendedProductsQuery,
+  useAddProductMutation,
   useGetProductsDetailesQuery,
-} from "../../features/services/old-products";
+  useGetProductsByCategoryQuery,
+  useGetAllCategoryQuery,
+  useSearchAndFilterProductsQuery,
+} from "../../features/services/productApiSlice";
 export { useGetAllProductsQuery as useGetProductsQuery } from "../../features/services/productApiSlice";
 export {
   useLoginMutation,

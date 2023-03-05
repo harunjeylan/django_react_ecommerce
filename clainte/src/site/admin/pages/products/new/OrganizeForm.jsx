@@ -79,15 +79,9 @@ const OrganizeForm = ({
   const [openModel, setOpenModel] = useState(false);
   const [modelTitle, setModelTitle] = useState("");
   const [modelInputLabel, setModelInputLabel] = useState("");
-  const [initialItems, setInitialItems] = useState([]);
   const [addOrganize] = useAddOrganizeMutation();
   const { data: organizes, isFetching: organizesIsFetching } =
     useGetAllOrganizeQuery();
-
-  useEffect(() => {
-    setInitialItems(constants.categories);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [constants.categories]);
 
   const modelInputRef = useRef();
   const handleOpenModel = ({ inputLabel, modelTitle }) => {
@@ -208,13 +202,11 @@ const OrganizeForm = ({
                   labelId="category-select-label"
                   id="categories-select"
                   variant="filled"
-                  value={values.organize?.category}
+                  value={values?.category}
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  name="organize.category"
-                  error={
-                    !!touched.organize?.category && !!errors.organize?.category
-                  }
+                  name="category"
+                  error={!!touched?.category && !!errors?.category}
                 >
                   {!organizesIsFetching &&
                     organizes &&
@@ -254,10 +246,10 @@ const OrganizeForm = ({
                   labelId="vendor-select-label"
                   id="vendor-select"
                   variant="filled"
-                  value={values.organize?.vendor}
+                  value={values?.vendor}
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  name="organize.vendor"
+                  name="vendor"
                 >
                   {!organizesIsFetching &&
                     organizes &&
@@ -299,10 +291,10 @@ const OrganizeForm = ({
                   labelId="collections-select-label"
                   id="collections-select"
                   variant="filled"
-                  value={values.organize?.collection}
+                  value={values?.collection}
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  name="organize.collection"
+                  name="collection"
                 >
                   {!organizesIsFetching &&
                     organizes &&
@@ -344,7 +336,7 @@ const OrganizeForm = ({
                   labelId="tags-select-label"
                   id="tags-select"
                   variant="filled"
-                  value={values.organize?.tags}
+                  value={values?.tags}
                   input={
                     <OutlinedInput id="select-multiple-chip" label="Chip" />
                   }
@@ -363,7 +355,7 @@ const OrganizeForm = ({
                   )}
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  name="organize.tags"
+                  name="tags"
                 >
                   {!organizesIsFetching &&
                     organizes &&

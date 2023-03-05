@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useTheme } from "@emotion/react";
 import { Dropzone, FileItem, FullScreenPreview } from "@dropzone-ui/react";
 import {
@@ -8,9 +8,55 @@ import {
   FormControl,
   FormLabel,
   FormGroup,
+  MenuItem,
+  Divider,
+  InputLabel,
+  Select,
+  IconButton,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import SaveAsIcon from "@mui/icons-material/SaveAs";
+
+import { useAddBrandMutation, useGetAllBrandsQuery } from "../../../import";
+import Model from "../../../../../ui/Model";
 
 import { tokens } from "../../../import";
+
+const Item = ({ item, itemName, handleUpdate, handleDelete }) => {
+  const InputRef = useRef();
+
+  useEffect(() => {
+    InputRef.current.value = item.name;
+  }, [item.name]);
+
+  return (
+    <Box className="flex justify-between items-center gap-2">
+      <TextField
+        size="small"
+        color="secondary"
+        fullWidth
+        type="text"
+        // value={item.value}
+        defaultValue={item.name}
+        label={itemName}
+        inputRef={InputRef}
+      />
+      <IconButton
+        onClick={() =>
+          handleUpdate({
+            id: item.id,
+            value: InputRef.current.value,
+          })
+        }
+      >
+        <SaveAsIcon />
+      </IconButton>
+      <IconButton onClick={() => handleDelete({ id: item.id })}>
+        <CloseIcon />
+      </IconButton>
+    </Box>
+  );
+};
 
 const ProductInformationForm = ({
   values,
@@ -23,13 +69,83 @@ const ProductInformationForm = ({
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [imageSrc, setImageSrc] = useState(undefined);
+  const [openModel, setOpenModel] = useState(false);
+  const modelInputRef = useRef();
+  const [addBrand] = useAddBrandMutation();
 
   const handleClean = (image) => {
     console.log("list cleaned", image);
   };
+  const { data: brands, isFetching: brandsIsFetching } = useGetAllBrandsQuery();
+  // const brands = [
+  //   { name: "puma", id: 1 },
+  //   { name: "adidas", id: 2 },
+  //   { name: "nike", id: 3 },
+  // ];
+  // const brandsIsFetching = false;
+
+  const handleAdd = () => {
+    const data = {
+      name: modelInputRef.current.value,
+    };
+    addBrand({ post: data });
+    console.log(data);
+    modelInputRef.current.value = "";
+    setOpenModel(false);
+  };
+  const handleUpdate = ({ id, value }) => {
+    const data = {
+      id,
+      value,
+    };
+    console.log(data);
+  };
+  const handleDelete = ({ id }) => {
+    const data = {
+      id,
+    };
+    console.log(data);
+  };
 
   return (
     <Box className="w-full">
+      <Model
+        openModel={openModel}
+        setOpenModel={setOpenModel}
+        modelTitle="Add Brand"
+      >
+        <Box className="w-full">
+          <Box className="flex justify-between items-center gap-2 mb-2">
+            <TextField
+              size="small"
+              color="secondary"
+              fullWidth
+              variant="filled"
+              type="text"
+              name={"brand"}
+              label={"Brand"}
+              inputRef={modelInputRef}
+            />
+            <IconButton onClick={handleAdd}>
+              <SaveAsIcon />
+            </IconButton>
+          </Box>
+          <Divider />
+          <Box className="flex flex-col gap-4 mt-4">
+            {!brandsIsFetching &&
+              brands?.length &&
+              brands?.map((item) => (
+                <Item
+                  key={item.id}
+                  item={item}
+                  itemName={"brand"}
+                  handleUpdate={handleUpdate}
+                  handleDelete={handleDelete}
+                />
+              ))}
+          </Box>
+        </Box>
+      </Model>
       <FullScreenPreview
         imgSource={imageSrc}
         openImage={imageSrc}
@@ -169,10 +285,49 @@ const ProductInformationForm = ({
                 ))}
             </Dropzone>
           </Box>
-          <Box>
+          <Box className="w-full">
+            <Box className="w-full flex justify-between px-1 gap-2">
+              <Typography variant="h6" fontWeight="bold" className="my-2">
+                Brand
+              </Typography>
+              <Typography
+                onClick={() => setOpenModel(true)}
+                variant="h6"
+                fontWeight="bold"
+                className={`my-2 cursor-pointer hover:text-green-400`}
+                color={colors.blueAccent[400]}
+              >
+                Add new brand
+              </Typography>
+            </Box>
+            <FormControl variant="filled" className="w-full">
+              <InputLabel id="brands-select-label">Brand</InputLabel>
+              <Select
+                fullWidth
+                color="secondary"
+                labelId="brands-select-label"
+                id="brands-select"
+                variant="filled"
+                value={values?.brand}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                name="brand"
+              >
+                {!brandsIsFetching &&
+                  brands?.length &&
+                  brands?.map((brand) => (
+                    <MenuItem key={brand.id} value={brand.name}>
+                      {brand.name}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+          </Box>
+          {/* <Box>
             <Typography variant="h6" fontWeight="bold" className="my-2">
               Brand
             </Typography>
+
             <TextField
               color="secondary"
               fullWidth
@@ -187,7 +342,7 @@ const ProductInformationForm = ({
               helperText={touched.brand && errors.brand}
               sx={{ gridColumn: "span 4" }}
             />
-          </Box>
+          </Box> */}
         </FormGroup>
       </FormControl>
     </Box>
