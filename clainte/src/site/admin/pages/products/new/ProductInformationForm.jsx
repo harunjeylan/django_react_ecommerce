@@ -17,41 +17,46 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 
-import { useAddBrandMutation, useGetAllBrandsQuery } from "../../../import";
+import {
+  useGetAllBrandsQuery,
+  useAddBrandMutation,
+  useUpdateBrandMutation,
+  useDeleteBrandMutation,
+} from "../../../../../features/services/brandApiSlice";
 import Model from "../../../../../ui/Model";
 
 import { tokens } from "../../../import";
 
-const Item = ({ item, itemName, handleUpdate, handleDelete }) => {
+const Brand = ({ brand, handleUpdate, handleDelete }) => {
   const InputRef = useRef();
 
   useEffect(() => {
-    InputRef.current.value = item.name;
-  }, [item.name]);
+    InputRef.current.value = brand.name;
+  }, [brand.name]);
 
   return (
-    <Box className="flex justify-between items-center gap-2">
+    <Box className="flex justify-between brands-center gap-2">
       <TextField
         size="small"
         color="secondary"
         fullWidth
         type="text"
-        // value={item.value}
-        defaultValue={item.name}
-        label={itemName}
+        // value={brand.value}
+        defaultValue={brand.name}
+        label="Brand"
         inputRef={InputRef}
       />
       <IconButton
         onClick={() =>
           handleUpdate({
-            id: item.id,
-            value: InputRef.current.value,
+            id: brand.id,
+            name: InputRef.current.value,
           })
         }
       >
         <SaveAsIcon />
       </IconButton>
-      <IconButton onClick={() => handleDelete({ id: item.id })}>
+      <IconButton onClick={() => handleDelete({ id: brand.id })}>
         <CloseIcon />
       </IconButton>
     </Box>
@@ -72,39 +77,46 @@ const ProductInformationForm = ({
   const [openModel, setOpenModel] = useState(false);
   const modelInputRef = useRef();
   const [addBrand] = useAddBrandMutation();
+  const [updateBrand, { isLoading: isUpdating }] = useUpdateBrandMutation();
+  const [deleteBrand, { isLoading: isDeleting }] = useDeleteBrandMutation();
 
   const handleClean = (image) => {
     console.log("list cleaned", image);
   };
   const { data: brands, isFetching: brandsIsFetching } = useGetAllBrandsQuery();
-  // const brands = [
-  //   { name: "puma", id: 1 },
-  //   { name: "adidas", id: 2 },
-  //   { name: "nike", id: 3 },
-  // ];
-  // const brandsIsFetching = false;
 
   const handleAdd = () => {
     const data = {
       name: modelInputRef.current.value,
     };
     addBrand({ post: data });
-    console.log(data);
     modelInputRef.current.value = "";
-    setOpenModel(false);
   };
-  const handleUpdate = ({ id, value }) => {
+  const handleUpdate = ({ id, name }) => {
+    let brand = brands.find((brand) => brand.id === id);
+    console.log(brand);
+    console.log(values.brand);
     const data = {
       id,
-      value,
+      name,
     };
-    console.log(data);
+    updateBrand({ post: data });
+    if (values.brand === brand.name) {
+      setFieldValue("brand", "");
+    }
   };
   const handleDelete = ({ id }) => {
+    let brand = brands.find((brand) => brand.id === id);
+    console.log(brand);
+
     const data = {
       id,
     };
     console.log(data);
+    deleteBrand({ post: data });
+    if (values.brand === brand.name) {
+      setFieldValue("brand", "");
+    }
   };
 
   return (
@@ -123,7 +135,7 @@ const ProductInformationForm = ({
               variant="filled"
               type="text"
               name={"brand"}
-              label={"Brand"}
+              label={"New Brand..."}
               inputRef={modelInputRef}
             />
             <IconButton onClick={handleAdd}>
@@ -134,11 +146,10 @@ const ProductInformationForm = ({
           <Box className="flex flex-col gap-4 mt-4">
             {!brandsIsFetching &&
               brands?.length &&
-              brands?.map((item) => (
-                <Item
-                  key={item.id}
-                  item={item}
-                  itemName={"brand"}
+              brands?.map((brand) => (
+                <Brand
+                  key={brand.id}
+                  brand={brand}
                   handleUpdate={handleUpdate}
                   handleDelete={handleDelete}
                 />
@@ -297,30 +308,31 @@ const ProductInformationForm = ({
                 className={`my-2 cursor-pointer hover:text-green-400`}
                 color={colors.blueAccent[400]}
               >
-                Add new brand
+                More
               </Typography>
             </Box>
             <FormControl variant="filled" className="w-full">
               <InputLabel id="brands-select-label">Brand</InputLabel>
-              <Select
-                fullWidth
-                color="secondary"
-                labelId="brands-select-label"
-                id="brands-select"
-                variant="filled"
-                value={values?.brand}
-                onBlur={handleBlur}
-                onChange={handleChange}
-                name="brand"
-              >
-                {!brandsIsFetching &&
-                  brands?.length &&
-                  brands?.map((brand) => (
-                    <MenuItem key={brand.id} value={brand.name}>
-                      {brand.name}
-                    </MenuItem>
-                  ))}
-              </Select>
+              {!brandsIsFetching && !isUpdating && !isDeleting && (
+                <Select
+                  fullWidth
+                  color="secondary"
+                  labelId="brands-select-label"
+                  id="brands-select"
+                  variant="filled"
+                  value={values?.brand}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  name="brand"
+                >
+                  {brands?.length &&
+                    brands?.map((brand) => (
+                      <MenuItem key={brand.id} value={brand.name}>
+                        {brand.name}
+                      </MenuItem>
+                    ))}
+                </Select>
+              )}
             </FormControl>
           </Box>
           {/* <Box>

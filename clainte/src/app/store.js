@@ -14,6 +14,8 @@ import storage from "redux-persist/lib/storage";
 import { authApi } from "./api/authApi";
 import { productApi } from "../features/services/productApiSlice";
 import { organizeApi } from "../features/services/organizeApiSlice";
+import { variantApi } from "../features/services/variantApiSlice";
+import { brandApi } from "../features/services/brandApiSlice";
 
 import authReducer from "../features/auth/authSlice";
 import productReducer from "../features/services/productSlice";
@@ -43,8 +45,10 @@ const store = configureStore({
     cart: persistedCartReducer,
     wishlist: persistedWishlistReducer,
     product: persistedProductReducer,
-    [organizeApi.reducerPath]: organizeApi.reducer,
     [productApi.reducerPath]: productApi.reducer,
+    [organizeApi.reducerPath]: organizeApi.reducer,
+    [variantApi.reducerPath]: variantApi.reducer,
+    [brandApi.reducerPath]: brandApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
@@ -54,7 +58,9 @@ const store = configureStore({
       },
     })
       .concat(organizeApi.middleware)
+      .concat(variantApi.middleware)
       .concat(productApi.middleware)
+      .concat(brandApi.middleware)
       .concat(authApi.middleware);
   },
   devTools: true,

@@ -1,6 +1,5 @@
 import { setCredentials, logOut } from "../../features/auth/authSlice";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
 const baseQuery = fetchBaseQuery({
   baseUrl: "http://127.0.0.1:8000",
   prepareHeaders: (headers, { getState, extra }) => {
@@ -22,9 +21,7 @@ export const refreshAccessToken = async (store) => {
       },
 
       body: JSON.stringify({
-        refresh: store?.hasOwnProperty("getState")
-          ? store.getState().auth?.refresh
-          : {},
+        refresh: store.getState().auth?.refresh,
       }),
     }
   );

@@ -88,7 +88,7 @@ function App() {
     let timeOut = timeOutRef.current < 0 ? 3000 : timeOutRef.current;
     let interval = setInterval(() => {
       if (refreshToken) {
-        refreshAccessToken();
+        refreshAccessToken(store);
       }
     }, timeOut);
     return () => clearInterval(interval);
