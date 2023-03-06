@@ -13,11 +13,9 @@ export {
 
 export { logOut } from "../customers/import";
 export { addToCart } from "../../features/services/cartReducer";
-export { useGetProductsDetailesQuery } from "../../features/services/old-products";
+export { useGetProductsDetailesQuery } from "../../features/services/productApiSlice";
 export {
   useAddProductMutation,
-  useAddBrandMutation,
-  useGetAllBrandsQuery,
   useGetAllVariantsQuery,
 } from "../../features/services/productApiSlice";
 

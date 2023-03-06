@@ -22,7 +22,8 @@ import { tokens } from "../../../import";
 import {
   useAddOrganizeMutation,
   useGetAllOrganizeQuery,
-} from "../../../import";
+  useUpdateOrganizeMutation,
+} from "../../../../../features/services/organizeApiSlice";
 
 import { constants } from "./constants";
 import Model from "../../../../../ui/Model";
@@ -80,7 +81,9 @@ const OrganizeForm = ({
   const [modelTitle, setModelTitle] = useState("");
   const [modelInputLabel, setModelInputLabel] = useState("");
   const [addOrganize] = useAddOrganizeMutation();
-  const { data: organizes, isFetching: organizesIsFetching } =
+  const [updateOrganize] = useUpdateOrganizeMutation();
+
+  const { data: organize, isFetching: organizeIsFetching } =
     useGetAllOrganizeQuery();
 
   const modelInputRef = useRef();
@@ -103,8 +106,9 @@ const OrganizeForm = ({
     const data = {
       id,
       name,
-      value,
+      label: value,
     };
+    updateOrganize({ post: data });
     console.log(data);
   };
   const handleDelete = ({ id, name }) => {
@@ -114,7 +118,6 @@ const OrganizeForm = ({
     };
     console.log(data);
   };
-
   return (
     <>
       <Model
@@ -140,9 +143,9 @@ const OrganizeForm = ({
           </Box>
           <Divider />
           <Box className="flex flex-col gap-4 mt-4">
-            {!organizesIsFetching &&
-              organizes &&
-              organizes[modelInputLabel]?.map((item) => (
+            {!organizeIsFetching &&
+              organize &&
+              organize[modelInputLabel]?.map((item) => (
                 <Item
                   key={item.id}
                   item={item}
@@ -182,7 +185,7 @@ const OrganizeForm = ({
                 <Typography
                   onClick={() =>
                     handleOpenModel({
-                      inputLabel: "category",
+                      inputLabel: "categories",
                       modelTitle: "Add Category",
                     })
                   }
@@ -191,7 +194,7 @@ const OrganizeForm = ({
                   className={`my-2 cursor-pointer hover:text-green-400`}
                   color={colors.blueAccent[400]}
                 >
-                  Add new category
+                  More
                 </Typography>
               </Box>
               <FormControl variant="filled" className="w-full">
@@ -202,15 +205,14 @@ const OrganizeForm = ({
                   labelId="category-select-label"
                   id="categories-select"
                   variant="filled"
+                  name="category"
                   value={values?.category}
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  name="category"
                   error={!!touched?.category && !!errors?.category}
                 >
-                  {!organizesIsFetching &&
-                    organizes &&
-                    organizes.category?.map((category) => (
+                  {!organizeIsFetching &&
+                    organize.categories?.map((category) => (
                       <MenuItem key={category.id} value={category.name}>
                         {category.name}
                       </MenuItem>
@@ -226,7 +228,7 @@ const OrganizeForm = ({
                 <Typography
                   onClick={() =>
                     handleOpenModel({
-                      inputLabel: "vendor",
+                      inputLabel: "vendors",
                       modelTitle: "Add Vender",
                     })
                   }
@@ -235,7 +237,7 @@ const OrganizeForm = ({
                   className={`my-2 cursor-pointer hover:text-green-400`}
                   color={colors.blueAccent[400]}
                 >
-                  Add new vendor
+                  More
                 </Typography>
               </Box>
               <FormControl variant="filled" className="w-full">
@@ -246,14 +248,14 @@ const OrganizeForm = ({
                   labelId="vendor-select-label"
                   id="vendor-select"
                   variant="filled"
+                  name="vendor"
                   value={values?.vendor}
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  name="vendor"
+                  error={!!touched?.vendor && !!errors?.vendor}
                 >
-                  {!organizesIsFetching &&
-                    organizes &&
-                    organizes.vendor?.map((vendor) => (
+                  {!organizeIsFetching &&
+                    organize.vendors?.map((vendor) => (
                       <MenuItem key={vendor.id} value={vendor.name}>
                         {vendor.name}
                       </MenuItem>
@@ -269,7 +271,7 @@ const OrganizeForm = ({
                 <Typography
                   onClick={() =>
                     handleOpenModel({
-                      inputLabel: "collection",
+                      inputLabel: "collections",
                       modelTitle: "Add Collection",
                     })
                   }
@@ -278,7 +280,7 @@ const OrganizeForm = ({
                   className={`my-2 cursor-pointer hover:text-green-400`}
                   color={colors.blueAccent[400]}
                 >
-                  Add new collection
+                  More
                 </Typography>
               </Box>
               <FormControl variant="filled" className="w-full">
@@ -291,14 +293,14 @@ const OrganizeForm = ({
                   labelId="collections-select-label"
                   id="collections-select"
                   variant="filled"
+                  name="collection"
                   value={values?.collection}
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  name="collection"
+                  error={!!touched?.collection && !!errors?.collection}
                 >
-                  {!organizesIsFetching &&
-                    organizes &&
-                    organizes.collection?.map((collection) => (
+                  {!organizeIsFetching &&
+                    organize.collections?.map((collection) => (
                       <MenuItem key={collection.id} value={collection.name}>
                         {collection.name}
                       </MenuItem>
@@ -315,7 +317,7 @@ const OrganizeForm = ({
                 <Typography
                   onClick={() =>
                     handleOpenModel({
-                      inputLabel: "tag",
+                      inputLabel: "tags",
                       modelTitle: "Add Tags",
                     })
                   }
@@ -324,7 +326,7 @@ const OrganizeForm = ({
                   className={`my-2 cursor-pointer hover:text-green-400`}
                   color={colors.blueAccent[400]}
                 >
-                  Add new tags
+                  More
                 </Typography>
               </Box>
               <FormControl variant="filled" className="w-full">
@@ -353,13 +355,13 @@ const OrganizeForm = ({
                       ))}
                     </Box>
                   )}
+                  name="tags"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  name="tags"
+                  error={!!touched?.tags && !!errors?.tags}
                 >
-                  {!organizesIsFetching &&
-                    organizes &&
-                    organizes.tag?.map((tag) => (
+                  {!organizeIsFetching &&
+                    organize.tags?.map((tag) => (
                       <MenuItem key={tag.id} value={tag.name}>
                         {tag.name}
                       </MenuItem>

@@ -60,10 +60,10 @@ def getProducts(request):
 @permission_classes([IsAuthenticated])
 def getOrganizes(request):
     serialized_data = {
-        "category":CategorySerializer(Category.objects.all(), many=True).data,
-        "collection":CollectionSerializer(Collection.objects.all(), many=True).data,
-        "vendor":VendorSerializer(Vendor.objects.all(), many=True).data,
-        "tag":TagSerializer(Tag.objects.all(), many=True).data,
+        "categories":CategorySerializer(Category.objects.all(), many=True).data,
+        "collections":CollectionSerializer(Collection.objects.all(), many=True).data,
+        "vendors":VendorSerializer(Vendor.objects.all(), many=True).data,
+        "tags":TagSerializer(Tag.objects.all(), many=True).data,
     }
     return Response(serialized_data, status=status.HTTP_200_OK)
 
@@ -84,9 +84,7 @@ def newProduct(request):
         organize.tags.add(tag)
         tags.append(TagSerializer(tag).data),
     # thumbnail = request.FILES
-    # print(thumbnail)
-    # print(thumbnail)
-    print(request.FILES)
+
     brand,created = Brand.objects.get_or_create(name=request.data.get("brand"))
     product_feilds = {
         "title":request.data.get("title"),
@@ -107,7 +105,6 @@ def newProduct(request):
     
     images = []
     for image in request.data.get("images"):
-        print(image["file"])
         images_serializer = ImageSerializer(data={"image":image["file"]})
         if images_serializer.is_valid():
             new_image = images_serializer.save()
@@ -116,8 +113,8 @@ def newProduct(request):
     
     variants = []
     for variant_dic in request.data.get("variants"):
-        option = Option.objects.get(id=variant_dic["optionId"])
-        variant = Variant.objects.get(id=variant_dic["variantId"])
+        option = Option.objects.get(label=variant_dic["optionLabel"])
+        variant = Variant.objects.get(label=variant_dic["variantLabel"])
         variant_option = VariantOption.objects.create(option=option, variant=variant)
         product.variants.add(variant_option)
         variants.append({
@@ -146,7 +143,6 @@ def newProduct(request):
         "product":product.id,
     }
     if request.data.get("shoppingType") == "fulfilled_by_seller" or request.data.get("shoppingType") == "fulfilled_by_phoenix":
-        print(request.data.get("shoppingType"))
         inventory_feilds["shipping_type"] = request.data.get("shoppingType")
 
     inventory = None
@@ -184,31 +180,30 @@ def newProduct(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addOrganize(request):
-    print(">>>>>>>>>>>",request.data)
     name = request.data.get("name")
     value = {"name":request.data.get("label")}
-    if name=="category":
+    if name=="categories":
         category_serializer = CategorySerializer(data=value)
         if category_serializer.is_valid():
             category = category_serializer.save()
             serialized_data = CategorySerializer(category).data
             return Response(serialized_data, status=status.HTTP_201_CREATED)
         return Response(category_serializer.errers, status=status.HTTP_400_BAD_REQUEST)
-    elif name=="collection":
+    elif name=="collections":
         collection_serializer = CollectionSerializer(data=value)
         if collection_serializer.is_valid():
             collection = collection_serializer.save()
             serialized_data = CollectionSerializer(collection).data
             return Response(serialized_data, status=status.HTTP_201_CREATED)
         return Response(collection_serializer.errers, status=status.HTTP_400_BAD_REQUEST)
-    elif name=="vendor":
+    elif name=="vendors":
         vendor_serializer = VendorSerializer(data=value)
         if vendor_serializer.is_valid():
             vendor = vendor_serializer.save()
             serialized_data = VendorSerializer(vendor).data
             return Response(serialized_data, status=status.HTTP_201_CREATED)
         return Response(vendor_serializer.errers, status=status.HTTP_400_BAD_REQUEST)
-    elif name=="tag":
+    elif name=="tags":
         tag_serializer = TagSerializer(data=value)
         if tag_serializer.is_valid():
             tag = tag_serializer.save()
@@ -217,6 +212,44 @@ def addOrganize(request):
         return Response(tag_serializer.errers, status=status.HTTP_400_BAD_REQUEST)
     return Response({"error":"you have to spasify the name"}, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['POST','PUT'])
+@permission_classes([IsAuthenticated])
+def updateOrganize(request):
+    name = request.data.get("name")
+    value = {"name":request.data.get("label")}
+    if name=="categories":
+        category = Category.objects.get(id=request.data.get("id"))
+        category_serializer = CategorySerializer(data=value, instance=category)
+        if category_serializer.is_valid():
+            category = category_serializer.save()
+            serialized_data = CategorySerializer(category).data
+            return Response(serialized_data, status=status.HTTP_202_ACCEPTED)
+        return Response(category_serializer.errers, status=status.HTTP_400_BAD_REQUEST)
+    elif name=="collections":
+        collection = Collection.objects.get(id=request.data.get("id"))
+        collection_serializer = CollectionSerializer(data=value,instance=collection)
+        if collection_serializer.is_valid():
+            collection = collection_serializer.save()
+            serialized_data = CollectionSerializer(collection).data
+            return Response(serialized_data, status=status.HTTP_202_ACCEPTED)
+        return Response(collection_serializer.errers, status=status.HTTP_400_BAD_REQUEST)
+    elif name=="vendors":
+        vendor = Vendor.objects.get(id=request.data.get("id"))
+        vendor_serializer = VendorSerializer(data=value, instance=vendor)
+        if vendor_serializer.is_valid():
+            vendor = vendor_serializer.save()
+            serialized_data = VendorSerializer(vendor).data
+            return Response(serialized_data, status=status.HTTP_202_ACCEPTED)
+        return Response(vendor_serializer.errers, status=status.HTTP_400_BAD_REQUEST)
+    elif name=="tags":
+        tag = Tag.objects.get(id=request.data.get("id"))
+        tag_serializer = TagSerializer(data=value,instance=tag)
+        if tag_serializer.is_valid():
+            tag = tag_serializer.save()
+            serialized_data = TagSerializer(tag).data
+            return Response(serialized_data, status=status.HTTP_202_ACCEPTED)
+        return Response(tag_serializer.errers, status=status.HTTP_400_BAD_REQUEST)
+    return Response({"error":"you have to spasify the name"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def getRecommendedProducts(request):
@@ -239,8 +272,6 @@ def getRecommendedProducts(request):
 
 @api_view(['GET'])
 def searchAndFilterProducts(request):
-    for key, value in request.GET.items():
-        print(key,value)
     products = [] 
     for product in Product.objects.all():
         inventory = Inventory.objects.get(product=product)
@@ -266,30 +297,102 @@ def getAllCategory(request):
 @permission_classes([IsAuthenticated])
 def addBrand(request):
     brand,created = Brand.objects.get_or_create(name=request.data.get("name"))
-    print(brand)
     return Response(BrandSerializer(brand).data, status=status.HTTP_200_OK)
+
+@api_view(['POST','PUT'])
+@permission_classes([IsAuthenticated])
+def updateBrand(request):
+    brand = Brand.objects.get(id=request.data.get("id"))
+    brand.name = request.data.get("name")
+    brand.save()
+    return Response(BrandSerializer(brand).data, status=status.HTTP_202_ACCEPTED)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def deleteBrand(request):
+    brand = Brand.objects.get(id=request.data.get("id"))
+    brand.delete()
+    return Response({"success":"deleted"}, status=status.HTTP_202_ACCEPTED)
 
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getAllBrands(request):
     brands = BrandSerializer(Brand.objects.all(), many=True).data
-    print(">>>>>>>>>>>>>>>>>>")
-    print(brands)
     return Response(brands, status=status.HTTP_200_OK)
 
 
 @api_view(['POST','PUT'])
 @permission_classes([IsAuthenticated])
 def addVariant(request):
-    variant,created = Variant.objects.get_or_create(name=request.data.get("variant"))
+    variant,created = Variant.objects.get_or_create(label=request.data.get("label"))
     options = []
-    for option_label in request.data.get("options"):
-        option,created = Option.objects.get_or_create(label=option_label)
+    for option_obj in request.data.get("options"):
+        option,created = Option.objects.get_or_create(label=option_obj["label"])
         variant.options.add(option)
-        options.append((OptionSerializer(option.data)))
+        options.append(OptionSerializer(option).data)
   
     return Response({**VariantSerializer(variant).data,"options":options}, status=status.HTTP_200_OK)
+
+@api_view(['POST','PUT'])
+@permission_classes([IsAuthenticated])
+def updateVariant(request):
+    variant = Variant.objects.get(id=request.data.get("id"))
+    variant.label = request.data.get("label")
+    variant.save()
+    options = []
+    for option_obj in request.data.get("options"):
+        same_option = Option.objects.filter(label=option_obj["label"])
+        if not same_option.exists():
+            if "id" in option_obj:
+                option = Option.objects.get(id=option_obj["id"])
+                option.label = option_obj["label"]
+                option.save()
+                if not variant.options.contains(option):
+                    variant.options.add(option)
+                options.append(OptionSerializer(option).data)
+            else:
+                option,created = Option.objects.get_or_create(label=option_obj["label"])
+                if not variant.options.contains(option):
+                    variant.options.add(option)
+                options.append(OptionSerializer(option).data)
+        elif not variant.options.contains(same_option.first()):
+            if "id" in option_obj:
+                option = Option.objects.get(id=option_obj["id"])
+                variant.options.remove(option)
+                if not Variant.objects.filter(options = option).exists():
+                    option.delete()
+            variant.options.add(same_option.first())
+            options.append(OptionSerializer(same_option.first()).data)
+        else:
+            options.append(OptionSerializer(same_option.first()).data)
+
+
+    return Response({**VariantSerializer(variant).data,"options":options}, status=status.HTTP_200_OK)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def deleteVariant(request):
+    variant = Variant.objects.get(id=request.data.get("id"))
+    options = variant.options.all()
+    variant.delete()
+    for option in options:
+        if not Variant.objects.filter(options = option).exists():
+            option.delete()
+    return Response({"success":"deleted"}, status=status.HTTP_202_ACCEPTED)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def deleteOption(request):
+    variant = Variant.objects.get(id=request.data.get("variantId"))
+    option = Option.objects.get(id=request.data.get("optionId"))
+    variant.options.remove(option)
+    if not Variant.objects.filter(options = option).exists():
+        option.delete()
+    return Response({"success":"deleted"}, status=status.HTTP_202_ACCEPTED)
+
+
 
 
 @api_view(['GET'])
@@ -298,10 +401,8 @@ def getAllVariants(request):
     serialized_data = []
     for variant in Variant.objects.all():
         options = []
-        for option_label in request.data.get("options"):
-            option,created = Option.objects.get_or_create(label=option_label)
-            variant.options.add(option)
-            options.append((OptionSerializer(option.data)))
+        for option in variant.options.all():
+            options.append(OptionSerializer(option).data)
         serialized_data.append({
             **VariantSerializer(variant).data,
             "options":options,

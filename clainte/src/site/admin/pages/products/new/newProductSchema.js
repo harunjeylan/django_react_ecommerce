@@ -8,8 +8,8 @@ export const newProductSchema = yup.object().shape({
   restockQuantity: yup.number(),
   variants: yup.array().of(
     yup.object().shape({
-      optionId: yup.number(),
-      variantId: yup.number(),
+      variantLabel: yup.string().required("Required"),
+      optionLabel: yup.string().required("Required"),
     })
   ),
   category: yup.string().required("Required"),

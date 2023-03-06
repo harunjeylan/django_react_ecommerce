@@ -4,10 +4,8 @@ export const productApi = authApi.injectEndpoints({
   tagTypes: [
     "products",
     "recommended-products",
-    "categoreis",
     "products-by-category",
     "brands",
-    "variants",
   ],
   endpoints: (builder) => ({
     addProduct: builder.mutation({
@@ -35,10 +33,6 @@ export const productApi = authApi.injectEndpoints({
     getProductsDetailes: builder.query({
       query: ({ productId }) => `api/products/${productId}/`,
     }),
-    getAllCategory: builder.query({
-      query: () => `api/products/categories/`,
-      providesTags: ["categoreis"],
-    }),
     getProductsByCategory: builder.query({
       query: ({ category }) =>
         category === "all"
@@ -46,27 +40,10 @@ export const productApi = authApi.injectEndpoints({
           : `api/products/category/${category}/`,
       providesTags: ["products-by-category"],
     }),
-    addBrand: builder.mutation({
-      query: ({ post }) => ({
-        url: `api/products/brands/add/`,
-        method: "POST",
-        body: post,
-      }),
-      invalidatesTags: ["brands"],
-    }),
-    getAllBrands: builder.query({
-      query: () => `api/products/brands/`,
-      providesTags: ["brands"],
-    }),
-    getAllVariants: builder.query({
-      query: () => `api/products/variants/`,
-      providesTags: ["variants"],
-    }),
   }),
 });
 
 export const {
-  useAddBrandMutation,
   useAddProductMutation,
 
   useGetAllVariantsQuery,
@@ -77,5 +54,4 @@ export const {
   useGetProductsByCategoryQuery,
   useGetAllCategoryQuery,
   useSearchAndFilterProductsQuery,
-  useGetAllBrandsQuery,
 } = productApi;
