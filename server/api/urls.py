@@ -12,6 +12,7 @@ urlpatterns = [
   path("products/search-and-filter/", api.searchAndFilterProducts , name="search_and_filter_products"),
   path("products/<pk>/", api.getProductsDetailes , name="products_detailes"),
   path("products/category/<pk>/", api.getProductsByCategory , name="products_by_category"),
+  path("products/images/upload/", api.uploadImage , name="upload_image"),
 
   
   path("categories/", api.getAllCategory , name="categories"),

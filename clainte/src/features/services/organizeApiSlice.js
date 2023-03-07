@@ -31,6 +31,7 @@ export const organizeApi = authApi.injectEndpoints({
 });
 
 export const {
+  useGetAllCategoryQuery,
   useGetAllOrganizeQuery,
   useAddOrganizeMutation,
   useUpdateOrganizeMutation,

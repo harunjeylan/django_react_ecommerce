@@ -24,6 +24,7 @@ from api.models import (
 
 
 class ImageSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
     class Meta:
         model = Image
         fields = "__all__"
@@ -31,6 +32,7 @@ class ImageSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    thumbnail = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
     class Meta:
         model = Product
         fields = "__all__"

@@ -13,6 +13,7 @@ import {
   InputLabel,
   Select,
   IconButton,
+  Button,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
@@ -70,6 +71,7 @@ const ProductInformationForm = ({
   handleBlur,
   handleChange,
   setFieldValue,
+  // handleUpload,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -184,10 +186,10 @@ const ProductInformationForm = ({
               variant="filled"
               type="text"
               label="Product Title"
-              onBlur={handleBlur}
               onChange={handleChange}
               value={values.title}
               name="title"
+              onBlur={handleBlur}
               error={!!touched.title && !!errors.title}
               helperText={touched.title && errors.title}
               sx={{ gridColumn: "span 2" }}
@@ -230,7 +232,7 @@ const ProductInformationForm = ({
               }
               onClean={handleClean}
               value={values.thumbnail}
-              maxFiles={5}
+              maxFiles={1}
               maxFileSize={2998000}
               accept=".png,image/*"
               uploadingMessage={"Uploading..."}
@@ -255,6 +257,15 @@ const ProductInformationForm = ({
                 ))}
             </Dropzone>
           </Box>
+          {/* <Button
+            type="submit"
+            color="secondary"
+            variant="outlined"
+            className={`px-8 py-3 `}
+            onClick={() => handleUpload(values)}
+          >
+            Upload
+          </Button> */}
           <Box>
             <Typography variant="h6" fontWeight="bold" className="my-2">
               Display Images
@@ -323,6 +334,7 @@ const ProductInformationForm = ({
                   value={values?.brand}
                   onBlur={handleBlur}
                   onChange={handleChange}
+                  error={!!touched.brand && !!errors.brand}
                   name="brand"
                 >
                   {brands?.length &&

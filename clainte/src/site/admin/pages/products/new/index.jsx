@@ -6,10 +6,13 @@ import { Formik } from "formik";
 import { Box, Button, Typography, Breadcrumbs } from "@mui/material";
 
 import { tokens, Header } from "../../../import";
-import { useAddProductMutation } from "../../../import";
-
+import {
+  useUploadImageMutation,
+  useAddProductMutation,
+} from "../../../../../features/services/productApiSlice";
 import { newProductSchema } from "./newProductSchema";
 import { initialValues } from "./initialValues";
+// import { uploadImage } from "../../../../../features/services/uploadImange";
 
 import ProductInformationForm from "./ProductInformationForm";
 import InventoryForm from "./Inventory";
@@ -21,6 +24,17 @@ const NewProduct = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [addProduct] = useAddProductMutation();
+  const [uploadImage] = useUploadImageMutation();
+
+  // const handleUpload = (values) => {
+  //   let postForm = new FormData();
+  //   postForm.append("thumbnail", values.thumbnail[0]?.file);
+  //   uploadImage({
+  //     post: postForm,
+  //   }).then((response) => {
+  //     console.log(response);
+  //   });
+  // };
 
   const handleFormSubmit = (values) => {
     let data = values?.expiryDate?.date;
@@ -31,19 +45,29 @@ const NewProduct = () => {
       let objectDate = new Date();
       formatedDate = `${objectDate.getFullYear()}-${objectDate.getMonth()}-${objectDate.getDate()}`;
     }
-    let thumbnail = values.thumbnail[0]?.file;
-    console.log(thumbnail);
+    console.log(values.thumbnail);
     const post = {
       ...values,
-      thumbnail,
       expiryDate: {
         selected: values?.expiryDate?.selected,
         data: formatedDate,
       },
     };
-    console.log(post);
-    addProduct({ post: post }).then((res) => {
+    // console.log(post);
+    addProduct({ post }).then((res) => {
+      console.log(values.images.map((image) => image.file));
       console.log(res.data);
+      let postForm = new FormData();
+      postForm.append("thumbnail", values.thumbnail[0]?.file);
+      values.images.forEach((image) => {
+        postForm.append("images", image.file);
+      });
+      postForm.append("productId", res.data.id);
+      uploadImage({
+        post: postForm,
+      }).then((response) => {
+        console.log(response);
+      });
     });
   };
 
@@ -103,6 +127,7 @@ const NewProduct = () => {
                         handleChange={handleChange}
                         handleSubmit={handleSubmit}
                         setFieldValue={setFieldValue}
+                        // handleUpload={handleUpload}
                       />
                       <InventoryForm
                         values={values}

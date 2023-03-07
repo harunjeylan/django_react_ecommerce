@@ -54,7 +54,18 @@ from api.serializer import (
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getProducts(request):
-    return Response(ProductSerializer(Product.objects.all(), many=True).data, status=status.HTTP_200_OK)
+    products = Product.objects.all()
+    serialized_data = []
+    for product in products:
+        images = product.images.all()
+        print(images)
+        serialized_data.append({
+            **ProductSerializer(product).data,
+            "images":ImageSerializer(images, many=True).data
+        })
+
+
+    return Response(images, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -67,8 +78,23 @@ def getOrganizes(request):
     }
     return Response(serialized_data, status=status.HTTP_200_OK)
 
-    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def uploadImage(request):
+    print(request.FILES)
+    product = Product.objects.get(id=request.data.get("productId"))
+    if "thumbnail" in request.FILES:
+        thumbnail = request.FILES.get("thumbnail")
+        if  thumbnail:
+            product.thumbnail = thumbnail
+            product.save()
+    if "images" in request.FILES:
+        images = request.FILES.getlist("images")
+        for image in images:
+            new_image = Image.objects.create(image=image)
+            product.images.add(new_image)
 
+    return Response({"success":"image is uploaded"}, status=status.HTTP_201_CREATED)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -84,7 +110,7 @@ def newProduct(request):
         organize.tags.add(tag)
         tags.append(TagSerializer(tag).data),
     # thumbnail = request.FILES
-
+    print(request.data)
     brand,created = Brand.objects.get_or_create(name=request.data.get("brand"))
     product_feilds = {
         "title":request.data.get("title"),
@@ -164,11 +190,13 @@ def newProduct(request):
     serialized_data = {
         **InventorySerializer(inventory).data,
         **ProductSerializer(product).data,
-        "category":CategorySerializer(category).data,
-        "collection":CollectionSerializer(collection).data,
-        "vendor":VendorSerializer(vendor).data,
         "variants":variants,
-        "tags":tags,
+        "organize":{
+            "category":CategorySerializer(category).data,
+            "collection":CollectionSerializer(collection).data,
+            "vendor":VendorSerializer(vendor).data,
+            "tags":tags,
+        },
     }
 
     
@@ -274,10 +302,18 @@ def getRecommendedProducts(request):
 def searchAndFilterProducts(request):
     products = [] 
     for product in Product.objects.all():
-        inventory = Inventory.objects.get(product=product)
+        inventory = Inventory.objects.filter(product=product)
+        inventory_data = {}
+        if inventory.exists():
+            inventory_data = {
+                **InventorySerializer(inventory.first()).data, 
+                **inventory_data
+            }
+       
         products.append({
-            **InventorySerializer(inventory).data, 
-            **ProductSerializer(product).data
+            **inventory_data,
+            **ProductSerializer(product,context={"request":request}).data,
+            "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
         })
     return Response(products, status=status.HTTP_200_OK) 
 
@@ -287,7 +323,29 @@ def getProductsByCategory(request,pk):
     return Response([], status=status.HTTP_200_OK) 
 @api_view(['GET'])
 def getProductsDetailes(request,pk):
-    return Response({}, status=status.HTTP_200_OK)
+    product = Product.objects.get(id=pk)
+    serialized_data = {}
+    inventory = Inventory.objects.filter(product=product)
+    if inventory.exists():
+        serialized_data = {
+            **InventorySerializer(inventory.first()).data, 
+            **serialized_data
+        }
+
+    serialized_data = {
+        **serialized_data,
+        **ProductSerializer(product,context={"request":request}).data,
+        "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
+        "variants":VariantOptionSerializer(product.variants.all(), many=True).data,
+        "organize":{
+            "category":CategorySerializer(product.organize.category).data,
+            "collection":CollectionSerializer(product.organize.collection).data,
+            "vendor":VendorSerializer(product.organize.vendor).data,
+            "tags":TagSerializer(product.organize.tags, many=True).data,
+        },
+        "brand":BrandSerializer(product.brand).data,
+    }
+    return Response(serialized_data, status=status.HTTP_200_OK)
 @api_view(['GET'])
 def getAllCategory(request):
     return Response([], status=status.HTTP_200_OK)
