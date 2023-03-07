@@ -94,7 +94,7 @@ const ProductCard = ({ product }) => {
             className={`absolute  top-0 left-0  rounded-t-md w-full h-[280px] hover:scale-105  ease-in-out duration-500 ${
               isHovered ? "opacity-100" : "opacity-0"
             } `}
-            src={product?.images[0]}
+            src={product?.images[0]?.image}
           />
         </CardActionArea>
         <Box

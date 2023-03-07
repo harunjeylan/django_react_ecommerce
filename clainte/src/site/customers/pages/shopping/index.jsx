@@ -28,11 +28,8 @@ import ProductCarouse from "../../components/ProductCarouse";
 import ProductsList from "../../components/ProductsList";
 
 import { tokens, Header } from "../../import";
-
-import {
-  useSearchAndFilterProductsQuery,
-  useGetAllCategoryQuery,
-} from "../../import";
+import { useGetAllCategoryQuery } from "../../../../features/services/organizeApiSlice";
+import { useSearchAndFilterProductsQuery } from "../../import";
 
 const Shopping = () => {
   const isNoneMobile = useMediaQuery("(min-width:1024px)");

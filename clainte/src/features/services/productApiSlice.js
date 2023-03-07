@@ -40,11 +40,20 @@ export const productApi = authApi.injectEndpoints({
           : `api/products/category/${category}/`,
       providesTags: ["products-by-category"],
     }),
+    uploadImage: builder.mutation({
+      query: ({ post }) => ({
+        url: `api/products/images/upload/`,
+        method: "POST",
+        body: post,
+        invalidatesTags: ["products"],
+      }),
+    }),
   }),
 });
 
 export const {
   useAddProductMutation,
+  useUploadImageMutation,
 
   useGetAllVariantsQuery,
 

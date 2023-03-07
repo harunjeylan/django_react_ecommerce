@@ -116,10 +116,10 @@ const ProductDetails = () => {
               <Typography
                 variant="h4"
                 color={colors.grey[100]}
-                className="text-md"
+                className="text-md flex gap-4"
               >
-                <s className="me-2 mr-1">$40.00</s>
-                <span>${product?.price}</span>
+                <s className="me-2 mr-1">${product?.regular_pricing}</s>
+                <strong>${product?.sale_pricing}</strong>
               </Typography>
               <Box className="flex gap-4 items-center text-sm">
                 {!isFetchingProduct ? (
@@ -142,153 +142,59 @@ const ProductDetails = () => {
               picture that he had recently cut out of an illustrated magazine
               and housed in a nice, gilded frame.
             </Typography>
-            <Box className=" w-full mt-4 rounded-md">
-              <Typography
-                variant="h1"
-                color={colors.grey[100]}
-                fontWeight="bold"
-                className={`text-xl md:text-2xl  text-left my-4`}
-              >
-                Filter
-              </Typography>
-              <Box className="flex  items-sm-center justify-between mb-4">
-                <Box className={`mb-4`}>
-                  <FormControl>
-                    <FormLabel id="demo-radio-buttons-group-label">
-                      <Typography
-                        variant="h1"
-                        color={colors.grey[100]}
-                        fontWeight="bold"
-                        className={`text-xl md:text-2xl  text-left mb-2`}
-                      >
-                        Brands
+            <Box className=" w-full mt-4 rounded-md flex justify-between p-4 m-4 ">
+              <Box>
+                <Typography
+                  variant="h1"
+                  color={colors.grey[100]}
+                  fontWeight="bold"
+                  className={`text-xl md:text-2xl  text-left my-4`}
+                >
+                  Organize
+                </Typography>
+                <Box>
+                  {product?.organize?.category?.name && (
+                    <Typography>
+                      <strong>category : </strong>
+                      {product?.organize?.category?.name}
+                    </Typography>
+                  )}
+
+                  {product?.organize?.collection?.name && (
+                    <Typography>
+                      <strong>collection : </strong>
+                      {product?.organize?.collection?.name}
+                    </Typography>
+                  )}
+                  {product?.organize?.vendor?.name && (
+                    <Typography>
+                      <strong>vendor : </strong>
+                      {product?.organize?.vendor?.name}
+                    </Typography>
+                  )}
+                  {product?.organize?.tags?.length ? (
+                    <>
+                      <Typography>
+                        <strong>tags : </strong>
                       </Typography>
-                    </FormLabel>
-                    <Box className={`flex flex-col`}>
-                      <FormControlLabel
-                        value="adidass"
-                        control={<Checkbox color="secondary" />}
-                        label="Adidass"
-                        labelPlacement="end"
-                      />
-                      <FormControlLabel
-                        value="adidass"
-                        control={<Checkbox color="secondary" />}
-                        label="Adidass"
-                        labelPlacement="end"
-                      />
-                      <FormControlLabel
-                        value="adidass"
-                        control={<Checkbox color="secondary" />}
-                        label="Adidass"
-                        labelPlacement="end"
-                      />
-                    </Box>
-                  </FormControl>
+                      <Box>
+                        {product?.organize?.tags?.map((tag) => (
+                          <Typography key={tag.id}>{tag?.name}</Typography>
+                        ))}
+                      </Box>
+                    </>
+                  ) : undefined}
                 </Box>
-                <Box className={`mb-4`}>
-                  <Box className={`flex flex-col w-100`}>
-                    <FormControl>
-                      <FormLabel id="demo-radio-buttons-group-label">
-                        <Typography
-                          variant="h1"
-                          color={colors.grey[100]}
-                          fontWeight="bold"
-                          className={`text-xl md:text-2xl  text-left mb-2`}
-                        >
-                          Size
-                        </Typography>
-                      </FormLabel>
-                      <Box>
-                        <RadioGroup
-                          labelled="demo-radio-buttons-group-label"
-                          defaultValue="female"
-                          name="radio-buttons-group"
-                        >
-                          <FormControlLabel
-                            value="female"
-                            control={<Radio color="secondary" />}
-                            label="Female"
-                          />
-                          <FormControlLabel
-                            value="male"
-                            control={<Radio color="secondary" />}
-                            label="Male"
-                          />
-                          <FormControlLabel
-                            value="other"
-                            control={<Radio color="secondary" />}
-                            label="Other"
-                          />
-                        </RadioGroup>
-                      </Box>
-                    </FormControl>
-                  </Box>
-                </Box>
-                <Box className={`mb-4`}>
-                  <FormControl>
-                    <FormLabel id="demo-radio-buttons-group-label">
-                      <Typography
-                        variant="h1"
-                        color={colors.grey[100]}
-                        fontWeight="bold"
-                        className={`text-xl md:text-2xl  text-left mb-2`}
-                      >
-                        Color
-                      </Typography>
-                    </FormLabel>
-                    <Box className={``}>
-                      <Box>
-                        <Checkbox
-                          icon={
-                            <PaletteOutlinedIcon
-                              fontSize="large"
-                              sx={{ color: "red" }}
-                            />
-                          }
-                          checkedIcon={
-                            <PaletteIcon
-                              fontSize="large"
-                              sx={{ color: "red" }}
-                            />
-                          }
-                        />
-                      </Box>
-                      <Box>
-                        <Checkbox
-                          icon={
-                            <PaletteOutlinedIcon
-                              fontSize="large"
-                              sx={{ color: "blue" }}
-                            />
-                          }
-                          checkedIcon={
-                            <PaletteIcon
-                              fontSize="large"
-                              sx={{ color: "blue" }}
-                            />
-                          }
-                        />
-                      </Box>
-                      <Box>
-                        <Checkbox
-                          icon={
-                            <PaletteOutlinedIcon
-                              fontSize="large"
-                              sx={{ color: "green" }}
-                            />
-                          }
-                          checkedIcon={
-                            <PaletteIcon
-                              fontSize="large"
-                              sx={{ color: "green" }}
-                            />
-                          }
-                        />
-                      </Box>
-                    </Box>
-                  </FormControl>
-                </Box>
+              </Box>
+              <Box>
+                <Typography
+                  variant="h1"
+                  color={colors.grey[100]}
+                  fontWeight="bold"
+                  className={`text-xl md:text-2xl  text-left my-4`}
+                >
+                  Variant
+                </Typography>
               </Box>
             </Box>
             <Box className="flex-col w-full px-4  md:px-2 md:py-1 space-y-2">
@@ -340,18 +246,18 @@ const ProductDetails = () => {
               {product?.images?.map((image, index) => (
                 <CardActionArea
                   key={index}
-                  onClick={() => setActiveImage(image)}
+                  onClick={() => setActiveImage(image?.image)}
                   className={`${
                     theme.palette.mode === "dark" ? "bg-white/5" : "bg-black/5"
                   } ${
-                    activeImage === image
+                    activeImage === image?.image
                       ? "h-[80px] w-[80px]"
                       : "h-[70px] w-[70px]"
                   } bg-opacity-90 p-1  rounded-md  ease-in-out duration-300 `}
                 >
                   <img
                     alt="product"
-                    src={image}
+                    src={image?.image}
                     className={` rounded-md h-[100%] w-[100%]`}
                   />
                 </CardActionArea>

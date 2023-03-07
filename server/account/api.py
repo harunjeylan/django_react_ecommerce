@@ -65,15 +65,15 @@ def getUserData(request):
 
     address, is_address_created = Address.objects.get_or_create(user=request.user, address_type="default")
     profile, is_profile_created = Profile.objects.get_or_create(user=request.user)
-    profileSerializer = ProfileSerializer(profile)
+    profileSerializer = ProfileSerializer(profile,context={"request":request})
     addressSerializer = AddressSerializer(address)
-    absolute_image_url = request.build_absolute_uri(request.user.profile.get_image()) if request.user.profile.get_image() != None else None
+    # absolute_image_url = request.build_absolute_uri(request.user.profile.get_image()) if request.user.profile.get_image() != None else None
     data = {
         "user":{
-            **userSerializer.data,
             **profileSerializer.data,
             **addressSerializer.data,
-            "image":absolute_image_url
+            **userSerializer.data,
+            # "image":absolute_image_url
         }
     }
     return Response(data)
