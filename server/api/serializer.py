@@ -20,7 +20,8 @@ from api.models import (
     Inventory,
     WishList,
     Brand,
-    )
+    Review,
+)
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -36,6 +37,15 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = "__all__"
+class ReviewAllSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = "__all__"
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ["id","product", "first_name", "last_name", "description", "rating", "created"]
+
 class VendorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vendor

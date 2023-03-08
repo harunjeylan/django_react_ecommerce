@@ -27,6 +27,14 @@ export const organizeApi = authApi.injectEndpoints({
       }),
       invalidatesTags: ["organize"],
     }),
+    deleteOrganize: builder.mutation({
+      query: ({ post }) => ({
+        url: `api/organize/delete/`,
+        method: "DELETE",
+        body: post,
+      }),
+      invalidatesTags: ["organize"],
+    }),
   }),
 });
 
@@ -34,5 +42,6 @@ export const {
   useGetAllCategoryQuery,
   useGetAllOrganizeQuery,
   useAddOrganizeMutation,
+  useDeleteOrganizeMutation,
   useUpdateOrganizeMutation,
 } = organizeApi;

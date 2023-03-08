@@ -35,12 +35,13 @@ import Service from "../../../components/Service";
 import Subscribe from "../../../components/Subscribe";
 
 import { mockDataReviews } from "../../../import";
-import {
-  addToCart,
-  useGetProductsDetailesQuery,
-  useGetProductsByCategoryQuery,
-} from "../../../import";
+import { addToCart } from "../../../import";
 import { tokens, Reviews, ReviewForm, Header } from "../../../import";
+import {
+  useAddProductReviewMutation,
+  useGetProductsDetailesQuery,
+  useGetRelatedProductsQuery,
+} from "../../../../../features/services/productApiSlice";
 
 const ProductDetails = () => {
   const theme = useTheme();
@@ -51,25 +52,26 @@ const ProductDetails = () => {
   const { productId } = useParams();
   const [value, setValue] = useState("description");
   const [count, setCount] = useState(1);
-
+  const [addProductReview] = useAddProductReviewMutation();
+  const handleReviewFormSubmit = (values, { resetForm }) => {
+    console.log(values);
+    addProductReview({ post: values, productId }).then(() => resetForm());
+  };
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   const { data: product, isFetching: isFetchingProduct } =
     useGetProductsDetailesQuery({ productId });
-  const {
-    data: RecommendedProducts,
-    isFetching: isFetchingRecommendedProducts,
-  } = useGetProductsByCategoryQuery({ category: product?.category });
-
-  const [priceValue, setPriceValue] = useState([20, 37]);
+  const { data: relatedProducts, isFetching: isFetchingRelatedProducts } =
+    useGetRelatedProductsQuery({ productId });
+  console.log(product?.organize?.category?.name);
 
   const [activeImage, setActiveImage] = useState(product?.thumbnail);
   useEffect(() => {
     setActiveImage(product?.thumbnail);
   }, [product?.thumbnail]);
-
+  console.log(relatedProducts);
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
@@ -195,6 +197,14 @@ const ProductDetails = () => {
                 >
                   Variant
                 </Typography>
+                <Box>
+                  {product?.variants?.map((variant) => (
+                    <Typography>
+                      <strong>{variant.variant} : </strong>
+                      {variant.option}
+                    </Typography>
+                  ))}
+                </Box>
               </Box>
             </Box>
             <Box className="flex-col w-full px-4  md:px-2 md:py-1 space-y-2">
@@ -292,10 +302,10 @@ const ProductDetails = () => {
             {value === "description" && <Box>{product?.description}</Box>}
             {value === "reviews" && (
               <Box className={`flex flex-col gap-4 w-full`}>
-                {mockDataReviews.map((review, index) => (
+                {product?.reviews?.map((review, index) => (
                   <Reviews key={`reviews-${index}`} review={review} />
                 ))}
-                <ReviewForm />
+                <ReviewForm handleReviewFormSubmit={handleReviewFormSubmit} />
               </Box>
             )}
             {value === "additiona-information" && (
@@ -324,8 +334,8 @@ const ProductDetails = () => {
           </Button>
         </Box>
         <Box className="">
-          {!isFetchingRecommendedProducts && (
-            <ProductCarouse products={RecommendedProducts} />
+          {!isFetchingRelatedProducts && (
+            <ProductCarouse products={relatedProducts} />
           )}
         </Box>
       </Box>
