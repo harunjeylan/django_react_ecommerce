@@ -21,6 +21,7 @@ import { tokens } from "../../../import";
 
 import {
   useAddOrganizeMutation,
+  useDeleteOrganizeMutation,
   useGetAllOrganizeQuery,
   useUpdateOrganizeMutation,
 } from "../../../../../features/services/organizeApiSlice";
@@ -82,7 +83,7 @@ const OrganizeForm = ({
   const [modelInputLabel, setModelInputLabel] = useState("");
   const [addOrganize] = useAddOrganizeMutation();
   const [updateOrganize] = useUpdateOrganizeMutation();
-
+  const [deleteOrganize] = useDeleteOrganizeMutation();
   const { data: organize, isFetching: organizeIsFetching } =
     useGetAllOrganizeQuery();
 
@@ -117,6 +118,7 @@ const OrganizeForm = ({
       name,
     };
     console.log(data);
+    deleteOrganize({post:data}).then((res)=>console.log(res));
   };
   return (
     <>

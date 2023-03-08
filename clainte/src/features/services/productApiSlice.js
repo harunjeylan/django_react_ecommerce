@@ -5,6 +5,7 @@ export const productApi = authApi.injectEndpoints({
     "products",
     "recommended-products",
     "products-by-category",
+    "products_detaile",
     "brands",
   ],
   endpoints: (builder) => ({
@@ -32,12 +33,14 @@ export const productApi = authApi.injectEndpoints({
     }),
     getProductsDetailes: builder.query({
       query: ({ productId }) => `api/products/${productId}/`,
+      providesTags: ["products_detaile"],
     }),
     getProductsByCategory: builder.query({
-      query: ({ category }) =>
-        category === "all"
-          ? "api/products/"
-          : `api/products/category/${category}/`,
+      query: ({ category }) => `api/products/category/${category}/`,
+      providesTags: ["products-by-category"],
+    }),
+    getRelatedProducts: builder.query({
+      query: ({ productId }) => `api/products/${productId}/related/`,
       providesTags: ["products-by-category"],
     }),
     uploadImage: builder.mutation({
@@ -48,17 +51,27 @@ export const productApi = authApi.injectEndpoints({
         invalidatesTags: ["products"],
       }),
     }),
+    addProductReview: builder.mutation({
+      query: ({ post, productId }) => ({
+        url: `api/products/${productId}/review/add/`,
+        method: "POST",
+        body: post,
+        invalidatesTags: ["products_detaile"],
+      }),
+    }),
   }),
 });
 
 export const {
   useAddProductMutation,
   useUploadImageMutation,
+  useAddProductReviewMutation,
 
   useGetAllVariantsQuery,
 
   useGetAllProductsQuery,
   useGetRecommendedProductsQuery,
+  useGetRelatedProductsQuery,
   useGetProductsDetailesQuery,
   useGetProductsByCategoryQuery,
   useGetAllCategoryQuery,

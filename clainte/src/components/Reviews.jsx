@@ -2,8 +2,7 @@ import React from "react";
 import { Typography, Box, useTheme, Rating, Divider } from "@mui/material";
 import { tokens } from "../theme";
 
-const Header = ({ review }) => {
-  const { author, bodyTaxt, rating, date } = review;
+const Reviews = ({ review }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -12,8 +11,8 @@ const Header = ({ review }) => {
       <Box className="flex gap-8 mb-4 w-full">
         <Box className={`w-[160px]`}>
           <img
-            alt={author?.fullName}
-            src={author?.image}
+            alt={review?.first_name}
+            src={review?.first_name}
             className={`h-[100px] w-[100px] rounded-[50%]`}
           />
           <Typography
@@ -21,7 +20,7 @@ const Header = ({ review }) => {
             color={colors.greenAccent[500]}
             className={`text-md lg:text-lg my-2`}
           >
-            {date}
+            {review?.created}
           </Typography>
         </Box>
         <Box className={`w-full`}>
@@ -31,11 +30,11 @@ const Header = ({ review }) => {
             fontWeight="bold"
             className={`text-lg md:text-xl lg:text-2xl mb-2`}
           >
-            {author?.fullName}
+            {review?.first_name} {review?.last_name}
           </Typography>
-          <Rating name="read-only" defaultValue={rating} readOnly />
+          <Rating name="read-only" defaultValue={review?.rating} readOnly />
           <Typography variant="h5" color={colors.grey[400]}>
-            {bodyTaxt}
+            {review?.description}
           </Typography>
         </Box>
       </Box>
@@ -44,4 +43,4 @@ const Header = ({ review }) => {
   );
 };
 
-export default Header;
+export default Reviews;

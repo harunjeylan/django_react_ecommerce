@@ -2,7 +2,8 @@ from django.contrib import admin
 
 from .models import (
     Category, 
-    RecommendedProduct, 
+    RecommendedProduct,
+    Review, 
     Vendor, 
     Collection, 
     Tag, 
@@ -117,6 +118,21 @@ class InventoryAdmin(admin.ModelAdmin):
         'product',
     )
     raw_id_fields = ('countries',)
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = (
+        'product',
+        'first_name',
+        'last_name',
+        'email',
+        'phone_number',
+        'description',
+        'rating',
+        'created',
+    )
+    list_filter = ('product','rating')
 
 @admin.register(RecommendedProduct)
 class RecommendedProductAdmin(admin.ModelAdmin):

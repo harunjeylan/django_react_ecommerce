@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
+
+from django.db.models import Avg
 # from api.serializer import ProductSerializer, OrderSerializer, RegistrationSerializer, UserSerializer
 # from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 # from rest_framework_simplejwt.views import TokenObtainPairView
@@ -12,6 +14,11 @@ from rest_framework import status
 # from django.contrib.auth import authenticate, login, logout
 # from django.contrib.auth.models import  User
 # from api.models import Order, Product
+# import hashlib
+# import urllib
+# from django.utils.safestring import mark_safe
+
+
 from api.models import (
     Brand,
     Order, 
@@ -48,7 +55,9 @@ from api.serializer import (
     InventorySerializer,
     WishListSerializer,
     OrderSerializer,
-    RecommendedProductSerializer
+    RecommendedProductSerializer,
+    ReviewSerializer,
+    ReviewAllSerializer,
 )
 
 @api_view(['GET'])
@@ -57,15 +66,134 @@ def getProducts(request):
     products = Product.objects.all()
     serialized_data = []
     for product in products:
-        images = product.images.all()
-        print(images)
         serialized_data.append({
-            **ProductSerializer(product).data,
-            "images":ImageSerializer(images, many=True).data
+            **ProductSerializer(product, context={"request":request}).data,
+            "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
+            "rating":product.review_set.all().aggregate(Avg('rating'))["rating__avg"],
         })
 
 
-    return Response(images, status=status.HTTP_200_OK)
+    return Response(serialized_data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def getRecommendedProducts(request):
+    recommendedProducts = RecommendedProduct.objects.all()
+    serialized_data = []
+    for recommendedProduct in recommendedProducts:
+        
+        products = [] 
+        for product in recommendedProduct.products.all():
+            inventory = Inventory.objects.get(product=product)
+            products.append({
+                **InventorySerializer(inventory).data, 
+                **ProductSerializer(product, context={"request":request}).data,
+                "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
+                "rating":product.review_set.all().aggregate(Avg('rating'))["rating__avg"],
+            })
+        serialized_data.append({
+            **RecommendedProductSerializer(recommendedProduct).data,
+            "products":products
+        })
+    return Response(serialized_data, status=status.HTTP_200_OK) 
+
+
+@api_view(['GET'])
+def getRelatedProducts(request, pk):
+    print(pk)
+    relatedProducts = Product.objects.all()
+    serialized_data = []
+    for product in relatedProducts:
+        inventory = Inventory.objects.get(product=product)
+        serialized_data.append({
+            **InventorySerializer(inventory).data, 
+            **ProductSerializer(product, context={"request":request}).data,
+            "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
+            "rating":product.review_set.all().aggregate(Avg('rating'))["rating__avg"],
+        })
+    return Response(serialized_data, status=status.HTTP_200_OK) 
+
+
+@api_view(['GET'])
+def searchAndFilterProducts(request):
+    products = [] 
+    for product in Product.objects.all():
+        inventory = Inventory.objects.filter(product=product)
+        inventory_data = {}
+        if inventory.exists():
+            inventory_data = {
+                **InventorySerializer(inventory.first()).data, 
+                **inventory_data
+            }
+       
+        products.append({
+            **inventory_data,
+            **ProductSerializer(product,context={"request":request}).data,
+            "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
+            "rating":product.review_set.all().aggregate(Avg('rating'))["rating__avg"],
+        })
+    return Response(products, status=status.HTTP_200_OK) 
+
+
+@api_view(['GET'])
+def getProductsByCategory(request,category_name):
+    print(category_name)
+    products = []
+    if category_name in ["all", None, ""]:
+        products = Product.objects.all()[:20]
+    else:
+        products = Product.objects.filter(category=category)
+
+    category = Category.objects.get(name=category_name)
+    serialized_data = []
+    for product in products:
+        serialized_data.append({
+            **ProductSerializer(product, context={"request":request}).data,
+            "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
+            "rating":product.review_set.all().aggregate(Avg('rating'))["rating__avg"],
+        })
+    return Response(serialized_data, status=status.HTTP_200_OK) 
+
+
+@api_view(['GET'])
+def getProductsDetailes(request,pk):
+    product = Product.objects.get(id=pk)
+    serialized_data = {}
+    inventory = Inventory.objects.filter(product=product)
+    if inventory.exists():
+        serialized_data = {
+            **InventorySerializer(inventory.first()).data, 
+            **serialized_data
+        }
+    variants = []
+    for variant_option in product.variants.all():
+        variants.append({
+            "option":variant_option.option.label,
+            "variant":variant_option.variant.label,
+        })
+    serialized_data = {
+        **serialized_data,
+        **ProductSerializer(product,context={"request":request}).data,
+        "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
+        "reviews":ReviewSerializer(product.review_set.all(), many=True).data,
+        "rating":product.review_set.all().aggregate(Avg('rating'))["rating__avg"],
+        "variants":variants,
+        "organize":{
+            "category":CategorySerializer(product.organize.category).data,
+            "collection":CollectionSerializer(product.organize.collection).data,
+            "vendor":VendorSerializer(product.organize.vendor).data,
+            "tags":TagSerializer(product.organize.tags, many=True).data,
+        },
+        "brand":BrandSerializer(product.brand).data,
+    }
+    return Response(serialized_data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def getAllCategory(request):
+    return Response([], status=status.HTTP_200_OK)
+
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -78,23 +206,7 @@ def getOrganizes(request):
     }
     return Response(serialized_data, status=status.HTTP_200_OK)
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def uploadImage(request):
-    print(request.FILES)
-    product = Product.objects.get(id=request.data.get("productId"))
-    if "thumbnail" in request.FILES:
-        thumbnail = request.FILES.get("thumbnail")
-        if  thumbnail:
-            product.thumbnail = thumbnail
-            product.save()
-    if "images" in request.FILES:
-        images = request.FILES.getlist("images")
-        for image in images:
-            new_image = Image.objects.create(image=image)
-            product.images.add(new_image)
 
-    return Response({"success":"image is uploaded"}, status=status.HTTP_201_CREATED)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -109,34 +221,22 @@ def newProduct(request):
         tag, created_tag = Tag.objects.get_or_create(name=tag_name)
         organize.tags.add(tag)
         tags.append(TagSerializer(tag).data),
-    # thumbnail = request.FILES
     print(request.data)
     brand,created = Brand.objects.get_or_create(name=request.data.get("brand"))
     product_feilds = {
         "title":request.data.get("title"),
         "brand":brand.id,
         "description":request.data.get("description"),
-        # "thumbnail":request.data.get("thumbnail")[0]["file"],
         "organize":organize.id,
     }
 
     product_serializer_form = ProductSerializer(data=product_feilds)
-
     product = None
     if product_serializer_form.is_valid():
         product = product_serializer_form.save()
     else:
         return Response(product_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    
-    images = []
-    for image in request.data.get("images"):
-        images_serializer = ImageSerializer(data={"image":image["file"]})
-        if images_serializer.is_valid():
-            new_image = images_serializer.save()
-            product.images.add(new_image)
-            images.append(ImageSerializer(new_image).data)
-    
+ 
     variants = []
     for variant_dic in request.data.get("variants"):
         option = Option.objects.get(label=variant_dic["optionLabel"])
@@ -189,8 +289,10 @@ def newProduct(request):
     
     serialized_data = {
         **InventorySerializer(inventory).data,
-        **ProductSerializer(product).data,
+        **ProductSerializer(product, context={"request":request}).data,
         "variants":variants,
+        "images":[],
+        "reviews":[],
         "organize":{
             "category":CategorySerializer(category).data,
             "collection":CollectionSerializer(collection).data,
@@ -203,6 +305,33 @@ def newProduct(request):
     
     return Response(serialized_data, status=status.HTTP_201_CREATED)
 
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def uploadImage(request):
+    print(request.FILES)
+    product = Product.objects.get(id=request.data.get("productId"))
+    if "thumbnail" in request.FILES:
+        thumbnail = request.FILES.get("thumbnail")
+        if  thumbnail:
+            product.thumbnail = thumbnail
+            product.save()
+    if "images" in request.FILES:
+        images = request.FILES.getlist("images")
+        for image in images:
+            new_image = Image.objects.create(image=image)
+            product.images.add(new_image)
+
+    return Response({"success":"image is uploaded"}, status=status.HTTP_201_CREATED)
+
+@api_view(['POST'])
+def addProductReview(request, pk):
+    product = Product.objects.get(id=pk)
+    review_serializer_form = ReviewAllSerializer(data={**request.data,"product":product.id})
+    if review_serializer_form.is_valid():
+        review = review_serializer_form.save()
+        return Response(ReviewSerializer(review).data, status=status.HTTP_201_CREATED)
+    return Response(review_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -279,79 +408,37 @@ def updateOrganize(request):
         return Response(tag_serializer.errers, status=status.HTTP_400_BAD_REQUEST)
     return Response({"error":"you have to spasify the name"}, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET'])
-def getRecommendedProducts(request):
-    recommendedProducts = RecommendedProduct.objects.all()
-    serialized_data = []
-    for recommendedProduct in recommendedProducts:
-        
-        products = [] 
-        for product in recommendedProduct.products.all():
-            inventory = Inventory.objects.get(product=product)
-            products.append({
-                **InventorySerializer(inventory).data, 
-                **ProductSerializer(product).data
-            })
-        serialized_data.append({
-            **RecommendedProductSerializer(recommendedProduct).data,
-            "products":products
-        })
-    return Response(serialized_data, status=status.HTTP_200_OK) 
-
-@api_view(['GET'])
-def searchAndFilterProducts(request):
-    products = [] 
-    for product in Product.objects.all():
-        inventory = Inventory.objects.filter(product=product)
-        inventory_data = {}
-        if inventory.exists():
-            inventory_data = {
-                **InventorySerializer(inventory.first()).data, 
-                **inventory_data
-            }
-       
-        products.append({
-            **inventory_data,
-            **ProductSerializer(product,context={"request":request}).data,
-            "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
-        })
-    return Response(products, status=status.HTTP_200_OK) 
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def deleteOrganize(request):
+    name = request.data.get("name")
+    if name=="categories":
+        category = Category.objects.get(id=request.data.get("id"))
+        category.delete()
+        return Response({"seccess":"deleted successfull"}, status=status.HTTP_202_ACCEPTED)
+    elif name=="collections":
+        collection = Collection.objects.get(id=request.data.get("id"))
+        collection.delete()
+        return Response({"seccess":"deleted successfull"}, status=status.HTTP_202_ACCEPTED)
+    elif name=="vendors":
+        vendor = Vendor.objects.get(id=request.data.get("id"))
+        vendor.delete()
+        return Response({"seccess":"deleted successfull"}, status=status.HTTP_202_ACCEPTED)
+    elif name=="tags":
+        tag = Tag.objects.get(id=request.data.get("id"))
+        tag.delete()
+        return Response({"seccess":"deleted successfull"}, status=status.HTTP_202_ACCEPTED)
+    return Response({"error":"you have to spasify the name"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
-def getProductsByCategory(request,pk):
-    return Response([], status=status.HTTP_200_OK) 
-@api_view(['GET'])
-def getProductsDetailes(request,pk):
-    product = Product.objects.get(id=pk)
-    serialized_data = {}
-    inventory = Inventory.objects.filter(product=product)
-    if inventory.exists():
-        serialized_data = {
-            **InventorySerializer(inventory.first()).data, 
-            **serialized_data
-        }
-
-    serialized_data = {
-        **serialized_data,
-        **ProductSerializer(product,context={"request":request}).data,
-        "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
-        "variants":VariantOptionSerializer(product.variants.all(), many=True).data,
-        "organize":{
-            "category":CategorySerializer(product.organize.category).data,
-            "collection":CollectionSerializer(product.organize.collection).data,
-            "vendor":VendorSerializer(product.organize.vendor).data,
-            "tags":TagSerializer(product.organize.tags, many=True).data,
-        },
-        "brand":BrandSerializer(product.brand).data,
-    }
-    return Response(serialized_data, status=status.HTTP_200_OK)
-@api_view(['GET'])
-def getAllCategory(request):
-    return Response([], status=status.HTTP_200_OK)
+@permission_classes([IsAuthenticated])
+def getAllBrands(request):
+    brands = BrandSerializer(Brand.objects.all(), many=True).data
+    return Response(brands, status=status.HTTP_200_OK)
 
 
-@api_view(['POST','PUT'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addBrand(request):
     brand,created = Brand.objects.get_or_create(name=request.data.get("name"))
@@ -375,9 +462,19 @@ def deleteBrand(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def getAllBrands(request):
-    brands = BrandSerializer(Brand.objects.all(), many=True).data
-    return Response(brands, status=status.HTTP_200_OK)
+def getAllVariants(request):
+    serialized_data = []
+    for variant in Variant.objects.all():
+        options = []
+        for option in variant.options.all():
+            options.append(OptionSerializer(option).data)
+        serialized_data.append({
+            **VariantSerializer(variant).data,
+            "options":options,
+        })
+  
+    return Response(serialized_data, status=status.HTTP_200_OK)
+
 
 
 @api_view(['POST','PUT'])
@@ -450,23 +547,6 @@ def deleteOption(request):
         option.delete()
     return Response({"success":"deleted"}, status=status.HTTP_202_ACCEPTED)
 
-
-
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def getAllVariants(request):
-    serialized_data = []
-    for variant in Variant.objects.all():
-        options = []
-        for option in variant.options.all():
-            options.append(OptionSerializer(option).data)
-        serialized_data.append({
-            **VariantSerializer(variant).data,
-            "options":options,
-        })
-  
-    return Response(serialized_data, status=status.HTTP_200_OK)
 
 
 

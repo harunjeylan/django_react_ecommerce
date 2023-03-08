@@ -11,8 +11,10 @@ urlpatterns = [
   path("products/recommended/", api.getRecommendedProducts , name="recommended_products"),
   path("products/search-and-filter/", api.searchAndFilterProducts , name="search_and_filter_products"),
   path("products/<pk>/", api.getProductsDetailes , name="products_detailes"),
-  path("products/category/<pk>/", api.getProductsByCategory , name="products_by_category"),
+  path("products/<pk>/related/", api.getRelatedProducts , name="related_products"),
+  path("products/category/<category_name>/", api.getProductsByCategory , name="products_by_category"),
   path("products/images/upload/", api.uploadImage , name="upload_image"),
+  path("products/<pk>/review/add/", api.addProductReview , name="new_products_review"),
 
   
   path("categories/", api.getAllCategory , name="categories"),
@@ -31,6 +33,8 @@ urlpatterns = [
   path("organize/", api.getOrganizes , name="organize"),
   path("organize/add/", api.addOrganize , name="new_organize"),
   path("organize/update/", api.updateOrganize , name="update_organize"),
+  path("organize/delete/", api.deleteOrganize , name="delete_organize"),
+
   
 ]
 # router = routers.DefaultRouter()
