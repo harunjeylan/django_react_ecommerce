@@ -1,5 +1,5 @@
 import store from "../../app/store";
-import { refreshAccessToken } from "../../app/api/authApi";
+import { refreshAccessToken } from "../auth/authApi";
 
 export const uploadImage = async ({ post }) => {
   let headers = {}; //"Content-Type": "application/json; charset=UTF-8";

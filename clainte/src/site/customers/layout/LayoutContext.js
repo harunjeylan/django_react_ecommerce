@@ -4,17 +4,19 @@ export const LayoutContext = createContext();
 
 const LayoutProvider = ({ children }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const openAccountMenu = Boolean(anchorEl);
-  const handleClickAccountMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleCloseAccountMenu = () => {
-    setAnchorEl(null);
-  };
+  const openAccountMemu = Boolean(anchorEl);
   const [openAccountDialog, setOpenAccountDialog] = useState({
     isOpen: false,
     mode: "login",
   });
+  const handleClickAccountMenu = (event) => {
+    console.log("clicked");
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseAccountMenu = () => {
+    console.log("closed");
+    setAnchorEl(null);
+  };
   const handleClickOpenAccountDialog = (mode) => {
     setOpenAccountDialog({
       isOpen: true,
@@ -30,7 +32,7 @@ const LayoutProvider = ({ children }) => {
 
   const values = {
     anchorEl,
-    openAccountMemu: openAccountMenu,
+    openAccountMemu,
     openAccountDialog,
     handleClickAccountMenu,
     handleCloseAccountMenu,

@@ -9,7 +9,11 @@ import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import LaunchIcon from "@mui/icons-material/Launch";
-
+import { useToggleWishlistMutation } from "../../../features/services/wishlistApiSlice";
+import {
+  selectWishlists,
+  setWishlist,
+} from "../../../features/services/wishlistReducer";
 import {
   Box,
   Checkbox,
@@ -19,7 +23,7 @@ import {
   CardActionArea,
 } from "@mui/material";
 
-import { tokens, addToCart, toggleWishlist, toggleCart } from "../import";
+import { tokens, toggleCart, selectCurrentUser } from "../import";
 
 const ProductCard = ({ product }) => {
   const theme = useTheme();
@@ -27,8 +31,9 @@ const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
-
+  const [toggleWishlist] = useToggleWishlistMutation();
   const carts = useSelector((state) => state.cart.cart);
+  const user = useSelector(selectCurrentUser);
   const findInCart = (product) => {
     const itemsFoundedIndex = carts.find(
       (CartProduct) => CartProduct.id === product.id
@@ -44,25 +49,32 @@ const ProductCard = ({ product }) => {
 
   useEffect(() => {
     setIsInCart(findInCart(product));
-  }, [carts]);
+  }, [carts, product]);
 
-  const wishlist = useSelector((state) => state.wishlist.wishlist);
+  const wishlist = useSelector(selectWishlists);
+
+  const [isInWishlist, setIsInWishlist] = useState(false);
   const findInWishlist = (product) => {
     const itemsFoundedIndex = wishlist.find(
       (wishlistProduct) => wishlistProduct.id === product.id
     );
     return !(itemsFoundedIndex === undefined);
   };
-
-  const [isInWishlist, setIsInWishlist] = useState(false);
   const changeWishlist = () => {
-    dispatch(toggleWishlist({ product }));
-    setIsInWishlist(findInWishlist(product));
+    if (user) {
+      toggleWishlist({ post: { productId: product.id } })
+        .unwrap()
+        .then((wishlistProducts) => {
+          console.log(wishlistProducts);
+          dispatch(setWishlist({ products: wishlistProducts }));
+          setIsInWishlist(findInWishlist(product));
+        });
+    }
   };
 
   useEffect(() => {
     setIsInWishlist(findInWishlist(product));
-  }, [wishlist]);
+  }, [wishlist, product]);
 
   return (
     <Box
@@ -116,14 +128,16 @@ const ProductCard = ({ product }) => {
             />
           </Box>
           <Box className="mx-auto">
-            <Checkbox
-              color="secondary"
-              inputProps={{ "aria-label": "Checkbox demo" }}
-              icon={<FavoriteBorderOutlinedIcon color={colors.grey[100]} />}
-              checkedIcon={<FavoriteIcon color={colors.grey[100]} />}
-              checked={isInWishlist}
-              onChange={changeWishlist}
-            />
+            {user && (
+              <Checkbox
+                color="secondary"
+                inputProps={{ "aria-label": "Checkbox demo" }}
+                icon={<FavoriteBorderOutlinedIcon color={colors.grey[100]} />}
+                checkedIcon={<FavoriteIcon color={colors.grey[100]} />}
+                checked={isInWishlist}
+                onChange={changeWishlist}
+              />
+            )}
             <IconButton onClick={() => navigate(`/product/${product?.id}`)}>
               <LaunchIcon />
             </IconButton>

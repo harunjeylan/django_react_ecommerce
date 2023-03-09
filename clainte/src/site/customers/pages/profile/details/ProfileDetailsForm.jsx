@@ -75,7 +75,7 @@ const PersonalDetails = ({
       <TextField
         fullWidth
         variant="filled"
-        type="text"
+        type="email"
         label="Email"
         onBlur={handleBlur}
         onChange={handleChange}

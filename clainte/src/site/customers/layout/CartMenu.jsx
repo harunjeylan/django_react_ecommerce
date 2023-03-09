@@ -33,7 +33,7 @@ const CartMenu = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const totalPrice = cart.reduce((total, item) => {
-    return total + item?.count * item?.price;
+    return total + item?.count * item?.sale_pricing;
   }, 0);
 
   return (
@@ -76,7 +76,7 @@ const CartMenu = () => {
                         <img
                           alt={item?.title}
                           className="w-full h-full rounded-md"
-                          src={`${item?.images[0]}`}
+                          src={`${item?.thumbnail}`}
                         />
                       </CardActionArea>
                       <Box className="flex flex-col px-2 w-full">
@@ -95,51 +95,66 @@ const CartMenu = () => {
                         <Typography className="mr-4">
                           {item?.description.slice(0, 60)}
                         </Typography>
-                        <Box className="flex justify-between items-center">
-                          <Box
-                            display="flex"
-                            alignItems="center"
-                            className="my-2"
-                            border={`1.5px solid ${colors.neutral[500]}`}
-                          >
-                            <IconButton
-                              size="small"
-                              onClick={() =>
-                                dispatch(decreaseCount({ id: item?.id }))
-                              }
-                            >
-                              <RemoveIcon />
-                            </IconButton>
-                            <TextField
-                              size="small"
-                              className="w-[100px]"
-                              id="outlined-number"
-                              type="number"
-                              value={item?.count}
-                              onChange={(event) =>
-                                dispatch(
-                                  setCount({
-                                    id: item?.id,
-                                    count: event.target.value,
-                                  })
-                                )
-                              }
-                              InputLabelProps={{
-                                shrink: true,
-                              }}
-                            />
-                            <IconButton
-                              size="small"
-                              onClick={() =>
-                                dispatch(increaseCount({ id: item?.id }))
-                              }
-                            >
-                              <AddIcon />
-                            </IconButton>
+                        <Divider />
+                        <Box className="flex justify-between w-full">
+                          <Box>
+                            {item?.selectedVariants?.map(
+                              (selectedVariant, index) => (
+                                <Typography key={index}>
+                                  <strong>
+                                    {selectedVariant.variantLabel} :{" "}
+                                  </strong>
+                                  <span> {selectedVariant.optionLabel} </span>,
+                                </Typography>
+                              )
+                            )}
+                            <Typography fontWeight="bold">
+                              <strong>Price</strong> : ${item?.sale_pricing}
+                            </Typography>
                           </Box>
-                          <Typography fontWeight="bold">
-                            ${item?.price}
-                          </Typography>
+                          <Box className="flex justify-between items-center">
+                            <Box
+                              display="flex"
+                              alignItems="center"
+                              className="my-2"
+                              border={`1.5px solid ${colors.neutral[500]}`}
+                            >
+                              <IconButton
+                                size="small"
+                                onClick={() =>
+                                  dispatch(decreaseCount({ id: item?.id }))
+                                }
+                              >
+                                <RemoveIcon />
+                              </IconButton>
+                              <TextField
+                                size="small"
+                                className="w-[100px]"
+                                id="outlined-number"
+                                type="number"
+                                value={item?.count}
+                                onChange={(event) =>
+                                  dispatch(
+                                    setCount({
+                                      id: item?.id,
+                                      count: event.target.value,
+                                    })
+                                  )
+                                }
+                                InputLabelProps={{
+                                  shrink: true,
+                                }}
+                              />
+                              <IconButton
+                                size="small"
+                                onClick={() =>
+                                  dispatch(increaseCount({ id: item?.id }))
+                                }
+                              >
+                                <AddIcon />
+                              </IconButton>
+                            </Box>
+                          </Box>
                         </Box>
                       </Box>
                     </Box>

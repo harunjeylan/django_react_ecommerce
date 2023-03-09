@@ -60,8 +60,8 @@ class VariantAdmin(admin.ModelAdmin):
 
 @admin.register(VariantOption)
 class VariantOptionAdmin(admin.ModelAdmin):
-    list_display = ('option', 'variant')
-    list_filter = ('option', 'variant')
+    list_display = ('variant',)
+    list_filter = ('options', 'variant')
 
 
 @admin.register(Image)
@@ -86,7 +86,7 @@ class ProductAdmin(admin.ModelAdmin):
         'organize',
     )
     list_filter = ('organize',)
-    raw_id_fields = ('images', 'variants')
+
 
 
 @admin.register(Country)
@@ -160,6 +160,5 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(WishList)
 class WishListAdmin(admin.ModelAdmin):
-    list_display = ('id', 'customer')
+    list_display = ('customer',)
     list_filter = ('customer',)
-    raw_id_fields = ('products',)

@@ -97,7 +97,7 @@ const OderDetails = () => {
                               <img
                                 alt={item?.title}
                                 className="w-full h-full rounded-md"
-                                src={`${item?.images[0]}`}
+                                src={`${item?.thumbnail}`}
                               />
                             </CardActionArea>
                           </Box>

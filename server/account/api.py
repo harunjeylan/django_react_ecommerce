@@ -36,78 +36,81 @@ def getRoutes(request):
 
 
 
-
+# 
 @api_view(['POST'])
 def userRegister(request):
     username = request.data["username"]
-    # print(request.data)
+    password = request.data["password"]
+    print(request.data)
     users = User.objects.filter(username = username)
-
     if users.exists():
         return Response({"detail":"user is already exist with this username"}, status.HTTP_208_ALREADY_REPORTED)
-    serializer = RegistrationSerializer(data=request.data)
-    if serializer.is_valid():
-        password = request.data["password"]
-        serializer.save()
-        user = User.objects.create_user(username = username, password=password)
+    serializer_register_form = RegistrationSerializer(data=request.data)
+    if serializer_register_form.is_valid():
+        user = serializer_register_form.save()
+        user.set_password(password)
+        user.save()
         auth_data = get_tokens_for_user(user)
-        userSerializer = UserSerializer(user)
-        auth_data["user"] = userSerializer.data
+        profile, is_profile_created = Profile.objects.get_or_create(user=user)
+        auth_data["user"] = {
+            **ProfileSerializer(profile,context={"request":request}).data,
+            **UserSerializer(user).data,
+        }
         return Response(auth_data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer_register_form.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getUserData(request):
-    userSerializer = UserSerializer(request.user)
-
-
-    address, is_address_created = Address.objects.get_or_create(user=request.user, address_type="default")
+    print(request.user)
+    address, is_address_created = Address.objects.get_or_create(user=request.user)
     profile, is_profile_created = Profile.objects.get_or_create(user=request.user)
-    profileSerializer = ProfileSerializer(profile,context={"request":request})
-    addressSerializer = AddressSerializer(address)
-    # absolute_image_url = request.build_absolute_uri(request.user.profile.get_image()) if request.user.profile.get_image() != None else None
     data = {
         "user":{
-            **profileSerializer.data,
-            **addressSerializer.data,
-            **userSerializer.data,
-            # "image":absolute_image_url
+            **ProfileSerializer(profile,context={"request":request}).data,
+            **AddressSerializer(address).data,
+            **UserSerializer(request.user).data,
         }
     }
-    return Response(data)
+    return Response(data, status=status.HTTP_200_OK)
 
 
 @api_view(['PUT','POST'])
 @permission_classes([IsAuthenticated])
-def updateAddress(request):
-    address, created = Address.objects.get_or_create(user=request.user, address_type="default")
-    serializer_address_form = UpdateAddressSerializer(data=request.data, instance=address)
-    serializer_profile_form = UpdateProfileFormSerializer(data=request.data, instance=request.user.profile)
-    error_data={}
-    saved_data={}
-    if serializer_address_form.is_valid():
-        address = serializer_address_form.save()
-        addressSerializer = AddressSerializer(address)
-        saved_data = {**saved_data, **addressSerializer.data}
-    else:
-        error_data["address_error"] = serializer_address_form.errors
+def updatePersonalInfo(request):
 
-    if serializer_profile_form.is_valid():
-        profile = serializer_profile_form.save()
-        request.user.email = request.data.get("email")
-        print(request.data.get("email"),">>>>>>>>>>>>>>>>>>")
-        request.user.save()
-        profileSerializer = ProfileSerializer(profile)
-        saved_data = {**saved_data,**profileSerializer.data}
-    else:
-        error_data["profile_error"] = serializer_profile_form.errors
-
-    if not len(error_data):
-        return Response(saved_data, status=status.HTTP_201_CREATED)
+    user_by_username = User.objects.filter(username = request.data.get("username"))
+    if user_by_username.exists() and user_by_username.first() != request.user:
+        return Response({"detail":"user is already exist with this username"}, status.HTTP_400_BAD_REQUEST)
     
-    return Response({**error_data,**saved_data}, status=status.HTTP_400_BAD_REQUEST)
+    user_by_email = User.objects.filter(email = request.data.get("email"))
+    print(user_by_email, request.user)
+    if user_by_email.exists() and user_by_email.first() != request.user:
+        return Response({"detail":"user is already exist with this email"}, status.HTTP_400_BAD_REQUEST)
+    
+    address, created = Address.objects.get_or_create(user=request.user)
+    serializer_address_form = UpdateAddressSerializer(data=request.data, instance=address)
+    if not serializer_address_form.is_valid():
+        return Response(serializer_address_form.errors, status.HTTP_400_BAD_REQUEST)
+    
+    profile, is_profile_created = Profile.objects.get_or_create(user=request.user)
+    serializer_profile_form = UpdateProfileFormSerializer(data=request.data, instance=profile)
+    if not serializer_profile_form.is_valid():
+        return Response(serializer_profile_form.errors, status.HTTP_400_BAD_REQUEST)
+
+    address = serializer_address_form.save()
+    profile = serializer_profile_form.save()
+    request.user.email = request.data.get("email")
+    request.user.save()
+    data = {
+        "user":{
+            **ProfileSerializer(profile,context={"request":request}).data,
+            **AddressSerializer(address).data,
+            **UserSerializer(request.user).data,
+        }
+    }
+    return Response(data, status=status.HTTP_201_CREATED)
 
 
 #===========================================================================

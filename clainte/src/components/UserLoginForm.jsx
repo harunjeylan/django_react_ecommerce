@@ -50,28 +50,25 @@ const UserLoginForm = ({
 
   const [login] = useLoginMutation();
 
-  const handleFormSubmit = async (values, { resetForm }) => {
-    try {
-      const user = await login({ ...values }).unwrap();
-      dispatch(setCredentials(user));
-      setErrorMessage("");
-      if (handleCloseAccountDialog !== undefined) {
-        handleCloseAccountDialog();
-      }
-      await dispatch(authEndpoints.getUseData.initiate()).then((response) => {
-        if (response.isSuccess) {
-          dispatch(setUserData(response.data));
-        } else {
-          console.log(response);
+  const handleFormSubmit =  (values, { resetForm }) => {
+      login({ ...values }).unwrap().then((userData)=>{
+        dispatch(setCredentials(userData));
+        setErrorMessage("");
+        navigate(from, { replace: true });
+        if (handleCloseAccountDialog !== undefined) {
+          handleCloseAccountDialog();
         }
+        dispatch(authEndpoints.getUseData.initiate()).then((response) => {
+          console.log(response);
+          dispatch(setUserData(response.data));
+        });
+        resetForm();
+
+      }).catch((err)=>{
+          console.log(err);
+          setErrorMessage(err?.data?.detail);
       });
-      resetForm();
-      navigate(from, { replace: true });
-    } catch (err) {
-      setErrorMessage(err?.data?.detail);
-      dispatch(logOut());
-      console.log(err);
-    }
+
   };
 
   return (

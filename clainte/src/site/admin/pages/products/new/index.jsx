@@ -37,6 +37,7 @@ const NewProduct = () => {
   // };
 
   const handleFormSubmit = (values) => {
+    console.log(">>>>>>>>>>>>>>>>>>", values);
     let data = values?.expiryDate?.date;
     let formatedDate;
     if (data.hasOwnProperty("format")) {

@@ -47,13 +47,9 @@ const UserRegisterForm = ({
       .string()
       .required("required")
       .matches(
-        /(?=.*[a-z])/,
-        "The string must contain at least 1 lowercase alphabetical character"
+        /(?=.*[a-zA-Z])/,
+        "The string must contain at least 1 alphabetical character"
       )
-      // .matches(
-      //   /(?=.*[A-Z])/,
-      //   "The string must contain at least 1 uppercase alphabetical character"
-      // )
       .matches(
         /(?=.*[0-9])/,
         "The string must contain at least 1 numeric character"
@@ -70,27 +66,19 @@ const UserRegisterForm = ({
   });
 
   const [register] = useRegisterMutation();
-  const handleFormSubmit = async (values, { resetForm }) => {
-    try {
-      const user = await register({ ...values }).unwrap();
-
-      if (user.access && user.user) {
-        dispatch(setUser(user));
-        setErrorMessage("");
-        console.log(handleCloseAccountDialog);
-        if (handleCloseAccountDialog !== undefined) {
-          handleCloseAccountDialog();
-        }
-        resetForm();
-        navigate(from, { replace: true });
-      } else {
-        setErrorMessage(user?.detail);
-        dispatch(logOut());
+  const handleFormSubmit = (values, { resetForm }) => {
+    register({ ...values }).unwrap().then((data)=>{
+      dispatch(setUser(data));
+      setErrorMessage("");
+      if (handleCloseAccountDialog !== undefined) {
+        handleCloseAccountDialog();
       }
-    } catch (err) {
-      setErrorMessage(err?.data?.detail);
-      dispatch(logOut());
-    }
+      resetForm();
+      navigate(from, { replace: true });
+    }).catch((err)=>{
+          console.log(err.data);
+          setErrorMessage(err?.data?.detail);
+      });
   };
   return (
     <Box>

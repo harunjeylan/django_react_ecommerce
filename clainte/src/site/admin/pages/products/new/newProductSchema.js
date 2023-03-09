@@ -9,7 +9,7 @@ export const newProductSchema = yup.object().shape({
   variants: yup.array().of(
     yup.object().shape({
       variantLabel: yup.string().required("Required"),
-      optionLabel: yup.string().required("Required"),
+      options: yup.array().of(yup.string().required("Required")),
     })
   ),
   category: yup.string().required("Required"),

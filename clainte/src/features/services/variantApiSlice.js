@@ -1,4 +1,4 @@
-import { authApi } from "../../app/api/authApi";
+import { authApi } from "../auth/authApi";
 
 export const variantApi = authApi.injectEndpoints({
   tagTypes: ["variants", "options"],

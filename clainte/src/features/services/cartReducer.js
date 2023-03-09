@@ -32,7 +32,7 @@ export const cartSlice = createSlice({
       const item = state.cart.find((product) => {
         return product.id === action.payload.product.id;
       });
-
+      console.log(action.payload.product);
       if (item !== undefined) {
         state.cart = state.cart.filter(
           (product) => product.id !== action.payload.product.id

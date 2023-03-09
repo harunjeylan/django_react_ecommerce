@@ -19,16 +19,29 @@ import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import ProfileCard from "../global/ProfileCard";
 import Service from "../../../components/Service";
 
-import { addToCart, removeFromWishlist } from "../../../import";
+import { addToCart } from "../../../import";
 import { tokens, Header } from "../../../import";
+import {
+  selectWishlists,
+  setWishlist,
+} from "../../../../../features/services/wishlistReducer";
+import { useToggleWishlistMutation } from "../../../../../features/services/wishlistApiSlice";
 
 const Wishlist = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const wishlist = useSelector((state) => state.wishlist.wishlist);
-
+  const wishlist = useSelector(selectWishlists);
+  const [toggleWishlist] = useToggleWishlistMutation();
+  const changeWishlist = (productId) => {
+    toggleWishlist({ post: { productId } })
+      .unwrap()
+      .then((wishlistProducts) => {
+        console.log(wishlistProducts);
+        dispatch(setWishlist({ products: wishlistProducts }));
+      });
+  };
   return (
     <Box className={`flex flex-col gap-8 mt-20 md:mt-40`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
@@ -92,7 +105,7 @@ const Wishlist = () => {
                               <img
                                 alt={item?.title}
                                 className="w-full h-full rounded-md"
-                                src={`${item?.images[0]}`}
+                                src={`${item?.thumbnail}`}
                               />
                             </CardActionArea>
                           </Box>
@@ -164,11 +177,7 @@ const Wishlist = () => {
                             <Typography className="xxs:inline  sm:hidden md:inline lg:hidden">
                               Price:
                             </Typography>
-                            <IconButton
-                              onClick={() =>
-                                dispatch(removeFromWishlist({ product: item }))
-                              }
-                            >
+                            <IconButton onClick={() => changeWishlist(item.id)}>
                               <CloseIcon />
                             </IconButton>
                           </Box>
@@ -192,7 +201,7 @@ const Wishlist = () => {
                     fontWeight="bold"
                     className={`text-4xl md:text-6xl  `}
                   >
-                    Empty Cart
+                    Empty List
                   </Typography>
                   <Button
                     onClick={() => navigate(`/shopping`)}

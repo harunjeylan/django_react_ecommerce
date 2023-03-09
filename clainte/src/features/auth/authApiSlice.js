@@ -1,13 +1,11 @@
-import { authApi } from "../../app/api/authApi";
-import store from "../../app/store";
+import { authApi } from "./authApi";
 
-const state = store.getState();
 export const authApiSlice = authApi.injectEndpoints({
   tagTypes: ["userData", "accessToken"],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({
-        url: "/account/api/token/",
+        url: "/account/token/",
         method: "POST",
         body: credentials,
       }),
@@ -15,7 +13,7 @@ export const authApiSlice = authApi.injectEndpoints({
     }),
     register: builder.mutation({
       query: (credentials) => ({
-        url: "/account/api/register/",
+        url: "/account/register/",
         method: "POST",
         body: credentials,
       }),
@@ -23,23 +21,23 @@ export const authApiSlice = authApi.injectEndpoints({
       invalidatesTags: ["accessToken", "userData"],
     }),
     updatePersonalInfo: builder.mutation({
-      query: (addressData) => ({
-        url: "/account/api/profile/update_address/",
+      query: (userData) => ({
+        url: "/account/profile/update/",
         method: "PUT",
-        body: addressData,
+        body: userData,
       }),
       providesTags: ["userData"],
       invalidatesTags: ["userData"],
     }),
     updatePassword: builder.mutation({
       query: (passwordData) => ({
-        url: "/account/api/profile/update_password/",
+        url: "/account/profile/password/chenge/",
         method: "PUT",
         body: passwordData,
       }),
     }),
     getUseData: builder.query({
-      query: () => `/account/api/profile/`,
+      query: () => `/account/profile/`,
       providesTags: ["userData"],
     }),
   }),

@@ -60,8 +60,9 @@ import {
 } from "./features/auth/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useGetUseDataQuery } from "./features/auth/authApiSlice";
-import { refreshAccessToken } from "./app/api/authApi";
+import { refreshAccessToken } from "./features/auth/authApi";
 import { setUserData } from "./features/auth/authSlice";
+
 import store from "./app/store";
 import dayjs from "dayjs";
 function App() {

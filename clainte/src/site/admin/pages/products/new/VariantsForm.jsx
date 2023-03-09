@@ -11,6 +11,8 @@ import {
   Select,
   FormGroup,
   CircularProgress,
+  Chip,
+  OutlinedInput,
 } from "@mui/material";
 
 import { tokens } from "../../../import";
@@ -65,7 +67,8 @@ const VariantsForm = ({
     setSelected(selected_variants);
     setFieldValue("variants", selected_variants);
   };
-  const handleChangeOption = (variantLabel, optionLabel) => {
+  const handleChangeOption = (variantLabel, options) => {
+    console.log(variantLabel, options);
     if (
       values.variants?.find((variant) => variant.variantLabel === variantLabel)
     ) {
@@ -75,7 +78,7 @@ const VariantsForm = ({
           if (variant?.variantLabel === variantLabel) {
             return {
               variantLabel,
-              optionLabel,
+              options,
             };
           } else {
             return variant;
@@ -87,7 +90,7 @@ const VariantsForm = ({
         ...values.variants,
         {
           variantLabel,
-          optionLabel,
+          options,
         },
       ]);
     }
@@ -181,16 +184,34 @@ const VariantsForm = ({
                     </InputLabel>
                     <Select
                       fullWidth
+                      multiple
                       color="secondary"
                       labelId="category-select-label"
                       id="category-select"
                       variant="filled"
-                      name={`optionLabel`}
-                      defaultValue=""
+                      name={`options`}
+                      defaultValue={[]}
+                      input={
+                        <OutlinedInput id="select-multiple-chip" label="Chip" />
+                      }
+                      renderValue={(selected) => (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 0.5,
+                          }}
+                        >
+                          {selected?.map((value) => (
+                            <Chip key={value} label={value} />
+                          ))}
+                        </Box>
+                      )}
+                      onBlur={handleBlur}
                       onChange={(e) =>
                         handleChangeOption(variant?.label, e.target.value)
                       }
-                      onBlur={handleBlur}
+                      error={!!touched?.options && !!errors?.options}
                     >
                       {variant.options?.map((option, index) => (
                         <MenuItem
