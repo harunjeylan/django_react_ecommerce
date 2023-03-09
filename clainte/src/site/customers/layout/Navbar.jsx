@@ -26,26 +26,21 @@ import {
 } from "@mui/material";
 import { setIsCartOpen, selectCurrentUser } from "../import";
 import { ColorModeContext, tokens, logo } from "../import";
+import { selectWishlists } from "../../../features/services/wishlistReducer";
 // import AccountDialog from "./AccountDialog";
 function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(selectCurrentUser);
   const cart = useSelector((state) => state.cart.cart);
-  const wishlist = useSelector((state) => state.wishlist.wishlist);
+  const wishlist = useSelector(selectWishlists);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
 
   const { openAccountMemu } = useContext(LayoutContext);
-  const { handleClickAccountMemu } = useContext(LayoutContext);
+  const { handleClickAccountMenu } = useContext(LayoutContext);
   const { handleClickOpenAccountDialog } = useContext(LayoutContext);
-  // const [activeSearch, setActiveSearch] = useState(false);
-  // const searchRef = useRef(null);
-  // const handleSearchClick = () => {
-  //   setActiveSearch(!activeSearch);
-  //   searchRef.current.focus();
-  // };
 
   const [confetti, setConfetti] = useState(false);
   useEffect(() => {
@@ -128,24 +123,26 @@ function Navbar() {
               <ShoppingBagOutlinedIcon />
             </IconButton>
           </Badge>
-          <Badge
-            badgeContent={wishlist.length}
-            color="secondary"
-            invisible={wishlist.length === 0}
-            sx={{
-              "& .MuiBadge-badge": {
-                right: 5,
-                top: 5,
-                padding: "0 4px",
-                height: "14px",
-                minWidth: "13px",
-              },
-            }}
-          >
-            <IconButton onClick={() => navigate("/profile/wishlist")}>
-              <FavoriteBorderOutlinedIcon />
-            </IconButton>
-          </Badge>
+          {user && (
+            <Badge
+              badgeContent={wishlist?.length}
+              color="secondary"
+              invisible={wishlist?.length === 0}
+              sx={{
+                "& .MuiBadge-badge": {
+                  right: 5,
+                  top: 5,
+                  padding: "0 4px",
+                  height: "14px",
+                  minWidth: "13px",
+                },
+              }}
+            >
+              <IconButton onClick={() => navigate("/profile/wishlist")}>
+                <FavoriteBorderOutlinedIcon />
+              </IconButton>
+            </Badge>
+          )}
 
           {user?.is_superuser ? (
             <IconButton onClick={() => navigate("/admin/")}>
@@ -171,7 +168,7 @@ function Navbar() {
           ) : (
             <Tooltip title="Account settings">
               <IconButton
-                onClick={handleClickAccountMemu}
+                onClick={handleClickAccountMenu}
                 size="small"
                 sx={{ ml: 2 }}
                 aria-controls={openAccountMemu ? "account-menu" : undefined}

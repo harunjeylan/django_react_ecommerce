@@ -18,7 +18,7 @@ export {
   useUpdatePasswordMutation,
   useUpdatePersonalInfoMutation,
 } from "../../features/auth/authApiSlice";
-export { authApi } from "../../app/api/authApi";
+export { authApi } from "../../features/auth/authApi";
 export {
   decreaseCount,
   setCount,
@@ -28,11 +28,6 @@ export {
   toggleCart,
   setIsCartOpen,
 } from "../../features/services/cartReducer";
-
-export {
-  toggleWishlist,
-  removeFromWishlist,
-} from "../../features/services/wishlistReducer";
 
 export {
   selectCurrentToken,

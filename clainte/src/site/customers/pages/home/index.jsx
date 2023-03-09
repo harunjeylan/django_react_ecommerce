@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
 
@@ -22,6 +23,7 @@ function Home() {
     data: recommendedProducts,
     isFetching: isFetchingRecommendedProducts,
   } = useGetRecommendedProductsQuery();
+
   console.log(recommendedProducts);
   return (
     <Box className="flex flex-col gap-4 md:gap-8">

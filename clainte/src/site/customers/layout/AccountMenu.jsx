@@ -31,7 +31,7 @@ export default function AccountMenu() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { openAccountMemu } = useContext(LayoutContext);
-  const { handleCloseAccountMemu } = useContext(LayoutContext);
+  const { handleCloseAccountMenu } = useContext(LayoutContext);
   const { anchorEl } = useContext(LayoutContext);
   const userData = useSelector(selectCurrentUser);
   return (
@@ -39,8 +39,8 @@ export default function AccountMenu() {
       anchorEl={anchorEl}
       id="account-menu"
       open={openAccountMemu}
-      onClose={handleCloseAccountMemu}
-      onClick={handleCloseAccountMemu}
+      onClose={handleCloseAccountMenu}
+      onClick={handleCloseAccountMenu}
       className="w-[200px] md:w-[300px]"
       PaperProps={{
         elevation: 0,
@@ -65,7 +65,7 @@ export default function AccountMenu() {
             right: 14,
             width: 10,
             height: 10,
-            bgcolor: "background.paper",
+            bgcolor: colors.primary[400],
             transform: "translateY(-50%) rotate(45deg)",
             zIndex: 0,
           },

@@ -35,6 +35,9 @@ urlpatterns = [
   path("organize/update/", api.updateOrganize , name="update_organize"),
   path("organize/delete/", api.deleteOrganize , name="delete_organize"),
 
+  # ===================================================================
+  path("wishlists/set-get/", api.setGetWishlist , name="wishlists"),
+  path("wishlists/toggle/", api.toggleWishlist , name="toggle_wishlists"),
   
 ]
 # router = routers.DefaultRouter()

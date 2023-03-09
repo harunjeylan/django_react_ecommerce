@@ -11,11 +11,13 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-import { authApi } from "./api/authApi";
+import { authApi } from "../features/auth/authApi";
 import { productApi } from "../features/services/productApiSlice";
 import { organizeApi } from "../features/services/organizeApiSlice";
 import { variantApi } from "../features/services/variantApiSlice";
 import { brandApi } from "../features/services/brandApiSlice";
+
+import { wishlistApi } from "../features/services/wishlistApiSlice";
 
 import authReducer from "../features/auth/authSlice";
 import productReducer from "../features/services/productSlice";
@@ -50,6 +52,8 @@ const store = configureStore({
     [variantApi.reducerPath]: variantApi.reducer,
     [brandApi.reducerPath]: brandApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
+
+    [wishlistApi.reducerPath]: wishlistApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -61,7 +65,8 @@ const store = configureStore({
       .concat(variantApi.middleware)
       .concat(productApi.middleware)
       .concat(brandApi.middleware)
-      .concat(authApi.middleware);
+      .concat(authApi.middleware)
+      .concat(wishlistApi.middleware);
   },
   devTools: true,
 });

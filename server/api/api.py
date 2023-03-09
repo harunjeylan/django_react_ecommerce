@@ -100,7 +100,7 @@ def getRecommendedProducts(request):
 
 @api_view(['GET'])
 def getRelatedProducts(request, pk):
-    print(pk)
+    #print(pk)
     relatedProducts = Product.objects.all()
     serialized_data = []
     for product in relatedProducts:
@@ -137,7 +137,7 @@ def searchAndFilterProducts(request):
 
 @api_view(['GET'])
 def getProductsByCategory(request,category_name):
-    print(category_name)
+    #print(category_name)
     products = []
     if category_name in ["all", None, ""]:
         products = Product.objects.all()[:20]
@@ -167,9 +167,10 @@ def getProductsDetailes(request,pk):
         }
     variants = []
     for variant_option in product.variants.all():
+        print(variant_option.options.all())
         variants.append({
-            "option":variant_option.option.label,
-            "variant":variant_option.variant.label,
+            "options":OptionSerializer(variant_option.options.all(), many=True).data,
+            "variantLabel":variant_option.variant.label,
         })
     serialized_data = {
         **serialized_data,
@@ -221,7 +222,7 @@ def newProduct(request):
         tag, created_tag = Tag.objects.get_or_create(name=tag_name)
         organize.tags.add(tag)
         tags.append(TagSerializer(tag).data),
-    print(request.data)
+    #print(request.data)
     brand,created = Brand.objects.get_or_create(name=request.data.get("brand"))
     product_feilds = {
         "title":request.data.get("title"),
@@ -239,14 +240,17 @@ def newProduct(request):
  
     variants = []
     for variant_dic in request.data.get("variants"):
-        option = Option.objects.get(label=variant_dic["optionLabel"])
         variant = Variant.objects.get(label=variant_dic["variantLabel"])
-        variant_option = VariantOption.objects.create(option=option, variant=variant)
+        variant_option = VariantOption.objects.create(variant=variant)
+        for optionLabel in variant_dic["options"]:
+            option = Option.objects.get(label=optionLabel)
+            variant_option.options.add(option)
+
         product.variants.add(variant_option)
         variants.append({
             **VariantOptionSerializer(variant_option).data,
             "variant":VariantSerializer(variant).data,
-            "option":OptionSerializer(option).data,
+            "options":OptionSerializer(variant_option.options, many=True).data,
         })
 
     product.save()
@@ -309,7 +313,7 @@ def newProduct(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def uploadImage(request):
-    print(request.FILES)
+    #print(request.FILES)
     product = Product.objects.get(id=request.data.get("productId"))
     if "thumbnail" in request.FILES:
         thumbnail = request.FILES.get("thumbnail")
@@ -549,4 +553,45 @@ def deleteOption(request):
 
 
 
+# =================================================================================
+@api_view(['POST','GET'])
+@permission_classes([IsAuthenticated])
+def setGetWishlist(request):
+    wishlist,create = WishList.objects.get_or_create(customer=request.user)
+    #print(request.data.get("products"))
+    if request.method == "POST":
+        for productId in request.data.get("products"):
+            product = Product.objects.get(id=productId)
+            wishlist.products.add(product)
+
+    wishlist = WishList.objects.get(customer=request.user)
+    #print(wishlist.products.all())
+    serialized_data = []
+    for product in wishlist.products.all():
+        serialized_data.append({
+            **ProductSerializer(product, context={"request":request}).data,
+            "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
+            "rating":product.review_set.all().aggregate(Avg('rating'))["rating__avg"],
+        })
+    return Response(serialized_data, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])  
+def toggleWishlist(request):
+    wishlist,create = WishList.objects.get_or_create(customer=request.user)
+    #print(request.data.get("productId"))
+    product = Product.objects.get(id=request.data.get("productId"))
+    if wishlist.products.contains(product):
+        wishlist.products.remove(product)
+    else:
+        wishlist.products.add(product)
+
+    serialized_data = []
+    for product in wishlist.products.all():
+        serialized_data.append({
+            **ProductSerializer(product, context={"request":request}).data,
+            "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
+            "rating":product.review_set.all().aggregate(Avg('rating'))["rating__avg"],
+        })
+    return Response(serialized_data, status=status.HTTP_200_OK)
 

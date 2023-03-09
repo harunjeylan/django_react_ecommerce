@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "@emotion/react";
 import { useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -9,69 +9,128 @@ import {
   CardActionArea,
   Button,
   Typography,
-  Checkbox,
   Breadcrumbs,
   Tabs,
   Tab,
-  FormControlLabel,
-  Radio,
-  FormControl,
-  FormLabel,
-  RadioGroup,
   Rating,
   IconButton,
   TextField,
-  ButtonGroup,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 
-import PaletteIcon from "@mui/icons-material/Palette";
-import PaletteOutlinedIcon from "@mui/icons-material/PaletteOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 import ProductCarouse from "../../../components/ProductCarouse";
 import Service from "../../../components/Service";
 import Subscribe from "../../../components/Subscribe";
 
-import { mockDataReviews } from "../../../import";
-import { addToCart } from "../../../import";
+import { increaseCount, selectCurrentUser, toggleCart } from "../../../import";
 import { tokens, Reviews, ReviewForm, Header } from "../../../import";
 import {
   useAddProductReviewMutation,
   useGetProductsDetailesQuery,
   useGetRelatedProductsQuery,
 } from "../../../../../features/services/productApiSlice";
+import {
+  selectWishlists,
+  setWishlist,
+} from "../../../../../features/services/wishlistReducer";
+import { useToggleWishlistMutation } from "../../../../../features/services/wishlistApiSlice";
+import { setCount } from "../../../import";
 
 const ProductDetails = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
-
+  const user = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
   const { productId } = useParams();
   const [value, setValue] = useState("description");
-  const [count, setCount] = useState(1);
+  const [selectedVariants, setSelectedVariants] = useState([]);
   const [addProductReview] = useAddProductReviewMutation();
+  const carts = useSelector((state) => state.cart.cart);
+  const wishlist = useSelector(selectWishlists);
+  const [isInCart, setIsInCart] = useState(false);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [toggleWishlist] = useToggleWishlistMutation();
+  const [count, setCount] = useState(1);
   const handleReviewFormSubmit = (values, { resetForm }) => {
-    console.log(values);
     addProductReview({ post: values, productId }).then(() => resetForm());
-  };
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
   };
 
   const { data: product, isFetching: isFetchingProduct } =
     useGetProductsDetailesQuery({ productId });
   const { data: relatedProducts, isFetching: isFetchingRelatedProducts } =
     useGetRelatedProductsQuery({ productId });
-  console.log(product?.organize?.category?.name);
 
   const [activeImage, setActiveImage] = useState(product?.thumbnail);
   useEffect(() => {
     setActiveImage(product?.thumbnail);
   }, [product?.thumbnail]);
-  console.log(relatedProducts);
+
+  const findInCart = (product) => {
+    const itemsFounded = carts.find(
+      (cartProduct) => cartProduct.id === product.id
+    );
+    return !(itemsFounded === undefined);
+  };
+  const findInWishlist = (product) => {
+    const itemsFounded = wishlist.find(
+      (wishlistProduct) => wishlistProduct.id === product.id
+    );
+    return !(itemsFounded === undefined);
+  };
+
+  useEffect(() => {
+    if (!isFetchingProduct) {
+      setIsInCart(findInCart(product));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [carts, product, isFetchingProduct]);
+
+  useEffect(() => {
+    if (!isFetchingProduct && user) {
+      setIsInWishlist(findInWishlist(product));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wishlist, product, isFetchingProduct]);
+
+  const changeCart = () => {
+    dispatch(
+      toggleCart({
+        product: { ...product, count, selectedVariants },
+      })
+    );
+    setIsInCart(findInCart(product));
+  };
+  const changeWishlist = () => {
+    if (user) {
+      toggleWishlist({ post: { productId: product.id } })
+        .unwrap()
+        .then((wishlistProducts) => {
+          dispatch(setWishlist({ products: wishlistProducts }));
+          setIsInWishlist(findInWishlist(product));
+        });
+    }
+  };
+  const handleChangeVariantOptions = (variantLabel, optionLabel) => {
+    console.log(selectedVariants);
+    setSelectedVariants((prev) => {
+      let otherOption = prev?.filter(
+        (ariantOption) => ariantOption.variantLabel !== variantLabel
+      );
+      return [...otherOption, { variantLabel, optionLabel }];
+    });
+  };
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
@@ -154,7 +213,7 @@ const ProductDetails = () => {
                 >
                   Organize
                 </Typography>
-                <Box>
+                <Box className="flex flex-col gap-4 justify-start w-fit">
                   {product?.organize?.category?.name && (
                     <Typography>
                       <strong>category : </strong>
@@ -178,47 +237,81 @@ const ProductDetails = () => {
                     <>
                       <Typography>
                         <strong>tags : </strong>
-                      </Typography>
-                      <Box>
-                        {product?.organize?.tags?.map((tag) => (
-                          <Typography key={tag.id}>{tag?.name}</Typography>
+                        {product?.organize?.tags?.map((tag, index) => (
+                          <span key={`tag-${tag.id}-${index}`}>
+                            {tag?.name}
+                            {", "}
+                          </span>
                         ))}
-                      </Box>
+                      </Typography>
                     </>
                   ) : undefined}
                 </Box>
               </Box>
-              <Box>
+              <Box className="flex flex-col gap-4 justify-start w-fit">
+                <Box>
+                  <Typography
+                    variant="h1"
+                    color={colors.grey[100]}
+                    fontWeight="bold"
+                    className={`text-xl md:text-2xl  text-left my-4`}
+                  >
+                    Variant
+                  </Typography>
+                  <Box className="flex flex-col gap-4 w-full">
+                    {!isFetchingProduct &&
+                      product?.variants?.map((variantOption, index) => (
+                        <FormControl
+                          key={index}
+                          variant="filled"
+                          className="w-full"
+                        >
+                          <InputLabel id="varients-select-label">
+                            {variantOption?.variantLabel}
+                          </InputLabel>
+                          <Select
+                            fullWidth
+                            color="secondary"
+                            labelId="varients-select-label"
+                            id="varients-select"
+                            variant="filled"
+                            name={variantOption?.variantLabel}
+                            defaultValue={""}
+                            onChange={(e) =>
+                              handleChangeVariantOptions(
+                                variantOption?.variantLabel,
+                                e.target.value
+                              )
+                            }
+                          >
+                            {variantOption?.options &&
+                              variantOption?.options?.map((option) => (
+                                <MenuItem key={option.id} value={option.label}>
+                                  {option.label}
+                                </MenuItem>
+                              ))}
+                          </Select>
+                        </FormControl>
+                      ))}
+                  </Box>
+                </Box>
                 <Typography
                   variant="h1"
                   color={colors.grey[100]}
                   fontWeight="bold"
-                  className={`text-xl md:text-2xl  text-left my-4`}
+                  className={`text-xl md:text-2xl  text-left mt-6`}
                 >
-                  Variant
+                  Action
                 </Typography>
-                <Box>
-                  {product?.variants?.map((variant) => (
-                    <Typography>
-                      <strong>{variant.variant} : </strong>
-                      {variant.option}
-                    </Typography>
-                  ))}
-                </Box>
-              </Box>
-            </Box>
-            <Box className="flex-col w-full px-4  md:px-2 md:py-1 space-y-2">
-              <Box className="flex justify-between items-center w-full">
-                <ButtonGroup
-                  variant="outlined"
-                  color="secondary"
-                  aria-label="outlined primary button group"
-                  sx={{ backgroundColor: colors.primary[400] }}
-                  className="border-1 w-full"
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  className="my-2"
+                  border={`1.5px solid ${colors.neutral[500]}`}
                 >
                   <IconButton
                     size="large"
-                    onClick={() => setCount(Math.max(count - 1, 1))}
+                    onClick={() => setCount((prev) => prev - 1)}
                   >
                     <RemoveIcon />
                   </IconButton>
@@ -227,28 +320,51 @@ const ProductDetails = () => {
                     type="number"
                     value={count}
                     onChange={(event) => setCount(event.target.value)}
-                    // InputLabelProps={{
-                    //   shrink: true,
-                    // }}
                   />
-                  <IconButton size="large" onClick={() => setCount(count + 1)}>
+                  <IconButton
+                    size="large"
+                    onClick={() => setCount((prev) => prev + 1)}
+                  >
                     <AddIcon />
                   </IconButton>
+                </Box>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  size="large"
+                  startIcon={
+                    isInCart ? (
+                      <RemoveShoppingCartIcon />
+                    ) : (
+                      <AddShoppingCartIcon />
+                    )
+                  }
+                  onClick={changeCart}
+                >
+                  {isInCart ? "Remove from Cart" : "Add to Cart"}
+                </Button>
+                {user && (
                   <Button
-                    startIcon={<AddShoppingCartIcon />}
-                    onClick={() => {
-                      dispatch(addToCart({ product: { ...product, count } }));
-                    }}
-                    className={`w-full `}
+                    variant="outlined"
+                    color="secondary"
+                    size="large"
+                    startIcon={
+                      isInWishlist ? (
+                        <FavoriteIcon />
+                      ) : (
+                        <FavoriteBorderOutlinedIcon />
+                      )
+                    }
+                    onClick={changeWishlist}
                   >
-                    Add to Cart
+                    {isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
                   </Button>
-                </ButtonGroup>
+                )}
               </Box>
             </Box>
           </Box>
           <Box
-            className={`w-full flex flex-col-reverse lg:flex-row gap-4 w-full lg:max-w-[50%]`}
+            className={`w-full flex flex-col-reverse lg:flex-row gap-4 lg:max-w-[50%]`}
           >
             <Box
               className={`w-full flex flex-row-wrap lg:flex-col gap-4 my-4 justify-center items-center lg:w-[120px] px-auto`}
@@ -289,7 +405,9 @@ const ProductDetails = () => {
         <Box className={`w-full`}>
           <Tabs
             value={value}
-            onChange={handleChange}
+            onChange={(event, newValue) => {
+              setValue(newValue);
+            }}
             textColor="secondary"
             indicatorColor="secondary"
             aria-label="secondary tabs example"

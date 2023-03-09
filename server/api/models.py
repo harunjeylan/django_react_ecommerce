@@ -39,10 +39,10 @@ class Variant(models.Model):
 
 
 class VariantOption(models.Model):
-    option = models.ForeignKey(Option, on_delete=models.CASCADE)
     variant = models.ForeignKey(Variant, on_delete=models.CASCADE)
+    options = models.ManyToManyField(Option)
     def __str__(self):
-        return f"{self.variant} -> {self.option}" 
+        return f"{self.variant}" 
 
 class Image(models.Model):
     image = models.ImageField(null=True, blank=True, upload_to="product-images")
@@ -155,4 +155,4 @@ class WishList(models.Model):
     customer = models.OneToOneField(User, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product)
     def __str__(self):
-        return f"{self.customer.get_full_name: self.date}"
+        return f"{self.customer.get_full_name()}"

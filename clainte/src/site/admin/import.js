@@ -24,8 +24,6 @@ export {
   useAddOrganizeMutation,
 } from "../../features/services/organizeApiSlice";
 
-export { toggleWishlist } from "../../features/services/wishlistReducer";
-
 export { default as Header } from "../../components/Header";
 export { default as OrderSummery } from "../../components/OrderSummery";
 export { default as Reviews } from "../../components/Reviews";
