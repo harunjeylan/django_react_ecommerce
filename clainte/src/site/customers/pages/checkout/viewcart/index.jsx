@@ -77,7 +77,7 @@ const ViewCart = () => {
                       <img
                         alt={item?.title}
                         className="w-full h-full rounded-md"
-                        src={`${item?.images[0]}`}
+                        src={`${item?.thumbnail}`}
                       />
                     </CardActionArea>
                     <Box className="flex flex-col px-2 w-full">
@@ -94,7 +94,20 @@ const ViewCart = () => {
                       <Typography className="mr-4">
                         {item.description}
                       </Typography>
+                      <Divider />
                       <Box className="flex justify-between items-center ">
+                        <Box>
+                          {item?.selectedVariants?.map(
+                            (selectedVariant, index) => (
+                              <Typography key={index}>
+                                <strong>
+                                  {selectedVariant.variantLabel} :{" "}
+                                </strong>
+                                <span> {selectedVariant.optionLabel} </span>,
+                              </Typography>
+                            )
+                          )}
+                        </Box>
                         <Box
                           display="flex"
                           alignItems="center"
@@ -136,7 +149,9 @@ const ViewCart = () => {
                             <AddIcon />
                           </IconButton>
                         </Box>
-                        <Typography fontWeight="bold">${item.price}</Typography>
+                        <Typography fontWeight="bold">
+                          <strong>Price</strong> : ${item?.sale_pricing}
+                        </Typography>
                       </Box>
                     </Box>
                   </Box>

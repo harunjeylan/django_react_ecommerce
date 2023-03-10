@@ -86,14 +86,14 @@ const ProductDetails = () => {
 
   const findInWishlist = useMemo(() => {
     return (product) => {
-      if (user) {
+      if (user && !isFetchingProduct) {
         const itemsFounded = wishlist?.find(
           (wishlistProduct) => wishlistProduct.id === product.id
         );
         return itemsFounded;
       }
     };
-  }, [user, wishlist]);
+  }, [isFetchingProduct, user, wishlist]);
 
   useEffect(() => {
     setActiveImage(product?.thumbnail);
@@ -166,7 +166,7 @@ const ProductDetails = () => {
     if (findInCart(product)) {
       dispatch(
         setSelectedVariants({
-          id: product.id,
+          id: product?.id,
           variantLabel,
           optionLabel,
         })
@@ -174,11 +174,21 @@ const ProductDetails = () => {
     } else {
       setProductVariants((prev) => {
         let otherOption = prev?.filter(
-          (ariantOption) => ariantOption.variantLabel !== variantLabel
+          (variantOption) => variantOption.variantLabel !== variantLabel
         );
         return [...otherOption, { variantLabel, optionLabel }];
       });
     }
+  };
+  const getSelectedOption = (variantLabel) => {
+    let productInCart = findInCart(product);
+    if (productInCart) {
+      let selecedVariantOption = productInCart.selectedVariants.find(
+        (variantOption) => variantOption.variantLabel === variantLabel
+      );
+      return selecedVariantOption ? selecedVariantOption.optionLabel : "";
+    }
+    return "";
   };
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
@@ -325,7 +335,9 @@ const ProductDetails = () => {
                             id="varients-select"
                             variant="filled"
                             name={variantOption?.variantLabel}
-                            defaultValue={""}
+                            defaultValue={getSelectedOption(
+                              variantOption?.variantLabel
+                            )}
                             onChange={(e) =>
                               handleChangeVariantOptions(
                                 variantOption?.variantLabel,
@@ -342,6 +354,25 @@ const ProductDetails = () => {
                           </Select>
                         </FormControl>
                       ))}
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      className="my-2"
+                      border={`1.5px solid ${colors.neutral[500]}`}
+                    >
+                      <IconButton size="large" onClick={handleDecreaseCount}>
+                        <RemoveIcon />
+                      </IconButton>
+                      <TextField
+                        id="outlined-number"
+                        type="number"
+                        value={productCount}
+                        onChange={handleSetCount}
+                      />
+                      <IconButton size="large" onClick={handleIncreaseCount}>
+                        <AddIcon />
+                      </IconButton>
+                    </Box>
                   </Box>
                 </Box>
                 <Typography
@@ -352,25 +383,7 @@ const ProductDetails = () => {
                 >
                   Action
                 </Typography>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  className="my-2"
-                  border={`1.5px solid ${colors.neutral[500]}`}
-                >
-                  <IconButton size="large" onClick={handleDecreaseCount}>
-                    <RemoveIcon />
-                  </IconButton>
-                  <TextField
-                    id="outlined-number"
-                    type="number"
-                    value={productCount}
-                    onChange={handleSetCount}
-                  />
-                  <IconButton size="large" onClick={handleIncreaseCount}>
-                    <AddIcon />
-                  </IconButton>
-                </Box>
+
                 <Button
                   variant="outlined"
                   color="secondary"

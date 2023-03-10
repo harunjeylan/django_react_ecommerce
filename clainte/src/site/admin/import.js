@@ -14,10 +14,7 @@ export {
 export { logOut } from "../customers/import";
 export { addToCart } from "../../features/services/cartReducer";
 export { useGetProductsDetailesQuery } from "../../features/services/productApiSlice";
-export {
-  useAddProductMutation,
-  useGetAllVariantsQuery,
-} from "../../features/services/productApiSlice";
+export { useAddProductMutation } from "../../features/services/productApiSlice";
 
 export {
   useGetAllOrganizeQuery,

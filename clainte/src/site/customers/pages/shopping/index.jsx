@@ -16,6 +16,12 @@ import {
   Collapse,
   Slider,
   useMediaQuery,
+  Divider,
+  ListItem,
+  List,
+  ListItemButton,
+  TextField,
+  ButtonGroup,
 } from "@mui/material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
@@ -28,8 +34,10 @@ import ProductCarouse from "../../components/ProductCarouse";
 import ProductsList from "../../components/ProductsList";
 
 import { tokens, Header } from "../../import";
-import { useGetAllCategoryQuery } from "../../../../features/services/organizeApiSlice";
+import { useGetAllOrganizeQuery } from "../../../../features/services/organizeApiSlice";
 import { useSearchAndFilterProductsQuery } from "../../import";
+import { useGetAllBrandsQuery } from "../../../../features/services/brandApiSlice";
+import { useGetAllVariantsQuery } from "../../../../features/services/variantApiSlice";
 
 const Shopping = () => {
   const isNoneMobile = useMediaQuery("(min-width:1024px)");
@@ -38,8 +46,14 @@ const Shopping = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
-  const [searchAndFilter, setSearchAndFilter] = useState("?q=all");
-  const [categoryValue, setCategoryValue] = useState("all");
+
+  const [searchAndFilter, setSearchAndFilter] = useState("");
+
+  const [priceValue, setPriceValue] = useState([20, 37]);
+  const [brandValue, setBradValue] = useState("");
+  const [organizeValue, setOrganizeValue] = useState("");
+  const [variantsValue, setValriantsValue] = useState("");
+
   const {
     data: searchAndFilterProducts,
     isFetching: isFetchingSearchAndFilterProducts,
@@ -47,14 +61,12 @@ const Shopping = () => {
     searchAndFilter,
   });
 
-  const handleChangeCategory = (event, newValue) => {
-    setCategoryValue(newValue);
-  };
-  const { data: allCategory, isFetching: isFetchingAllCategory } =
-    useGetAllCategoryQuery();
+  const { data: brands, isFetching: isFetchingBrands } = useGetAllBrandsQuery();
+  const { data: organize, isFetching: isFetchingOrganize } =
+    useGetAllOrganizeQuery();
+  const { data: variants, isFetching: isFetchingVariants } =
+    useGetAllVariantsQuery();
 
-  const [priceValue, setPriceValue] = useState([20, 37]);
-  console.log(searchAndFilterProducts);
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
@@ -70,18 +82,20 @@ const Shopping = () => {
         </Breadcrumbs>
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
-        <Header
-          title="Jackets and tops"
-          subtitle="Lorem ipsum dolor sit amet."
-        />
+        <ButtonGroup className="w-full">
+          <TextField
+            variant="outlined"
+            color="secondary"
+            fullWidth
+            placeholder="search.."
+          />
+          <Button variant="outlined" color="secondary">
+            search
+          </Button>
+        </ButtonGroup>
       </Box>
 
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
-        <Header
-          title="Shopping List"
-          subtitle="One morning"
-          bodyText={`One morning, when Gregor Samsa `}
-        />
         <Box className={`flex flex-col lg:flex-row space-4 h-full w-full`}>
           <Box
             className={`w-full bg-transparent lg:w-[25%] lg:rounded-lg mx-2 h-full `}
@@ -94,19 +108,84 @@ const Shopping = () => {
             >
               <Box
                 backgroundColor={colors.primary[400]}
-                className={` w-full  p-4 rounded-md lg:mb-4`}
+                className={` w-full rounded-md lg:mb-4`}
               >
                 <Typography
                   variant="h1"
                   color={colors.grey[100]}
                   fontWeight="bold"
-                  className={`text-xl md:text-2xl  text-left my-4`}
+                  className={`text-xl md:text-2xl p-4 text-left`}
+                >
+                  Organizes
+                </Typography>
+                <Divider />
+                <Typography
+                  variant="h4"
+                  color={colors.grey[100]}
+                  fontWeight="bold"
+                  className={`text-lg md:text-xl px-4 mt-4 text-left mb-2`}
                 >
                   Category
                 </Typography>
-                {/* {isFetchingAllCategory
-                  ? null
-                  : allCategory?.map((category, index) => null)} */}
+                <List className={``}>
+                  {!isFetchingOrganize &&
+                    organize.categories.map((categorie) => (
+                      <ListItem key={categorie.id}>
+                        <ListItemButton>{categorie.name}</ListItemButton>
+                      </ListItem>
+                    ))}
+                </List>
+                <Divider />
+                <Typography
+                  variant="h4"
+                  color={colors.grey[100]}
+                  fontWeight="bold"
+                  className={`text-lg md:text-xl px-4 mt-4 text-left mb-2`}
+                >
+                  Collection
+                </Typography>
+                <List className={``}>
+                  {!isFetchingOrganize &&
+                    organize.collections.map((collection) => (
+                      <ListItem key={collection.id}>
+                        <ListItemButton>{collection.name}</ListItemButton>
+                      </ListItem>
+                    ))}
+                </List>
+                <Divider />
+                <Typography
+                  variant="h4"
+                  color={colors.grey[100]}
+                  fontWeight="bold"
+                  className={`text-lg md:text-xl px-4 mt-4 text-left mb-2`}
+                >
+                  Vendor
+                </Typography>
+                <List className={``}>
+                  {!isFetchingOrganize &&
+                    organize.vendors.map((vendor) => (
+                      <ListItem key={vendor.id}>
+                        <ListItemButton>{vendor.name}</ListItemButton>
+                      </ListItem>
+                    ))}
+                </List>
+                <Divider />
+                <Typography
+                  variant="h4"
+                  color={colors.grey[100]}
+                  fontWeight="bold"
+                  className={`text-lg md:text-xl px-4 mt-4 text-left mb-2`}
+                >
+                  Tag
+                </Typography>
+                <List className={``}>
+                  <Typography className="mx-4">
+                    {!isFetchingOrganize &&
+                      organize.tags.map((tag) => (
+                        <span key={tag.id}>{tag.name}, </span>
+                      ))}
+                  </Typography>
+                </List>
               </Box>
             </Collapse>
             <Collapse
@@ -127,14 +206,15 @@ const Shopping = () => {
                 >
                   Filter
                 </Typography>
-                <Box className={`mb-4 w-full`}>
+                <Divider />
+                <Box className={`my-4 w-full`}>
                   <FormControl className={`w-[100%]`}>
                     <FormLabel id="demo-radio-buttons-group-label">
                       <Typography
                         variant="h1"
                         color={colors.grey[100]}
                         fontWeight="bold"
-                        className={`text-xl md:text-2xl  text-left mb-2`}
+                        className={`text-xl md:text-2xl text-left mb-2`}
                       >
                         Price
                       </Typography>
@@ -160,8 +240,8 @@ const Shopping = () => {
                     </Box>
                   </FormControl>
                 </Box>
-
-                <Box className={`mb-4`}>
+                <Divider />
+                <Box className={`my-4 w-full`}>
                   <FormControl>
                     <FormLabel id="demo-radio-buttons-group-label">
                       <Typography
@@ -174,67 +254,22 @@ const Shopping = () => {
                       </Typography>
                     </FormLabel>
                     <Box className={`flex flex-col`}>
-                      <FormControlLabel
-                        value="adidass"
-                        control={<Checkbox color="secondary" />}
-                        label="Adidass"
-                        labelPlacement="end"
-                      />
-                      <FormControlLabel
-                        value="adidass"
-                        control={<Checkbox color="secondary" />}
-                        label="Adidass"
-                        labelPlacement="end"
-                      />
-                      <FormControlLabel
-                        value="adidass"
-                        control={<Checkbox color="secondary" />}
-                        label="Adidass"
-                        labelPlacement="end"
-                      />
+                      {!isFetchingBrands &&
+                        brands.map((brand) => (
+                          <FormControlLabel
+                            key={brand.id}
+                            value={brand.name}
+                            control={<Checkbox color="secondary" />}
+                            label={brand.name}
+                            labelPlacement="end"
+                            className="block ml-4"
+                          />
+                        ))}
                     </Box>
                   </FormControl>
                 </Box>
-                <Box className={`mb-4`}>
-                  <Box className={`flex flex-col w-100`}>
-                    <FormControl>
-                      <FormLabel id="demo-radio-buttons-group-label">
-                        <Typography
-                          variant="h1"
-                          color={colors.grey[100]}
-                          fontWeight="bold"
-                          className={`text-xl md:text-2xl  text-left mb-2`}
-                        >
-                          Size
-                        </Typography>
-                      </FormLabel>
-                      <Box>
-                        <RadioGroup
-                          labelled="demo-radio-buttons-group-label"
-                          defaultValue="female"
-                          name="radio-buttons-group"
-                        >
-                          <FormControlLabel
-                            value="female"
-                            control={<Radio color="secondary" />}
-                            label="Female"
-                          />
-                          <FormControlLabel
-                            value="male"
-                            control={<Radio color="secondary" />}
-                            label="Male"
-                          />
-                          <FormControlLabel
-                            value="other"
-                            control={<Radio color="secondary" />}
-                            label="Other"
-                          />
-                        </RadioGroup>
-                      </Box>
-                    </FormControl>
-                  </Box>
-                </Box>
-                <Box className={`mb-4`}>
+                <Divider />
+                <Box className={`my-4 w-full`}>
                   <FormControl>
                     <FormLabel id="demo-radio-buttons-group-label">
                       <Typography
@@ -243,58 +278,33 @@ const Shopping = () => {
                         fontWeight="bold"
                         className={`text-xl md:text-2xl  text-left mb-2`}
                       >
-                        Color
+                        Variants
                       </Typography>
                     </FormLabel>
-                    <Box className={`flex justify-center`}>
-                      <Box>
-                        <Checkbox
-                          icon={
-                            <PaletteOutlinedIcon
-                              fontSize="large"
-                              sx={{ color: "red" }}
-                            />
-                          }
-                          checkedIcon={
-                            <PaletteIcon
-                              fontSize="large"
-                              sx={{ color: "red" }}
-                            />
-                          }
-                        />
-                      </Box>
-                      <Box>
-                        <Checkbox
-                          icon={
-                            <PaletteOutlinedIcon
-                              fontSize="large"
-                              sx={{ color: "blue" }}
-                            />
-                          }
-                          checkedIcon={
-                            <PaletteIcon
-                              fontSize="large"
-                              sx={{ color: "blue" }}
-                            />
-                          }
-                        />
-                      </Box>
-                      <Box>
-                        <Checkbox
-                          icon={
-                            <PaletteOutlinedIcon
-                              fontSize="large"
-                              sx={{ color: "green" }}
-                            />
-                          }
-                          checkedIcon={
-                            <PaletteIcon
-                              fontSize="large"
-                              sx={{ color: "green" }}
-                            />
-                          }
-                        />
-                      </Box>
+                    <Box className={`flex flex-col`}>
+                      {!isFetchingVariants &&
+                        variants.map((variantOprions) => (
+                          <Box key={variantOprions.id}>
+                            <Typography
+                              variant="h4"
+                              color={colors.grey[100]}
+                              fontWeight="bold"
+                              className={`text-lg md:text-xl px-4 mt-4 text-left mb-2`}
+                            >
+                              {variantOprions.label}
+                            </Typography>
+                            {variantOprions.options.map((option) => (
+                              <FormControlLabel
+                                key={option.id}
+                                value={option?.label}
+                                control={<Checkbox color="secondary" />}
+                                label={option?.label}
+                                labelPlacement="end"
+                                className="block ml-4"
+                              />
+                            ))}
+                          </Box>
+                        ))}
                     </Box>
                   </FormControl>
                 </Box>
