@@ -14,7 +14,6 @@ export const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       const item = state.cart.find((product) => {
-        console.log(product.id);
         return product.id === action.payload.product.id;
       });
 
@@ -32,7 +31,6 @@ export const cartSlice = createSlice({
       const item = state.cart.find((product) => {
         return product.id === action.payload.product.id;
       });
-      console.log(action.payload.product);
       if (item !== undefined) {
         state.cart = state.cart.filter(
           (product) => product.id !== action.payload.product.id
@@ -69,6 +67,41 @@ export const cartSlice = createSlice({
       });
     },
 
+    setSelectedVariants: (state, action) => {
+      state.cart = state.cart.map((product) => {
+        if (product.id === action.payload.id) {
+          let foundVariantOption = product.selectedVariants?.find(
+            (variantOption) =>
+              variantOption.variantLabel === action.payload.variantLabel
+          );
+          if (foundVariantOption) {
+            product.selectedVariants = product.selectedVariants?.map(
+              (variantOption) => {
+                if (
+                  variantOption.variantLabel === action.payload.variantLabel
+                ) {
+                  variantOption = {
+                    variantLabel: action.payload.variantLabel,
+                    optionLabel: action.payload.optionLabel,
+                  };
+                }
+                return variantOption;
+              }
+            );
+          } else {
+            product.selectedVariants = [
+              ...product.selectedVariants,
+              {
+                variantLabel: action.payload.variantLabel,
+                optionLabel: action.payload.optionLabel,
+              },
+            ];
+          }
+        }
+        return product;
+      });
+    },
+
     setIsCartOpen: (state) => {
       state.isCartOpen = !state.isCartOpen;
     },
@@ -83,6 +116,8 @@ export const {
   decreaseCount,
   toggleCart,
   setIsCartOpen,
+  setSelectedVariants,
 } = cartSlice.actions;
+export const selectCart = (state) => state.cart.cart;
 
 export default cartSlice.reducer;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
@@ -14,6 +14,7 @@ import {
   selectWishlists,
   setWishlist,
 } from "../../../features/services/wishlistReducer";
+import { toggleCart, selectCart } from "../../../features/services/cartReducer";
 import {
   Box,
   Checkbox,
@@ -23,7 +24,7 @@ import {
   CardActionArea,
 } from "@mui/material";
 
-import { tokens, toggleCart, selectCurrentUser } from "../import";
+import { tokens, selectCurrentUser } from "../import";
 
 const ProductCard = ({ product }) => {
   const theme = useTheme();
@@ -32,34 +33,41 @@ const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
   const [toggleWishlist] = useToggleWishlistMutation();
-  const carts = useSelector((state) => state.cart.cart);
   const user = useSelector(selectCurrentUser);
-  const findInCart = (product) => {
-    const itemsFoundedIndex = carts.find(
-      (CartProduct) => CartProduct.id === product.id
-    );
-    return !(itemsFoundedIndex === undefined);
-  };
-
   const [isInCart, setIsInCart] = useState(false);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const carts = useSelector(selectCart);
+  const wishlist = useSelector(selectWishlists);
+  const findInCart = useMemo(() => {
+    return (product) => {
+      const itemsFounded = carts?.find(
+        (cartProduct) => cartProduct?.id === product?.id
+      );
+      return !(itemsFounded === undefined);
+    };
+  }, [carts]);
+  const findInWishlist = useMemo(() => {
+    return (product) => {
+      if (user) {
+        const itemsFounded = wishlist?.find(
+          (wishlistProduct) => wishlistProduct.id === product.id
+        );
+        return !(itemsFounded === undefined);
+      }
+    };
+  }, [user, wishlist]);
+
   const changeCart = () => {
-    dispatch(toggleCart({ product: { ...product, count: 1 } }));
+    dispatch(
+      toggleCart({ product: { ...product, count: 1, selectedVariants: [] } })
+    );
     setIsInCart(findInCart(product));
   };
 
   useEffect(() => {
     setIsInCart(findInCart(product));
-  }, [carts, product]);
+  }, [carts, findInCart, product]);
 
-  const wishlist = useSelector(selectWishlists);
-
-  const [isInWishlist, setIsInWishlist] = useState(false);
-  const findInWishlist = (product) => {
-    const itemsFoundedIndex = wishlist.find(
-      (wishlistProduct) => wishlistProduct.id === product.id
-    );
-    return !(itemsFoundedIndex === undefined);
-  };
   const changeWishlist = () => {
     if (user) {
       toggleWishlist({ post: { productId: product.id } })
@@ -74,7 +82,7 @@ const ProductCard = ({ product }) => {
 
   useEffect(() => {
     setIsInWishlist(findInWishlist(product));
-  }, [wishlist, product]);
+  }, [wishlist, product, findInWishlist]);
 
   return (
     <Box

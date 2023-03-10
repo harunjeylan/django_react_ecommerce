@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useTheme } from "@emotion/react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,23 +29,27 @@ import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
-import ProductCarouse from "../../../components/ProductCarouse";
 import Service from "../../../components/Service";
 import Subscribe from "../../../components/Subscribe";
 
-import { increaseCount, selectCurrentUser, toggleCart } from "../../../import";
+import { selectCurrentUser, toggleCart, setCount } from "../../../import";
 import { tokens, Reviews, ReviewForm, Header } from "../../../import";
 import {
   useAddProductReviewMutation,
   useGetProductsDetailesQuery,
-  useGetRelatedProductsQuery,
 } from "../../../../../features/services/productApiSlice";
 import {
   selectWishlists,
   setWishlist,
 } from "../../../../../features/services/wishlistReducer";
 import { useToggleWishlistMutation } from "../../../../../features/services/wishlistApiSlice";
-import { setCount } from "../../../import";
+import {
+  decreaseCount,
+  increaseCount,
+  selectCart,
+  setSelectedVariants,
+} from "../../../../../features/services/cartReducer";
+import RelatedProducts from "./RelatedProducts";
 
 const ProductDetails = () => {
   const theme = useTheme();
@@ -55,62 +59,99 @@ const ProductDetails = () => {
   const dispatch = useDispatch();
   const { productId } = useParams();
   const [value, setValue] = useState("description");
-  const [selectedVariants, setSelectedVariants] = useState([]);
-  const [addProductReview] = useAddProductReviewMutation();
-  const carts = useSelector((state) => state.cart.cart);
+  const [productCount, setProductCount] = useState(1);
+  const [productVariants, setProductVariants] = useState([]);
+  const carts = useSelector(selectCart);
   const wishlist = useSelector(selectWishlists);
-  const [isInCart, setIsInCart] = useState(false);
-  const [isInWishlist, setIsInWishlist] = useState(false);
   const [toggleWishlist] = useToggleWishlistMutation();
-  const [count, setCount] = useState(1);
+  const [addProductReview] = useAddProductReviewMutation();
+
   const handleReviewFormSubmit = (values, { resetForm }) => {
     addProductReview({ post: values, productId }).then(() => resetForm());
   };
 
   const { data: product, isFetching: isFetchingProduct } =
     useGetProductsDetailesQuery({ productId });
-  const { data: relatedProducts, isFetching: isFetchingRelatedProducts } =
-    useGetRelatedProductsQuery({ productId });
 
   const [activeImage, setActiveImage] = useState(product?.thumbnail);
+
+  const findInCart = useMemo(() => {
+    return (product) => {
+      const itemsFounded = carts?.find(
+        (cartProduct) => cartProduct?.id === product?.id
+      );
+      return itemsFounded;
+    };
+  }, [carts]);
+
+  const findInWishlist = useMemo(() => {
+    return (product) => {
+      if (user) {
+        const itemsFounded = wishlist?.find(
+          (wishlistProduct) => wishlistProduct.id === product.id
+        );
+        return itemsFounded;
+      }
+    };
+  }, [user, wishlist]);
+
   useEffect(() => {
     setActiveImage(product?.thumbnail);
   }, [product?.thumbnail]);
 
-  const findInCart = (product) => {
-    const itemsFounded = carts.find(
-      (cartProduct) => cartProduct.id === product.id
-    );
-    return !(itemsFounded === undefined);
-  };
-  const findInWishlist = (product) => {
-    const itemsFounded = wishlist.find(
-      (wishlistProduct) => wishlistProduct.id === product.id
-    );
-    return !(itemsFounded === undefined);
-  };
-
   useEffect(() => {
-    if (!isFetchingProduct) {
-      setIsInCart(findInCart(product));
+    let productInCart = findInCart(product);
+    if (productInCart) {
+      setProductCount(productInCart?.count);
+      setProductVariants(productInCart?.selectedVariants);
+    } else {
+      setProductCount(1);
+      setProductVariants([]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [carts, product, isFetchingProduct]);
-
-  useEffect(() => {
-    if (!isFetchingProduct && user) {
-      setIsInWishlist(findInWishlist(product));
+  }, [findInCart, product, carts, productId]);
+  const handleSetCount = (event) => {
+    if (findInCart(product)) {
+      dispatch(
+        setCount({
+          id: product?.id,
+          count: event.target.value,
+        })
+      );
+    } else {
+      setProductCount(event.target.value);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wishlist, product, isFetchingProduct]);
+  };
 
+  const handleIncreaseCount = () => {
+    if (findInCart(product)) {
+      dispatch(increaseCount({ id: product?.id }));
+    } else {
+      setProductCount((prev) => prev + 1);
+    }
+  };
+  const handleDecreaseCount = () => {
+    if (findInCart(product)) {
+      dispatch(decreaseCount({ id: product?.id }));
+    } else {
+      setProductCount((prev) => {
+        if (prev < 1) {
+          return 1;
+        } else {
+          return prev - 1;
+        }
+      });
+    }
+  };
   const changeCart = () => {
     dispatch(
       toggleCart({
-        product: { ...product, count, selectedVariants },
+        product: {
+          ...product,
+          count: productCount,
+          selectedVariants: productVariants,
+        },
       })
     );
-    setIsInCart(findInCart(product));
   };
   const changeWishlist = () => {
     if (user) {
@@ -118,18 +159,26 @@ const ProductDetails = () => {
         .unwrap()
         .then((wishlistProducts) => {
           dispatch(setWishlist({ products: wishlistProducts }));
-          setIsInWishlist(findInWishlist(product));
         });
     }
   };
   const handleChangeVariantOptions = (variantLabel, optionLabel) => {
-    console.log(selectedVariants);
-    setSelectedVariants((prev) => {
-      let otherOption = prev?.filter(
-        (ariantOption) => ariantOption.variantLabel !== variantLabel
+    if (findInCart(product)) {
+      dispatch(
+        setSelectedVariants({
+          id: product.id,
+          variantLabel,
+          optionLabel,
+        })
       );
-      return [...otherOption, { variantLabel, optionLabel }];
-    });
+    } else {
+      setProductVariants((prev) => {
+        let otherOption = prev?.filter(
+          (ariantOption) => ariantOption.variantLabel !== variantLabel
+        );
+        return [...otherOption, { variantLabel, optionLabel }];
+      });
+    }
   };
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
@@ -309,22 +358,16 @@ const ProductDetails = () => {
                   className="my-2"
                   border={`1.5px solid ${colors.neutral[500]}`}
                 >
-                  <IconButton
-                    size="large"
-                    onClick={() => setCount((prev) => prev - 1)}
-                  >
+                  <IconButton size="large" onClick={handleDecreaseCount}>
                     <RemoveIcon />
                   </IconButton>
                   <TextField
                     id="outlined-number"
                     type="number"
-                    value={count}
-                    onChange={(event) => setCount(event.target.value)}
+                    value={productCount}
+                    onChange={handleSetCount}
                   />
-                  <IconButton
-                    size="large"
-                    onClick={() => setCount((prev) => prev + 1)}
-                  >
+                  <IconButton size="large" onClick={handleIncreaseCount}>
                     <AddIcon />
                   </IconButton>
                 </Box>
@@ -333,7 +376,7 @@ const ProductDetails = () => {
                   color="secondary"
                   size="large"
                   startIcon={
-                    isInCart ? (
+                    findInCart(product) ? (
                       <RemoveShoppingCartIcon />
                     ) : (
                       <AddShoppingCartIcon />
@@ -341,7 +384,7 @@ const ProductDetails = () => {
                   }
                   onClick={changeCart}
                 >
-                  {isInCart ? "Remove from Cart" : "Add to Cart"}
+                  {findInCart(product) ? "Remove from Cart" : "Add to Cart"}
                 </Button>
                 {user && (
                   <Button
@@ -349,7 +392,7 @@ const ProductDetails = () => {
                     color="secondary"
                     size="large"
                     startIcon={
-                      isInWishlist ? (
+                      findInWishlist(product) ? (
                         <FavoriteIcon />
                       ) : (
                         <FavoriteBorderOutlinedIcon />
@@ -357,7 +400,9 @@ const ProductDetails = () => {
                     }
                     onClick={changeWishlist}
                   >
-                    {isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
+                    {findInWishlist(product)
+                      ? "Remove from wishlist"
+                      : "Add to wishlist"}
                   </Button>
                 )}
               </Box>
@@ -432,32 +477,7 @@ const ProductDetails = () => {
           </Box>
         </Box>
       </Box>
-
-      <Box className="md:container px-2 md:mx-auto md:px-auto">
-        <Box className="flex justify-between items-center">
-          <Header
-            title="You might also like these"
-            subtitle="One morning"
-            bodyText={`One morning, when Gregor Samsa `}
-          />
-          <Button
-            onClick={() => navigate(`/shopping`)}
-            variant="outlined"
-            color="secondary"
-            className={`bg-opacity-0 hover:bg-opacity-100 px-4 py-2 ${
-              "hover:bg-" + colors.greenAccent[400]
-            }`}
-          >
-            More
-          </Button>
-        </Box>
-        <Box className="">
-          {!isFetchingRelatedProducts && (
-            <ProductCarouse products={relatedProducts} />
-          )}
-        </Box>
-      </Box>
-
+      <RelatedProducts productId={productId} />
       <Box
         backgroundColor={colors.primary[400]}
         className="px-2 md:px-4 flex justify-center lg:px-auto py-[80px] items-center mb-[50px]"
