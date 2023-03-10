@@ -56,7 +56,12 @@ export const productApi = authApi.injectEndpoints({
         url: `api/products/${productId}/review/add/`,
         method: "POST",
         body: post,
-        invalidatesTags: ["products_detaile"],
+        invalidatesTags: [
+          "products",
+          "recommended-products",
+          "products-by-category",
+          "products_detaile",
+        ],
       }),
     }),
   }),
@@ -66,9 +71,6 @@ export const {
   useAddProductMutation,
   useUploadImageMutation,
   useAddProductReviewMutation,
-
-  useGetAllVariantsQuery,
-
   useGetAllProductsQuery,
   useGetRecommendedProductsQuery,
   useGetRelatedProductsQuery,
