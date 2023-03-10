@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
-const Page_404 = () => {
+const Page404 = () => {
   return (
     <Box
       className="flex h-screen w-screen 
@@ -13,4 +13,4 @@ const Page_404 = () => {
   );
 };
 
-export default Page_404;
+export default Page404;

@@ -93,7 +93,7 @@ const CartMenu = () => {
                           </IconButton>
                         </Box>
                         <Typography className="mr-4">
-                          {item?.description.slice(0, 60)}
+                          {item?.description?.slice(0, 60)}
                         </Typography>
                         <Divider />
                         <Box className="flex justify-between w-full">

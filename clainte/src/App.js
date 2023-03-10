@@ -52,7 +52,7 @@ import {
 import Home from "./site/customers/pages/home";
 import Shopping from "./site/customers/pages/shopping";
 import { ProductDetailsCustomer } from "./site/customers/pages/products";
-import Page_404 from "./components/Page_404";
+import Page404 from "./components/Page404";
 import {
   selectCurrentToken,
   selectCurrentRefresh,
@@ -72,13 +72,12 @@ function App() {
   const userData = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
   const { data: newUserData } = useGetUseDataQuery();
-
-  const timeOutRef = useRef(1000 * 60 * 4);
   useEffect(() => {
     if (userData && newUserData) dispatch(setUserData(newUserData));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken]);
 
+  const timeOutRef = useRef(1000 * 60 * 4);
   useEffect(() => {
     timeOutRef.current = accessToken
       ? dayjs.unix(jwt_decode(accessToken).exp).diff(dayjs()) - 30000
@@ -93,8 +92,7 @@ function App() {
       }
     }, timeOut);
     return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessToken]);
+  }, [accessToken, refreshToken]);
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -350,11 +348,10 @@ function App() {
               />
             </Route>
           </Route>
-          <Route path="*" element={<Page_404 />} />
+          <Route path="*" element={<Page404 />} />
         </Routes>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );
 }
-
 export default App;
