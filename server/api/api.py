@@ -6,7 +6,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
 
-from django.db.models import Avg
+from django.db.models import Avg,Q
+from django.db.models.functions import Lower
 # from api.serializer import ProductSerializer, OrderSerializer, RegistrationSerializer, UserSerializer
 # from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 # from rest_framework_simplejwt.views import TokenObtainPairView
@@ -116,9 +117,54 @@ def getRelatedProducts(request, pk):
 # =================================================================================
 @api_view(['GET'])
 def searchAndFilterProducts(request):
-    print(request.GET)
-    products = [] 
-    for product in Product.objects.all():
+    products = Product.objects.all()
+    
+    if "search" in request.GET:
+        search = request.GET["search"]
+        products = products.filter(
+            Q(title__icontains=search)|
+            Q(brand__name__icontains=search)|
+            Q(description__icontains=search)|
+            Q(organize__category__name__icontains=search)|
+            Q(organize__collection__name__icontains=search)|
+            Q(organize__vendor__name__icontains=search)|
+            Q(organize__tags__name__icontains=search)
+        )
+    
+    if "price" in request.GET:
+        price_from, price_to = request.GET["price"].split("-")
+        products = products.filter(
+            inventory__sale_pricing__gte=price_from,
+            inventory__sale_pricing__lte = price_to
+        )
+
+    if "brand" in request.GET:
+        brands = request.GET.getlist("brand")
+        print(brands)
+        products = products.filter(brand__name__in = brands)
+
+    if "organize" in request.GET:
+        organize_products = []
+        for organize in request.GET.getlist("organize"):
+            name, value = organize.split("--")
+            filtering = {f"organize__{name}__name__iexact":value.lower()}
+            organize_products.append(products.filter(**filtering))
+            
+        products = Product.objects.none().union(*organize_products)
+
+    
+    if "variant" in request.GET:
+        variant_products = []
+        for variant in request.GET.getlist("variant"):
+            name, value = variant.split("--")
+            variant_products.append(products.filter(
+                variants__variant__label__iexact = name.lower(),
+                variants__options__label__iexact = value.lower()
+            ))
+        products = Product.objects.none().union(*variant_products)
+
+    serialized_data = [] 
+    for product in products:
         inventory = Inventory.objects.filter(product=product)
         inventory_data = {}
         if inventory.exists():
@@ -127,13 +173,13 @@ def searchAndFilterProducts(request):
                 **inventory_data
             }
        
-        products.append({
+        serialized_data.append({
             **inventory_data,
             **ProductSerializer(product,context={"request":request}).data,
             "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
             "rating":product.review_set.all().aggregate(Avg('rating'))["rating__avg"],
         })
-    return Response(products, status=status.HTTP_200_OK) 
+    return Response(serialized_data, status=status.HTTP_200_OK) 
 
 
 @api_view(['GET'])
@@ -178,14 +224,18 @@ def getProductsDetailes(request,pk):
         "reviews":ReviewSerializer(product.review_set.all(), many=True).data,
         "rating":product.review_set.all().aggregate(Avg('rating'))["rating__avg"],
         "variants":variants,
-        "organize":{
-            "category":CategorySerializer(product.organize.category).data,
-            "collection":CollectionSerializer(product.organize.collection).data,
-            "vendor":VendorSerializer(product.organize.vendor).data,
-            "tags":TagSerializer(product.organize.tags, many=True).data,
-        },
         "brand":BrandSerializer(product.brand).data,
     }
+    organize = Organize.objects.filter(product=product)
+    if organize.exists():
+        serialized_data["organize"] = {
+            "category":CategorySerializer(organize.first().category).data,
+            "collection":CollectionSerializer(organize.first().collection).data,
+            "vendor":VendorSerializer(organize.first().vendor).data,
+            "tags":TagSerializer(organize.first().tags, many=True).data,
+        }
+
+        
     return Response(serialized_data, status=status.HTTP_200_OK)
 
 # =================================================================================

@@ -306,6 +306,14 @@ const ProductDetails = () => {
                     </>
                   ) : undefined}
                 </Box>
+                <Typography
+                  variant="h1"
+                  color={colors.grey[100]}
+                  fontWeight="bold"
+                  className={`text-lg md:text-xl  text-left my-4`}
+                >
+                  Brand : {product?.brand?.name}
+                </Typography>
               </Box>
               <Box className="flex flex-col gap-4 justify-start w-fit">
                 <Box>
