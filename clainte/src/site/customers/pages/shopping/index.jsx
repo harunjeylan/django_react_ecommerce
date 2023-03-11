@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -46,13 +46,15 @@ const Shopping = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
+  const searchRef = useRef();
+  const [price, setPrice] = useState([0, 100]);
 
   const [searchAndFilter, setSearchAndFilter] = useState("");
-
-  const [priceValue, setPriceValue] = useState([20, 37]);
-  const [brandValue, setBradValue] = useState("");
-  const [organizeValue, setOrganizeValue] = useState("");
-  const [variantsValue, setValriantsValue] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+  const [priceValue, setPriceValue] = useState({ from: 0, to: 0 });
+  const [brandValue, setBradValue] = useState([]);
+  const [organizeValue, setOrganizeValue] = useState({});
+  const [variantsValue, setValriantsValue] = useState([]);
 
   const {
     data: searchAndFilterProducts,
@@ -67,6 +69,66 @@ const Shopping = () => {
   const { data: variants, isFetching: isFetchingVariants } =
     useGetAllVariantsQuery();
 
+  const handleCheckBrand = (e) => {
+    setBradValue((prevBradValue) => {
+      if (e.target.checked) {
+        return [...prevBradValue, e.target.value];
+      } else {
+        return prevBradValue.filter(
+          (prevValue) => prevValue !== e.target.value
+        );
+      }
+    });
+  };
+  const handleSearch = () => {
+    setSearchValue(searchRef.current.value);
+  };
+  useEffect(() => {
+    let timeOut = setTimeout(() => {
+      setPriceValue({ from: price[0], to: price[1] });
+    }, 2000);
+    return () => clearTimeout(timeOut);
+  }, [price]);
+
+  useEffect(() => {
+    let searchAndFilterValue = "?";
+    if (searchValue !== "") {
+      searchAndFilterValue = searchAndFilterValue + `search=${searchValue}&`;
+    }
+    if (priceValue.from !== 0 && priceValue.to !== 0) {
+      searchAndFilterValue =
+        searchAndFilterValue + `price=${priceValue.from}-${priceValue.to}&`;
+    }
+    brandValue.forEach((brand) => {
+      if (brand !== "") {
+        searchAndFilterValue = searchAndFilterValue + `brand=${brand}&`;
+      }
+    });
+    Object.keys(organizeValue).forEach((key) => {
+      organizeValue[key].forEach((organize) => {
+        if (organize !== "") {
+          searchAndFilterValue =
+            searchAndFilterValue + `organize=${key}--${organize}&`;
+        }
+      });
+    });
+    Object.keys(variantsValue).forEach((key) => {
+      variantsValue[key].forEach((variant) => {
+        if (variant !== "") {
+          searchAndFilterValue =
+            searchAndFilterValue + `variant=${key}--${variant}&`;
+        }
+      });
+    });
+    setSearchAndFilter(searchAndFilterValue);
+  }, [
+    brandValue,
+    organizeValue,
+    priceValue.from,
+    priceValue.to,
+    searchValue,
+    variantsValue,
+  ]);
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
@@ -88,8 +150,9 @@ const Shopping = () => {
             color="secondary"
             fullWidth
             placeholder="search.."
+            inputRef={searchRef}
           />
-          <Button variant="outlined" color="secondary">
+          <Button onClick={handleSearch} variant="outlined" color="secondary">
             search
           </Button>
         </ButtonGroup>
@@ -130,9 +193,16 @@ const Shopping = () => {
                 <List className={``}>
                   {!isFetchingOrganize &&
                     organize.categories.map((categorie) => (
-                      <ListItem key={categorie.id}>
-                        <ListItemButton>{categorie.name}</ListItemButton>
-                      </ListItem>
+                      <FormControlLabel
+                        key={categorie.id}
+                        value={categorie.name}
+                        name={"categories"}
+                        onClick={(e) => handleCheckFilter(e, setOrganizeValue)}
+                        control={<Checkbox color="secondary" />}
+                        label={categorie.name}
+                        labelPlacement="end"
+                        className="block ml-4"
+                      />
                     ))}
                 </List>
                 <Divider />
@@ -147,9 +217,16 @@ const Shopping = () => {
                 <List className={``}>
                   {!isFetchingOrganize &&
                     organize.collections.map((collection) => (
-                      <ListItem key={collection.id}>
-                        <ListItemButton>{collection.name}</ListItemButton>
-                      </ListItem>
+                      <FormControlLabel
+                        key={collection.id}
+                        value={collection.name}
+                        name={"collections"}
+                        onClick={(e) => handleCheckFilter(e, setOrganizeValue)}
+                        control={<Checkbox color="secondary" />}
+                        label={collection.name}
+                        labelPlacement="end"
+                        className="block ml-4"
+                      />
                     ))}
                 </List>
                 <Divider />
@@ -164,9 +241,16 @@ const Shopping = () => {
                 <List className={``}>
                   {!isFetchingOrganize &&
                     organize.vendors.map((vendor) => (
-                      <ListItem key={vendor.id}>
-                        <ListItemButton>{vendor.name}</ListItemButton>
-                      </ListItem>
+                      <FormControlLabel
+                        key={vendor.id}
+                        value={vendor.name}
+                        name={"vendors"}
+                        onClick={(e) => handleCheckFilter(e, setOrganizeValue)}
+                        control={<Checkbox color="secondary" />}
+                        label={vendor.name}
+                        labelPlacement="end"
+                        className="block ml-4"
+                      />
                     ))}
                 </List>
                 <Divider />
@@ -182,7 +266,18 @@ const Shopping = () => {
                   <Typography className="mx-4">
                     {!isFetchingOrganize &&
                       organize.tags.map((tag) => (
-                        <span key={tag.id}>{tag.name}, </span>
+                        <FormControlLabel
+                          key={tag.id}
+                          value={tag.name}
+                          name={"tags"}
+                          onClick={(e) =>
+                            handleCheckFilter(e, setOrganizeValue)
+                          }
+                          control={<Checkbox color="secondary" />}
+                          label={tag.name}
+                          labelPlacement="end"
+                          className=""
+                        />
                       ))}
                   </Typography>
                 </List>
@@ -223,18 +318,18 @@ const Shopping = () => {
                       <Slider
                         mark={[
                           {
-                            value: priceValue[0],
-                            label: priceValue[0],
+                            value: price[0],
+                            label: price[0],
                           },
                           {
-                            value: `From $${priceValue[1]}`,
-                            label: `To $${priceValue[1]}`,
+                            value: `From $${price[1]}`,
+                            label: `To $${price[1]}`,
                           },
                         ]}
                         color="secondary"
                         getAriaLabel={() => "Temperature range"}
-                        value={priceValue}
-                        onChange={(event, newValue) => setPriceValue(newValue)}
+                        value={price}
+                        onChange={(event, newValue) => setPrice(newValue)}
                         getAriaValueText={(value) => `$${value}`}
                       />
                     </Box>
@@ -259,7 +354,14 @@ const Shopping = () => {
                           <FormControlLabel
                             key={brand.id}
                             value={brand.name}
-                            control={<Checkbox color="secondary" />}
+                            name={"brand"}
+                            control={
+                              <Checkbox
+                                // checked={isChecked("brand", brand.name)}
+                                color="secondary"
+                              />
+                            }
+                            onChange={handleCheckBrand}
                             label={brand.name}
                             labelPlacement="end"
                             className="block ml-4"
@@ -297,7 +399,11 @@ const Shopping = () => {
                               <FormControlLabel
                                 key={option.id}
                                 value={option?.label}
+                                name={variantOprions.label}
                                 control={<Checkbox color="secondary" />}
+                                onClick={(e) =>
+                                  handleCheckFilter(e, setValriantsValue)
+                                }
                                 label={option?.label}
                                 labelPlacement="end"
                                 className="block ml-4"
@@ -372,5 +478,28 @@ const Shopping = () => {
     </Box>
   );
 };
-
+function handleCheckFilter(e, setfilterValue) {
+  setfilterValue((prevFilterValue) => {
+    let hasFilterName = e.target.name in prevFilterValue;
+    let filter = hasFilterName ? prevFilterValue[e.target.name] : [];
+    let updatedFilter;
+    if (e.target.name in filter && e.target.checked) {
+      updatedFilter = filter;
+    } else if (!(e.target.name in filter) && e.target.checked) {
+      updatedFilter = [...filter, e.target.value];
+    } else {
+      updatedFilter = filter.filter(
+        (prevValue) => prevValue !== e.target.value
+      );
+    }
+    let updatedFilterValue = {
+      ...prevFilterValue,
+      [e.target.name]: updatedFilter,
+    };
+    Object.keys(updatedFilterValue).forEach((key) => {
+      !updatedFilterValue[key].length && delete updatedFilterValue[key];
+    });
+    return updatedFilterValue;
+  });
+}
 export default Shopping;

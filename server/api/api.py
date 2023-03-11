@@ -116,6 +116,7 @@ def getRelatedProducts(request, pk):
 # =================================================================================
 @api_view(['GET'])
 def searchAndFilterProducts(request):
+    print(request.GET)
     products = [] 
     for product in Product.objects.all():
         inventory = Inventory.objects.filter(product=product)
