@@ -22,6 +22,7 @@ import {
   ListItemButton,
   TextField,
   ButtonGroup,
+  LinearProgress,
 } from "@mui/material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
@@ -38,7 +39,6 @@ import { useGetAllOrganizeQuery } from "../../../../features/services/organizeAp
 import { useSearchAndFilterProductsQuery } from "../../import";
 import { useGetAllBrandsQuery } from "../../../../features/services/brandApiSlice";
 import { useGetAllVariantsQuery } from "../../../../features/services/variantApiSlice";
-
 const Shopping = () => {
   const isNoneMobile = useMediaQuery("(min-width:1024px)");
   const [openCategory, setOpenCategory] = useState(false);
@@ -196,7 +196,7 @@ const Shopping = () => {
                       <FormControlLabel
                         key={categorie.id}
                         value={categorie.name}
-                        name={"categories"}
+                        name="category"
                         onClick={(e) => handleCheckFilter(e, setOrganizeValue)}
                         control={<Checkbox color="secondary" />}
                         label={categorie.name}
@@ -205,6 +205,7 @@ const Shopping = () => {
                       />
                     ))}
                 </List>
+
                 <Divider />
                 <Typography
                   variant="h4"
@@ -220,7 +221,7 @@ const Shopping = () => {
                       <FormControlLabel
                         key={collection.id}
                         value={collection.name}
-                        name={"collections"}
+                        name={"collection"}
                         onClick={(e) => handleCheckFilter(e, setOrganizeValue)}
                         control={<Checkbox color="secondary" />}
                         label={collection.name}
@@ -244,7 +245,7 @@ const Shopping = () => {
                       <FormControlLabel
                         key={vendor.id}
                         value={vendor.name}
-                        name={"vendors"}
+                        name={"vendor"}
                         onClick={(e) => handleCheckFilter(e, setOrganizeValue)}
                         control={<Checkbox color="secondary" />}
                         label={vendor.name}
@@ -460,11 +461,28 @@ const Shopping = () => {
                 </Box>
               )}
             </Box>
-            {!isFetchingSearchAndFilterProducts && (
-              <ProductsList
-                products={searchAndFilterProducts}
-                isShopping={true}
-              />
+            {!isFetchingSearchAndFilterProducts ? (
+              searchAndFilterProducts.length ? (
+                <ProductsList
+                  products={searchAndFilterProducts}
+                  isShopping={true}
+                />
+              ) : (
+                <Box className="flex flex-col gap-4 mt-[10%] justify-center  items-center">
+                  <Typography
+                    variant="h2"
+                    color={colors.grey[100]}
+                    fontWeight="bold"
+                    className={`text-xl md:text-2xl  `}
+                  >
+                    No Product found
+                  </Typography>
+                </Box>
+              )
+            ) : (
+              <Box className="w-full flex items-center justify-center h-40">
+                <CircularProgress color="secondary" />
+              </Box>
             )}
           </Box>
         </Box>
