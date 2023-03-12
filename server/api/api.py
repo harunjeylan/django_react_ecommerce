@@ -130,29 +130,30 @@ def searchAndFilterProducts(request):
             Q(organize__collection__name__icontains=search)|
             Q(organize__vendor__name__icontains=search)|
             Q(organize__tags__name__icontains=search)
-        )
+        ).distinct()
     
     if "price" in request.GET:
         price_from, price_to = request.GET["price"].split("-")
         products = products.filter(
             inventory__sale_pricing__gte=price_from,
             inventory__sale_pricing__lte = price_to
-        )
+        ).distinct()
 
     if "brand" in request.GET:
         brands = request.GET.getlist("brand")
-        products = products.filter(brand__name__in = brands)
+        products = products.filter(brand__name__in = brands).distinct()
     
     if "rating" in request.GET:
         ratings = request.GET.getlist("rating")
-        products = products.annotate(avetage_rating=Round(Avg("review__rating"))).filter(avetage_rating__in = ratings)
+        products = products.annotate(avetage_rating=Round(Avg("review__rating"))).filter(avetage_rating__in = ratings).distinct()
 
     if "organize" in request.GET:
         organize_products = []
         for organize in request.GET.getlist("organize"):
             name, value = organize.split("--")
-            filtering = {f"organize__{name}__name__iexact":value.lower()}
-            organize_products.append(products.filter(**filtering))
+            if name in ["category","collection","vendor","tags"]:
+                filtering = {f"organize__{name}__name__iexact":value.lower()}
+                organize_products.append(products.filter(**filtering))
             
         products = Product.objects.none().union(*organize_products)
 
@@ -181,7 +182,7 @@ def searchAndFilterProducts(request):
             **inventory_data,
             **ProductSerializer(product,context={"request":request}).data,
             "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
-            "rating":product.review_set.all().aggregate(Avg('rating'))["rating__avg"],
+            "rating":product.review_set.all().aggregate(average_rating = Round(Avg("rating")))["average_rating"],
         })
     return Response(serialized_data, status=status.HTTP_200_OK) 
 
@@ -400,13 +401,13 @@ def uploadImage(request):
 
 @api_view(['GET'])
 def getRatings(request):
-    rating_5 = Review.objects.filter(rating=5).count()
-    rating_4 = Review.objects.filter(rating=4).count()
-    rating_3 = Review.objects.filter(rating=3).count()
-    rating_2 = Review.objects.filter(rating=2).count()
-    rating_1 = Review.objects.filter(rating=1).count()
-    rating_0 = Review.objects.filter(rating=0).count()
-    total_reviews = Review.objects.all().count()
+    rating_5 = Product.objects.annotate(avetage_rating=Round(Avg("review__rating"))).filter(avetage_rating=5).count()
+    rating_4 = Product.objects.annotate(avetage_rating=Round(Avg("review__rating"))).filter(avetage_rating=4).count()
+    rating_3 = Product.objects.annotate(avetage_rating=Round(Avg("review__rating"))).filter(avetage_rating=3).count()
+    rating_2 = Product.objects.annotate(avetage_rating=Round(Avg("review__rating"))).filter(avetage_rating=2).count()
+    rating_1 = Product.objects.annotate(avetage_rating=Round(Avg("review__rating"))).filter(avetage_rating=1).count()
+    rating_0 = Product.objects.annotate(avetage_rating=Round(Avg("review__rating"))).filter(avetage_rating=0).count()
+    total_reviews = Product.objects.annotate(avetage_rating=Count("review")).all().count()
     data = [
         {"rating":5,"average":rating_5/total_reviews * 100,"total":rating_5},
         {"rating":4,"average":rating_4/total_reviews * 100,"total":rating_4},

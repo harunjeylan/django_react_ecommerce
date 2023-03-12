@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import  User
 from django.core.validators import RegexValidator
 # Create your models here.
-
+from account.models import Address
 class Category(models.Model):
     name = models.CharField(unique=True,max_length=100)
     def __str__(self):
@@ -124,11 +124,25 @@ class Review(models.Model):
         return f"{self.first_name} {self.last_name}-> {self.rating}: {self.product}"
 
 
+class OrderdVariantOption(models.Model):
+    variant = models.ForeignKey(Variant, on_delete=models.CASCADE)
+    option = models.ForeignKey(Option, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.variant}" 
+    
+class OrderdProduct(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    variants = models.ManyToManyField(OrderdVariantOption, blank=True)
+    count = models.IntegerField(default=1)
+    
+    def __str__(self):
+        return f"{self.product}" 
     
 class Order(models.Model):
     customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    products = models.ManyToManyField(Product, blank=True)
-    email = models.EmailField()
+    products = models.ManyToManyField(OrderdProduct, blank=True)
+    billing_adderss=models.ForeignKey(Address,related_name="order_billing_adderss", on_delete=models.SET_NULL, null=True)
+    shipping_adderss=models.ForeignKey(Address, related_name="order_shipping_adderss", on_delete=models.SET_NULL, null=True)
     FULFILLMENT_STATUS = [
         ("complete","Complete"),
         ("failed","Failed"),
@@ -136,7 +150,6 @@ class Order(models.Model):
         ("complete","Complete"),
         ("pending","Pending"),
         ("partially_fulfilled","Partially Fulfilled"),
-        
     ]
     fulfillment_status = models.CharField(choices=FULFILLMENT_STATUS,default="pending" ,max_length=25)
     DELIVERY_TYPE=[

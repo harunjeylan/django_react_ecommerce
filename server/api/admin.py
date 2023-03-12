@@ -1,7 +1,9 @@
 from django.contrib import admin
 
 from .models import (
-    Category, 
+    Category,
+    OrderdProduct,
+    OrderdVariantOption, 
     RecommendedProduct,
     Review, 
     Vendor, 
@@ -143,13 +145,29 @@ class RecommendedProductAdmin(admin.ModelAdmin):
     list_filter = ('title',)
 
 
+
+@admin.register(OrderdProduct)
+class OrderdProductAdmin(admin.ModelAdmin):
+    list_display = (
+        'product',
+        'count',
+    )
+    list_filter = ('product','count', 'variants')
+
+
+
+@admin.register(OrderdVariantOption)
+class OrderdVariantOptionAdmin(admin.ModelAdmin):
+    list_display = ('variant','option')
+    list_filter = ('option', 'variant')
+
+
+
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = (
-      
         'date',
         'customer',
-        'email',
         'fulfillment_status',
         'delivery_type',
         'countries',
