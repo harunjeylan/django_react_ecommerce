@@ -1,12 +1,12 @@
 from django.http import JsonResponse
-from api.utils import get_tokens_for_user
+from api.utils import Round, get_tokens_for_user
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
 
-from django.db.models import Avg,Q
+from django.db.models import Avg,Q,Count
 from django.db.models.functions import Lower
 # from api.serializer import ProductSerializer, OrderSerializer, RegistrationSerializer, UserSerializer
 # from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -26,6 +26,7 @@ from api.models import (
     Product, 
     Image,
     RecommendedProduct,
+    Review,
     Vendor,
     Category,
     Collection,
@@ -140,8 +141,11 @@ def searchAndFilterProducts(request):
 
     if "brand" in request.GET:
         brands = request.GET.getlist("brand")
-        print(brands)
         products = products.filter(brand__name__in = brands)
+    
+    if "rating" in request.GET:
+        ratings = request.GET.getlist("rating")
+        products = products.annotate(avetage_rating=Round(Avg("review__rating"))).filter(avetage_rating__in = ratings)
 
     if "organize" in request.GET:
         organize_products = []
@@ -217,12 +221,30 @@ def getProductsDetailes(request,pk):
             "options":OptionSerializer(variant_option.options.all(), many=True).data,
             "variantLabel":variant_option.variant.label,
         })
+    rating_5 = product.review_set.filter(rating=5).count()
+    rating_4 = product.review_set.filter(rating=4).count()
+    rating_3 = product.review_set.filter(rating=3).count()
+    rating_2 = product.review_set.filter(rating=2).count()
+    rating_1 = product.review_set.filter(rating=1).count()
+    rating_0 = product.review_set.filter(rating=0).count()
+    total_reviews = product.review_set.all().count()
     serialized_data = {
         **serialized_data,
         **ProductSerializer(product,context={"request":request}).data,
         "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
         "reviews":ReviewSerializer(product.review_set.all(), many=True).data,
-        "rating":product.review_set.all().aggregate(Avg('rating'))["rating__avg"],
+        "rating":{
+            "average":round(product.review_set.all().aggregate(Avg('rating'))["rating__avg"],1),
+            "total":total_reviews,
+            "values":[
+                {"rating":5,"average":rating_5/total_reviews * 100,"total":rating_5},
+                {"rating":4,"average":rating_4/total_reviews * 100,"total":rating_4},
+                {"rating":3,"average":rating_3/total_reviews * 100,"total":rating_3},
+                {"rating":2,"average":rating_2/total_reviews * 100,"total":rating_2},
+                {"rating":1,"average":rating_1/total_reviews * 100,"total":rating_1},
+                {"rating":0,"average":rating_0/total_reviews * 100,"total":rating_0},
+            ],
+        },
         "variants":variants,
         "brand":BrandSerializer(product.brand).data,
     }
@@ -374,6 +396,26 @@ def uploadImage(request):
             product.images.add(new_image)
 
     return Response({"success":"image is uploaded"}, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET'])
+def getRatings(request):
+    rating_5 = Review.objects.filter(rating=5).count()
+    rating_4 = Review.objects.filter(rating=4).count()
+    rating_3 = Review.objects.filter(rating=3).count()
+    rating_2 = Review.objects.filter(rating=2).count()
+    rating_1 = Review.objects.filter(rating=1).count()
+    rating_0 = Review.objects.filter(rating=0).count()
+    total_reviews = Review.objects.all().count()
+    data = [
+        {"rating":5,"average":rating_5/total_reviews * 100,"total":rating_5},
+        {"rating":4,"average":rating_4/total_reviews * 100,"total":rating_4},
+        {"rating":3,"average":rating_3/total_reviews * 100,"total":rating_3},
+        {"rating":2,"average":rating_2/total_reviews * 100,"total":rating_2},
+        {"rating":1,"average":rating_1/total_reviews * 100,"total":rating_1},
+        {"rating":0,"average":rating_0/total_reviews * 100,"total":rating_0},
+    ]
+    return Response(data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def addProductReview(request, pk):
@@ -612,16 +654,10 @@ def deleteOption(request):
 
 
 
-@api_view(['POST','GET'])
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def setGetWishlist(request):
     wishlist,create = WishList.objects.get_or_create(customer=request.user)
-    if request.method == "POST":
-        for productId in request.data.get("products"):
-            product = Product.objects.get(id=productId)
-            wishlist.products.add(product)
-
-    wishlist = WishList.objects.get(customer=request.user)
     serialized_data = []
     for product in wishlist.products.all():
         serialized_data.append({

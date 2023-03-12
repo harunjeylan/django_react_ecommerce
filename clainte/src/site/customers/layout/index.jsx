@@ -7,7 +7,7 @@ import LayoutProvider from "./LayoutContext";
 import AccountMenu from "./AccountMenu";
 import AccountDialog from "./AccountDialog";
 import { useDispatch, useSelector } from "react-redux";
-import { useSetGetWishlistMutation } from "../../../features/services/wishlistApiSlice";
+import { useGetWishlistQuery } from "../../../features/services/wishlistApiSlice";
 import {
   selectWishlists,
   setWishlist,
@@ -22,19 +22,14 @@ function Customer({ children }) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
-  const [setGetWishlist] = useSetGetWishlistMutation();
+  const { data: fetchedWishlist, isFetching: isFetchingWishlist } =
+    useGetWishlistQuery();
 
   useEffect(() => {
-    if (user) {
-      setGetWishlist({
-        post: { products: wishlists.map((product) => product.id) },
-      })
-        .unwrap()
-        .then((wishlistProducts) => {
-          dispatch(setWishlist({ products: wishlistProducts }));
-        });
-    }
-  }, [dispatch, setGetWishlist, user, wishlists]);
+    user &&
+      !isFetchingWishlist &&
+      dispatch(setWishlist({ products: fetchedWishlist }));
+  }, [dispatch, fetchedWishlist, isFetchingWishlist, user]);
 
   return (
     <main>

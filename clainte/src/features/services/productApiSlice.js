@@ -64,6 +64,9 @@ export const productApi = authApi.injectEndpoints({
         ],
       }),
     }),
+    getRatings: builder.query({
+      query: () => "api/products/ratings/",
+    }),
   }),
 });
 
@@ -74,6 +77,7 @@ export const {
   useGetAllProductsQuery,
   useGetRecommendedProductsQuery,
   useGetRelatedProductsQuery,
+  useGetRatingsQuery,
   useGetProductsDetailesQuery,
   useGetProductsByCategoryQuery,
   useGetAllCategoryQuery,

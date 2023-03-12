@@ -19,11 +19,12 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  FormControlLabel,
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-
+import StarIcon from "@mui/icons-material/Star";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
@@ -241,79 +242,125 @@ const ProductDetails = () => {
                 <s className="me-2 mr-1">${product?.regular_pricing}</s>
                 <strong>${product?.sale_pricing}</strong>
               </Typography>
-              <Box className="flex gap-4 items-center text-sm">
-                {!isFetchingProduct ? (
-                  <Rating
-                    name="read-only"
-                    defaultValue={product?.rating}
-                    readOnly
-                  />
-                ) : (
-                  <Box></Box>
-                )}
-
-                <Typography variant="h5" color={colors.greenAccent[400]}>
-                  25 reviews
-                </Typography>
-              </Box>
             </Box>
             <Typography variant="body2" className={`w-full px-auto  my-auto`}>
               Samsa was a travelling salesman - and above it there hung a
               picture that he had recently cut out of an illustrated magazine
               and housed in a nice, gilded frame.
             </Typography>
-            <Box className=" w-full mt-4 rounded-md flex justify-between p-4 m-4 ">
-              <Box>
-                <Typography
-                  variant="h1"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  className={`text-xl md:text-2xl  text-left my-4`}
-                >
-                  Organize
-                </Typography>
-                <Box className="flex flex-col gap-4 justify-start w-fit">
-                  {product?.organize?.category?.name && (
-                    <Typography>
-                      <strong>category : </strong>
-                      {product?.organize?.category?.name}
-                    </Typography>
-                  )}
-
-                  {product?.organize?.collection?.name && (
-                    <Typography>
-                      <strong>collection : </strong>
-                      {product?.organize?.collection?.name}
-                    </Typography>
-                  )}
-                  {product?.organize?.vendor?.name && (
-                    <Typography>
-                      <strong>vendor : </strong>
-                      {product?.organize?.vendor?.name}
-                    </Typography>
-                  )}
-                  {product?.organize?.tags?.length ? (
-                    <>
+            <Box className=" w-full mt-4 rounded-md flex justify-between p-4 m-4 gap-8">
+              <Box className=" w-full">
+                <Box className=" w-full">
+                  <Typography
+                    variant="h1"
+                    color={colors.grey[100]}
+                    fontWeight="bold"
+                    className={`text-xl md:text-2xl  text-left my-4`}
+                  >
+                    Organize
+                  </Typography>
+                  <Box className="flex flex-col gap-4 justify-start w-fit">
+                    {product?.organize?.category?.name && (
                       <Typography>
-                        <strong>tags : </strong>
-                        {product?.organize?.tags?.map((tag, index) => (
-                          <span key={`tag-${tag.id}-${index}`}>
-                            {tag?.name}
-                            {", "}
-                          </span>
-                        ))}
+                        <strong>category : </strong>
+                        {product?.organize?.category?.name}
                       </Typography>
-                    </>
-                  ) : undefined}
+                    )}
+
+                    {product?.organize?.collection?.name && (
+                      <Typography>
+                        <strong>collection : </strong>
+                        {product?.organize?.collection?.name}
+                      </Typography>
+                    )}
+                    {product?.organize?.vendor?.name && (
+                      <Typography>
+                        <strong>vendor : </strong>
+                        {product?.organize?.vendor?.name}
+                      </Typography>
+                    )}
+                    {product?.organize?.tags?.length ? (
+                      <>
+                        <Typography>
+                          <strong>tags : </strong>
+                          {product?.organize?.tags?.map((tag, index) => (
+                            <span key={`tag-${tag.id}-${index}`}>
+                              {tag?.name}
+                              {", "}
+                            </span>
+                          ))}
+                        </Typography>
+                      </>
+                    ) : undefined}
+                  </Box>
+                  <Typography
+                    variant="h1"
+                    color={colors.grey[100]}
+                    fontWeight="bold"
+                    className={`text-lg md:text-xl  text-left my-4`}
+                  >
+                    Brand : {product?.brand?.name}
+                  </Typography>
                 </Box>
-                <Typography
-                  variant="h1"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  className={`text-lg md:text-xl  text-left my-4`}
-                >
-                  Brand : {product?.brand?.name}
-                </Typography>
+                <Box className=" w-full">
+                  <Typography
+                    variant="h1"
+                    color={colors.grey[100]}
+                    fontWeight="bold"
+                    className={`text-xl md:text-2xl  text-left my-4`}
+                  >
+                    Rating
+                  </Typography>
+                  <Box className="flex flex-col gap-4 justify-start w-full">
+                    {!isFetchingProduct ? (
+                      <Box className=" w-full flex gap-4 items-center">
+                        <Box className="w-32">
+                          <StarIcon
+                            fontSize="large"
+                            className="text-yellow-500 text-6xl"
+                          />
+                          <Typography
+                            variant="h1"
+                            color={colors.greenAccent[400]}
+                          >
+                            {product?.rating.average}
+                          </Typography>
+                          <Typography
+                            variant="h5"
+                            color={colors.greenAccent[400]}
+                          >
+                            {product?.rating.total} Rewiews
+                          </Typography>
+                        </Box>
+
+                        <Box className=" w-full flex flex-col gap-2">
+                          {product?.rating?.values?.map((rating) => (
+                            <Box
+                              key={rating.rating}
+                              className={`flex gap-2 w-full items-center`}
+                            >
+                              <Typography>
+                                <strong>{rating.rating}</strong>
+                              </Typography>
+                              <Box
+                                backgroundColor={colors.primary[300]}
+                                className="w-full h-4 outline-1 flex justify-start items-center rounded-md"
+                              >
+                                <span
+                                  style={{ width: `${rating?.average}%` }}
+                                  className={`py1 bg-yellow-500 h-full rounded-md`}
+                                />
+                              </Box>
+                              <strong>{rating?.total}</strong>
+                            </Box>
+                          ))}
+                        </Box>
+                      </Box>
+                    ) : (
+                      <Box></Box>
+                    )}
+                  </Box>
+                </Box>
               </Box>
               <Box className="flex flex-col gap-4 justify-start w-fit">
                 <Box>
@@ -435,6 +482,22 @@ const ProductDetails = () => {
             <Box
               className={`w-full flex flex-row-wrap lg:flex-col gap-4 my-4 justify-center items-center lg:w-[120px] px-auto`}
             >
+              <CardActionArea
+                onClick={() => setActiveImage(product?.thumbnail)}
+                className={`${
+                  theme.palette.mode === "dark" ? "bg-white/5" : "bg-black/5"
+                } ${
+                  activeImage === product?.thumbnail
+                    ? "h-[80px] w-[80px]"
+                    : "h-[70px] w-[70px]"
+                } bg-opacity-90 p-1  rounded-md  ease-in-out duration-300 `}
+              >
+                <img
+                  alt="product"
+                  src={product?.thumbnail}
+                  className={` rounded-md h-[100%] w-[100%]`}
+                />
+              </CardActionArea>
               {product?.images?.map((image, index) => (
                 <CardActionArea
                   key={index}
