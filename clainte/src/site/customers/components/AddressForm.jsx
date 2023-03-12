@@ -41,10 +41,10 @@ const AddressForm = ({
         label="First Name"
         onBlur={handleBlur}
         onChange={handleChange}
-        value={values.firstName}
-        name={formattedName("firstName")}
-        error={formattedError("firstName")}
-        helperText={formattedHelper("firstName")}
+        value={values.last_name}
+        name={formattedName("last_name")}
+        error={formattedError("last_name")}
+        helperText={formattedHelper("last_name")}
         sx={{ gridColumn: "span 2" }}
       />
       <TextField
@@ -55,10 +55,10 @@ const AddressForm = ({
         label="Last Name"
         onBlur={handleBlur}
         onChange={handleChange}
-        value={values.lastName}
-        name={formattedName("lastName")}
-        error={formattedError("lastName")}
-        helperText={formattedHelper("lastName")}
+        value={values.last_name}
+        name={formattedName("last_name")}
+        error={formattedError("last_name")}
+        helperText={formattedHelper("last_name")}
         sx={{ gridColumn: "span 2" }}
       />
       <TextField
@@ -139,10 +139,10 @@ const AddressForm = ({
         label="Zip Code"
         onBlur={handleBlur}
         onChange={handleChange}
-        value={values.zipCode}
-        name={formattedName("zipCode")}
-        error={formattedError("zipCode")}
-        helperText={formattedHelper("zipCode")}
+        value={values.zipcode}
+        name={formattedName("zipcode")}
+        error={formattedError("zipcode")}
+        helperText={formattedHelper("zipcode")}
         sx={{ gridColumn: "1fr" }}
       />
     </Box>

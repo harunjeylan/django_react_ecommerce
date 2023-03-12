@@ -34,7 +34,7 @@ const ViewCart = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const totalPrice = cart.reduce((total, item) => {
-    return total + item.count * item.price;
+    return total + item.count * item.sale_pricing;
   }, 0);
 
   return (

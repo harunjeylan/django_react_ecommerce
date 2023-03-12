@@ -75,7 +75,6 @@ const Shopping = () => {
     useGetAllOrganizeQuery();
   const { data: variants, isFetching: isFetchingVariants } =
     useGetAllVariantsQuery();
-  console.log(ratings);
   const handleCheckBrand = (e) => {
     setBradValue((prevBradValue) => {
       if (e.target.checked) {

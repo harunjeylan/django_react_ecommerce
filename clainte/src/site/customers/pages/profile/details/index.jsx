@@ -68,17 +68,17 @@ const Profile = () => {
       });
   };
   const PersonalDetailsInitialValues = {
-    first_name: getValue(userData?.first_name),
-    last_name: getValue(userData?.last_name),
     email: getValue(userData?.email),
     username: getValue(userData?.username),
+    phone_number: getValue(userData?.phone_number),
+    first_name: getValue(userData?.first_name),
+    last_name: getValue(userData?.last_name),
     country: getValue(userData?.country),
     street1: getValue(userData?.street1),
     street2: getValue(userData?.street2),
     city: getValue(userData?.city),
     state: getValue(userData?.state),
     zipcode: getValue(userData?.zipcode),
-    phone_number: getValue(userData?.phone_number),
   };
   const changeYourPasswordInitialValues = {
     old_password: "",
