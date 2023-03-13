@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import * as yup from "yup";
 import { Formik } from "formik";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   TextField,
   Box,
@@ -16,7 +16,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 import { tokens } from "../theme";
 
 import {
-  logOut,
+  selectCurrentUser,
   setCredentials,
   setUserData,
 } from "../features/auth/authSlice";
@@ -34,6 +34,7 @@ const UserLoginForm = ({
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
   const [errorMessage, setErrorMessage] = useState("");
+  const user = useSelector(selectCurrentUser);
   useEffect(() => {
     userRef.current.focus();
   }, []);
@@ -50,25 +51,25 @@ const UserLoginForm = ({
 
   const [login] = useLoginMutation();
 
-  const handleFormSubmit =  (values, { resetForm }) => {
-      login({ ...values }).unwrap().then((userData)=>{
+  const handleFormSubmit = (values, { resetForm }) => {
+    login({ ...values })
+      .unwrap()
+      .then((userData) => {
         dispatch(setCredentials(userData));
         setErrorMessage("");
-        navigate(from, { replace: true });
-        if (handleCloseAccountDialog !== undefined) {
-          handleCloseAccountDialog();
-        }
         dispatch(authEndpoints.getUseData.initiate()).then((response) => {
-          console.log(response);
           dispatch(setUserData(response.data));
+          navigate(from, { replace: true });
+          if (handleCloseAccountDialog !== undefined) {
+            handleCloseAccountDialog();
+          }
         });
         resetForm();
-
-      }).catch((err)=>{
-          console.log(err);
-          setErrorMessage(err?.data?.detail);
+      })
+      .catch((err) => {
+        console.log(err);
+        setErrorMessage(err?.data?.detail);
       });
-
   };
 
   return (

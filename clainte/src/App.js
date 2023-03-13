@@ -44,7 +44,6 @@ import {
 } from "./site/customers/pages/checkout";
 import {
   Profile,
-  Address,
   Wishlist,
   OrdersListCustomer,
   OrderDetailsCustomer,
@@ -71,11 +70,11 @@ function App() {
   const refreshToken = useSelector(selectCurrentRefresh);
   const userData = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
-  const { data: newUserData } = useGetUseDataQuery();
-  useEffect(() => {
-    if (userData && newUserData) dispatch(setUserData(newUserData));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessToken]);
+  // const { data: newUserData } = useGetUseDataQuery();
+  // useEffect(() => {
+  //   if (userData && newUserData) dispatch(setUserData(newUserData));
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [accessToken]);
 
   const timeOutRef = useRef(1000 * 60 * 4);
   useEffect(() => {
@@ -301,15 +300,6 @@ function App() {
                   }
                 />
               </Route>
-
-              <Route
-                path="address"
-                element={
-                  <CustomerLayout>
-                    <Address />
-                  </CustomerLayout>
-                }
-              />
               <Route
                 path="wishlist"
                 element={
@@ -339,7 +329,7 @@ function App() {
               />
 
               <Route
-                path="checkout/success"
+                path="success"
                 element={
                   <CustomerLayout>
                     <Confirmation />

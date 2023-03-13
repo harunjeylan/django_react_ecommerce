@@ -75,6 +75,7 @@ const Shopping = () => {
     useGetAllOrganizeQuery();
   const { data: variants, isFetching: isFetchingVariants } =
     useGetAllVariantsQuery();
+
   const handleCheckBrand = (e) => {
     setBradValue((prevBradValue) => {
       if (e.target.checked) {
@@ -215,7 +216,7 @@ const Shopping = () => {
                 </Typography>
                 <List className={``}>
                   {!isFetchingOrganize &&
-                    organize.categories.map((categorie) => (
+                    organize?.categories.map((categorie) => (
                       <FormControlLabel
                         key={categorie.id}
                         value={categorie.name}
@@ -408,7 +409,7 @@ const Shopping = () => {
                     </FormLabel>
                     <Box className={`flex flex-col w-full`}>
                       {!isFetchingRatings &&
-                        ratings.map((rating) => (
+                        ratings?.map((rating) => (
                           <Box
                             key={rating.rating}
                             className={`flex gap-2 w-full items-center`}

@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from api.utils import Round, get_tokens_for_user
+from api.utils import Round, get_tokens_for_user, getAverage
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -38,7 +38,10 @@ from api.models import (
     Organize,
     Country,
     Inventory,
-    WishList
+    WishList,
+    OrderdVariantOption,
+    OrderdProduct,
+    OrderAddress,
     )
 from api.serializer import (
     BrandSerializer,
@@ -60,6 +63,8 @@ from api.serializer import (
     RecommendedProductSerializer,
     ReviewSerializer,
     ReviewAllSerializer,
+    OrderAddressSerializer,
+    OrderdProductSerializer,
 )
 
 @api_view(['GET'])
@@ -238,12 +243,12 @@ def getProductsDetailes(request,pk):
             "average":round(product.review_set.all().aggregate(Avg('rating'))["rating__avg"],1),
             "total":total_reviews,
             "values":[
-                {"rating":5,"average":rating_5/total_reviews * 100,"total":rating_5},
-                {"rating":4,"average":rating_4/total_reviews * 100,"total":rating_4},
-                {"rating":3,"average":rating_3/total_reviews * 100,"total":rating_3},
-                {"rating":2,"average":rating_2/total_reviews * 100,"total":rating_2},
-                {"rating":1,"average":rating_1/total_reviews * 100,"total":rating_1},
-                {"rating":0,"average":rating_0/total_reviews * 100,"total":rating_0},
+                {"rating":5,"average":getAverage(rating_5, total_reviews),"total":rating_5},
+                {"rating":4,"average":getAverage(rating_4, total_reviews),"total":rating_4},
+                {"rating":3,"average":getAverage(rating_3, total_reviews),"total":rating_3},
+                {"rating":2,"average":getAverage(rating_2, total_reviews),"total":rating_2},
+                {"rating":1,"average":getAverage(rating_1, total_reviews),"total":rating_1},
+                {"rating":0,"average":getAverage(rating_0, total_reviews),"total":rating_0},
             ],
         },
         "variants":variants,
@@ -409,12 +414,12 @@ def getRatings(request):
     rating_0 = Product.objects.annotate(avetage_rating=Round(Avg("review__rating"))).filter(avetage_rating=0).count()
     total_reviews = Product.objects.annotate(avetage_rating=Count("review")).all().count()
     data = [
-        {"rating":5,"average":rating_5/total_reviews * 100,"total":rating_5},
-        {"rating":4,"average":rating_4/total_reviews * 100,"total":rating_4},
-        {"rating":3,"average":rating_3/total_reviews * 100,"total":rating_3},
-        {"rating":2,"average":rating_2/total_reviews * 100,"total":rating_2},
-        {"rating":1,"average":rating_1/total_reviews * 100,"total":rating_1},
-        {"rating":0,"average":rating_0/total_reviews * 100,"total":rating_0},
+        {"rating":5,"average":getAverage(rating_5, total_reviews),"total":rating_5},
+        {"rating":4,"average":getAverage(rating_4, total_reviews),"total":rating_4},
+        {"rating":3,"average":getAverage(rating_3, total_reviews),"total":rating_3},
+        {"rating":2,"average":getAverage(rating_2, total_reviews),"total":rating_2},
+        {"rating":1,"average":getAverage(rating_1, total_reviews),"total":rating_1},
+        {"rating":0,"average":getAverage(rating_0, total_reviews),"total":rating_0},
     ]
     return Response(data, status=status.HTTP_200_OK)
 
@@ -686,4 +691,101 @@ def toggleWishlist(request):
             "rating":product.review_set.all().aggregate(Avg('rating'))["rating__avg"],
         })
     return Response(serialized_data, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])  
+def addOrder(request):
+    billing_address_data = request.data.get("billingAddress")
+    shipping_address_data = request.data.get("shippingAddress")
+    isSame_address = shipping_address_data["isSameAddress"]
+    delivery_method_data = request.data.get("deliveryMethod")
+    
+    billing_address_serializer_form = OrderAddressSerializer(data=billing_address_data)
+    shipping_address_serializer_form = OrderAddressSerializer(data=shipping_address_data)
+
+    billing_address = None
+    if billing_address_serializer_form.is_valid():
+        billing_address, created = OrderAddress.objects.get_or_create(**billing_address_serializer_form.data)
+    else:
+        return Response(billing_address_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    shipping_address = None
+    if isSame_address and billing_address != None:
+        shipping_address = billing_address
+    elif shipping_address_serializer_form.is_valid():
+        shipping_address , created = OrderAddress.objects.get_or_create(**shipping_address_serializer_form.data)
+    else:
+        return Response(shipping_address_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    orderd_products = []
+    
+    for prduct_data in request.data.get("products"):
+        variants_data = prduct_data["variants"]
+        products = Product.objects.filter(id=prduct_data["id"])
+        if not products.exists():
+            return Response([{"product":"produc is not exist"}], status=status.HTTP_400_BAD_REQUEST)
+        orderd_product_serializer_form = OrderdProductSerializer(data={"product":prduct_data["id"], "count":prduct_data["count"]})
+        if orderd_product_serializer_form.is_valid():
+            orderd_product = orderd_product_serializer_form.save()
+            for variant_data in variants_data:
+                variantLabel = variant_data["variantLabel"]
+                optionLabel = variant_data["optionLabel"]
+                variant = Variant.objects.get(label=variantLabel)
+                option = Option.objects.get(label=optionLabel)
+                variant_option, created = OrderdVariantOption.objects.get_or_create(variant=variant, option=option)
+                orderd_product.variants.add(variant_option)
+            orderd_products.append(orderd_product.id)
+        else:
+            return Response(orderd_product_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    order_serializer_form = OrderSerializer(data={
+        "customer":request.user.id,
+        "products":orderd_products,
+        "billing_adderss":billing_address.id,
+        "shipping_adderss":shipping_address.id,
+        "delivery_method":delivery_method_data,
+        })
+    if order_serializer_form.is_valid():
+        order = order_serializer_form.save()
+        return Response(OrderSerializer(order).data, status=status.HTTP_200_OK)
+    return Response(order_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])  
+def getOrders(request):
+    # order_serializer_form = OrderSerializer(request.data)
+    # if order_serializer_form.is_valid():
+    #     order = order_serializer_form.save()
+    #     return Response(OrderSerializer(order).data, status=status.HTTP_200_OK)
+    # return Response(OrderSerializer(order).errors, status=status.HTTP_400_BAD_REQUEST)
+    print(request.data)
+    return Response({})
+
+@api_view(['POST','PUT'])
+@permission_classes([IsAuthenticated])  
+def updateOrder(request):
+    # order_serializer_form = OrderSerializer(request.data)
+    # if order_serializer_form.is_valid():
+    #     order = order_serializer_form.save()
+    #     return Response(OrderSerializer(order).data, status=status.HTTP_200_OK)
+    # return Response(OrderSerializer(order).errors, status=status.HTTP_400_BAD_REQUEST)
+    print(request.data)
+    return Response({})
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])  
+def deleteOrder(request):
+    
+    # order_serializer_form = OrderSerializer(request.data)
+    # if order_serializer_form.is_valid():
+    #     order = order_serializer_form.save()
+    #     return Response(OrderSerializer(order).data, status=status.HTTP_200_OK)
+    # return Response(OrderSerializer(order).errors, status=status.HTTP_400_BAD_REQUEST)
+    print(request.data)
+    return Response({})
+    
+
+
 

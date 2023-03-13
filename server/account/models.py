@@ -6,12 +6,6 @@ from django.core.validators import RegexValidator
     
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    TYPE_CHOSE = [
-        ("default", "Default"),
-        ("billing", "Billing"),
-        ("shipping", "Shipping"),
-    ]
-    address_type = models.CharField(choices=TYPE_CHOSE,default="default" ,max_length=12)
     country = models.CharField(max_length=50, null=True,blank=True)
     street1 = models.CharField(max_length=100, null=True,blank=True)
     street2 = models.CharField(max_length=100, null=True,blank=True)

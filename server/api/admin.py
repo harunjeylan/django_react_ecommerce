@@ -20,6 +20,7 @@ from .models import (
     Order, 
     WishList,
     Brand,
+    OrderAddress,
 )
 
 
@@ -144,7 +145,19 @@ class RecommendedProductAdmin(admin.ModelAdmin):
     )
     list_filter = ('title',)
 
-
+@admin.register(OrderAddress)
+class OrderAddressAdmin(admin.ModelAdmin):
+    list_display = (
+        'first_name',
+        'last_name',
+        'email',
+        'country',
+        'street1',
+        'street2',
+        'city',
+        'zipcode',
+        'state',
+    )
 
 @admin.register(OrderdProduct)
 class OrderdProductAdmin(admin.ModelAdmin):
@@ -170,10 +183,8 @@ class OrderAdmin(admin.ModelAdmin):
         'customer',
         'fulfillment_status',
         'delivery_type',
-        'countries',
     )
-    list_filter = ('date', 'customer', 'countries')
-    raw_id_fields = ('products',)
+    list_filter = ('date', 'customer')
 
 
 @admin.register(WishList)

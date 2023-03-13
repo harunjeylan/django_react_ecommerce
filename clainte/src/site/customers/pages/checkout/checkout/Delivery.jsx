@@ -41,7 +41,7 @@ const Delivery = ({ values, setFieldValue }) => {
           <Box
             className="px-4 py-4  rounded-t-lg"
             backgroundColor={
-              values.deliveryMethod === "Usps"
+              values.deliveryMethod === "usps"
                 ? colors.greenAccent[600]
                 : colors.primary[400]
             }
@@ -51,7 +51,7 @@ const Delivery = ({ values, setFieldValue }) => {
             </Typography>
           </Box>
           <CardActionArea
-            onClick={() => setFieldValue("deliveryMethod", "Usps")}
+            onClick={() => setFieldValue("deliveryMethod", "usps")}
             className="flex flex-col items-start gap-4 px-4 py-2"
           >
             <Typography variant="h5" fontWeight="bold">
@@ -70,7 +70,7 @@ const Delivery = ({ values, setFieldValue }) => {
           <Box
             className="px-4 py-4 rounded-t-lg"
             backgroundColor={
-              values.deliveryMethod === "DHL"
+              values.deliveryMethod === "dhl"
                 ? colors.greenAccent[600]
                 : colors.primary[400]
             }
@@ -80,7 +80,7 @@ const Delivery = ({ values, setFieldValue }) => {
             </Typography>
           </Box>
           <CardActionArea
-            onClick={() => setFieldValue("deliveryMethod", "DHL")}
+            onClick={() => setFieldValue("deliveryMethod", "dhl")}
             className="flex flex-col items-start gap-4 px-4 py-2"
           >
             <Typography variant="h5" fontWeight="bold">
@@ -95,7 +95,7 @@ const Delivery = ({ values, setFieldValue }) => {
           <Box
             className="px-4 py-4 rounded-t-lg"
             backgroundColor={
-              values.deliveryMethod === "PPL"
+              values.deliveryMethod === "ppl"
                 ? colors.greenAccent[600]
                 : colors.primary[400]
             }
@@ -105,7 +105,7 @@ const Delivery = ({ values, setFieldValue }) => {
             </Typography>
           </Box>
           <CardActionArea
-            onClick={() => setFieldValue("deliveryMethod", "PPL")}
+            onClick={() => setFieldValue("deliveryMethod", "ppl")}
             className="flex flex-col items-start gap-4 px-4 py-2"
           >
             <Typography variant="h5" fontWeight="bold">
@@ -120,7 +120,7 @@ const Delivery = ({ values, setFieldValue }) => {
           <Box
             className="px-4 py-4 rounded-t-lg "
             backgroundColor={
-              values.deliveryMethod === "UPS"
+              values.deliveryMethod === "ups"
                 ? colors.greenAccent[600]
                 : colors.primary[400]
             }
@@ -130,7 +130,7 @@ const Delivery = ({ values, setFieldValue }) => {
             </Typography>
           </Box>
           <CardActionArea
-            onClick={() => setFieldValue("deliveryMethod", "UPS")}
+            onClick={() => setFieldValue("deliveryMethod", "ups")}
             className="flex flex-col items-start gap-4 px-4 py-2"
           >
             <Typography variant="h5" fontWeight="bold">

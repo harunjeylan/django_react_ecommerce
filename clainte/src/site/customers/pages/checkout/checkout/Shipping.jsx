@@ -16,7 +16,6 @@ const Shipping = ({
       <Box>
         <Typography sx={{ mb: "15px" }} fontSize="18px">
           Billing Information
-          
         </Typography>
         <AddressForm
           type="billingAddress"

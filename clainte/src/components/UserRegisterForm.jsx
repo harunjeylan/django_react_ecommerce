@@ -15,7 +15,7 @@ import {
 import GoogleIcon from "@mui/icons-material/Google";
 import { tokens } from "../theme";
 
-import { logOut, setUser } from "../features/auth/authSlice";
+import { setUser } from "../features/auth/authSlice";
 import { useRegisterMutation } from "../features/auth/authApiSlice";
 
 const UserRegisterForm = ({

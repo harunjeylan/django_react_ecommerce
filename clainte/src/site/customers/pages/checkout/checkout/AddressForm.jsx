@@ -41,10 +41,10 @@ const AddressForm = ({
         label="First Name"
         onBlur={handleBlur}
         onChange={handleChange}
-        value={values.last_name}
-        name={formattedName("last_name")}
-        error={formattedError("last_name")}
-        helperText={formattedHelper("last_name")}
+        value={values.first_name}
+        name={formattedName("first_name")}
+        error={formattedError("first_name")}
+        helperText={formattedHelper("first_name")}
         sx={{ gridColumn: "span 2" }}
       />
       <TextField
@@ -60,6 +60,32 @@ const AddressForm = ({
         error={formattedError("last_name")}
         helperText={formattedHelper("last_name")}
         sx={{ gridColumn: "span 2" }}
+      />
+      <TextField
+        fullWidth
+        variant="filled"
+        type="text"
+        label="Email"
+        onBlur={handleBlur}
+        onChange={handleChange}
+        value={values.email}
+        name={formattedName("email")}
+        error={formattedError("email")}
+        helperText={formattedHelper("email")}
+        sx={{ gridColumn: "span 4" }}
+      />
+      <TextField
+        fullWidth
+        variant="filled"
+        type="text"
+        label="Phone Number"
+        onBlur={handleBlur}
+        onChange={handleChange}
+        value={values.phone_number}
+        name={formattedName("phone_number")}
+        error={formattedError("phone_number")}
+        helperText={formattedHelper("phone_number")}
+        sx={{ gridColumn: "span 4" }}
       />
       <TextField
         fullWidth

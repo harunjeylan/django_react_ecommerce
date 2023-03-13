@@ -15,7 +15,7 @@ const authSlice = createSlice({
       const { access, refresh } = action.payload;
       state.token = access;
       state.refresh = refresh;
-      
+
       // state.user = { ...state?.auth?.user, ...jwt_decode(access).user };
     },
 
@@ -32,6 +32,8 @@ const authSlice = createSlice({
     },
     setUserData: (state, action) => {
       const { user } = action.payload;
+      console.log(state.user);
+      console.log(user);
       state.user = { ...state.user, ...user };
     },
   },

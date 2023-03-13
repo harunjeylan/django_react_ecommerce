@@ -86,48 +86,6 @@ const Profile = () => {
     passwordConfirmation: "",
   };
 
-  const phoneRegExp =
-    /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
-  // YupPassword(yup);
-  const PersonalDetailsCheckoutSchema = yup.object().shape({
-    first_name: yup.string().required("required"),
-    last_name: yup.string().required("required"),
-    username: yup.string().required("required"),
-    country: yup.string(),
-    street1: yup.string(),
-    street2: yup.string(),
-    city: yup.string(),
-    state: yup.string(),
-    zipcode: yup.string(),
-    email: yup.string(),
-    phone_number: yup
-      .string()
-      .matches(phoneRegExp, "phone number is not valid!"),
-  });
-  const changeYourPasswordCheckoutSchema = yup.object().shape({
-    old_password: yup.string().required("required"),
-    new_password: yup
-      .string()
-      .required("required")
-      .matches(
-        /(?=.*[a-zA-Z])/,
-        "The string must contain at least 1 lowercase alphabetical character"
-      )
-      .matches(
-        /(?=.*[0-9])/,
-        "The string must contain at least 1 numeric character"
-      )
-      .matches(
-        /(?=.*[!@#%^&*<>/_?,.:"'$%^&*)=+()])/,
-        "The string must contain at least one special character, but we are escaping reserved RegEx characters to avoid conflict"
-      )
-      .matches(/(?=.{8,})/, "The string must be eight characters or longer"),
-
-    passwordConfirmation: yup
-      .string()
-      .required("required")
-      .oneOf([yup.ref("new_password"), null], "Passwords must match"),
-  });
   return (
     <Box className={`flex flex-col gap-8 mt-20 md:mt-40c`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
@@ -256,5 +214,43 @@ const Profile = () => {
     </Box>
   );
 };
+const phoneRegExp = /^\+?1?\d{9,15}$/;
+// YupPassword(yup);
+const PersonalDetailsCheckoutSchema = yup.object().shape({
+  first_name: yup.string().required("required"),
+  last_name: yup.string().required("required"),
+  username: yup.string().required("required"),
+  country: yup.string(),
+  street1: yup.string(),
+  street2: yup.string(),
+  city: yup.string(),
+  state: yup.string(),
+  zipcode: yup.string(),
+  email: yup.string(),
+  phone_number: yup.string().matches(phoneRegExp, "phone number is not valid!"),
+});
+const changeYourPasswordCheckoutSchema = yup.object().shape({
+  old_password: yup.string().required("required"),
+  new_password: yup
+    .string()
+    .required("required")
+    .matches(
+      /(?=.*[a-zA-Z])/,
+      "The string must contain at least 1 lowercase alphabetical character"
+    )
+    .matches(
+      /(?=.*[0-9])/,
+      "The string must contain at least 1 numeric character"
+    )
+    .matches(
+      /(?=.*[!@#%^&*<>/_?,.:"'$%^&*)=+()])/,
+      "The string must contain at least one special character, but we are escaping reserved RegEx characters to avoid conflict"
+    )
+    .matches(/(?=.{8,})/, "The string must be eight characters or longer"),
 
+  passwordConfirmation: yup
+    .string()
+    .required("required")
+    .oneOf([yup.ref("new_password"), null], "Passwords must match"),
+});
 export default Profile;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
@@ -17,13 +17,16 @@ import {
 } from "@mui/material";
 
 import Payment from "./Payment";
-import Shipping from "../../../components/Shipping";
+import Shipping from "./Shipping";
 import Delivery from "./Delivery";
 import OrderReview from "./OrderReview";
 
 import { tokens, Header, selectCurrentUser } from "../../../import";
+import { useAddOrderMutation } from "../../../../../features/services/orderApiSlice";
+import { clearCart } from "../../../../../features/services/cartReducer";
 
 const Checkout = () => {
+  const dispatch = useDispatch();
   const userData = useSelector(selectCurrentUser);
   const [activeStep, setActiveStep] = useState(0);
   const cart = useSelector((state) => state.cart.cart);
@@ -32,7 +35,9 @@ const Checkout = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
+  const [addOrder] = useAddOrderMutation();
   const handleFormSubmit = async (values, actions) => {
+    console.log(values);
     !isLastStep && setActiveStep(activeStep + 1);
     if (isFirstStep && values.shippingAddress.isSameAddress) {
       actions.setFieldValue("shippingAddress", {
@@ -43,7 +48,7 @@ const Checkout = () => {
     isLastStep && makePayment(values);
     actions.setTouched({});
   };
-
+  console.log(cart);
   async function makePayment(values) {
     console.log({
       ...values,
@@ -53,6 +58,22 @@ const Checkout = () => {
         count: product.count,
       })),
     });
+    addOrder({
+      post: {
+        ...values,
+        products: cart?.map((product) => ({
+          id: product.id,
+          variants: product.selectedVariants,
+          count: product.count,
+        })),
+      },
+    })
+      .then((response) => {
+        console.log(response);
+        dispatch(clearCart());
+        navigate(`/checkout/success`, { replace: true });
+      })
+      .catch((error) => console.log(error));
   }
   const totalPrice = cart.reduce((total, item) => {
     return total + item.count * item.sale_pricing;
@@ -64,6 +85,8 @@ const Checkout = () => {
     billingAddress: {
       first_name: getValue(userData?.first_name),
       last_name: getValue(userData?.last_name),
+      phone_number: getValue(userData?.phone_number),
+      email: getValue(userData?.email),
       country: getValue(userData?.country),
       street1: getValue(userData?.street1),
       street2: getValue(userData?.street2),
@@ -75,6 +98,8 @@ const Checkout = () => {
       isSameAddress: true,
       first_name: "",
       last_name: "",
+      phone_number: "",
+      email: "",
       country: "",
       street1: "",
       street2: "",
@@ -83,8 +108,6 @@ const Checkout = () => {
       zipcode: "",
     },
     deliveryMethod: "none",
-    email: getValue(userData?.email),
-    phone_number: getValue(userData?.phone_number),
   };
   return (
     <Box className={`w-full flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
@@ -270,12 +293,21 @@ const Checkout = () => {
     </Box>
   );
 };
+const phoneRegExp = /^\+?1?\d{9,15}$/;
 
 const checkoutSchema = [
   yup.object().shape({
     billingAddress: yup.object().shape({
       first_name: yup.string().required("required"),
       last_name: yup.string().required("required"),
+      email: yup.string().required("required"),
+      phone_number: yup
+        .string()
+        .required("required")
+        .matches(
+          phoneRegExp,
+          "Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
+        ),
       country: yup.string().required("required"),
       street1: yup.string().required("required"),
       street2: yup.string(),
@@ -292,6 +324,20 @@ const checkoutSchema = [
       last_name: yup.string().when("isSameAddress", {
         is: false,
         then: yup.string().required("required"),
+      }),
+      email: yup.string().when("isSameAddress", {
+        is: false,
+        then: yup.string().required("required"),
+      }),
+      phone_number: yup.string().when("isSameAddress", {
+        is: false,
+        then: yup
+          .string()
+          .required("required")
+          .matches(
+            phoneRegExp,
+            "Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
+          ),
       }),
       country: yup.string().when("isSameAddress", {
         is: false,
@@ -314,10 +360,6 @@ const checkoutSchema = [
     }),
   }),
   yup.object().shape({ deliveryMethod: yup.string() }),
-  yup.object().shape({
-    email: yup.string().required("required"),
-    phone_number: yup.string().required("required"),
-  }),
 ];
 
 export default Checkout;

@@ -13,3 +13,9 @@ def get_tokens_for_user(user):
 class Round(Func):
     function = 'ROUND'
     template='%(function)s(%(expressions)s, 0)'
+
+def getAverage(value, total):
+    if total:
+        return 0
+    else:
+        return value / total * 100

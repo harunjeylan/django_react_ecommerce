@@ -82,12 +82,6 @@ export default function AccountMenu() {
       </MenuItem>
 
       <Divider />
-      <MenuItem onClick={() => navigate("/profile/address/")}>
-        <ListItemIcon>
-          <HomeOutlinedIcon fontSize="small" />
-        </ListItemIcon>
-        Address
-      </MenuItem>
       <MenuItem onClick={() => navigate("/profile/wishlist/")}>
         <ListItemIcon>
           <FavoriteBorderOutlinedIcon fontSize="small" />

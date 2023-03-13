@@ -93,17 +93,6 @@ const ProfileCard = () => {
             </Typography>
           </Box>
         </ListItemButton>
-        <ListItemButton onClick={() => navigate("/profile/address/")}>
-          <ListItemIcon>
-            <HomeOutlinedIcon fontSize="large" />
-          </ListItemIcon>
-          <Box className="flex justify-between items-center w-full">
-            <Typography fontWeight="bold" variant="subtitle1" className={``}>
-              Address
-            </Typography>
-          </Box>
-        </ListItemButton>
-
         <ListItemButton onClick={() => navigate("/profile/wishlist/")}>
           <ListItemIcon>
             <FavoriteBorderOutlinedIcon fontSize="large" />

@@ -16,6 +16,7 @@ import { productApi } from "../features/services/productApiSlice";
 import { organizeApi } from "../features/services/organizeApiSlice";
 import { variantApi } from "../features/services/variantApiSlice";
 import { brandApi } from "../features/services/brandApiSlice";
+import { orderApi } from "../features/services/orderApiSlice";
 
 import { wishlistApi } from "../features/services/wishlistApiSlice";
 
@@ -52,6 +53,7 @@ const store = configureStore({
     [variantApi.reducerPath]: variantApi.reducer,
     [brandApi.reducerPath]: brandApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
+    [orderApi.reducerPath]: orderApi.reducer,
 
     [wishlistApi.reducerPath]: wishlistApi.reducer,
   },
@@ -66,6 +68,7 @@ const store = configureStore({
       .concat(productApi.middleware)
       .concat(brandApi.middleware)
       .concat(authApi.middleware)
+      .concat(orderApi.middleware)
       .concat(wishlistApi.middleware);
   },
   devTools: true,
