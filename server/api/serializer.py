@@ -23,6 +23,7 @@ from api.models import (
     Review,
     OrderAddress,
     OrderdProduct,
+    OrderdVariantOption,
 )
 
 
@@ -110,7 +111,10 @@ class OrderAddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderAddress
         fields = "__all__"
-
+class OrderdVariantOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderdVariantOption
+        fields = "__all__"
 
 
 class OrderdProductSerializer(serializers.ModelSerializer):

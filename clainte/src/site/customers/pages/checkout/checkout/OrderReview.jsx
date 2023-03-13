@@ -31,7 +31,7 @@ const OrderReview = () => {
             </Box>
             <Box className="flex flex-col px-2 w-full ">
               <Box className="my-2">
-                <Typography variant="h3" fontWeight="bold">
+                <Typography variant="h2" fontWeight="bold">
                   {item.title}
                 </Typography>
               </Box>

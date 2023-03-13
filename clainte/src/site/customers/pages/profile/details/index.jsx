@@ -87,7 +87,7 @@ const Profile = () => {
   };
 
   return (
-    <Box className={`flex flex-col gap-8 mt-20 md:mt-40c`}>
+    <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Breadcrumbs aria-label="breadcrumb">
           <Button
@@ -203,13 +203,6 @@ const Profile = () => {
             {userData && <ProfileCard userData={userData} />}
           </Box>
         </Box>
-      </Box>
-
-      <Box
-        backgroundColor={colors.primary[400]}
-        className="px-2 md:px-4 flex justify-center lg:px-auto py-[80px] items-center my-[50px]"
-      >
-        <Service />
       </Box>
     </Box>
   );

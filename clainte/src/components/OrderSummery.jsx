@@ -9,18 +9,19 @@ const OrderSummery = ({ totalPrice }) => {
   return (
     <Box
       backgroundColor={colors.primary[400]}
-      className="flex flex-col gap-4 drop-shadow-lg  rounded-lg"
+      className="flex flex-col gap-4 drop-shadow-lg  rounded-lg py-2"
     >
-      <Box className="px-4 py-4 ">
+      <Box className="px-4 pt-2">
         <Typography
           variant="h1"
           color={colors.grey[100]}
           fontWeight="bold"
-          className={`text-xl md:text-2xl  text-left my-4`}
+          className={`text-xl md:text-2xl  text-left`}
         >
           Order Summary
         </Typography>
       </Box>
+      <Divider />
       <Box className="flex flex-col gap-4 px-4 py-2 ">
         <Typography variant="h5" fontWeight="bold">
           Order Summary
@@ -65,7 +66,6 @@ const OrderSummery = ({ totalPrice }) => {
           ${totalPrice + 10}
         </Typography>
       </Box>
-      <Divider />
     </Box>
   );
 };

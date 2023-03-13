@@ -15,7 +15,4 @@ class Round(Func):
     template='%(function)s(%(expressions)s, 0)'
 
 def getAverage(value, total):
-    if total:
-        return 0
-    else:
-        return value / total * 100
+    return 0 if total == 0 else value / total * 100

@@ -69,9 +69,13 @@ const Checkout = () => {
       },
     })
       .then((response) => {
-        console.log(response);
-        dispatch(clearCart());
-        navigate(`/checkout/success`, { replace: true });
+        if (!response.error) {
+          console.log(response);
+          dispatch(clearCart());
+          navigate(`/checkout/success`, { replace: true });
+        } else {
+          console.log(response.error);
+        }
       })
       .catch((error) => console.log(error));
   }

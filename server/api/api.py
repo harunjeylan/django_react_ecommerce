@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
 
-from django.db.models import Avg,Q,Count
+from django.db.models import Avg,Q,Count,Sum
 from django.db.models.functions import Lower
 # from api.serializer import ProductSerializer, OrderSerializer, RegistrationSerializer, UserSerializer
 # from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -46,6 +46,7 @@ from api.models import (
 from api.serializer import (
     BrandSerializer,
     ImageSerializer,
+    OrderdVariantOptionSerializer,
     ProductSerializer,
     VendorSerializer,
     CategorySerializer,
@@ -73,7 +74,15 @@ def getProducts(request):
     products = Product.objects.all()
     serialized_data = []
     for product in products:
+        inventory = Inventory.objects.filter(product=product)
+        inventory_data = {}
+        if inventory.exists():
+            inventory_data = {
+                **InventorySerializer(inventory.first()).data, 
+                **inventory_data
+            }
         serialized_data.append({
+            **inventory_data,
             **ProductSerializer(product, context={"request":request}).data,
             "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
             "rating":product.review_set.all().aggregate(Avg('rating'))["rating__avg"],
@@ -111,9 +120,15 @@ def getRelatedProducts(request, pk):
     relatedProducts = Product.objects.all()
     serialized_data = []
     for product in relatedProducts:
-        inventory = Inventory.objects.get(product=product)
+        inventory = Inventory.objects.filter(product=product)
+        inventory_data = {}
+        if inventory.exists():
+            inventory_data = {
+                **InventorySerializer(inventory.first()).data, 
+                **inventory_data
+            }
         serialized_data.append({
-            **InventorySerializer(inventory).data, 
+            **inventory_data, 
             **ProductSerializer(product, context={"request":request}).data,
             "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
             "rating":product.review_set.all().aggregate(Avg('rating'))["rating__avg"],
@@ -234,13 +249,15 @@ def getProductsDetailes(request,pk):
     rating_1 = product.review_set.filter(rating=1).count()
     rating_0 = product.review_set.filter(rating=0).count()
     total_reviews = product.review_set.all().count()
+    average = product.review_set.all().aggregate(Avg('rating'))["rating__avg"]
+    average = average if average else 0
     serialized_data = {
         **serialized_data,
         **ProductSerializer(product,context={"request":request}).data,
         "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
         "reviews":ReviewSerializer(product.review_set.all(), many=True).data,
         "rating":{
-            "average":round(product.review_set.all().aggregate(Avg('rating'))["rating__avg"],1),
+            "average":round(average,1),
             "total":total_reviews,
             "values":[
                 {"rating":5,"average":getAverage(rating_5, total_reviews),"total":rating_5},
@@ -662,7 +679,7 @@ def deleteOption(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def setGetWishlist(request):
+def getWishlist(request):
     wishlist,create = WishList.objects.get_or_create(customer=request.user)
     serialized_data = []
     for product in wishlist.products.all():
@@ -719,13 +736,18 @@ def addOrder(request):
         return Response(shipping_address_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
 
     orderd_products = []
-    
+    total_price = 0
     for prduct_data in request.data.get("products"):
         variants_data = prduct_data["variants"]
         products = Product.objects.filter(id=prduct_data["id"])
         if not products.exists():
             return Response([{"product":"produc is not exist"}], status=status.HTTP_400_BAD_REQUEST)
-        orderd_product_serializer_form = OrderdProductSerializer(data={"product":prduct_data["id"], "count":prduct_data["count"]})
+        prices = products.first().inventory.sale_pricing
+        count = prduct_data["count"]
+        #============================================
+        total_price += prices * count
+        #============================================
+        orderd_product_serializer_form = OrderdProductSerializer(data={"product":products.first().id, "count":count})
         if orderd_product_serializer_form.is_valid():
             orderd_product = orderd_product_serializer_form.save()
             for variant_data in variants_data:
@@ -745,6 +767,7 @@ def addOrder(request):
         "billing_adderss":billing_address.id,
         "shipping_adderss":shipping_address.id,
         "delivery_method":delivery_method_data,
+        "total_price":total_price,
         })
     if order_serializer_form.is_valid():
         order = order_serializer_form.save()
@@ -755,13 +778,57 @@ def addOrder(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])  
 def getOrders(request):
-    # order_serializer_form = OrderSerializer(request.data)
-    # if order_serializer_form.is_valid():
-    #     order = order_serializer_form.save()
-    #     return Response(OrderSerializer(order).data, status=status.HTTP_200_OK)
-    # return Response(OrderSerializer(order).errors, status=status.HTTP_400_BAD_REQUEST)
-    print(request.data)
-    return Response({})
+    orders = Order.objects.filter(customer=request.user)
+    orders_data = []
+    for order in orders:
+        orders_data.append({
+            "id":order.id,
+            "date":order.date,
+            "total_price":order.total_price,
+            "status":order.fulfillment_status,
+        })
+    return Response(orders_data, status=status.HTTP_200_OK)
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])  
+def getOrderDetailes(request, pk):
+    order = Order.objects.get(id=pk)
+
+    orderd_prodects = []
+    for orderd_prodect in order.products.all():
+        count = orderd_prodect.count
+        product = orderd_prodect.product
+        inventory = Inventory.objects.filter(product=product)
+        inventory_data = {}
+        if inventory.exists():
+            inventory_data = {
+                **InventorySerializer(inventory.first()).data, 
+                **inventory_data
+            }
+        variants = []
+        for vriantOption in orderd_prodect.variants.all():
+            variants.append({
+                "variantLabel":vriantOption.variant.label,
+                "optionLabel":vriantOption.option.label,
+            })
+        orderd_prodects.append({
+            **inventory_data,
+            **ProductSerializer(product, context={"request":request}).data,
+            "count":orderd_prodect.count,
+            "variants":variants,
+            "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
+            "rating":product.review_set.all().aggregate(Avg('rating'))["rating__avg"],
+        })
+    order_data = {
+        **OrderSerializer(order).data,
+        "products":orderd_prodects,
+        "billing_adderss":OrderAddressSerializer(order.billing_adderss).data,
+        "shipping_adderss":OrderAddressSerializer(order.shipping_adderss).data,
+    }
+    return Response(order_data, status=status.HTTP_200_OK)
+
 
 @api_view(['POST','PUT'])
 @permission_classes([IsAuthenticated])  

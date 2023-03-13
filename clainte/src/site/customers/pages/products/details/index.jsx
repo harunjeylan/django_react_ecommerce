@@ -181,16 +181,23 @@ const ProductDetails = () => {
       });
     }
   };
-  const getSelectedOption = (variantLabel) => {
-    let productInCart = findInCart(product);
-    if (productInCart) {
-      let selecedVariantOption = productInCart.selectedVariants.find(
-        (variantOption) => variantOption.variantLabel === variantLabel
-      );
-      return selecedVariantOption ? selecedVariantOption.optionLabel : "";
-    }
-    return "";
-  };
+  const getSelectedOption = useMemo(() => {
+    return (variantLabel) => {
+      let productInCart = findInCart(product);
+      if (productInCart && variantLabel) {
+        let selecedVariantOption = productInCart.selectedVariants.find(
+          (variantOption) => variantOption.variantLabel === variantLabel
+        );
+        if (selecedVariantOption && selecedVariantOption?.optionLabel) {
+          console.log(selecedVariantOption?.optionLabel);
+          return selecedVariantOption?.optionLabel;
+        } else {
+          return "";
+        }
+      }
+      return "";
+    };
+  }, []);
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>

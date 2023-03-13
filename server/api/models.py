@@ -156,15 +156,14 @@ class OrderdProduct(models.Model):
         return f"{self.product}" 
     
 class Order(models.Model):
-    customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     products = models.ManyToManyField(OrderdProduct, blank=True)
+    customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     billing_adderss=models.ForeignKey(OrderAddress,related_name="order_billing_adderss", on_delete=models.SET_NULL, null=True)
     shipping_adderss=models.ForeignKey(OrderAddress, related_name="order_shipping_adderss", on_delete=models.SET_NULL, null=True)
     FULFILLMENT_STATUS = [
         ("complete","Complete"),
         ("failed","Failed"),
         ("cancelled","Cancelled"),
-        ("complete","Complete"),
         ("pending","Pending"),
         ("partially_fulfilled","Partially Fulfilled"),
     ]
@@ -183,6 +182,7 @@ class Order(models.Model):
         ("usps","Usps next day"),
     ]
     delivery_method = models.CharField(choices=DELIVERY_METHOD,default="none",max_length=25)
+    total_price = models.FloatField()
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):
@@ -191,5 +191,6 @@ class Order(models.Model):
 class WishList(models.Model):
     customer = models.OneToOneField(User, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product)
+
     def __str__(self):
         return f"{self.customer.get_full_name()}"
