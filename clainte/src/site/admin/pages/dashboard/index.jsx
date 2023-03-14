@@ -14,6 +14,7 @@ import {
   useTheme,
   useMediaQuery,
   Breadcrumbs,
+  CircularProgress,
 } from "@mui/material";
 
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
@@ -21,7 +22,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import TrafficIcon from "@mui/icons-material/Traffic";
-
+import InventoryIcon from "@mui/icons-material/Inventory";
 import {
   mockDataCustomers,
   mockDataOrders,
@@ -32,6 +33,7 @@ import {
 import LineChart from "../../components/LineChart";
 import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
+import { useGetDashboardDataQuery } from "../../../../features/main/dashboardApiSlice";
 
 const MiniBarChart = ({ data }) => {
   const theme = useTheme();
@@ -73,8 +75,8 @@ const MiniBarChart = ({ data }) => {
           },
         },
       }}
-      keys={["kebab", "fries", "donut"]}
-      indexBy="country"
+      keys={["failed", "complete", "pending", "cancelled"]}
+      indexBy="date"
       margin={{ top: 20, right: 20, bottom: 60, left: 30 }}
       padding={0.8}
       valueScale={{ type: "linear" }}
@@ -166,6 +168,7 @@ const MiniBarChart = ({ data }) => {
     />
   );
 };
+
 const MiniLineChart = ({ data }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -206,11 +209,11 @@ const MiniLineChart = ({ data }) => {
           },
         },
       }}
-      margin={{ top: 20, right: 20, bottom: 60, left: 30 }}
+      margin={{ top: 20, right: 25, bottom: 60, left: 25 }}
       xScale={{ type: "point" }}
       yScale={{
         type: "linear",
-        min: "auto",
+        min: 0,
         max: "auto",
         stacked: true,
         reverse: false,
@@ -413,316 +416,40 @@ const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const smScreen = useMediaQuery(theme.breakpoints.up("sm"));
-  const miniBarChartData = [
-    {
-      country: "AD",
-      "hot dog": 79,
-      "hot dogColor": "hsl(56, 70%, 50%)",
-      burger: 129,
-      burgerColor: "hsl(327, 70%, 50%)",
-      sandwich: 100,
-      sandwichColor: "hsl(201, 70%, 50%)",
-      kebab: 192,
-      kebabColor: "hsl(52, 70%, 50%)",
-      fries: 161,
-      friesColor: "hsl(87, 70%, 50%)",
-      donut: 145,
-      donutColor: "hsl(352, 70%, 50%)",
-    },
-    {
-      country: "AE",
-      "hot dog": 161,
-      "hot dogColor": "hsl(158, 70%, 50%)",
-      burger: 192,
-      burgerColor: "hsl(358, 70%, 50%)",
-      sandwich: 30,
-      sandwichColor: "hsl(133, 70%, 50%)",
-      kebab: 98,
-      kebabColor: "hsl(174, 70%, 50%)",
-      fries: 175,
-      friesColor: "hsl(282, 70%, 50%)",
-      donut: 81,
-      donutColor: "hsl(300, 70%, 50%)",
-    },
-    {
-      country: "AF",
-      "hot dog": 32,
-      "hot dogColor": "hsl(312, 70%, 50%)",
-      burger: 194,
-      burgerColor: "hsl(336, 70%, 50%)",
-      sandwich: 138,
-      sandwichColor: "hsl(210, 70%, 50%)",
-      kebab: 17,
-      kebabColor: "hsl(105, 70%, 50%)",
-      fries: 197,
-      friesColor: "hsl(188, 70%, 50%)",
-      donut: 2,
-      donutColor: "hsl(43, 70%, 50%)",
-    },
-    {
-      country: "AG",
-      "hot dog": 197,
-      "hot dogColor": "hsl(217, 70%, 50%)",
-      burger: 176,
-      burgerColor: "hsl(70, 70%, 50%)",
-      sandwich: 188,
-      sandwichColor: "hsl(69, 70%, 50%)",
-      kebab: 196,
-      kebabColor: "hsl(179, 70%, 50%)",
-      fries: 59,
-      friesColor: "hsl(283, 70%, 50%)",
-      donut: 3,
-      donutColor: "hsl(139, 70%, 50%)",
-    },
-    {
-      country: "AI",
-      "hot dog": 183,
-      "hot dogColor": "hsl(272, 70%, 50%)",
-      burger: 31,
-      burgerColor: "hsl(144, 70%, 50%)",
-      sandwich: 153,
-      sandwichColor: "hsl(333, 70%, 50%)",
-      kebab: 144,
-      kebabColor: "hsl(274, 70%, 50%)",
-      fries: 38,
-      friesColor: "hsl(349, 70%, 50%)",
-      donut: 195,
-      donutColor: "hsl(330, 70%, 50%)",
-    },
-    {
-      country: "AL",
-      "hot dog": 30,
-      "hot dogColor": "hsl(69, 70%, 50%)",
-      burger: 179,
-      burgerColor: "hsl(31, 70%, 50%)",
-      sandwich: 57,
-      sandwichColor: "hsl(17, 70%, 50%)",
-      kebab: 41,
-      kebabColor: "hsl(101, 70%, 50%)",
-      fries: 17,
-      friesColor: "hsl(235, 70%, 50%)",
-      donut: 122,
-      donutColor: "hsl(0, 70%, 50%)",
-    },
-    {
-      country: "AM",
-      "hot dog": 45,
-      "hot dogColor": "hsl(6, 70%, 50%)",
-      burger: 107,
-      burgerColor: "hsl(184, 70%, 50%)",
-      sandwich: 140,
-      sandwichColor: "hsl(19, 70%, 50%)",
-      kebab: 46,
-      kebabColor: "hsl(273, 70%, 50%)",
-      fries: 156,
-      friesColor: "hsl(319, 70%, 50%)",
-      donut: 96,
-      donutColor: "hsl(44, 70%, 50%)",
-    },
-  ];
-  const MiniLineChartData = [
-    {
-      id: "us",
-      color: "hsl(186, 70%, 50%)",
-      data: [
-        {
-          x: "plane",
-          y: 226,
-        },
-        {
-          x: "helicopter",
-          y: 200,
-        },
-        {
-          x: "boat",
-          y: 230,
-        },
-        {
-          x: "train",
-          y: 260,
-        },
-        {
-          x: "subway",
-          y: 49,
-        },
-        {
-          x: "bus",
-          y: 117,
-        },
-        {
-          x: "car",
-          y: 98,
-        },
-        {
-          x: "moto",
-          y: 297,
-        },
-        {
-          x: "bicycle",
-          y: 1,
-        },
-        {
-          x: "horse",
-          y: 232,
-        },
-        {
-          x: "skateboard",
-          y: 287,
-        },
-        {
-          x: "others",
-          y: 280,
-        },
-      ],
-    },
-    {
-      id: "germany",
-      color: "hsl(45, 70%, 50%)",
-      data: [
-        {
-          x: "plane",
-          y: 234,
-        },
-        {
-          x: "helicopter",
-          y: 8,
-        },
-        {
-          x: "boat",
-          y: 25,
-        },
-        {
-          x: "train",
-          y: 277,
-        },
-        {
-          x: "subway",
-          y: 162,
-        },
-        {
-          x: "bus",
-          y: 295,
-        },
-        {
-          x: "car",
-          y: 29,
-        },
-        {
-          x: "moto",
-          y: 134,
-        },
-        {
-          x: "bicycle",
-          y: 140,
-        },
-        {
-          x: "horse",
-          y: 68,
-        },
-        {
-          x: "skateboard",
-          y: 66,
-        },
-        {
-          x: "others",
-          y: 138,
-        },
-      ],
-    },
-    {
-      id: "norway",
-      color: "hsl(82, 70%, 50%)",
-      data: [
-        {
-          x: "plane",
-          y: 270,
-        },
-        {
-          x: "helicopter",
-          y: 121,
-        },
-        {
-          x: "boat",
-          y: 28,
-        },
-        {
-          x: "train",
-          y: 68,
-        },
-        {
-          x: "subway",
-          y: 238,
-        },
-        {
-          x: "bus",
-          y: 298,
-        },
-        {
-          x: "car",
-          y: 81,
-        },
-        {
-          x: "moto",
-          y: 6,
-        },
-        {
-          x: "bicycle",
-          y: 242,
-        },
-        {
-          x: "horse",
-          y: 15,
-        },
-        {
-          x: "skateboard",
-          y: 20,
-        },
-        {
-          x: "others",
-          y: 297,
-        },
-      ],
-    },
-  ];
+  const { data: dashboardData, isFetching: isFetchingDashboardData } =
+    useGetDashboardDataQuery();
+
   const MiniPieChartData = [
     {
-      id: "sass",
-      label: "sass",
+      id: "payed",
+      label: "Payed",
       value: 449,
-      color: "hsl(32, 70%, 50%)",
     },
     {
-      id: "javascript",
-      label: "javascript",
+      id: "none payed",
+      label: "None Payed",
       value: 302,
-      color: "hsl(77, 70%, 50%)",
-    },
-    {
-      id: "php",
-      label: "php",
-      value: 478,
-      color: "hsl(71, 70%, 50%)",
     },
   ];
-  const columns = [
+  const customerColumns = [
     {
       field: "first_name",
       headerName: "Customer",
       width: 200,
       hieght: 200,
-      renderCell: ({ row: { first_name, last_name, avator } }) => {
+      renderCell: ({ row: { full_name, avator } }) => {
         return (
           <Box className="flex gap-4 items-center py-2 w-full h-full">
             <Link to={`/admin/customers/${1}`}>
               <img
                 className="h-[60px] w-[60px] pointer rounded-[50%]"
                 src={avator}
-                alt={`${first_name}-${last_name}`}
+                alt={`${full_name}`}
               />
             </Link>
             <Link to={`/admin/customers/${1}`}>
               <Typography color={colors.greenAccent[500]}>
-                {first_name} {last_name}
+                {full_name}
               </Typography>
             </Link>
           </Box>
@@ -755,10 +482,7 @@ const Dashboard = () => {
         );
       },
     },
-    { field: "city", headerName: "City", width: 200 },
-
-    { field: "last_seen", headerName: "Last seen", width: 100 },
-    { field: "last_order", headerName: "Last order", width: 100 },
+    { field: "last_order", headerName: "Last order", width: 200 },
   ];
   const orderColumns = [
     {
@@ -791,32 +515,35 @@ const Dashboard = () => {
       headerName: "Customer",
       width: 200,
       hieght: 200,
-      renderCell: ({ row: { first_name, last_name, avator } }) => {
+      renderCell: ({ row: { full_name, avator, user_id } }) => {
         return (
           <Box className="flex justify-start gap-4 items-center py-2 w-full h-full">
-            <Link to="/">
+            <Link to={`/admin/customers/${user_id}`}>
               <img
                 className="h-[60px] w-[60px] cursor-pointer rounded-[50%]"
                 src={avator}
-                alt={`${first_name}-${last_name}`}
+                alt={`${full_name}`}
               />{" "}
             </Link>
-            <Link to="/">
+            <Link to={`/admin/customers/${user_id}`}>
               <Typography
                 className="cursor-pointer"
                 color={colors.greenAccent[500]}
               >
-                {first_name} {last_name}
+                {full_name}
               </Typography>
             </Link>
           </Box>
         );
       },
     },
-    { field: "payment_status", headerName: "Payment status", width: 200 },
-    { field: "fulfilment_status", headerName: "Fulfilment status", width: 200 },
-    { field: "delivery_type", headerName: "Delivery Type", width: 200 },
-    { field: "date", headerName: "Date", width: 100 },
+    {
+      field: "fulfillment_status",
+      headerName: "Fulfilment status",
+      width: 150,
+    },
+    { field: "delivery_method", headerName: "Delivery Method", width: 150 },
+    { field: "date", headerName: "Date", width: 200 },
   ];
   return (
     <Box className="flex flex-col gap-4 md:gap-8 md:mt-20 ">
@@ -901,11 +628,11 @@ const Dashboard = () => {
             >
               <StatBox
                 title="32,441"
-                subtitle="New Clients"
+                subtitle="New Orders"
                 progress="0.30"
                 increase="+5%"
                 icon={
-                  <PersonAddIcon
+                  <InventoryIcon
                     sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
                   />
                 }
@@ -922,7 +649,7 @@ const Dashboard = () => {
             >
               <StatBox
                 title="32,441"
-                subtitle="New Clients"
+                subtitle="New Custemers"
                 progress="0.30"
                 increase="+5%"
                 icon={
@@ -933,6 +660,7 @@ const Dashboard = () => {
               />
             </Box>
           </Box>
+
           <Box className="col-span-12 row-span-3 xl:col-span-8">
             <Box className="grid grid-cols-12 gap-4">
               <Box className="col-span-12 lg:col-span-6">
@@ -950,7 +678,7 @@ const Dashboard = () => {
                         >
                           Total orders{" "}
                           <span className="bg-[#eab308]/20 rounded-r-xl rounded-l-xl py-[1pz] px-2 border-[1px] border-[#eab308] text-[#eab308]">
-                            -6.8%
+                            {dashboardData?.last_week_orders?.increasing}%
                           </span>
                         </Typography>
                         <Typography
@@ -967,12 +695,26 @@ const Dashboard = () => {
                           fontWeight="bold"
                           className="my-2"
                         >
-                          16,247
+                          {dashboardData?.last_week_orders?.total_orders}
                         </Typography>
                       </Box>
                     </Box>
                     <Box className="h-[300px] p-4">
-                      <MiniBarChart data={miniBarChartData} />
+                      {!isFetchingDashboardData ? (
+                        dashboardData?.last_week_orders ? (
+                          <MiniBarChart
+                            data={dashboardData?.last_week_orders?.data}
+                          />
+                        ) : (
+                          <Box className="w-full flex items-center justify-center h-full min-h-40">
+                            <Typography>No data</Typography>
+                          </Box>
+                        )
+                      ) : (
+                        <Box className="w-full flex items-center justify-center h-full min-h-40">
+                          <CircularProgress color="secondary" />
+                        </Box>
+                      )}
                     </Box>
                   </Box>
                 </Box>
@@ -990,9 +732,9 @@ const Dashboard = () => {
                           fontWeight="bold"
                           className="my-2"
                         >
-                          New customers {` `}
+                          Top Sales Product {` `}
                           <span className="bg-[#eab308]/20 rounded-r-xl rounded-l-xl py-[1pz] px-2 border-[1px] border-[#eab308] text-[#eab308]">
-                            +26.5%
+                            {dashboardData?.last_week_products?.increasing}%
                           </span>
                         </Typography>
                         <Typography
@@ -1009,12 +751,26 @@ const Dashboard = () => {
                           fontWeight="bold"
                           className="my-2"
                         >
-                          356
+                          {dashboardData?.last_week_products?.total_products}
                         </Typography>
                       </Box>
                     </Box>
                     <Box className="h-[300px] p-4">
-                      <MiniLineChart data={MiniLineChartData} />
+                      {!isFetchingDashboardData ? (
+                        dashboardData?.last_week_products ? (
+                          <MiniLineChart
+                            data={dashboardData?.last_week_products?.data}
+                          />
+                        ) : (
+                          <Box className="w-full flex items-center justify-center h-full min-h-40">
+                            <Typography>No data</Typography>
+                          </Box>
+                        )
+                      ) : (
+                        <Box className="w-full flex items-center justify-center h-full min-h-40">
+                          <CircularProgress color="secondary" />
+                        </Box>
+                      )}
                     </Box>
                   </Box>
                 </Box>
@@ -1110,7 +866,11 @@ const Dashboard = () => {
                 fontWeight="bold"
                 className={`text-xl md:text-2xl  text-left my-4`}
               >
-                New Customers (43)
+                New Customers (
+                {!isFetchingDashboardData && dashboardData?.new_customers
+                  ? dashboardData?.new_customers?.length
+                  : 0}
+                )
               </Typography>
               <Box
                 className="h-[400px] xl:h-[720px]"
@@ -1139,14 +899,26 @@ const Dashboard = () => {
                   },
                 }}
               >
-                <DataGrid
-                  density="comfortable"
-                  rows={mockDataCustomers}
-                  columns={columns}
-                  autoPageSize
-                  checkboxSelection
-                  components={{ Toolbar: GridToolbar }}
-                />
+                {!isFetchingDashboardData ? (
+                  dashboardData?.new_customers ? (
+                    <DataGrid
+                      density="comfortable"
+                      rows={dashboardData?.new_customers}
+                      columns={customerColumns}
+                      autoPageSize
+                      checkboxSelection
+                      components={{ Toolbar: GridToolbar }}
+                    />
+                  ) : (
+                    <Box className="w-full flex items-center justify-center h-full min-h-40">
+                      <Typography>No data</Typography>
+                    </Box>
+                  )
+                ) : (
+                  <Box className="w-full flex items-center justify-center h-full min-h-40">
+                    <CircularProgress color="secondary" />
+                  </Box>
+                )}
               </Box>
             </Box>
           </Box>
@@ -1161,7 +933,11 @@ const Dashboard = () => {
                 fontWeight="bold"
                 className={`text-xl md:text-2xl  text-left my-4`}
               >
-                New Orders (100)
+                New Orders (
+                {!isFetchingDashboardData && dashboardData?.new_orders
+                  ? dashboardData?.new_orders?.length
+                  : 0}
+                )
               </Typography>
               <Box
                 className="h-[400px] xl:h-[1020px]"
@@ -1190,14 +966,26 @@ const Dashboard = () => {
                   },
                 }}
               >
-                <DataGrid
-                  density="comfortable"
-                  rows={mockDataOrders.slice(0, 10)}
-                  columns={orderColumns}
-                  autoPageSize
-                  checkboxSelection
-                  components={{ Toolbar: GridToolbar }}
-                />
+                {!isFetchingDashboardData ? (
+                  dashboardData?.new_orders ? (
+                    <DataGrid
+                      density="comfortable"
+                      rows={dashboardData.new_orders}
+                      columns={orderColumns}
+                      autoPageSize
+                      checkboxSelection
+                      components={{ Toolbar: GridToolbar }}
+                    />
+                  ) : (
+                    <Box className="w-full flex items-center justify-center h-full min-h-40">
+                      <Typography>No data</Typography>
+                    </Box>
+                  )
+                ) : (
+                  <Box className="w-full flex items-center justify-center h-full min-h-40">
+                    <CircularProgress color="secondary" />
+                  </Box>
+                )}
               </Box>
             </Box>
           </Box>

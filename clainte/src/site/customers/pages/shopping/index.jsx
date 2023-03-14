@@ -547,7 +547,7 @@ const Shopping = () => {
                 </Box>
               )
             ) : (
-              <Box className="w-full flex items-center justify-center h-40">
+              <Box className="w-full flex items-center justify-center h-full min-h-40">
                 <CircularProgress color="secondary" />
               </Box>
             )}

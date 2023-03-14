@@ -151,7 +151,6 @@ class OrderdProduct(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     variants = models.ManyToManyField(OrderdVariantOption, blank=True)
     count = models.IntegerField(default=1)
-    
     def __str__(self):
         return f"{self.product}" 
     
@@ -165,7 +164,6 @@ class Order(models.Model):
         ("failed","Failed"),
         ("cancelled","Cancelled"),
         ("pending","Pending"),
-        ("partially_fulfilled","Partially Fulfilled"),
     ]
     fulfillment_status = models.CharField(choices=FULFILLMENT_STATUS,default="pending" ,max_length=25)
     DELIVERY_TYPE=[
@@ -183,7 +181,7 @@ class Order(models.Model):
     ]
     delivery_method = models.CharField(choices=DELIVERY_METHOD,default="none",max_length=25)
     total_price = models.FloatField()
-    date = models.DateField(auto_now_add=True)
+    date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.customer.get_full_name()}: {self.date}"

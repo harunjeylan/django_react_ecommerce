@@ -1,6 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
 import {
-  persistStore,
   persistReducer,
   FLUSH,
   REHYDRATE,
@@ -10,27 +9,34 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+// ===================================================================
 
 import { authApi } from "../features/auth/authApi";
+
+import authReducer from "../features/auth/authSlice";
+// ===================================================================
+
 import { productApi } from "../features/services/productApiSlice";
 import { organizeApi } from "../features/services/organizeApiSlice";
 import { variantApi } from "../features/services/variantApiSlice";
 import { brandApi } from "../features/services/brandApiSlice";
 import { orderApi } from "../features/services/orderApiSlice";
-
 import { wishlistApi } from "../features/services/wishlistApiSlice";
 
-import authReducer from "../features/auth/authSlice";
 import productReducer from "../features/services/productSlice";
-
 import cartReducer from "../features/services/cartReducer";
 import wishlistReducer from "../features/services/wishlistReducer";
+// ===================================================================
+
+import { dashboardApi } from "../features/main/dashboardApiSlice";
+// ===================================================================
 
 const cartConfig = { key: "cart", storage, version: 1 };
 const wishlistsConfig = { key: "wishlists", storage, version: 1 };
 
 const userConfig = { key: "auth", storage, version: 1 };
 const ProductConfig = { key: "product", storage, version: 1 };
+// ===================================================================
 
 const persistedUserAuthReducer = persistReducer(userConfig, authReducer);
 const persistedProductReducer = persistReducer(ProductConfig, productReducer);
@@ -56,6 +62,8 @@ const store = configureStore({
     [orderApi.reducerPath]: orderApi.reducer,
 
     [wishlistApi.reducerPath]: wishlistApi.reducer,
+
+    [dashboardApi.reducerPath]: dashboardApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -69,6 +77,7 @@ const store = configureStore({
       .concat(brandApi.middleware)
       .concat(authApi.middleware)
       .concat(orderApi.middleware)
+      .concat(dashboardApi.middleware)
       .concat(wishlistApi.middleware);
   },
   devTools: true,

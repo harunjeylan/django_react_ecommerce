@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'api.apps.ApiConfig',
+    'main.apps.MainConfig',
     'account.apps.AccountConfig',
 ]
 REST_FRAMEWORK = {
