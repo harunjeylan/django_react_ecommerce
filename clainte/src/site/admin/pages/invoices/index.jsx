@@ -2,7 +2,9 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Typography, useTheme, Button, Breadcrumbs } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { tokens, mockDataInvoices, Header } from "../../import";
+import { tokens } from "../../../../theme";
+import Header from "../../../../components/Header";
+import { mockDataInvoices } from "../../../../data/mockData";
 
 const Invoices = () => {
   const theme = useTheme();

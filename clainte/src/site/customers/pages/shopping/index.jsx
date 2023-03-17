@@ -7,35 +7,25 @@ import {
   Typography,
   FormControlLabel,
   Checkbox,
-  Radio,
   CircularProgress,
   Breadcrumbs,
   FormControl,
   FormLabel,
-  RadioGroup,
   Collapse,
   Slider,
   useMediaQuery,
   Divider,
-  ListItem,
   List,
-  ListItemButton,
   TextField,
   ButtonGroup,
-  LinearProgress,
-  Rating,
 } from "@mui/material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import PaletteIcon from "@mui/icons-material/Palette";
-import PaletteOutlinedIcon from "@mui/icons-material/PaletteOutlined";
 
 import Service from "../../components/Service";
 import Banner from "../../components/Banner";
-import ProductCarouse from "../../components/ProductCarouse";
 import ProductsList from "../../components/ProductsList";
 
-import { tokens, Header } from "../../import";
 import { useGetAllOrganizeQuery } from "../../../../features/services/organizeApiSlice";
 import {
   useSearchAndFilterProductsQuery,
@@ -44,6 +34,7 @@ import {
 
 import { useGetAllBrandsQuery } from "../../../../features/services/brandApiSlice";
 import { useGetAllVariantsQuery } from "../../../../features/services/variantApiSlice";
+import { tokens } from "../../../../theme";
 const Shopping = () => {
   const isNoneMobile = useMediaQuery("(min-width:1024px)");
   const [openCategory, setOpenCategory] = useState(false);
@@ -60,7 +51,7 @@ const Shopping = () => {
   const [brandValue, setBradValue] = useState([]);
   const [ratingValue, setRatingValue] = useState([]);
   const [organizeValue, setOrganizeValue] = useState({});
-  const [variantsValue, setValriantsValue] = useState([]);
+  const [variantsValue, setVariantValue] = useState([]);
 
   const {
     data: searchAndFilterProducts,
@@ -470,7 +461,7 @@ const Shopping = () => {
                                 name={variantOprions.label}
                                 control={<Checkbox color="secondary" />}
                                 onClick={(e) =>
-                                  handleCheckFilter(e, setValriantsValue)
+                                  handleCheckFilter(e, setVariantValue)
                                 }
                                 label={option?.label}
                                 labelPlacement="end"

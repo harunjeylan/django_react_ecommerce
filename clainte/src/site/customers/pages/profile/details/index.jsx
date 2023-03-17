@@ -14,19 +14,20 @@ import {
   Alert,
 } from "@mui/material";
 
-import Service from "../../../components/Service";
 import ProfileCard from "../global/ProfileCard";
 import ProfileDetailsForm from "./ProfileDetailsForm";
 import ChangePasswordForm from "./ChangePasswordForm";
 
 import {
-  tokens,
-  Header,
   selectCurrentUser,
+  setUserData,
+} from "../../../../../features/auth/authSlice";
+import {
   useUpdatePasswordMutation,
   useUpdatePersonalInfoMutation,
-} from "../../../import";
-import { setUserData } from "../../../../../features/auth/authSlice";
+} from "../../../../../features/auth/authApiSlice";
+import Header from "../../../../../components/Header";
+import { tokens } from "../../../../../theme";
 const Profile = () => {
   const userData = useSelector(selectCurrentUser);
   const navigate = useNavigate();

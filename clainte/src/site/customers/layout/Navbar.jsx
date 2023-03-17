@@ -1,4 +1,4 @@
-import { useContext, useState, useRef, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -9,11 +9,9 @@ import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { LayoutContext } from "./LayoutContext";
 import {
   useTheme,
-  InputBase,
   Badge,
   Box,
   Button,
@@ -24,10 +22,12 @@ import {
   Avatar,
   Tooltip,
 } from "@mui/material";
-import { setIsCartOpen, selectCurrentUser } from "../import";
-import { ColorModeContext, tokens, logo } from "../import";
+
 import { selectWishlists } from "../../../features/services/wishlistReducer";
-// import AccountDialog from "./AccountDialog";
+import { selectCurrentUser } from "../../../features/auth/authSlice";
+import { ColorModeContext, tokens } from "../../../theme";
+import { setIsCartOpen } from "../../../features/services/cartReducer";
+import logo from "../../../data/logo.png";
 function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -80,23 +80,6 @@ function Navbar() {
           </CardActionArea>
         </Box>
         <Box className="justify-center flex gap-2">
-          {/* <Box
-            display="flex"
-            backgroundColor={colors.primary[400]}
-            p={0.2}
-            borderRadius={1}
-          >
-            {activeSearch && (
-              <InputBase
-                ref={searchRef}
-                sx={{ ml: 1, flex: 1 }}
-                placeholder="Search"
-              />
-            )}
-            <IconButton onClick={handleSearchClick} type="button">
-              <SearchOutlinedIcon />
-            </IconButton>
-          </Box> */}
           <IconButton onClick={colorMode.toggleColorMode}>
             {theme.palette.mode === "dark" ? (
               <LightModeOutlinedIcon />

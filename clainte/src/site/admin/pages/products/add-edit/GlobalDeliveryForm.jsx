@@ -15,10 +15,9 @@ import {
   OutlinedInput,
   Select,
 } from "@mui/material";
-import { getIn } from "formik";
 
 import { constants } from "./constants";
-import { tokens } from "../../../import";
+import { tokens } from "../../../../../theme";
 
 const GlobalDeliveryForm = ({
   handleBlur,

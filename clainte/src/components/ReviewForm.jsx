@@ -18,8 +18,7 @@ const ReviewForm = ({ handleReviewFormSubmit }) => {
   const colors = tokens(theme.palette.mode);
   const user = useSelector(selectCurrentUser);
 
-  const phoneRegExp =
-    /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
+  const phoneRegExp = /^\+?1?\d{9,15}$/;
   const initialValues = {
     rating: "0",
     first_name: user?.first_name ? user?.first_name : "",

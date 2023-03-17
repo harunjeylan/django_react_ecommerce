@@ -2,39 +2,31 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import * as yup from "yup";
 import { Formik } from "formik";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   TextField,
   Box,
-  useTheme,
   Typography,
   Divider,
   Button,
   Alert,
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
-import { tokens } from "../theme";
 
-import {
-  selectCurrentUser,
-  setCredentials,
-  setUserData,
-} from "../features/auth/authSlice";
+import { setCredentials, setUserData } from "../features/auth/authSlice";
 import { useLoginMutation } from "../features/auth/authApiSlice";
 import { endpoints as authEndpoints } from "../features/auth/authApiSlice";
+
 const UserLoginForm = ({
   handleCloseAccountDialog = undefined,
   handleClickOpenAccountDialog = undefined,
 }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
   const userRef = useRef();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
   const [errorMessage, setErrorMessage] = useState("");
-  const user = useSelector(selectCurrentUser);
   useEffect(() => {
     userRef.current.focus();
   }, []);

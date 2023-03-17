@@ -12,14 +12,13 @@ import {
   Breadcrumbs,
   Tabs,
   Tab,
-  Rating,
   IconButton,
   TextField,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
-  FormControlLabel,
+  CircularProgress,
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -33,11 +32,9 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import Service from "../../../components/Service";
 import Subscribe from "../../../components/Subscribe";
 
-import { selectCurrentUser, toggleCart, setCount } from "../../../import";
-import { tokens, Reviews, ReviewForm, Header } from "../../../import";
 import {
   useAddProductReviewMutation,
-  useGetProductsDetailesQuery,
+  useGetProductsDetailsQuery,
 } from "../../../../../features/services/productApiSlice";
 import {
   selectWishlists,
@@ -48,9 +45,16 @@ import {
   decreaseCount,
   increaseCount,
   selectCart,
+  setCount,
   setSelectedVariants,
+  toggleCart,
 } from "../../../../../features/services/cartReducer";
 import RelatedProducts from "./RelatedProducts";
+import { tokens } from "../../../../../theme";
+import { selectCurrentUser } from "../../../../../features/auth/authSlice";
+import Header from "../../../../../components/Header";
+import Reviews from "../../../../../components/Reviews";
+import ReviewForm from "../../../../../components/ReviewForm";
 
 const ProductDetails = () => {
   const theme = useTheme();
@@ -72,7 +76,7 @@ const ProductDetails = () => {
   };
 
   const { data: product, isFetching: isFetchingProduct } =
-    useGetProductsDetailesQuery({ productId });
+    useGetProductsDetailsQuery({ productId });
 
   const [activeImage, setActiveImage] = useState(product?.thumbnail);
 
@@ -185,18 +189,19 @@ const ProductDetails = () => {
     return (variantLabel) => {
       let productInCart = findInCart(product);
       if (productInCart && variantLabel) {
-        let selecedVariantOption = productInCart.selectedVariants.find(
+        let selectedVariantOption = productInCart.selectedVariants.find(
           (variantOption) => variantOption.variantLabel === variantLabel
         );
-        if (selecedVariantOption && selecedVariantOption?.optionLabel) {
-          console.log(selecedVariantOption?.optionLabel);
-          return selecedVariantOption?.optionLabel;
+        if (selectedVariantOption && selectedVariantOption?.optionLabel) {
+          console.log(selectedVariantOption?.optionLabel);
+          return selectedVariantOption?.optionLabel;
         } else {
           return "";
         }
       }
       return "";
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product]);
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
@@ -336,7 +341,7 @@ const ProductDetails = () => {
                             variant="h5"
                             color={colors.greenAccent[400]}
                           >
-                            {product?.rating.total} Rewiews
+                            {product?.rating.total} Reviews
                           </Typography>
                         </Box>
 
@@ -364,7 +369,9 @@ const ProductDetails = () => {
                         </Box>
                       </Box>
                     ) : (
-                      <Box></Box>
+                      <Box className="w-full flex items-center justify-center h-full min-h-40">
+                        <CircularProgress color="secondary" />
+                      </Box>
                     )}
                   </Box>
                 </Box>
@@ -387,14 +394,14 @@ const ProductDetails = () => {
                           variant="filled"
                           className="w-full"
                         >
-                          <InputLabel id="varients-select-label">
+                          <InputLabel id="variants-select-label">
                             {variantOption?.variantLabel}
                           </InputLabel>
                           <Select
                             fullWidth
                             color="secondary"
-                            labelId="varients-select-label"
-                            id="varients-select"
+                            labelId="variants-select-label"
+                            id="variants-select"
                             variant="filled"
                             name={variantOption?.variantLabel}
                             defaultValue={getSelectedOption(
@@ -527,7 +534,7 @@ const ProductDetails = () => {
             </Box>
             <Box className={`my-4 w-full  overflow-hidden`}>
               <img
-                alt="product thamnail"
+                alt="product thumbnail"
                 style={{
                   objectFit: "cover",
                   backgroundAttachment: "fixed",
@@ -549,7 +556,7 @@ const ProductDetails = () => {
             aria-label="secondary tabs example"
           >
             <Tab label="Description" value="description" />
-            <Tab label="Additional Information" value="additiona-information" />
+            <Tab label="Additional Information" value="addition-information" />
             <Tab label="Reviews" value="reviews" />
           </Tabs>
           <Box className="flex flex-wrap gap-4  mt-8">
@@ -562,8 +569,8 @@ const ProductDetails = () => {
                 <ReviewForm handleReviewFormSubmit={handleReviewFormSubmit} />
               </Box>
             )}
-            {value === "additiona-information" && (
-              <Box>additiona-information</Box>
+            {value === "addition-information" && (
+              <Box>addition-information</Box>
             )}
           </Box>
         </Box>

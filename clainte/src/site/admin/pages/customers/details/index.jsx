@@ -6,7 +6,6 @@ import { useParams } from "react-router-dom";
 
 import * as yup from "yup";
 import { Formik } from "formik";
-
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import {
   Box,
@@ -26,6 +25,7 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
+  CircularProgress,
 } from "@mui/material";
 
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
@@ -33,16 +33,19 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 
-import { mockDataProducts, mockDataOrders } from "../../../import";
-import { tokens } from "../../../import";
-import { Header } from "../../../import";
-
-const OrderDetailsForAdmin = () => {
+import { useGetCustomerDetailsQuery } from "../../../../../features/services/customerApiSlice";
+import { tokens } from "../../../../../theme";
+import Header from "../../../../../components/Header";
+const CustomerDetails = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
-  const { userId } = useParams();
-
+  const { customerId } = useParams();
+  console.log(customerId);
+  const { data: customerData, isFetching: isFetchingCustomerData } =
+    useGetCustomerDetailsQuery({
+      customerId,
+    });
   const notesOnCustomerInitialValues = {
     notesOnCustomer: "",
   };
@@ -54,14 +57,14 @@ const OrderDetailsForAdmin = () => {
   };
   const productColumns = [
     {
-      field: "name",
+      field: "title",
       headerName: "Product Name",
-      width: 360,
+      width: 300,
       height: 200,
-      renderCell: ({ row: { title, thumbnail } }) => {
+      renderCell: ({ row: { id, title, thumbnail } }) => {
         return (
           <Box className="flex gap-4 items-center py-2 w-full h-full">
-            <Link to={`/admin/products/${1}`}>
+            <Link to={`/admin/products/${id}`}>
               <img
                 style={{ backgroundColor: colors.primary[400] }}
                 className="h-[60px] w-[60px] pointer rounded-md border-[1px]"
@@ -69,32 +72,23 @@ const OrderDetailsForAdmin = () => {
                 alt={`${title}`}
               />
             </Link>
-            <Link to={`/admin/products/${1}`}>
+            <Link to={`/admin/products/${id}`}>
               <Typography color={colors.greenAccent[500]}>{title}</Typography>
             </Link>
           </Box>
         );
       },
     },
-    { field: "color", headerName: "Color", width: 150 },
-    { field: "size", headerName: "Size", width: 150 },
-    {
-      field: "price",
-      headerName: "price",
-      renderCell: ({ row: { price } }) => {
-        return <Typography>{price}</Typography>;
-      },
-    },
-    { field: "quantity", headerName: "Quantity", width: 150 },
 
     {
-      field: "total",
-      headerName: "Total",
-      width: 150,
-      renderCell: ({ row: { price, quantity } }) => {
-        return <Typography>${(price * quantity).toFixed(2)}</Typography>;
+      field: "sale_pricing",
+      headerName: "sale_pricing",
+      renderCell: ({ row: { sale_pricing } }) => {
+        return <Typography>{sale_pricing}</Typography>;
       },
     },
+    { field: "brand", headerName: "Brand", width: 100 },
+    { field: "date", headerName: "Published Date", width: 200 },
   ];
   const orderColumns = [
     {
@@ -115,45 +109,76 @@ const OrderDetailsForAdmin = () => {
       },
     },
     {
-      field: "total",
+      field: "total_price",
       headerName: "Total",
       width: 100,
-      renderCell: ({ row: { total } }) => {
-        return <Typography>${total}</Typography>;
+      renderCell: ({ row: { total_price } }) => {
+        return <Typography>${total_price}</Typography>;
       },
     },
     {
       field: "first_name",
       headerName: "Customer",
       width: 200,
-      hieght: 200,
-      renderCell: ({ row: { first_name, last_name, avator } }) => {
+      height: 200,
+      renderCell: ({ row: { id, full_name, avatar } }) => {
         return (
           <Box className="flex justify-start gap-4 items-center py-2 w-full h-full">
-            <Link to="/">
+            <Link to={`/admin/customers/${id}`}>
               <img
                 className="h-[60px] w-[60px] cursor-pointer rounded-[50%]"
-                src={avator}
-                alt={`${first_name}-${last_name}`}
+                src={avatar}
+                alt={`${full_name}`}
               />{" "}
             </Link>
-            <Link to="/">
+            <Link to={`/admin/customers/${id}`}>
               <Typography
                 className="cursor-pointer"
                 color={colors.greenAccent[500]}
               >
-                {first_name} {last_name}
+                {full_name}
               </Typography>
             </Link>
           </Box>
         );
       },
     },
-    { field: "payment_status", headerName: "Payment status", width: 200 },
-    { field: "fulfilment_status", headerName: "Fulfilment status", width: 200 },
-    { field: "delivery_type", headerName: "Delivery Type", width: 200 },
-    { field: "date", headerName: "Date", width: 100 },
+    {
+      field: "fulfillment_status",
+      headerName: "Fulfillment status",
+      width: 200,
+    },
+    { field: "delivery_method", headerName: "Delivery Method", width: 200 },
+    { field: "date", headerName: "Date", width: 200 },
   ];
+  const reviewColumns = [
+    {
+      field: "id",
+      headerName: "Products",
+      width: 200,
+      renderCell: ({ row: { id, title, thumbnail } }) => {
+        return (
+          <Box className="flex gap-4 items-center py-2 w-full h-full">
+            <Link to={`/admin/products/${id}`}>
+              <img
+                style={{ backgroundColor: colors.primary[400] }}
+                className="h-[60px] w-[60px] pointer rounded-md border-[1px]"
+                src={thumbnail}
+                alt={`${title}`}
+              />
+            </Link>
+            <Link to={`/admin/products/${id}`}>
+              <Typography color={colors.greenAccent[500]}>{title}</Typography>
+            </Link>
+          </Box>
+        );
+      },
+    },
+    { field: "rating", headerName: "Rating", width: 100 },
+    { field: "description", headerName: "Description", width: 400 },
+    { field: "created", headerName: "Date", width: 200 },
+  ];
+
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20 mb-10`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
@@ -163,13 +188,16 @@ const OrderDetailsForAdmin = () => {
             variant="text"
             color="secondary"
           >
-            Admin Dashboadrd
+            Admin Dashboard
           </Button>
           <Typography color="text.primary">Customer details</Typography>
         </Breadcrumbs>
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
-        <Header title={`Customer details`} subtitle="Customer ID : 2364847" />
+        <Header
+          title={`Customer details`}
+          subtitle={`Customer ID : ${customerId}`}
+        />
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Box className="flex flex-col xl:flex-row gap-4">
@@ -182,11 +210,14 @@ const OrderDetailsForAdmin = () => {
                     className="w-full flex flex-col gap-2 drop-shadow-lg  rounded-lg p-4"
                   >
                     <Box className="w-full flex items-center gap-4">
-                      <Box className="p-4">
+                      <Box
+                        backgroundColor={colors.primary[500]}
+                        className="rounded-full h-[200px] w-[200px]"
+                      >
                         <img
-                          className="rounded-[50%] h-[200px] w-[200px]"
-                          alt="customer avater"
-                          src="https://robohash.org/voluptasomnisnon.png?size=100x100&set=set1"
+                          className="rounded-full h-[200px] w-[200px]"
+                          alt="customer avatar"
+                          src={customerData?.customer?.image}
                         />
                       </Box>
                       <Box>
@@ -196,14 +227,15 @@ const OrderDetailsForAdmin = () => {
                           fontWeight="bold"
                           className={`text-xl md:text-2xl  text-left my-1`}
                         >
-                          Ansolo Lazinatov
+                          {customerData?.customer?.first_name}{" "}
+                          {customerData?.customer?.last_name}
                         </Typography>
                         <Typography
                           variant="subtitle1"
                           color={colors.grey[200]}
                           className={`text-left my-1`}
                         >
-                          Joined 3 months ago
+                          {customerData?.customer?.date_joined}
                         </Typography>
                       </Box>
                     </Box>
@@ -223,7 +255,7 @@ const OrderDetailsForAdmin = () => {
                           color={colors.grey[200]}
                           className={`text-left my-1`}
                         >
-                          36
+                          {customerData?.orders?.length}
                         </Typography>
                       </Box>
                       <Box>
@@ -240,7 +272,7 @@ const OrderDetailsForAdmin = () => {
                           color={colors.grey[200]}
                           className={`text-left my-1`}
                         >
-                          24
+                          {customerData?.wishlists?.length}
                         </Typography>
                       </Box>
                       <Box>
@@ -257,7 +289,7 @@ const OrderDetailsForAdmin = () => {
                           color={colors.grey[200]}
                           className={`text-left my-1`}
                         >
-                          55
+                          {customerData?.reviews?.length}
                         </Typography>
                       </Box>
                     </Box>
@@ -274,7 +306,7 @@ const OrderDetailsForAdmin = () => {
                       fontWeight="bold"
                       className={`text-xl md:text-2xl  text-left my-4`}
                     >
-                      Billing details
+                      Customer details
                     </Typography>
                     <List className="w-full">
                       <ListItem>
@@ -284,13 +316,10 @@ const OrderDetailsForAdmin = () => {
                         <ListItemText
                           primary="Customer"
                           secondary={
-                            <Link to={`admin/customers/id`}>
-                              <Typography
-                                sx={{ color: colors.greenAccent[500] }}
-                              >
-                                Shatinon Mekalan
-                              </Typography>
-                            </Link>
+                            <Typography sx={{ color: colors.greenAccent[500] }}>
+                              {customerData?.customer?.first_name}{" "}
+                              {customerData?.customer?.last_name}
+                            </Typography>
                           }
                         />
                       </ListItem>
@@ -301,13 +330,9 @@ const OrderDetailsForAdmin = () => {
                         <ListItemText
                           primary="Email"
                           secondary={
-                            <Link to={`admin/customers/id`}>
-                              <Typography
-                                sx={{ color: colors.greenAccent[500] }}
-                              >
-                                shatinon@jeemail.com
-                              </Typography>
-                            </Link>
+                            <Typography sx={{ color: colors.greenAccent[500] }}>
+                              {customerData?.customer?.email}
+                            </Typography>
                           }
                         />
                       </ListItem>
@@ -318,13 +343,9 @@ const OrderDetailsForAdmin = () => {
                         <ListItemText
                           primary="Phone"
                           secondary={
-                            <Link to={`admin/customers/id`}>
-                              <Typography
-                                sx={{ color: colors.greenAccent[500] }}
-                              >
-                                +1234567890
-                              </Typography>
-                            </Link>
+                            <Typography sx={{ color: colors.greenAccent[500] }}>
+                              {customerData?.customer?.phone_number}
+                            </Typography>
                           }
                         />
                       </ListItem>
@@ -336,8 +357,15 @@ const OrderDetailsForAdmin = () => {
                           primary="Address"
                           secondary={
                             <Typography>
-                              Shatinon Mekalan Vancouver, British Columbia,
-                              Canada
+                              {customerData?.customer?.street1}
+                              {", "}
+                              {customerData?.customer?.country}
+                              {", "}
+                              {customerData?.customer?.city}
+                              {", "}
+                              {customerData?.customer?.state}
+                              {", "}
+                              {customerData?.customer?.zipcode}
                             </Typography>
                           }
                         />
@@ -511,7 +539,7 @@ const OrderDetailsForAdmin = () => {
                   fontWeight="bold"
                   className={`text-xl md:text-2xl  text-left my-4`}
                 >
-                  Orders (100)
+                  Orders ({customerData?.orders?.length})
                 </Typography>
                 <Box
                   className="h-[400px]"
@@ -540,14 +568,26 @@ const OrderDetailsForAdmin = () => {
                     },
                   }}
                 >
-                  <DataGrid
-                    density="comfortable"
-                    rows={mockDataOrders.slice(0, 10)}
-                    columns={orderColumns}
-                    autoPageSize
-                    checkboxSelection
-                    components={{ Toolbar: GridToolbar }}
-                  />
+                  {!isFetchingCustomerData ? (
+                    customerData?.orders?.length ? (
+                      <DataGrid
+                        density="comfortable"
+                        rows={customerData?.orders}
+                        columns={orderColumns}
+                        autoPageSize
+                        checkboxSelection
+                        components={{ Toolbar: GridToolbar }}
+                      />
+                    ) : (
+                      <Box className="w-full flex items-center justify-center h-full min-h-40">
+                        <Typography>No data</Typography>
+                      </Box>
+                    )
+                  ) : (
+                    <Box className="w-full flex items-center justify-center h-full min-h-40">
+                      <CircularProgress color="secondary" />
+                    </Box>
+                  )}
                 </Box>
               </Box>
               <Box
@@ -560,7 +600,7 @@ const OrderDetailsForAdmin = () => {
                   fontWeight="bold"
                   className={`text-xl md:text-2xl  text-left my-4`}
                 >
-                  Wishlist (43)
+                  Wishlist ({customerData?.wishlists?.length})
                 </Typography>
                 <Box
                   className="h-[400px]"
@@ -589,14 +629,26 @@ const OrderDetailsForAdmin = () => {
                     },
                   }}
                 >
-                  <DataGrid
-                    density="comfortable"
-                    rows={mockDataProducts.slice(0, 10)}
-                    columns={productColumns}
-                    autoPageSize
-                    checkboxSelection
-                    components={{ Toolbar: GridToolbar }}
-                  />
+                  {!isFetchingCustomerData ? (
+                    customerData?.wishlists?.length ? (
+                      <DataGrid
+                        density="comfortable"
+                        rows={customerData?.wishlists}
+                        columns={productColumns}
+                        autoPageSize
+                        checkboxSelection
+                        components={{ Toolbar: GridToolbar }}
+                      />
+                    ) : (
+                      <Box className="w-full flex items-center justify-center h-full min-h-40">
+                        <Typography>No data</Typography>
+                      </Box>
+                    )
+                  ) : (
+                    <Box className="w-full flex items-center justify-center h-full min-h-40">
+                      <CircularProgress color="secondary" />
+                    </Box>
+                  )}
                 </Box>
               </Box>
               <Box
@@ -609,7 +661,7 @@ const OrderDetailsForAdmin = () => {
                   fontWeight="bold"
                   className={`text-xl md:text-2xl  text-left my-4`}
                 >
-                  Ratings & reviews (43)
+                  Ratings & reviews ({customerData?.reviews?.length})
                 </Typography>
                 <Box
                   className="h-[400px]"
@@ -633,19 +685,32 @@ const OrderDetailsForAdmin = () => {
                     "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
                       color: `${colors.grey[100]} !important`,
                     },
+
                     "& .MuiDataGrid-cell": {
                       width: "100%",
                     },
                   }}
                 >
-                  <DataGrid
-                    density="comfortable"
-                    rows={mockDataProducts.slice(0, 10)}
-                    columns={productColumns}
-                    autoPageSize
-                    checkboxSelection
-                    components={{ Toolbar: GridToolbar }}
-                  />
+                  {!isFetchingCustomerData ? (
+                    customerData?.reviews?.length ? (
+                      <DataGrid
+                        density="comfortable"
+                        rows={customerData?.reviews}
+                        columns={reviewColumns}
+                        autoPageSize
+                        checkboxSelection
+                        components={{ Toolbar: GridToolbar }}
+                      />
+                    ) : (
+                      <Box className="w-full flex items-center justify-center h-full min-h-40">
+                        <Typography>No data</Typography>
+                      </Box>
+                    )
+                  ) : (
+                    <Box className="w-full flex items-center justify-center h-full min-h-40">
+                      <CircularProgress color="secondary" />
+                    </Box>
+                  )}
                 </Box>
               </Box>
             </Box>
@@ -656,4 +721,4 @@ const OrderDetailsForAdmin = () => {
   );
 };
 
-export default OrderDetailsForAdmin;
+export default CustomerDetails;

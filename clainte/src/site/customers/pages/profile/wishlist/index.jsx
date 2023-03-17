@@ -17,15 +17,15 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 
 import ProfileCard from "../global/ProfileCard";
-import Service from "../../../components/Service";
 
-import { addToCart } from "../../../import";
-import { tokens, Header } from "../../../import";
 import {
   selectWishlists,
   setWishlist,
 } from "../../../../../features/services/wishlistReducer";
 import { useToggleWishlistMutation } from "../../../../../features/services/wishlistApiSlice";
+import { tokens } from "../../../../../theme";
+import Header from "../../../../../components/Header";
+import { addToCart } from "../../../../../features/services/cartReducer";
 
 const Wishlist = () => {
   const navigate = useNavigate();

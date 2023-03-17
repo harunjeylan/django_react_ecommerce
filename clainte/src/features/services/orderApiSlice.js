@@ -1,16 +1,28 @@
 import { authApi } from "../auth/authApi";
 
 export const orderApi = authApi.injectEndpoints({
-  tagTypes: ["orders", "orders_detaile"],
+  tagTypes: ["orders", "orders_details", "orders_for_admin"],
   endpoints: (builder) => ({
     getAllOrders: builder.query({
       query: () => `api/orders/`,
       providesTags: ["orders"],
     }),
+
+    getAllOrdersForAdmin: builder.query({
+      query: () => `api/admin/orders/`,
+      providesTags: ["orders_for_admin"],
+    }),
+
     getOrderDetailes: builder.query({
       query: ({ orderId }) => `api/orders/${orderId}/`,
-      providesTags: ["orders_detaile"],
+      providesTags: ["orders_details"],
     }),
+
+    getOrderDetailsForAdmin: builder.query({
+      query: ({ orderId }) => `api/admin/orders/${orderId}/`,
+      providesTags: ["orders_details"],
+    }),
+
     addOrder: builder.mutation({
       query: ({ post }) => ({
         url: `api/orders/add/`,
@@ -44,4 +56,7 @@ export const {
   useAddOrderMutation,
   useUpdateOrderMutation,
   useDeleteOrderMutation,
+
+  useGetAllOrdersForAdminQuery,
+  useGetOrderDetailsForAdminQuery,
 } = orderApi;

@@ -18,9 +18,7 @@ import {
   Stack,
   useMediaQuery,
 } from "@mui/material";
-import { getIn } from "formik";
-
-import { tokens } from "../../../import";
+import { tokens } from "../../../../../theme";
 
 const AttributesForm = ({
   setFieldValue,

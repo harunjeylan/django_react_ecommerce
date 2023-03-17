@@ -8,16 +8,12 @@ import AccountMenu from "./AccountMenu";
 import AccountDialog from "./AccountDialog";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetWishlistQuery } from "../../../features/services/wishlistApiSlice";
-import {
-  selectWishlists,
-  setWishlist,
-} from "../../../features/services/wishlistReducer";
-import { selectCurrentUser } from "../import";
+import { setWishlist } from "../../../features/services/wishlistReducer";
+import { selectCurrentUser } from "../../../features/auth/authSlice";
 
 function Customer({ children }) {
   const { pathname } = useLocation();
   const dispatch = useDispatch();
-  const wishlists = useSelector(selectWishlists);
   const user = useSelector(selectCurrentUser);
   useEffect(() => {
     window.scrollTo(0, 0);

@@ -12,12 +12,10 @@ import {
   Select,
   OutlinedInput,
   Chip,
-  Button,
   Divider,
   IconButton,
 } from "@mui/material";
 
-import { tokens } from "../../../import";
 
 import {
   useAddOrganizeMutation,
@@ -26,11 +24,10 @@ import {
   useUpdateOrganizeMutation,
 } from "../../../../../features/services/organizeApiSlice";
 
-import { constants } from "./constants";
-import Model from "../../../../../ui/Model";
 import CloseIcon from "@mui/icons-material/Close";
-import AddIcon from "@mui/icons-material/Add";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
+import Model from "../../../../../components/ui/Model";
+import { tokens } from "../../../../../theme";
 
 const Item = ({ item, itemName, handleUpdate, handleDelete }) => {
   const InputRef = useRef();
@@ -118,7 +115,7 @@ const OrganizeForm = ({
       name,
     };
     console.log(data);
-    deleteOrganize({post:data}).then((res)=>console.log(res));
+    deleteOrganize({ post: data }).then((res) => console.log(res));
   };
   return (
     <>

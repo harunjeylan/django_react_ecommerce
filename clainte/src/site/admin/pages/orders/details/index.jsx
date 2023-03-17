@@ -12,7 +12,6 @@ import {
   Typography,
   Breadcrumbs,
   useTheme,
-  TextField,
   MenuItem,
   InputLabel,
   FormControl,
@@ -23,29 +22,29 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
+  CircularProgress,
 } from "@mui/material";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import LocalMallOutlinedIcon from "@mui/icons-material/LocalMallOutlined";
-import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import CardGiftcardOutlinedIcon from "@mui/icons-material/CardGiftcardOutlined";
 import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 
-import {
-  tokens,
-  Header,
-  OrderSummery,
-  mockDataProducts,
-} from "../../../import";
+import { useGetOrderDetailsForAdminQuery } from "../../../../../features/services/orderApiSlice";
+import { tokens } from "../../../../../theme";
+import Header from "../../../../../components/Header";
+import OrderSummery from "../../../../../components/OrderSummery";
 
 const OrderDetailsForAdmin = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const { orderId } = useParams();
+  const { data: orderData, isFetching: isFetchingOrder } =
+    useGetOrderDetailsForAdminQuery({ orderId: orderId });
 
+  console.log(orderData);
   const orderStateInitialValues = {
     paymentStatus: "",
     fulfillmentStatus: "",
@@ -57,12 +56,13 @@ const OrderDetailsForAdmin = () => {
   const handleFormSubmit = (values) => {
     console.log(values);
   };
+
   const columns = [
     {
-      field: "name",
+      field: "title",
       headerName: "Product Name",
-      width: 360,
-      hieght: 200,
+      width: 300,
+      height: 200,
       renderCell: ({ row: { id, title, thumbnail } }) => {
         return (
           <Box className="flex gap-4 items-center py-2 w-full h-full">
@@ -81,23 +81,39 @@ const OrderDetailsForAdmin = () => {
         );
       },
     },
-    { field: "color", headerName: "Color", width: 150 },
-    { field: "size", headerName: "Size", width: 150 },
+
     {
-      field: "price",
-      headerName: "price",
-      renderCell: ({ row: { price } }) => {
-        return <Typography>{price}</Typography>;
+      field: "variants",
+      headerName: "Variants",
+      width: 350,
+      renderCell: ({ row: { variants } }) => {
+        return (
+          <Box className="flex gap-4 items-center py-2 w-full h-full">
+            {variants?.map((variant, index) => (
+              <Typography key={index}>
+                <strong>{variant.variantLabel} : </strong>
+                <span> {variant.optionLabel} </span>,
+              </Typography>
+            ))}
+          </Box>
+        );
       },
     },
-    { field: "quantity", headerName: "Quantity", width: 150 },
+    {
+      field: "sale_pricing",
+      headerName: "Price",
+      renderCell: ({ row: { sale_pricing } }) => {
+        return <Typography>{sale_pricing}</Typography>;
+      },
+    },
+    { field: "count", headerName: "Quantity", width: 150 },
 
     {
       field: "total",
       headerName: "Total",
       width: 150,
-      renderCell: ({ row: { price, quantity } }) => {
-        return <Typography>${(price * quantity).toFixed(2)}</Typography>;
+      renderCell: ({ row: { sale_pricing, count } }) => {
+        return <Typography>${(sale_pricing * count).toFixed(2)}</Typography>;
       },
     },
   ];
@@ -111,7 +127,7 @@ const OrderDetailsForAdmin = () => {
             variant="text"
             color="secondary"
           >
-            Admin Dashboadrd
+            Admin Dashboard
           </Button>
           <Typography color="text.primary">Order # {orderId}</Typography>
         </Breadcrumbs>
@@ -146,19 +162,28 @@ const OrderDetailsForAdmin = () => {
                   "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
                     color: `${colors.grey[100]} !important`,
                   },
-                  "& .MuiDataGrid-cell": {
-                    width: "100%",
-                  },
                 }}
               >
-                <DataGrid
-                  density="comfortable"
-                  rows={mockDataProducts.slice(0, 10)}
-                  columns={columns}
-                  autoPageSize
-                  checkboxSelection
-                  components={{ Toolbar: GridToolbar }}
-                />
+                {!isFetchingOrder ? (
+                  orderData?.products?.length ? (
+                    <DataGrid
+                      density="comfortable"
+                      rows={orderData?.products}
+                      columns={columns}
+                      autoPageSize
+                      checkboxSelection
+                      components={{ Toolbar: GridToolbar }}
+                    />
+                  ) : (
+                    <Box className="w-full flex items-center justify-center h-full min-h-40">
+                      <Typography>No data</Typography>
+                    </Box>
+                  )
+                ) : (
+                  <Box className="w-full flex items-center justify-center h-full min-h-40">
+                    <CircularProgress color="secondary" />
+                  </Box>
+                )}
               </Box>
               <Box className="grid  xl:grid-cols-3 gap-4">
                 <Box className="flex flex-col gap-4">
@@ -178,9 +203,10 @@ const OrderDetailsForAdmin = () => {
                       <ListItemText
                         primary="Customer"
                         secondary={
-                          <Link to={`admin/customers/id`}>
+                          <Link to={`/admin/customers/${orderData?.customer}`}>
                             <Typography sx={{ color: colors.greenAccent[500] }}>
-                              Shatinon Mekalan
+                              {orderData?.billing_address?.first_name}{" "}
+                              {orderData?.billing_address?.last_name}
                             </Typography>
                           </Link>
                         }
@@ -193,9 +219,9 @@ const OrderDetailsForAdmin = () => {
                       <ListItemText
                         primary="Email"
                         secondary={
-                          <Link to={`admin/customers/id`}>
+                          <Link to={`/admin/customers/${orderData?.customer}`}>
                             <Typography sx={{ color: colors.greenAccent[500] }}>
-                              shatinon@jeemail.com
+                              {orderData?.billing_address?.email}
                             </Typography>
                           </Link>
                         }
@@ -208,9 +234,9 @@ const OrderDetailsForAdmin = () => {
                       <ListItemText
                         primary="Phone"
                         secondary={
-                          <Link to={`admin/customers/id`}>
+                          <Link to={`/admin/customers/${orderData?.customer}`}>
                             <Typography sx={{ color: colors.greenAccent[500] }}>
-                              +1234567890
+                              {orderData?.billing_address?.phone_number}
                             </Typography>
                           </Link>
                         }
@@ -224,7 +250,15 @@ const OrderDetailsForAdmin = () => {
                         primary="Address"
                         secondary={
                           <Typography>
-                            Shatinon Mekalan Vancouver, British Columbia, Canada
+                            {orderData?.billing_address?.street1}
+                            {", "}
+                            {orderData?.billing_address?.country}
+                            {", "}
+                            {orderData?.billing_address?.city}
+                            {", "}
+                            {orderData?.billing_address?.state}
+                            {", "}
+                            {orderData?.billing_address?.zipcode}
                           </Typography>
                         }
                       />
@@ -243,14 +277,30 @@ const OrderDetailsForAdmin = () => {
                   <List className="w-full">
                     <ListItem>
                       <ListItemIcon>
+                        <PersonOutlineOutlinedIcon size="large" />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary="Customer"
+                        secondary={
+                          <Link to={`/admin/customers/${orderData?.customer}`}>
+                            <Typography sx={{ color: colors.greenAccent[500] }}>
+                              {orderData?.shipping_address?.first_name}{" "}
+                              {orderData?.shipping_address?.last_name}
+                            </Typography>
+                          </Link>
+                        }
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemIcon>
                         <EmailOutlinedIcon size="large" />
                       </ListItemIcon>
                       <ListItemText
                         primary="Email"
                         secondary={
-                          <Link to={`admin/customers/id`}>
+                          <Link to={`/admin/customers/${orderData?.customer}`}>
                             <Typography sx={{ color: colors.greenAccent[500] }}>
-                              shatinon@jeemail.com
+                              {orderData?.shipping_address?.email}
                             </Typography>
                           </Link>
                         }
@@ -263,21 +313,12 @@ const OrderDetailsForAdmin = () => {
                       <ListItemText
                         primary="Phone"
                         secondary={
-                          <Link to={`admin/customers/id`}>
+                          <Link to={`/admin/customers/${orderData?.customer}`}>
                             <Typography sx={{ color: colors.greenAccent[500] }}>
-                              +1234567890
+                              {orderData?.shipping_address?.phone_number}
                             </Typography>
                           </Link>
                         }
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemIcon>
-                        <ShoppingBagOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Shipping Date"
-                        secondary={<Typography>12 Nov, 2021</Typography>}
                       />
                     </ListItem>
                     <ListItem>
@@ -288,7 +329,15 @@ const OrderDetailsForAdmin = () => {
                         primary="Address"
                         secondary={
                           <Typography>
-                            Shatinon Mekalan Vancouver, British Columbia, Canada
+                            {orderData?.shipping_address?.street1}
+                            {", "}
+                            {orderData?.shipping_address?.country}
+                            {", "}
+                            {orderData?.shipping_address?.city}
+                            {", "}
+                            {orderData?.shipping_address?.state}
+                            {", "}
+                            {orderData?.shipping_address?.zipcode}
                           </Typography>
                         }
                       />
@@ -344,7 +393,7 @@ const OrderDetailsForAdmin = () => {
           </Box>
           <Box className="w-full lg:w-[30%]">
             <Box className="flex flex-col gap-4">
-              <OrderSummery totalPrice={2503} />
+              <OrderSummery totalPrice={orderData?.total_price} />
               <Box
                 backgroundColor={colors.primary[400]}
                 className="drop-shadow-lg  rounded-lg p-4"

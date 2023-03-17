@@ -23,8 +23,8 @@ import {
   Typography,
   CardActionArea,
 } from "@mui/material";
-
-import { tokens, selectCurrentUser } from "../import";
+import { tokens } from "../../../theme";
+import { selectCurrentUser } from "../../../features/auth/authSlice";
 
 const ProductCard = ({ product }) => {
   const theme = useTheme();

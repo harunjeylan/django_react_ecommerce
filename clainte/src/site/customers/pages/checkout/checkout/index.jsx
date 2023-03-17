@@ -21,9 +21,11 @@ import Shipping from "./Shipping";
 import Delivery from "./Delivery";
 import OrderReview from "./OrderReview";
 
-import { tokens, Header, selectCurrentUser } from "../../../import";
 import { useAddOrderMutation } from "../../../../../features/services/orderApiSlice";
 import { clearCart } from "../../../../../features/services/cartReducer";
+import { selectCurrentUser } from "../../../../../features/auth/authSlice";
+import { tokens } from "../../../../../theme";
+import Header from "../../../../../components/Header";
 
 const Checkout = () => {
   const dispatch = useDispatch();

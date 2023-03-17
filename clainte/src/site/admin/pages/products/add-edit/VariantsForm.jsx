@@ -15,12 +15,11 @@ import {
   OutlinedInput,
 } from "@mui/material";
 
-import { tokens } from "../../../import";
-import Model from "../../../../../ui/Model";
-
 import { useGetAllVariantsQuery } from "../../../../../features/services/variantApiSlice";
 import VariantList from "./VariantList";
 import CreateEditVariant from "./CreateEditVariant";
+import { tokens } from "../../../../../theme";
+import Model from "../../../../../components/ui/Model";
 const VariantsForm = ({
   values,
   errors,

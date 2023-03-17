@@ -14,9 +14,11 @@ import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
-
-import { logOut, selectCurrentUser } from "../../../import";
-import { tokens } from "../../../import";
+import { tokens } from "../../../../../theme";
+import {
+  logOut,
+  selectCurrentUser,
+} from "../../../../../features/auth/authSlice";
 
 const ProfileCard = () => {
   const theme = useTheme();
@@ -33,7 +35,7 @@ const ProfileCard = () => {
       >
         <Box className="h-[200px] w-[200px] rounded-full bg-slate-400/10 ">
           <img
-            alt="user avater"
+            alt="user avatar"
             src={
               userData?.image
                 ? userData?.image

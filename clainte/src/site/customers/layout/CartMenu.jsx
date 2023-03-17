@@ -15,15 +15,9 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { tokens } from "../../../theme";
+import { decreaseCount, increaseCount, removeFromCart, setCount, setIsCartOpen } from "../../../features/services/cartReducer";
 
-import {
-  decreaseCount,
-  setCount,
-  increaseCount,
-  removeFromCart,
-  setIsCartOpen,
-} from "../import";
-import { tokens } from "../import";
 
 const CartMenu = () => {
   const navigate = useNavigate();

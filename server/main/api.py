@@ -27,9 +27,10 @@ from api.utils import getAverage
 @permission_classes([IsAuthenticated])
 def getDashboardData(request):
     today = datetime.today()
+    # =====================================================================================
     last_7_day = today - timedelta(days=7)
     last_14_day = today - timedelta(days=14)
-    # =====================================================================================
+
     two_week_orders = Order.objects.filter(
             date__gt= last_14_day, date__lte=last_7_day
     )
@@ -48,14 +49,14 @@ def getDashboardData(request):
         "total_orders":one_week_orders.count(),
         "increasing":getAverage(one_week_orders.count(), two_week_orders.count()+one_week_orders.count())
     }
-    orders_data = []
-    orders_iterator = itertools.groupby(last_week_orders, lambda x : x["day"])
-    for key, groups in orders_iterator:
+    weak_orders_data = []
+    weak_orders_iterator = itertools.groupby(last_week_orders, lambda x : x["day"])
+    for key, groups in weak_orders_iterator:
         data = {"date":key,"complete":0,"failed":0,"pending":0,"cancelled":0,}
         for group in groups:
             data[group["status"]] = group["count"]
-        orders_data.append(data)
-    last_week_orders_data["data"] = orders_data
+        weak_orders_data.append(data)
+    last_week_orders_data["data"] = weak_orders_data
 
     # =====================================================================================
     
@@ -83,7 +84,7 @@ def getDashboardData(request):
         "total_products":last_week_total_products,
         "increasing":getAverage(last_week_total_products, prev_week_total_products+last_week_total_products)
     }
-    products_data = []
+    year_products_data = []
     for last_week_product in last_week_products:
         orderd_product = one_week_products.filter(
             product__id=last_week_product["product"]
@@ -102,11 +103,94 @@ def getDashboardData(request):
                 data["y"] = group["product_count"]
             products.append(data)
         # print(products_data)
-        products_data.append({
+        year_products_data.append({
             "id":last_week_product["product__title"],
             "data":products
         })
-    last_week_products_data["data"] = products_data
+    last_week_products_data["data"] = year_products_data
+    # =====================================================================================
+
+    # =====================================================================================
+    last_1_year = today - timedelta(days=365)
+    last_2_year = today - timedelta(days=728)
+
+    two_year_orders = Order.objects.filter(
+            date__gt= last_2_year, date__lte=last_1_year
+    )
+    one_year_orders = Order.objects.filter(
+            date__gt= last_1_year
+    )
+
+    last_year_orders = one_year_orders.annotate(
+            month=ExtractMonth('date')
+        ).values('month').annotate(
+            count=Count('id'),
+            status=F("fulfillment_status")
+        ).values('month', 'count',"status")
+    
+    last_year_orders_data = {
+        "total_orders":one_year_orders.count(),
+        "increasing":getAverage(one_year_orders.count(), two_year_orders.count()+one_year_orders.count())
+    }
+    year_orders_data = []
+    year_orders_iterator = itertools.groupby(last_year_orders, lambda x : x["month"])
+    for key, groups in year_orders_iterator:
+        data = {"date":key,"complete":0,"failed":0,"pending":0,"cancelled":0,}
+        for group in groups:
+            data[group["status"]] = group["count"]
+        year_orders_data.append(data)
+    last_year_orders_data["data"] = year_orders_data
+
+    # =====================================================================================
+    
+    # # print(last_year_orders_data)
+    one_year_products = OrderdProduct.objects.filter(order__date__gt=last_7_day)
+    two_year_products = OrderdProduct.objects.filter(order__date__gt= last_14_day, order__date__lte=last_7_day)
+   
+    last_year_products = one_year_products.values("product").annotate(
+        product_count=Sum("count") 
+    ).order_by("-product_count")[:3].values("product_count","product","product__title")
+    prev_year_products = two_year_products.values("product").annotate(
+        product_count=Sum("count") 
+    ).order_by("-product_count")[:3].values("product_count","product","product__title")
+        
+    last_year_total_products = 0
+    prev_year_total_products = 0
+    for product in last_year_products:
+        last_year_total_products += product["product_count"]
+    for product in prev_year_products:
+        prev_year_total_products += product["product_count"]
+
+    
+    print(last_year_products) 
+    last_year_products_data = {
+        "total_products":last_year_total_products,
+        "increasing":getAverage(last_year_total_products, prev_year_total_products+last_year_total_products)
+    }
+    year_products_data = []
+    for last_year_product in last_year_products:
+        orderd_product = one_year_products.filter(
+            product__id=last_year_product["product"]
+        ).annotate(
+            month=ExtractMonth('order__date')
+        ).values('month').annotate(
+            month_count = Count("month"),
+            product_count=Sum("count")
+        ).values("month","product_count")
+        # print(orderd_product)
+        products = []
+        products_iterator = itertools.groupby(orderd_product, lambda x : x["month"])
+        for key, groups in products_iterator:
+            data = {"x":key,"y":0}
+            for group in groups:
+                data["y"] = group["product_count"]
+            products.append(data)
+        # print(products_data)
+        year_products_data.append({
+            "id":last_year_product["product__title"],
+            "data":products
+        })
+    last_year_products_data["data"] = year_products_data
     # =====================================================================================
 
     new_orders = Order.objects.all().order_by("-date")[:100].annotate(
@@ -122,10 +206,11 @@ def getDashboardData(request):
             **new_order,
             "user_id":user.id,
             "full_name":user.get_full_name(),
-            "avator":profile["image"]
+            "avatar":profile["image"]
         })
     
     
+    # =====================================================================================
     # =====================================================================================
     
     new_customers_data = []
@@ -140,7 +225,7 @@ def getDashboardData(request):
             "id":user.id,
             "full_name":user.get_full_name(),
             "email":user.email,
-            "avator":profile["image"],
+            "avatar":profile["image"],
             "total_spent":total_spent,
             "last_order":orders.first().date,
             "orders":orders.count(),
@@ -150,6 +235,8 @@ def getDashboardData(request):
     response_data = {
         "last_week_products":last_week_products_data,
         "last_week_orders":last_week_orders_data,
+        "last_year_products":last_year_products_data,
+        "last_year_orders":last_year_orders_data,
         "new_orders":new_orders_data,
         "new_customers":new_customers_data,
     }

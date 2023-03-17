@@ -157,8 +157,8 @@ class OrderdProduct(models.Model):
 class Order(models.Model):
     products = models.ManyToManyField(OrderdProduct, blank=True)
     customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    billing_adderss=models.ForeignKey(OrderAddress,related_name="order_billing_adderss", on_delete=models.SET_NULL, null=True)
-    shipping_adderss=models.ForeignKey(OrderAddress, related_name="order_shipping_adderss", on_delete=models.SET_NULL, null=True)
+    billing_address=models.ForeignKey(OrderAddress,related_name="order_billing_address", on_delete=models.SET_NULL, null=True)
+    shipping_address=models.ForeignKey(OrderAddress, related_name="order_shipping_address", on_delete=models.SET_NULL, null=True)
     FULFILLMENT_STATUS = [
         ("complete","Complete"),
         ("failed","Failed"),

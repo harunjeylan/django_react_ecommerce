@@ -4,8 +4,9 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Header, tokens } from "../../import";
 import { useNavigate } from "react-router-dom";
+import { tokens } from "../../../../theme";
+import Header from "../../../../components/Header";
 
 const FAQ = () => {
   const theme = useTheme();

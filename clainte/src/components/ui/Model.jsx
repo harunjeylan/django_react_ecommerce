@@ -1,23 +1,10 @@
 import React from "react";
 
-import {
-  Box,
-  useTheme,
-  Typography,
-  IconButton,
-  TextField,
-} from "@mui/material";
+import { Box, useTheme, Typography, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { tokens } from "../../theme";
 
-import { tokens } from "../site/admin/import";
-
-const AccountDialog = ({
-  children,
-  openModel,
-  setOpenModel,
-  modelTitle,
-  width,
-}) => {
+const Model = ({ children, openModel, setOpenModel, modelTitle, width }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const getWidth = () => {
@@ -67,4 +54,4 @@ const AccountDialog = ({
   );
 };
 
-export default AccountDialog;
+export default Model;

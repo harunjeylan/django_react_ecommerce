@@ -3,9 +3,9 @@ import React, { useState, useEffect } from "react";
 import { Box, Tabs, Tab } from "@mui/material";
 import ProductsList from "./ProductsList";
 import {
-  useGetProductsByCategoryQuery,
   useGetAllCategoryQuery,
-} from "../import";
+  useGetProductsByCategoryQuery,
+} from "../../../features/services/productApiSlice";
 
 const ShoppingList = () => {
   const { data: allCategory, isFetching: isFetchingAllCategory } =

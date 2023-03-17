@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 const CategoryTap = () => {
   const [value, setValue] = React.useState(0);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (newValue) => {
     setValue(newValue);
   };
 

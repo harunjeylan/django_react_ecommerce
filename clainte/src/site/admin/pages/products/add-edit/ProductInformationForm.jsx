@@ -13,7 +13,6 @@ import {
   InputLabel,
   Select,
   IconButton,
-  Button,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
@@ -24,9 +23,8 @@ import {
   useUpdateBrandMutation,
   useDeleteBrandMutation,
 } from "../../../../../features/services/brandApiSlice";
-import Model from "../../../../../ui/Model";
-
-import { tokens } from "../../../import";
+import { tokens } from "../../../../../theme";
+import Model from "../../../../../components/ui/Model";
 
 const Brand = ({ brand, handleUpdate, handleDelete }) => {
   const InputRef = useRef();

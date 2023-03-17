@@ -10,8 +10,7 @@ import {
   FormLabel,
   FormGroup,
 } from "@mui/material";
-
-import { tokens } from "../../../import";
+import { tokens } from "../../../../../theme";
 
 const PricingForm = ({ handleBlur, handleChange, values, touched, errors }) => {
   const theme = useTheme();

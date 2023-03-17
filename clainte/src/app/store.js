@@ -22,6 +22,7 @@ import { variantApi } from "../features/services/variantApiSlice";
 import { brandApi } from "../features/services/brandApiSlice";
 import { orderApi } from "../features/services/orderApiSlice";
 import { wishlistApi } from "../features/services/wishlistApiSlice";
+import { customerApi } from "../features/services/customerApiSlice";
 
 import productReducer from "../features/services/productSlice";
 import cartReducer from "../features/services/cartReducer";
@@ -64,6 +65,7 @@ const store = configureStore({
     [wishlistApi.reducerPath]: wishlistApi.reducer,
 
     [dashboardApi.reducerPath]: dashboardApi.reducer,
+    [customerApi.reducerPath]: customerApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -78,6 +80,7 @@ const store = configureStore({
       .concat(authApi.middleware)
       .concat(orderApi.middleware)
       .concat(dashboardApi.middleware)
+      .concat(customerApi.middleware)
       .concat(wishlistApi.middleware);
   },
   devTools: true,

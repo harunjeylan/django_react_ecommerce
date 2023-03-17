@@ -14,10 +14,11 @@ import {
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { useGetOrderDetailesQuery } from "../../../../../features/services/orderApiSlice";
 import ProfileCard from "../global/ProfileCard";
+import { tokens } from "../../../../../theme";
+import Header from "../../../../../components/Header";
+import OrderSummery from "../../../../../components/OrderSummery";
 
-import { OrderSummery, Header, tokens } from "../../../import";
-
-const OderDetails = () => {
+const OrderDetailsCustomer = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -162,34 +163,34 @@ const OderDetails = () => {
                             fontWeight="bold"
                             className={`text-xl md:text-2xl  text-left`}
                           >
-                            Biling Address
+                            Billing Address
                           </Typography>
                         </Box>
                         <Divider />
                         <Box className="flex flex-col gap-4 px-4 py-2">
                           <Typography variant="h5" fontWeight="bold">
-                            {order?.billing_adderss?.first_name}{" "}
-                            {order?.billing_adderss?.last_name}
+                            {order?.billing_address?.first_name}{" "}
+                            {order?.billing_address?.last_name}
                           </Typography>
                           <Typography variant="h5" fontWeight="bold">
-                            {order?.billing_adderss?.email}
+                            {order?.billing_address?.email}
                           </Typography>
                           <Typography variant="h5" fontWeight="bold">
-                            {order?.billing_adderss?.phone_number}
+                            {order?.billing_address?.phone_number}
                           </Typography>
                           <Typography variant="h5" fontWeight="bold">
-                            {order?.billing_adderss?.street1}
-                            {order?.billing_adderss?.street2 &&
-                              ` or ${order?.billing_adderss?.street2}`}
+                            {order?.billing_address?.street1}
+                            {order?.billing_address?.street2 &&
+                              ` or ${order?.billing_address?.street2}`}
                           </Typography>
                           <Typography variant="h5" fontWeight="bold">
-                            {order?.billing_adderss?.city}
+                            {order?.billing_address?.city}
                           </Typography>
                           <Typography variant="h5" fontWeight="bold">
-                            {order?.billing_adderss?.state}
+                            {order?.billing_address?.state}
                           </Typography>
                           <Typography variant="h5" fontWeight="bold">
-                            {order?.billing_adderss?.country}
+                            {order?.billing_address?.country}
                           </Typography>
                         </Box>
                       </Box>
@@ -212,28 +213,28 @@ const OderDetails = () => {
                         <Divider />
                         <Box className="flex flex-col gap-4 px-4 py-2">
                           <Typography variant="h5" fontWeight="bold">
-                            {order?.shipping_adderss?.first_name}{" "}
-                            {order?.shipping_adderss?.last_name}
+                            {order?.shipping_address?.first_name}{" "}
+                            {order?.shipping_address?.last_name}
                           </Typography>
                           <Typography variant="h5" fontWeight="bold">
-                            {order?.shipping_adderss?.email}
+                            {order?.shipping_address?.email}
                           </Typography>
                           <Typography variant="h5" fontWeight="bold">
-                            {order?.shipping_adderss?.phone_number}
+                            {order?.shipping_address?.phone_number}
                           </Typography>
                           <Typography variant="h5" fontWeight="bold">
-                            {order?.shipping_adderss?.street1}
-                            {order?.billing_adderss?.street2 &&
-                              ` or ${order?.billing_adderss?.street2}`}
+                            {order?.shipping_address?.street1}
+                            {order?.billing_address?.street2 &&
+                              ` or ${order?.billing_address?.street2}`}
                           </Typography>
                           <Typography variant="h5" fontWeight="bold">
-                            {order?.shipping_adderss?.city}
+                            {order?.shipping_address?.city}
                           </Typography>
                           <Typography variant="h5" fontWeight="bold">
-                            {order?.shipping_adderss?.state}
+                            {order?.shipping_address?.state}
                           </Typography>
                           <Typography variant="h5" fontWeight="bold">
-                            {order?.shipping_adderss?.country}
+                            {order?.shipping_address?.country}
                           </Typography>
                         </Box>
                       </Box>
@@ -284,4 +285,4 @@ const OderDetails = () => {
   );
 };
 
-export default OderDetails;
+export default OrderDetailsCustomer;

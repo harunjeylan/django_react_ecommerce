@@ -4,6 +4,7 @@ from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.models import  User
 
 
 from django.db.models import Avg,Q,Count,Sum
@@ -18,8 +19,8 @@ from rest_framework import status
 # import hashlib
 # import urllib
 # from django.utils.safestring import mark_safe
-
-
+from account.serializer import ProfileSerializer, UserSerializer, AddressSerializer
+from account.models import Address, Profile
 from api.models import (
     Brand,
     Order, 
@@ -227,7 +228,7 @@ def getProductsByCategory(request,category_name):
 
 
 @api_view(['GET'])
-def getProductsDetailes(request,pk):
+def getProductsDetails(request,pk):
     product = Product.objects.get(id=pk)
     serialized_data = {}
     inventory = Inventory.objects.filter(product=product)
@@ -283,6 +284,40 @@ def getProductsDetailes(request,pk):
         
     return Response(serialized_data, status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getProductsDataForAdmin(request,pk):
+    product = Product.objects.get(id=pk)
+    serialized_data = {}
+    inventory = Inventory.objects.filter(product=product)
+    if inventory.exists():
+        serialized_data = {
+            **InventorySerializer(inventory.first()).data, 
+            **serialized_data
+        }
+    variants = []
+    for variant_option in product.variants.all():
+        variants.append({
+            "options":OptionSerializer(variant_option.options.all(), many=True).data,
+            "variantLabel":variant_option.variant.label,
+        })
+    serialized_data = {
+        **serialized_data,
+        **ProductSerializer(product,context={"request":request}).data,
+        "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
+        "variants":variants,
+        "brand":BrandSerializer(product.brand).data,
+    }
+    organize = Organize.objects.filter(product=product)
+    if organize.exists():
+        serialized_data["organize"] = {
+            "category":CategorySerializer(organize.first().category).data,
+            "collection":CollectionSerializer(organize.first().collection).data,
+            "vendor":VendorSerializer(organize.first().vendor).data,
+            "tags":TagSerializer(organize.first().tags, many=True).data,
+        }
+    return Response(serialized_data, status=status.HTTP_200_OK)
+ 
 # =================================================================================
 @api_view(['GET'])
 def getAllCategory(request):
@@ -522,7 +557,7 @@ def updateOrganize(request):
             serialized_data = TagSerializer(tag).data
             return Response(serialized_data, status=status.HTTP_202_ACCEPTED)
         return Response(tag_serializer.errers, status=status.HTTP_400_BAD_REQUEST)
-    return Response({"error":"you have to spasify the name"}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({"error":"you have to specify the name"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
@@ -531,20 +566,20 @@ def deleteOrganize(request):
     if name=="categories":
         category = Category.objects.get(id=request.data.get("id"))
         category.delete()
-        return Response({"seccess":"deleted successfull"}, status=status.HTTP_202_ACCEPTED)
+        return Response({"success":"deleted successful"}, status=status.HTTP_202_ACCEPTED)
     elif name=="collections":
         collection = Collection.objects.get(id=request.data.get("id"))
         collection.delete()
-        return Response({"seccess":"deleted successfull"}, status=status.HTTP_202_ACCEPTED)
+        return Response({"success":"deleted successful"}, status=status.HTTP_202_ACCEPTED)
     elif name=="vendors":
         vendor = Vendor.objects.get(id=request.data.get("id"))
         vendor.delete()
-        return Response({"seccess":"deleted successfull"}, status=status.HTTP_202_ACCEPTED)
+        return Response({"success":"deleted successful"}, status=status.HTTP_202_ACCEPTED)
     elif name=="tags":
         tag = Tag.objects.get(id=request.data.get("id"))
         tag.delete()
-        return Response({"seccess":"deleted successfull"}, status=status.HTTP_202_ACCEPTED)
-    return Response({"error":"you have to spasify the name"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"success":"deleted successful"}, status=status.HTTP_202_ACCEPTED)
+    return Response({"error":"you have to specify the name"}, status=status.HTTP_400_BAD_REQUEST)
 
 # =================================================================================
 @api_view(['GET'])
@@ -737,13 +772,13 @@ def addOrder(request):
 
     orderd_products = []
     total_price = 0
-    for prduct_data in request.data.get("products"):
-        variants_data = prduct_data["variants"]
-        products = Product.objects.filter(id=prduct_data["id"])
+    for product_data in request.data.get("products"):
+        variants_data = product_data["variants"]
+        products = Product.objects.filter(id=product_data["id"])
         if not products.exists():
-            return Response([{"product":"produc is not exist"}], status=status.HTTP_400_BAD_REQUEST)
+            return Response([{"product":"product is not exist"}], status=status.HTTP_400_BAD_REQUEST)
         prices = products.first().inventory.sale_pricing
-        count = prduct_data["count"]
+        count = product_data["count"]
         #============================================
         total_price += prices * count
         #============================================
@@ -764,8 +799,8 @@ def addOrder(request):
     order_serializer_form = OrderSerializer(data={
         "customer":request.user.id,
         "products":orderd_products,
-        "billing_adderss":billing_address.id,
-        "shipping_adderss":shipping_address.id,
+        "billing_address":billing_address.id,
+        "shipping_address":shipping_address.id,
         "delivery_method":delivery_method_data,
         "total_price":total_price,
         })
@@ -778,6 +813,7 @@ def addOrder(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])  
 def getOrders(request):
+
     orders = Order.objects.filter(customer=request.user)
     orders_data = []
     for order in orders:
@@ -793,13 +829,13 @@ def getOrders(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])  
-def getOrderDetailes(request, pk):
+def getOrderDetails(request, pk):
     order = Order.objects.get(id=pk)
 
-    orderd_prodects = []
-    for orderd_prodect in order.products.all():
-        count = orderd_prodect.count
-        product = orderd_prodect.product
+    orderd_products = []
+    for orderd_product in order.products.all():
+        count = orderd_product.count
+        product = orderd_product.product
         inventory = Inventory.objects.filter(product=product)
         inventory_data = {}
         if inventory.exists():
@@ -808,51 +844,205 @@ def getOrderDetailes(request, pk):
                 **inventory_data
             }
         variants = []
-        for vriantOption in orderd_prodect.variants.all():
+        for variantOption in orderd_product.variants.all():
             variants.append({
-                "variantLabel":vriantOption.variant.label,
-                "optionLabel":vriantOption.option.label,
+                "variantLabel":variantOption.variant.label,
+                "optionLabel":variantOption.option.label,
             })
-        orderd_prodects.append({
+        orderd_products.append({
             **inventory_data,
             **ProductSerializer(product, context={"request":request}).data,
-            "count":orderd_prodect.count,
+            "count":orderd_product.count,
             "variants":variants,
-            "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
-            "rating":product.review_set.all().aggregate(Avg('rating'))["rating__avg"],
         })
     order_data = {
         **OrderSerializer(order).data,
-        "products":orderd_prodects,
-        "billing_adderss":OrderAddressSerializer(order.billing_adderss).data,
-        "shipping_adderss":OrderAddressSerializer(order.shipping_adderss).data,
+        "products":orderd_products,
+        "billing_address":OrderAddressSerializer(order.billing_address).data,
+        "shipping_address":OrderAddressSerializer(order.shipping_address).data,
     }
     return Response(order_data, status=status.HTTP_200_OK)
+
 
 
 @api_view(['POST','PUT'])
 @permission_classes([IsAuthenticated])  
 def updateOrder(request):
-    # order_serializer_form = OrderSerializer(request.data)
-    # if order_serializer_form.is_valid():
-    #     order = order_serializer_form.save()
-    #     return Response(OrderSerializer(order).data, status=status.HTTP_200_OK)
-    # return Response(OrderSerializer(order).errors, status=status.HTTP_400_BAD_REQUEST)
     print(request.data)
     return Response({})
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])  
 def deleteOrder(request):
-    
-    # order_serializer_form = OrderSerializer(request.data)
-    # if order_serializer_form.is_valid():
-    #     order = order_serializer_form.save()
-    #     return Response(OrderSerializer(order).data, status=status.HTTP_200_OK)
-    # return Response(OrderSerializer(order).errors, status=status.HTTP_400_BAD_REQUEST)
     print(request.data)
     return Response({})
     
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])  
+def getOrdersForAdmin(request):
+    orders = Order.objects.all()
+    orders_data = []
+    for order in orders:
+        user = User.objects.get(id=order.customer.id)
+        profile = ProfileSerializer(user.profile,context={"request":request}).data
+        orders_data.append({
+            "id":order.id,
+            "user_id":user.id,
+            "avatar":profile["image"],
+            "full_name":user.get_full_name(),
+            "fulfillment_status":order.fulfillment_status,
+            "delivery_method":order.delivery_method,
+            "total_price":order.total_price,
+            "date":order.date,
+        })
+    return Response(orders_data, status=status.HTTP_200_OK)
 
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])  
+def getOrderDetailsForAdmin(request, pk):
+    order = Order.objects.get(id=pk)
+
+    orderd_products = []
+    for orderd_product in order.products.all():
+        product = orderd_product.product
+        inventory = Inventory.objects.filter(product=product)
+        inventory_data = {}
+        if inventory.exists():
+            inventory_data = {
+                **InventorySerializer(inventory.first()).data, 
+                **inventory_data
+            }
+        variants = []
+        for variantOption in orderd_product.variants.all():
+            variants.append({
+                "variantLabel":variantOption.variant.label,
+                "optionLabel":variantOption.option.label,
+            })
+        product_serializer = ProductSerializer(product, context={"request":request}).data,
+        orderd_products.append({
+            "id":product.id,
+            "title":product.title,
+            "thumbnail":product_serializer[0]["thumbnail"],
+            "sale_pricing":product.inventory.sale_pricing,
+            "count":orderd_product.count,
+            "variants":variants,
+        })
+    order_data = {
+        **OrderSerializer(order).data,
+        "products":orderd_products,
+        "billing_address":OrderAddressSerializer(order.billing_address).data,
+        "shipping_address":OrderAddressSerializer(order.shipping_address).data,
+    }
+    return Response(order_data, status=status.HTTP_200_OK)
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])  
+def getCustomerDetails(request, pk):
+    user = User.objects.get(id=pk)
+    address, is_address_created = Address.objects.get_or_create(user=user)
+    profile, is_profile_created = Profile.objects.get_or_create(user=user)
+    customer_data = {
+        **ProfileSerializer(profile,context={"request":request}).data,
+        **AddressSerializer(address).data,
+        **UserSerializer(user).data,
+    }
+    orders_data = []
+    for order in Order.objects.filter(customer=user):
+        user = User.objects.get(id=order.customer.id)
+        profile = ProfileSerializer(user.profile,context={"request":request}).data
+        orders_data.append({
+            "id":order.id,
+            "user_id":user.id,
+            "avatar":profile["image"],
+            "full_name":user.get_full_name(),
+            "fulfillment_status":order.fulfillment_status,
+            "delivery_method":order.delivery_method,
+            "total_price":order.total_price,
+            "date":order.date,
+        })
+
+    wishlist,create = WishList.objects.get_or_create(customer=user)
+    wishlist_data = []
+    for product in wishlist.products.all():
+        product_serializer = ProductSerializer(product, context={"request":request}).data,
+        wishlist_data.append({
+            "id":product.id,
+            "title":product.title,
+            "thumbnail":product_serializer[0]["thumbnail"],
+            "sale_pricing":product.inventory.sale_pricing,
+            "date":product.date,
+            "brand":product.brand.name,
+        })
+ 
+    reviews = Review.objects.filter(Q(email=user.email)|Q(phone_number=user.profile.phone_number))
+    
+    reviews_data = []
+    for review in reviews:
+        product_serializer = ProductSerializer(product, context={"request":request}).data,
+        reviews_data.append({
+            "id":product.id,
+            "title":product.title,
+            "thumbnail":product_serializer[0]["thumbnail"],
+            "description":review.description,
+            "rating":review.rating,
+            "created":review.created
+        })
+    response_data = {
+        "customer":customer_data,
+        "orders":orders_data,
+        "wishlists":wishlist_data,
+        "reviews":reviews_data,
+
+    }
+    return Response(response_data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])  
+def getCustomers(request):
+    customers_data = []
+    new_customers = User.objects.order_by("-date_joined")
+    for user in new_customers:
+        profile = ProfileSerializer(user.profile,context={"request":request}).data
+        orders = Order.objects.filter(customer=user).order_by("-date")
+        total_spent = 0
+        for order in orders:
+            total_spent += order.total_price
+        customers_data.append({
+            "id":user.id,
+            "full_name":user.get_full_name(),
+            "email":user.email,
+            "username":user.username,
+            "avatar":profile["image"],
+            "total_spent":total_spent,
+            "phone_number":user.profile.phone_number,
+            "last_order":orders.first().date,
+            "orders":orders.count(),
+            "date_joined":user.date_joined,
+        })
+   
+    return Response(customers_data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])  
+def getProductsForAdmin(request):
+    products = Product.objects.all()
+    products_data = []
+    for product in products:
+        product_serializer = ProductSerializer(product, context={"request":request}).data,
+        products_data.append({
+            "id":product.id,
+            "title":product.title,
+            "thumbnail":product_serializer[0]["thumbnail"],
+            "sale_pricing":product.inventory.sale_pricing,
+            "date":product.date,
+            "brand":product.brand.name,
+            "category":product.organize.category.name,
+            "collection":product.organize.collection.name,
+            "vendor":product.organize.vendor.name,
+        })
+    return Response(products_data, status=status.HTTP_200_OK)

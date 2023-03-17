@@ -12,9 +12,7 @@ import {
   FormGroup,
   Select,
 } from "@mui/material";
-import { getIn } from "formik";
-
-import { tokens } from "../../../import";
+import { tokens } from "../../../../../theme";
 
 const AdvancedForm = ({
   handleBlur,
@@ -26,17 +24,6 @@ const AdvancedForm = ({
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const formattedName = (type, field) => `${type}.${field}`;
-
-  const formattedError = (type, field, touched, errors) =>
-    Boolean(
-      getIn(touched, formattedName(type, field)) &&
-        getIn(errors, formattedName(type, field))
-    );
-
-  const formattedHelper = (type, field, touched, errors) =>
-    getIn(touched, formattedName(type, field)) &&
-    getIn(errors, formattedName(type, field));
   return (
     <Box className="h-full w-full">
       <FormControl

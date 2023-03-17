@@ -1,53 +1,35 @@
-//IMORTING LIBRARYS
+//IMPORTING LIBRARYS
 import React, { useRef } from "react";
 import { Routes, Route } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { useEffect } from "react";
 import jwt_decode from "jwt-decode";
-//IMORTING APP SETUP
-import PrivateRoutes from "./utils/PrivateRoutes";
+//IMPORTING APP SETUP
+import CustomerPrivateRoutes from "./utils/CustomerPrivateRoutes";
+import AdminPrivateRoutes from "./utils/AdminPrivateRoutes";
 import { ColorModeContext, useMode } from "./theme";
 import AdminLayout from "./site/admin/layout";
 import CustomerLayout from "./site/customers/layout";
 
-//IMORTING ADMIN PAGE COMPONENTS
+//IMPORTING ADMIN PAGE COMPONENTS
 
 import Dashboard from "./site/admin/pages/dashboard";
 import Team from "./site/admin/pages/team";
 import Invoices from "./site/admin/pages/invoices";
 import Contacts from "./site/admin/pages/contacts";
 import FAQ from "./site/admin/pages/faq";
-import { BarChart, LineChart, PieChart } from "./site/admin/pages/charts";
 import { OrdersListAdmin, OrderDetailsAdmin } from "./site/admin/pages/orders";
 
-import {
-  ProductsListAdmin,
-  NewProduct,
-  ProductDetailsAdmin,
-} from "./site/admin/pages/products";
-import {
-  CustomersList,
-  CustomerDetails,
-  NewCustomer,
-} from "./site/admin/pages/customers";
-
-// IMORTING Authentcation pages
+import ProductsListAdmin from "./site/admin/pages/products/list";
+import AddEditProduct from "./site/admin/pages/products/add-edit";
+import ProductDetailsAdmin from "./site/admin/pages/products/details";
+// IMPORTING Authentication pages
 
 import Login from "./site/auth/pages/Login";
 import Register from "./site/auth/pages/Register";
 
-//IMORTING CUSTOMERS PAGE COMPONENTS
-import {
-  Checkout,
-  ViewCart,
-  Confirmation,
-} from "./site/customers/pages/checkout";
-import {
-  Profile,
-  Wishlist,
-  OrdersListCustomer,
-  OrderDetailsCustomer,
-} from "./site/customers/pages/profile";
+//IMPORTING CUSTOMERS PAGE COMPONENTS
+
 import Home from "./site/customers/pages/home";
 import Shopping from "./site/customers/pages/shopping";
 import { ProductDetailsCustomer } from "./site/customers/pages/products";
@@ -55,21 +37,32 @@ import Page404 from "./components/Page404";
 import {
   selectCurrentToken,
   selectCurrentRefresh,
-  selectCurrentUser,
+  // selectCurrentUser,
 } from "./features/auth/authSlice";
-import { useSelector, useDispatch } from "react-redux";
-import { useGetUseDataQuery } from "./features/auth/authApiSlice";
+import { useSelector } from "react-redux";
+// import {  useDispatch } from "react-redux";
+// import { useGetUseDataQuery } from "./features/auth/authApiSlice";
+// import { setUserData } from "./features/auth/authSlice";
 import { refreshAccessToken } from "./features/auth/authApi";
-import { setUserData } from "./features/auth/authSlice";
 
 import store from "./app/store";
 import dayjs from "dayjs";
+import CustomersList from "./site/admin/pages/customers/list/index";
+import NewCustomer from "./site/admin/pages/customers/new/index";
+import CustomerDetails from "./site/admin/pages/customers/details/index";
+import Profile from "./site/customers/pages/profile/details/index";
+import OrdersListCustomer from "./site/customers/pages/profile/orders/List";
+import OrderDetailsCustomer from "./site/customers/pages/profile/orders/Details";
+import Wishlist from "./site/customers/pages/profile/wishlist/index";
+import Checkout from "./site/customers/pages/checkout/checkout/index";
+import ViewCart from "./site/customers/pages/checkout/viewcart/index";
+import Confirmation from "./site/customers/pages/checkout/confirmation/index";
 function App() {
   const [theme, colorMode] = useMode();
   const accessToken = useSelector(selectCurrentToken);
   const refreshToken = useSelector(selectCurrentRefresh);
-  const userData = useSelector(selectCurrentUser);
-  const dispatch = useDispatch();
+  // const userData = useSelector(selectCurrentUser);
+  // const dispatch = useDispatch();
   // const { data: newUserData } = useGetUseDataQuery();
   // useEffect(() => {
   //   if (userData && newUserData) dispatch(setUserData(newUserData));
@@ -104,8 +97,8 @@ function App() {
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
           </Route>
-          {/* ADMINS SITE */}
-          <Route element={<PrivateRoutes />} path="admin">
+
+          <Route element={<AdminPrivateRoutes />} path="admin">
             <Route
               index
               element={
@@ -114,32 +107,6 @@ function App() {
                 </AdminLayout>
               }
             />
-            <Route path="charts">
-              <Route
-                path="bar"
-                element={
-                  <AdminLayout>
-                    <BarChart />
-                  </AdminLayout>
-                }
-              />
-              <Route
-                path="pie"
-                element={
-                  <AdminLayout>
-                    <PieChart />
-                  </AdminLayout>
-                }
-              />
-              <Route
-                path="line"
-                element={
-                  <AdminLayout>
-                    <LineChart />
-                  </AdminLayout>
-                }
-              />
-            </Route>
             <Route path="pages">
               <Route
                 path="faq"
@@ -215,7 +182,7 @@ function App() {
                 path="new"
                 element={
                   <AdminLayout>
-                    <NewProduct />
+                    <AddEditProduct />
                   </AdminLayout>
                 }
               />
@@ -224,6 +191,14 @@ function App() {
                 element={
                   <AdminLayout>
                     <ProductDetailsAdmin />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path=":productId/edit"
+                element={
+                  <AdminLayout>
+                    <AddEditProduct isEditing={true} />
                   </AdminLayout>
                 }
               />
@@ -247,7 +222,7 @@ function App() {
               />
             </Route>
           </Route>
-          {/* CUSTOMER SITE SITE */}
+
           <Route path="/">
             <Route
               index
@@ -273,7 +248,8 @@ function App() {
                 </CustomerLayout>
               }
             />
-            <Route element={<PrivateRoutes />} path="profile">
+
+            <Route element={<CustomerPrivateRoutes />} path="profile">
               <Route
                 index
                 element={
@@ -310,7 +286,7 @@ function App() {
               />
             </Route>
 
-            <Route element={<PrivateRoutes />} path="checkout">
+            <Route element={<CustomerPrivateRoutes />} path="checkout">
               <Route
                 index
                 element={

@@ -5,8 +5,9 @@ import { Box, Typography, useTheme, Button, Breadcrumbs } from "@mui/material";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
-
-import { tokens, mockDataTeam, Header } from "../../import";
+import { tokens } from "../../../../theme";
+import Header from "../../../../components/Header";
+import { mockDataTeam } from "../../../../data/mockData";
 
 const Team = () => {
   const navigate = useNavigate();

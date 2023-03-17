@@ -1,39 +1,25 @@
 import { Link } from "react-router-dom";
 
-import { useNavigate } from "react-router-dom";
 import { ResponsiveBar } from "@nivo/bar";
 import { ResponsiveLine } from "@nivo/line";
 import { ResponsivePie } from "@nivo/pie";
 
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 
-import {
-  Box,
-  Button,
-  Typography,
-  useTheme,
-  useMediaQuery,
-  Breadcrumbs,
-  CircularProgress,
-} from "@mui/material";
+import { Box, Typography, useTheme, CircularProgress } from "@mui/material";
 
-import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import EmailIcon from "@mui/icons-material/Email";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import TrafficIcon from "@mui/icons-material/Traffic";
 import InventoryIcon from "@mui/icons-material/Inventory";
-import {
-  mockDataCustomers,
-  mockDataOrders,
-  Header,
-  tokens,
-} from "../../import";
 
 import LineChart from "../../components/LineChart";
 import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import { useGetDashboardDataQuery } from "../../../../features/main/dashboardApiSlice";
+import { tokens } from "../../../../theme";
+import Header from "../../../../components/Header";
 
 const MiniBarChart = ({ data }) => {
   const theme = useTheme();
@@ -412,10 +398,8 @@ const MiniPieChart = ({ data }) => {
 };
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const smScreen = useMediaQuery(theme.breakpoints.up("sm"));
   const { data: dashboardData, isFetching: isFetchingDashboardData } =
     useGetDashboardDataQuery();
 
@@ -436,14 +420,14 @@ const Dashboard = () => {
       field: "first_name",
       headerName: "Customer",
       width: 200,
-      hieght: 200,
-      renderCell: ({ row: { full_name, avator } }) => {
+      height: 200,
+      renderCell: ({ row: { full_name, avatar } }) => {
         return (
           <Box className="flex gap-4 items-center py-2 w-full h-full">
             <Link to={`/admin/customers/${1}`}>
               <img
                 className="h-[60px] w-[60px] pointer rounded-[50%]"
-                src={avator}
+                src={avatar}
                 alt={`${full_name}`}
               />
             </Link>
@@ -514,14 +498,14 @@ const Dashboard = () => {
       field: "first_name",
       headerName: "Customer",
       width: 200,
-      hieght: 200,
-      renderCell: ({ row: { full_name, avator, user_id } }) => {
+      height: 200,
+      renderCell: ({ row: { full_name, avatar, user_id } }) => {
         return (
           <Box className="flex justify-start gap-4 items-center py-2 w-full h-full">
             <Link to={`/admin/customers/${user_id}`}>
               <img
                 className="h-[60px] w-[60px] cursor-pointer rounded-[50%]"
-                src={avator}
+                src={avatar}
                 alt={`${full_name}`}
               />{" "}
             </Link>
@@ -546,7 +530,7 @@ const Dashboard = () => {
     { field: "date", headerName: "Date", width: 200 },
   ];
   return (
-    <Box className="flex flex-col gap-4 md:gap-8 md:mt-20 ">
+    <Box className="flex flex-col gap-4 md:gap-8 md:mt-20 mb-4">
       {/* HEADER */}
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
@@ -576,6 +560,7 @@ const Dashboard = () => {
               />
             </Box>
           </Box>
+          {/* ===================================================== */}
           <Box className="col-span-12 row-span-1 lg:col-span-6">
             <Box
               width="100%"
@@ -597,6 +582,7 @@ const Dashboard = () => {
               />
             </Box>
           </Box>
+          {/* ===================================================== */}
           <Box className="col-span-12 row-span-1 lg:col-span-4">
             <Box
               width="100%"
@@ -618,6 +604,7 @@ const Dashboard = () => {
               />
             </Box>
           </Box>
+          {/* ===================================================== */}
           <Box className="col-span-12 row-span-1 lg:col-span-4">
             <Box
               width="100%"
@@ -627,7 +614,11 @@ const Dashboard = () => {
               justifyContent="center"
             >
               <StatBox
-                title="32,441"
+                title={
+                  !isFetchingDashboardData && dashboardData?.new_orders
+                    ? dashboardData?.new_orders?.length
+                    : 0
+                }
                 subtitle="New Orders"
                 progress="0.30"
                 increase="+5%"
@@ -639,6 +630,7 @@ const Dashboard = () => {
               />
             </Box>
           </Box>
+          {/* ===================================================== */}
           <Box className="col-span-12 row-span-1 lg:col-span-4">
             <Box
               width="100%"
@@ -660,7 +652,8 @@ const Dashboard = () => {
               />
             </Box>
           </Box>
-
+          {/* ===================================================== */}
+          {/* ============================================= */}
           <Box className="col-span-12 row-span-3 xl:col-span-8">
             <Box className="grid grid-cols-12 gap-4">
               <Box className="col-span-12 lg:col-span-6">
@@ -719,6 +712,7 @@ const Dashboard = () => {
                   </Box>
                 </Box>
               </Box>
+              {/* ===================================================== */}
               <Box className="col-span-12 lg:col-span-6">
                 <Box
                   backgroundColor={colors.primary[400]}
@@ -775,6 +769,7 @@ const Dashboard = () => {
                   </Box>
                 </Box>
               </Box>
+              {/* ===================================================== */}
               <Box className="col-span-12 lg:col-span-6">
                 <Box
                   backgroundColor={colors.primary[400]}
@@ -814,6 +809,7 @@ const Dashboard = () => {
                   </Box>
                 </Box>
               </Box>
+              {/* ===================================================== */}
               <Box className="col-span-12 lg:col-span-6">
                 <Box
                   backgroundColor={colors.primary[400]}
@@ -855,6 +851,7 @@ const Dashboard = () => {
               </Box>
             </Box>
           </Box>
+          {/* ===================================================== */}
           <Box className="col-span-12 row-span-3 xl:col-span-4">
             <Box
               backgroundColor={colors.primary[400]}
@@ -922,6 +919,7 @@ const Dashboard = () => {
               </Box>
             </Box>
           </Box>
+          {/* ===================================================== */}
           <Box className="col-span-12 row-span-6 xl:col-span-5">
             <Box
               backgroundColor={colors.primary[400]}
@@ -961,6 +959,7 @@ const Dashboard = () => {
                   "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
                     color: `${colors.grey[100]} !important`,
                   },
+
                   "& .MuiDataGrid-cell": {
                     width: "100%",
                   },
@@ -989,6 +988,7 @@ const Dashboard = () => {
               </Box>
             </Box>
           </Box>
+          {/* ===================================================== */}
           <Box className="col-span-12 row-span-6 xl:col-span-7">
             <Box className="flex flex-col gap-4">
               <Box className="w-full">
@@ -1004,9 +1004,9 @@ const Dashboard = () => {
                           fontWeight="bold"
                           className="my-2"
                         >
-                          Total orders{" "}
+                          Total Products{" "}
                           <span className="bg-[#eab308]/20 rounded-r-xl rounded-l-xl py-[1pz] px-2 border-[1px] border-[#eab308] text-[#eab308]">
-                            -6.8%
+                            {dashboardData?.last_year_products?.increasing}%
                           </span>
                         </Typography>
                         <Typography
@@ -1014,7 +1014,7 @@ const Dashboard = () => {
                           fontWeight="subtitle1"
                           className={`my-2 cursor-pointer `}
                         >
-                          Last 7 days
+                          Last 12 month
                         </Typography>
                       </Box>
                       <Box className="">
@@ -1023,16 +1023,32 @@ const Dashboard = () => {
                           fontWeight="bold"
                           className="my-2"
                         >
-                          16,247
+                          {dashboardData?.last_year_products?.total_products}
                         </Typography>
                       </Box>
                     </Box>
                     <Box className="h-[400px] xl:h-[450px] p-4">
-                      <LineChart isDashboard={true} />
+                      {!isFetchingDashboardData ? (
+                        dashboardData?.last_year_products ? (
+                          <LineChart
+                            isDashboard={true}
+                            data={dashboardData?.last_year_products?.data}
+                          />
+                        ) : (
+                          <Box className="w-full flex items-center justify-center h-full min-h-40">
+                            <Typography>No data</Typography>
+                          </Box>
+                        )
+                      ) : (
+                        <Box className="w-full flex items-center justify-center h-full min-h-40">
+                          <CircularProgress color="secondary" />
+                        </Box>
+                      )}
                     </Box>
                   </Box>
                 </Box>
               </Box>
+              {/* ===================================================== */}
               <Box className="w-full">
                 <Box
                   backgroundColor={colors.primary[400]}
@@ -1046,9 +1062,9 @@ const Dashboard = () => {
                           fontWeight="bold"
                           className="my-2"
                         >
-                          New customers {` `}
+                          Total Orders {` `}
                           <span className="bg-[#eab308]/20 rounded-r-xl rounded-l-xl py-[1pz] px-2 border-[1px] border-[#eab308] text-[#eab308]">
-                            +26.5%
+                            {dashboardData?.last_year_orders?.increasing}%
                           </span>
                         </Typography>
                         <Typography
@@ -1056,7 +1072,7 @@ const Dashboard = () => {
                           fontWeight="subtitle1"
                           className={`my-2 cursor-pointer `}
                         >
-                          Last 7 days
+                          Last 12 month
                         </Typography>
                       </Box>
                       <Box className="">
@@ -1065,12 +1081,27 @@ const Dashboard = () => {
                           fontWeight="bold"
                           className="my-2"
                         >
-                          356
+                          {dashboardData?.last_year_orders?.total_orders}
                         </Typography>
                       </Box>
                     </Box>
                     <Box className="h-[400px] xl:h-[450px] p-4">
-                      <BarChart isDashboard={true} />
+                      {!isFetchingDashboardData ? (
+                        dashboardData?.last_year_orders ? (
+                          <BarChart
+                            isDashboard={true}
+                            data={dashboardData?.last_year_orders?.data}
+                          />
+                        ) : (
+                          <Box className="w-full flex items-center justify-center h-full min-h-40">
+                            <Typography>No data</Typography>
+                          </Box>
+                        )
+                      ) : (
+                        <Box className="w-full flex items-center justify-center h-full min-h-40">
+                          <CircularProgress color="secondary" />
+                        </Box>
+                      )}
                     </Box>
                   </Box>
                 </Box>

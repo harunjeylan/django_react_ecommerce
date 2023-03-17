@@ -4,12 +4,12 @@ import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { useProSidebar } from "react-pro-sidebar";
 import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
+import { ColorModeContext, tokens } from "../../../theme";
 import {
   useTheme,
   Box,
@@ -17,8 +17,8 @@ import {
   InputBase,
   CardActionArea,
 } from "@mui/material";
-import { logOut } from "../import";
-import { ColorModeContext, tokens, logo } from "../import";
+import { logOut } from "../../../features/auth/authSlice";
+import logo from "../../../data/logo.png";
 const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -26,7 +26,7 @@ const Topbar = () => {
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+
   return (
     <Box display="flex" justifyContent="space-between" p={2}>
       <Box display="flex">
@@ -46,7 +46,7 @@ const Topbar = () => {
               color="secondary"
             >
               <img
-                alg="logo"
+                alt="logo"
                 src={logo}
                 className="w-[50px] h-[50px] rounded-full"
               />

@@ -63,7 +63,6 @@ def userRegister(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getUserData(request):
-    print(request.user)
     address, is_address_created = Address.objects.get_or_create(user=request.user)
     profile, is_profile_created = Profile.objects.get_or_create(user=request.user)
     data = {

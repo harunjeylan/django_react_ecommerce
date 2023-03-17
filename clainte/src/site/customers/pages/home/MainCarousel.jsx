@@ -9,7 +9,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 
 import { Autoplay } from "swiper";
-import { tokens, heroTexture } from "../../import";
+import { tokens } from "../../../../theme";
 
 const MainCarousel = () => {
   const theme = useTheme();
@@ -73,5 +73,13 @@ const MainCarousel = () => {
     </Swiper>
   );
 };
+const importAll = (r) =>
+  r.keys().reduce((acc, item) => {
+    acc[item.replace("./", "")] = r(item);
+    return acc;
+  }, {});
 
+export const heroTexture = importAll(
+  require.context("../../../../assets", false, /\.(png|jpe?g|svg)$/)
+);
 export default MainCarousel;

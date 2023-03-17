@@ -1,63 +1,51 @@
 import React, { useState } from "react";
-import { useTheme } from "@emotion/react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Formik } from "formik";
 
 import { Box, Button, Typography, Breadcrumbs } from "@mui/material";
-
-import { tokens, Header } from "../../../import";
 import {
   useUploadImageMutation,
   useAddProductMutation,
 } from "../../../../../features/services/productApiSlice";
 import { newProductSchema } from "./newProductSchema";
-import { initialValues } from "./initialValues";
-// import { uploadImage } from "../../../../../features/services/uploadImange";
+import { getInitialValues } from "./getInitialValues";
 
 import ProductInformationForm from "./ProductInformationForm";
 import InventoryForm from "./Inventory";
 import OrganizeForm from "./OrganizeForm";
 import VariantsForm from "./VariantsForm";
+import Header from "../../../../../components/Header";
 
-const NewProduct = () => {
+const AddEditProduct = ({ isEditing }) => {
   const navigate = useNavigate();
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
   const [addProduct] = useAddProductMutation();
   const [uploadImage] = useUploadImageMutation();
+  const [initialValues, setInitialValues] = useState({});
+  const { productId } = useParams();
 
-  // const handleUpload = (values) => {
-  //   let postForm = new FormData();
-  //   postForm.append("thumbnail", values.thumbnail[0]?.file);
-  //   uploadImage({
-  //     post: postForm,
-  //   }).then((response) => {
-  //     console.log(response);
-  //   });
-  // };
+  if (productId && isEditing) {
+    setInitialValues();
+  }
 
   const handleFormSubmit = (values) => {
-    console.log(">>>>>>>>>>>>>>>>>>", values);
+    console.log(values);
     let data = values?.expiryDate?.date;
-    let formatedDate;
+    let formattedDate;
     if (data.hasOwnProperty("format")) {
-      formatedDate = data.hasOwnProperty("format");
+      formattedDate = data.hasOwnProperty("format");
     } else {
       let objectDate = new Date();
-      formatedDate = `${objectDate.getFullYear()}-${objectDate.getMonth()}-${objectDate.getDate()}`;
+      formattedDate = `${objectDate.getFullYear()}-${objectDate.getMonth()}-${objectDate.getDate()}`;
     }
-    console.log(values.thumbnail);
     const post = {
       ...values,
       expiryDate: {
         selected: values?.expiryDate?.selected,
-        data: formatedDate,
+        data: formattedDate,
       },
     };
     // console.log(post);
     addProduct({ post }).then((res) => {
-      console.log(values.images.map((image) => image.file));
-      console.log(res.data);
       let postForm = new FormData();
       postForm.append("thumbnail", values.thumbnail[0]?.file);
       values.images.forEach((image) => {
@@ -101,9 +89,10 @@ const NewProduct = () => {
             },
           }}
         ></Box>
+
         <Formik
           onSubmit={handleFormSubmit}
-          initialValues={initialValues}
+          initialValues={getInitialValues(initialValues)}
           validationSchema={newProductSchema}
         >
           {({
@@ -184,4 +173,4 @@ const NewProduct = () => {
   );
 };
 
-export default NewProduct;
+export default AddEditProduct;

@@ -5,13 +5,13 @@ import { Box, Typography, Tab, Tabs } from "@mui/material";
 
 import PhoneMissedIcon from "@mui/icons-material/PhoneMissed";
 
-import { tokens } from "../../../import";
 import AdvancedForm from "./AdvancedForm";
 import AttributesForm from "./AttributesForm";
 import GlobalDeliveryForm from "./GlobalDeliveryForm";
 import ShoppingForm from "./ShoppingForm";
 import RestockForm from "./RestockForm";
 import PricingForm from "./PricingForm";
+import { tokens } from "../../../../../theme";
 
 const InventoryForm = ({
   values,

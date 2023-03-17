@@ -15,15 +15,11 @@ import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlin
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import ViewListOutlinedIcon from "@mui/icons-material/ViewListOutlined";
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 
 import { LayoutContext } from "./LayoutContext";
-import { logOut } from "../import";
-
-import { tokens } from "../import";
-import { setIsCartOpen, selectCurrentUser } from "../import";
+import { tokens } from "../../../theme";
+import { logOut, selectCurrentUser } from "../../../features/auth/authSlice";
 
 export default function AccountMenu() {
   const theme = useTheme();

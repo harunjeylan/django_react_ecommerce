@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import { Box, TextField, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import SaveAsIcon from "@mui/icons-material/SaveAs";
 const Option = ({
   option,
   creatingVariant,

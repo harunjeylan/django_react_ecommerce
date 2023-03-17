@@ -16,16 +16,15 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-
+import { tokens } from "../../../../../theme";
+import Header from "../../../../../components/Header";
 import {
   decreaseCount,
-  setCount,
   increaseCount,
   removeFromCart,
-} from "../../../import";
-
-import { tokens, Header, OrderSummery } from "../../../import";
-import Service from "../../../components/Service";
+  setCount,
+} from "../../../../../features/services/cartReducer";
+import OrderSummery from "../../../../../components/OrderSummery";
 
 const ViewCart = () => {
   const navigate = useNavigate();
@@ -211,12 +210,6 @@ const ViewCart = () => {
             </Box>
           </Box>
         )}
-      </Box>
-      <Box
-        backgroundColor={colors.primary[400]}
-        className="px-4 flex justify-center lg:px-auto py-[80px] items-center my-[50px]"
-      >
-        <Service />
       </Box>
     </Box>
   );
