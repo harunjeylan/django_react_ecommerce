@@ -3,8 +3,10 @@ import React, { useContext } from "react";
 import { Box, useTheme, Typography, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-import { tokens, UserLoginForm, UserRegisterForm } from "../import";
 import { LayoutContext } from "./LayoutContext";
+import { tokens } from "../../../theme";
+import UserLoginForm from "../../../components/UserLoginForm";
+import UserRegisterForm from "../../../components/UserRegisterForm";
 
 const AccountDialog = () => {
   const theme = useTheme();

@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
 
@@ -7,13 +6,13 @@ import { Box, Button } from "@mui/material";
 import MainCarousel from "./MainCarousel";
 import Service from "../../components/Service";
 import Subscribe from "../../components/Subscribe";
-import CategoryBanner from "./CategoryBanner";
+// import CategoryBanner from "./CategoryBanner";
 import ProductCarouse from "../../components/ProductCarouse";
 
 import Banner from "../../components/Banner";
-
-import { useGetRecommendedProductsQuery } from "../../import";
-import { Header, tokens } from "../../import";
+import { tokens } from "../../../../theme";
+import { useGetRecommendedProductsQuery } from "../../../../features/services/productApiSlice";
+import Header from "../../../../components/Header";
 
 function Home() {
   const theme = useTheme();
@@ -29,7 +28,7 @@ function Home() {
     <Box className="flex flex-col gap-4 md:gap-8">
       <Box backgroundColor={colors.primary[400]} className="">
         <MainCarousel />
-        <CategoryBanner />
+        {/* <CategoryBanner /> */}
       </Box>
       <Box backgroundColor={colors.primary[400]} className={`px-auto`}>
         <Banner />

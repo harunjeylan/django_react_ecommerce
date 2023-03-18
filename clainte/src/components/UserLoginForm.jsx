@@ -6,28 +6,21 @@ import { useDispatch } from "react-redux";
 import {
   TextField,
   Box,
-  useTheme,
   Typography,
   Divider,
   Button,
   Alert,
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
-import { tokens } from "../theme";
 
-import {
-  logOut,
-  setCredentials,
-  setUserData,
-} from "../features/auth/authSlice";
+import { setCredentials, setUserData } from "../features/auth/authSlice";
 import { useLoginMutation } from "../features/auth/authApiSlice";
 import { endpoints as authEndpoints } from "../features/auth/authApiSlice";
+
 const UserLoginForm = ({
   handleCloseAccountDialog = undefined,
   handleClickOpenAccountDialog = undefined,
 }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
   const userRef = useRef();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -50,25 +43,27 @@ const UserLoginForm = ({
 
   const [login] = useLoginMutation();
 
-  const handleFormSubmit =  (values, { resetForm }) => {
-      login({ ...values }).unwrap().then((userData)=>{
+  const handleFormSubmit = (values, { resetForm }) => {
+    login({ ...values })
+      .unwrap()
+      .then((userData) => {
         dispatch(setCredentials(userData));
         setErrorMessage("");
-        navigate(from, { replace: true });
-        if (handleCloseAccountDialog !== undefined) {
-          handleCloseAccountDialog();
-        }
         dispatch(authEndpoints.getUseData.initiate()).then((response) => {
-          console.log(response);
-          dispatch(setUserData(response.data));
+          if (response.isSuccess) {
+            dispatch(setUserData(response.data));
+            navigate(from, { replace: true });
+            if (handleCloseAccountDialog !== undefined) {
+              handleCloseAccountDialog();
+            }
+          }
         });
         resetForm();
-
-      }).catch((err)=>{
-          console.log(err);
-          setErrorMessage(err?.data?.detail);
+      })
+      .catch((err) => {
+        console.log(err);
+        setErrorMessage(err?.data?.detail);
       });
-
   };
 
   return (

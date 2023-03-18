@@ -3,9 +3,10 @@ import { Button } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import Header from "../../../../../components/Header";
 import { useGetRelatedProductsQuery } from "../../../../../features/services/productApiSlice";
+import { tokens } from "../../../../../theme";
 import ProductCarouse from "../../../components/ProductCarouse";
-import { Header, tokens } from "../../../import";
 
 const RelatedProducts = ({ productId }) => {
   const theme = useTheme();

@@ -5,8 +5,10 @@ export const productApi = authApi.injectEndpoints({
     "products",
     "recommended-products",
     "products-by-category",
-    "products_detaile",
+    "products_details",
     "brands",
+    "admin_products",
+    "products_data",
   ],
   endpoints: (builder) => ({
     addProduct: builder.mutation({
@@ -16,6 +18,14 @@ export const productApi = authApi.injectEndpoints({
         body: post,
       }),
       invalidatesTags: ["products", "recommended-products"],
+    }),
+    updateProduct: builder.mutation({
+      query: ({ post, productId }) => ({
+        url: `api/products/${productId}/edit/`,
+        method: "PUT",
+        body: post,
+        invalidatesTags: ["products", "products_details", "products_data"],
+      }),
     }),
     getAllProducts: builder.query({
       query: () => "api/products/",
@@ -31,9 +41,15 @@ export const productApi = authApi.injectEndpoints({
         `api/products/search-and-filter/${searchAndFilter}`,
       providesTags: ["products-by-searchAndFilter"],
     }),
-    getProductsDetailes: builder.query({
+    getProductsDetails: builder.query({
       query: ({ productId }) => `api/products/${productId}/`,
-      providesTags: ["products_detaile"],
+      providesTags: ["products_details"],
+    }),
+    getProductsData: builder.query({
+      query: ({ productId }) => {
+        return `api/admin/products/${productId}/`;
+      },
+      providesTags: ["products_data"],
     }),
     getProductsByCategory: builder.query({
       query: ({ category }) => `api/products/category/${category}/`,
@@ -60,9 +76,16 @@ export const productApi = authApi.injectEndpoints({
           "products",
           "recommended-products",
           "products-by-category",
-          "products_detaile",
+          "products_details",
         ],
       }),
+    }),
+    getRatings: builder.query({
+      query: () => "api/products/ratings/",
+    }),
+    getProductsForAdmin: builder.query({
+      query: () => "api/admin/products/",
+      providesTags: ["admin_products"],
     }),
   }),
 });
@@ -74,8 +97,11 @@ export const {
   useGetAllProductsQuery,
   useGetRecommendedProductsQuery,
   useGetRelatedProductsQuery,
-  useGetProductsDetailesQuery,
+  useGetRatingsQuery,
+  useGetProductsDetailsQuery,
   useGetProductsByCategoryQuery,
   useGetAllCategoryQuery,
   useSearchAndFilterProductsQuery,
+  useUpdateProductMutation,
+  useGetProductsForAdminQuery,
 } = productApi;

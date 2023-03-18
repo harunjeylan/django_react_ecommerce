@@ -15,22 +15,16 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { tokens } from "../../../theme";
+import { decreaseCount, increaseCount, removeFromCart, setCount, setIsCartOpen } from "../../../features/services/cartReducer";
 
-import {
-  decreaseCount,
-  setCount,
-  increaseCount,
-  removeFromCart,
-  setIsCartOpen,
-} from "../import";
-import { tokens } from "../import";
 
 const CartMenu = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const theme = useTheme();
   const cart = useSelector((state) => state.cart.cart);
   const isCartOpen = useSelector((state) => state.cart.isCartOpen);
-  const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const totalPrice = cart.reduce((total, item) => {
     return total + item?.count * item?.sale_pricing;

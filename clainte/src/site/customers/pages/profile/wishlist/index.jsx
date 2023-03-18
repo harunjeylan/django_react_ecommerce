@@ -17,15 +17,15 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 
 import ProfileCard from "../global/ProfileCard";
-import Service from "../../../components/Service";
 
-import { addToCart } from "../../../import";
-import { tokens, Header } from "../../../import";
 import {
   selectWishlists,
   setWishlist,
 } from "../../../../../features/services/wishlistReducer";
 import { useToggleWishlistMutation } from "../../../../../features/services/wishlistApiSlice";
+import { tokens } from "../../../../../theme";
+import Header from "../../../../../components/Header";
+import { addToCart } from "../../../../../features/services/cartReducer";
 
 const Wishlist = () => {
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ const Wishlist = () => {
       });
   };
   return (
-    <Box className={`flex flex-col gap-8 mt-20 md:mt-40`}>
+    <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Breadcrumbs aria-label="breadcrumb">
           <Button
@@ -110,13 +110,9 @@ const Wishlist = () => {
                             </CardActionArea>
                           </Box>
 
-                          <Box className="flex flex-col justfiy-between   w-full gap-1">
-                            <Typography variant="h5">{item?.title}</Typography>
-                            <Typography variant="subtitle2">
-                              Size: Large
-                            </Typography>
-                            <Typography variant="subtitle2">
-                              Colour: Green
+                          <Box className="flex flex-col justify-center  w-full gap-1">
+                            <Typography fontWeight="bold" variant="h2">
+                              {item.title}
                             </Typography>
                           </Box>
                         </Box>
@@ -166,7 +162,9 @@ const Wishlist = () => {
                             <IconButton
                               onClick={() => {
                                 dispatch(
-                                  addToCart({ product: { ...item, count: 1 } })
+                                  addToCart({
+                                    product: { ...item, count: 1 },
+                                  })
                                 );
                               }}
                             >
@@ -220,12 +218,6 @@ const Wishlist = () => {
             <ProfileCard />
           </Box>
         </Box>
-      </Box>
-      <Box
-        backgroundColor={colors.primary[400]}
-        className="px-4 flex justify-center lg:px-auto py-[80px] items-center my-[50px]"
-      >
-        <Service />
       </Box>
     </Box>
   );

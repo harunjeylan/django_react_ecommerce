@@ -4,7 +4,7 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import MoneyIcon from "@mui/icons-material/Money";
 import PriceCheckIcon from "@mui/icons-material/PriceCheck";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
-import { tokens } from "../import";
+import { tokens } from "../../../theme";
 
 const Service = () => {
   const theme = useTheme();

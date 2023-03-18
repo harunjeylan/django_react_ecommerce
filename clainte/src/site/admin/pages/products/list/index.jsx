@@ -3,18 +3,42 @@ import { Link } from "react-router-dom";
 
 import { useNavigate } from "react-router-dom";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { Box, Button, Typography, Breadcrumbs, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  Breadcrumbs,
+  useTheme,
+  CircularProgress,
+} from "@mui/material";
 
-import { tokens, mockDataProducts, Header } from "../../../import";
+import { useGetProductsForAdminQuery } from "../../../../../features/services/productApiSlice";
+import Header from "../../../../../components/Header";
+import { tokens } from "../../../../../theme";
 
 const ProductsForAdmin = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
+  const { data: productsData, isFetching: isFetchingProductsData } =
+    useGetProductsForAdminQuery();
   const columns = [
     {
       field: "id",
-      headerName: "ID",
+      headerName: "Product",
+      width: 100,
+      renderCell: ({ row: { id } }) => {
+        return (
+          <Link to={`/admin/products/${id}`}>
+            <Typography
+              className="cursor-pointer"
+              color={colors.greenAccent[500]}
+            >
+              # {id}
+            </Typography>
+          </Link>
+        );
+      },
     },
     {
       field: "title",
@@ -39,22 +63,17 @@ const ProductsForAdmin = () => {
       },
     },
     {
-      field: "price",
-      headerName: "price",
-      renderCell: ({ row: { price } }) => {
-        return <Typography>{price}</Typography>;
+      field: "sale_pricing",
+      headerName: "Pricing",
+      renderCell: ({ row: { sale_pricing } }) => {
+        return <Typography>{sale_pricing}</Typography>;
       },
     },
     { field: "category", headerName: "Category", width: 150 },
-
-    {
-      field: "tags",
-      headerName: "Tags",
-      renderCell: ({ row: { tags } }) => {
-        return <Typography>{tags}</Typography>;
-      },
-    },
-    { field: "publishd_on", headerName: "Publishd on" },
+    { field: "collection", headerName: "Collection", width: 150 },
+    { field: "vendor", headerName: "Vendor", width: 150 },
+    { field: "brand", headerName: "Brand", width: 150 },
+    { field: "date", headerName: "Date", width: 200 },
   ];
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20 mb-10`}>
@@ -65,7 +84,7 @@ const ProductsForAdmin = () => {
             variant="text"
             color="secondary"
           >
-            Admin Dashboadrd
+            Admin Dashboard
           </Button>
           <Typography color="text.primary">New Product</Typography>
         </Breadcrumbs>
@@ -80,7 +99,7 @@ const ProductsForAdmin = () => {
             <Typography color={colors.greenAccent[500]}>(10000)</Typography>
           </Box>
           <Box className="flex gap-1">
-            <Typography>Publishd</Typography>
+            <Typography>Published</Typography>
             <Typography color={colors.greenAccent[500]}>(5600)</Typography>
           </Box>
           <Box className="flex gap-1">
@@ -114,19 +133,28 @@ const ProductsForAdmin = () => {
             "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
               color: `${colors.grey[100]} !important`,
             },
-            "& .MuiDataGrid-cell": {
-              width: "100%",
-            },
           }}
         >
-          <DataGrid
-            density="comfortable"
-            rows={mockDataProducts.slice(0, 10)}
-            columns={columns}
-            autoPageSize
-            checkboxSelection
-            components={{ Toolbar: GridToolbar }}
-          />
+          {!isFetchingProductsData ? (
+            productsData?.length ? (
+              <DataGrid
+                density="comfortable"
+                rows={productsData}
+                columns={columns}
+                autoPageSize
+                checkboxSelection
+                components={{ Toolbar: GridToolbar }}
+              />
+            ) : (
+              <Box className="w-full flex items-center justify-center h-full min-h-40">
+                <Typography>No data</Typography>
+              </Box>
+            )
+          ) : (
+            <Box className="w-full flex items-center justify-center h-full min-h-40">
+              <CircularProgress color="secondary" />
+            </Box>
+          )}
         </Box>
       </Box>
     </Box>

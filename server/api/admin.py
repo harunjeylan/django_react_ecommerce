@@ -1,7 +1,9 @@
 from django.contrib import admin
 
 from .models import (
-    Category, 
+    Category,
+    OrderdProduct,
+    OrderdVariantOption, 
     RecommendedProduct,
     Review, 
     Vendor, 
@@ -18,6 +20,7 @@ from .models import (
     Order, 
     WishList,
     Brand,
+    OrderAddress,
 )
 
 
@@ -142,20 +145,46 @@ class RecommendedProductAdmin(admin.ModelAdmin):
     )
     list_filter = ('title',)
 
+@admin.register(OrderAddress)
+class OrderAddressAdmin(admin.ModelAdmin):
+    list_display = (
+        'first_name',
+        'last_name',
+        'email',
+        'country',
+        'street1',
+        'street2',
+        'city',
+        'zipcode',
+        'state',
+    )
+
+@admin.register(OrderdProduct)
+class OrderdProductAdmin(admin.ModelAdmin):
+    list_display = (
+        'product',
+        'count',
+    )
+    list_filter = ('product','count', 'variants')
+
+
+
+@admin.register(OrderdVariantOption)
+class OrderdVariantOptionAdmin(admin.ModelAdmin):
+    list_display = ('variant','option')
+    list_filter = ('option', 'variant')
+
+
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = (
-      
         'date',
         'customer',
-        'email',
         'fulfillment_status',
         'delivery_type',
-        'countries',
     )
-    list_filter = ('date', 'customer', 'countries')
-    raw_id_fields = ('products',)
+    list_filter = ('date', 'customer')
 
 
 @admin.register(WishList)

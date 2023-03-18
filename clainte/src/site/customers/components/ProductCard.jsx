@@ -23,8 +23,8 @@ import {
   Typography,
   CardActionArea,
 } from "@mui/material";
-
-import { tokens, selectCurrentUser } from "../import";
+import { tokens } from "../../../theme";
+import { selectCurrentUser } from "../../../features/auth/authSlice";
 
 const ProductCard = ({ product }) => {
   const theme = useTheme();
@@ -164,7 +164,7 @@ const ProductCard = ({ product }) => {
             {product?.title}
           </Typography>
         </Box>
-        <Box className="flex justify-between items-center">
+        <Box className="flex justify-between items-center mb-2">
           <Typography className="text-gray-200 text-sm">
             <s className="me-2 text-gray-100 mr-1">
               ${product?.regular_pricing}

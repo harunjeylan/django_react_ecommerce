@@ -6,25 +6,19 @@ import { useDispatch } from "react-redux";
 import {
   TextField,
   Box,
-  useTheme,
   Typography,
   Divider,
   Button,
   Alert,
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
-import { tokens } from "../theme";
-
-import { logOut, setUser } from "../features/auth/authSlice";
+import { setUser } from "../features/auth/authSlice";
 import { useRegisterMutation } from "../features/auth/authApiSlice";
 
 const UserRegisterForm = ({
   handleCloseAccountDialog = undefined,
   handleClickOpenAccountDialog = undefined,
 }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -39,45 +33,22 @@ const UserRegisterForm = ({
     password2: "",
   };
 
-  const checkoutSchema = yup.object().shape({
-    first_name: yup.string().required("required"),
-    last_name: yup.string().required("required"),
-    username: yup.string().required("required"),
-    password: yup
-      .string()
-      .required("required")
-      .matches(
-        /(?=.*[a-zA-Z])/,
-        "The string must contain at least 1 alphabetical character"
-      )
-      .matches(
-        /(?=.*[0-9])/,
-        "The string must contain at least 1 numeric character"
-      )
-      .matches(
-        /(?=.*[!@#%^&*<>/_?,.:"'$%^&*)=+()])/,
-        "The string must contain at least one special character, but we are escaping reserved RegEx characters to avoid conflict"
-      )
-      .matches(/(?=.{8,})/, "The string must be eight characters or longer"),
-    password2: yup
-      .string()
-      .required("required")
-      .oneOf([yup.ref("password"), null], "Passwords must match"),
-  });
-
   const [register] = useRegisterMutation();
   const handleFormSubmit = (values, { resetForm }) => {
-    register({ ...values }).unwrap().then((data)=>{
-      dispatch(setUser(data));
-      setErrorMessage("");
-      if (handleCloseAccountDialog !== undefined) {
-        handleCloseAccountDialog();
-      }
-      resetForm();
-      navigate(from, { replace: true });
-    }).catch((err)=>{
-          console.log(err.data);
-          setErrorMessage(err?.data?.detail);
+    register({ ...values })
+      .unwrap()
+      .then((data) => {
+        dispatch(setUser(data));
+        setErrorMessage("");
+        if (handleCloseAccountDialog !== undefined) {
+          handleCloseAccountDialog();
+        }
+        resetForm();
+        navigate(from, { replace: true });
+      })
+      .catch((err) => {
+        console.log(err.data);
+        setErrorMessage(err?.data?.detail);
       });
   };
   return (
@@ -215,5 +186,30 @@ const UserRegisterForm = ({
     </Box>
   );
 };
+const checkoutSchema = yup.object().shape({
+  first_name: yup.string().required("required"),
+  last_name: yup.string().required("required"),
+  username: yup.string().required("required"),
+  password: yup
+    .string()
+    .required("required")
+    .matches(
+      /(?=.*[a-zA-Z])/,
+      "The string must contain at least 1 alphabetical character"
+    )
+    .matches(
+      /(?=.*[0-9])/,
+      "The string must contain at least 1 numeric character"
+    )
+    .matches(
+      /(?=.*[!@#%^&*<>/_?,.:"'$%^&*)=+()])/,
+      "The string must contain at least one special character, but we are escaping reserved RegEx characters to avoid conflict"
+    )
+    .matches(/(?=.{8,})/, "The string must be eight characters or longer"),
+  password2: yup
+    .string()
+    .required("required")
+    .oneOf([yup.ref("password"), null], "Passwords must match"),
+});
 
 export default UserRegisterForm;

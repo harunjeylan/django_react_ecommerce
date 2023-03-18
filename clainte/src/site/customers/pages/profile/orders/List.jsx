@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Typography,
@@ -10,51 +10,15 @@ import {
 } from "@mui/material";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import ProfileCard from "../global/ProfileCard";
-import Service from "../../../components/Service";
+import { useGetAllOrdersQuery } from "../../../../../features/services/orderApiSlice";
+import { tokens } from "../../../../../theme";
+import Header from "../../../../../components/Header";
 
-import { tokens, Header } from "../../../import";
-
-const Orders = () => {
+const OrdersListCustomer = () => {
   const navigate = useNavigate();
-
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
-  const orders = [
-    {
-      id: "1735",
-      date: "22/6/2022",
-      total: 150.0,
-      type: "number",
-      status: "Being prepared",
-      action: 1,
-    },
-    {
-      id: "1734",
-      date: "	7/5/2022",
-      total: 170.0,
-      type: "number",
-      status: "Action needed",
-      action: 1,
-    },
-    {
-      id: "1730",
-      date: "22/5/2022",
-      total: 250.0,
-      type: "number",
-      status: "Received",
-      action: 1,
-    },
-    {
-      id: "1705",
-      date: "22/7/2022",
-      total: 650.0,
-      type: "number",
-      status: "Cancelled",
-      action: 1,
-    },
-  ];
-
+  const { data: orders, isFetching: isFetchingOrders } = useGetAllOrdersQuery();
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
@@ -79,9 +43,9 @@ const Orders = () => {
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Box className="flex flex-col-reverse  gap-8 md:flex-row">
           <Box className="w-full md:max-w-[60%] lg:max-w-[70%]">
-            {orders.length ? (
+            {!isFetchingOrders && orders?.length ? (
               <Box className="drop-shadow-md">
-                <Box className="flex justfiy-between items-center gap-2 bg-slate-400/10 py-8 mb-4">
+                <Box className="flex justify-between items-center gap-2 bg-slate-400/10 py-8 mb-4">
                   <Box className="text-center w-full">Order #</Box>
                   <Box className="text-center w-full">Date</Box>
                   <Box className="text-center w-full">Total</Box>
@@ -89,15 +53,15 @@ const Orders = () => {
                   <Box className="text-center w-full">Action</Box>
                 </Box>
 
-                <Box className="flex flex-col justfiy-between">
-                  {orders.map((order, ind) => (
+                <Box className="flex flex-col justify-between">
+                  {orders?.map((order, ind) => (
                     <Box
                       key={ind}
                       className="hover:bg-white/10 h-[100px] ease-in-out duration-300"
                     >
                       <Box
                         key={`${order.title}-${order.id}-${ind}`}
-                        className="flex justfiy-between items-center gap-2 w-full h-full"
+                        className="flex justify-between items-center gap-2 w-full h-full"
                       >
                         <Box className="text-center w-full">
                           <Typography># {order?.id}</Typography>
@@ -106,27 +70,32 @@ const Orders = () => {
                           <Typography>{order?.date}</Typography>
                         </Box>
                         <Box className="text-center w-full">
-                          <Typography>${order?.total}</Typography>
+                          <Typography>${order?.total_price}</Typography>
                         </Box>
                         <Box className="text-center w-full">
                           <Typography color={colors.greenAccent[500]}>
-                            {order?.status === "Being prepared" && (
+                            {order?.status === "partially_fulfilled" && (
                               <span className="bg-blue-400/5 text-blue-500 px-2 py-1 rounded-md">
                                 {order?.status}
                               </span>
                             )}
-                            {order?.status === "Action needed" && (
+                            {order?.status === "pending" && (
                               <span className="bg-yellow-400/5 text-yellow-500 px-2 py-1 rounded-md">
                                 {order?.status}
                               </span>
                             )}
-                            {order?.status === "Received" && (
+                            {order?.status === "complete" && (
                               <span className="bg-green-400/5 text-green-500 px-2 py-1 rounded-md">
                                 {order?.status}
                               </span>
                             )}
-                            {order?.status === "Cancelled" && (
+                            {order?.status === "failed" && (
                               <span className="bg-red-400/5 text-red-500 px-2 py-1 rounded-md">
+                                {order?.status}
+                              </span>
+                            )}
+                            {order?.status === "cancelled" && (
+                              <span className="bg-red-400/5 text-orange-500 px-2 py-1 rounded-md">
                                 {order?.status}
                               </span>
                             )}
@@ -184,15 +153,8 @@ const Orders = () => {
           </Box>
         </Box>
       </Box>
-
-      <Box
-        backgroundColor={colors.primary[400]}
-        className="px-2 md:px-4 flex justify-center lg:px-auto py-[80px] items-center my-[50px]"
-      >
-        <Service />
-      </Box>
     </Box>
   );
 };
 
-export default Orders;
+export default OrdersListCustomer;

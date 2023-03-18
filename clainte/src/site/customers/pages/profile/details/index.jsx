@@ -14,19 +14,20 @@ import {
   Alert,
 } from "@mui/material";
 
-import Service from "../../../components/Service";
 import ProfileCard from "../global/ProfileCard";
 import ProfileDetailsForm from "./ProfileDetailsForm";
 import ChangePasswordForm from "./ChangePasswordForm";
 
 import {
-  tokens,
-  Header,
   selectCurrentUser,
+  setUserData,
+} from "../../../../../features/auth/authSlice";
+import {
   useUpdatePasswordMutation,
   useUpdatePersonalInfoMutation,
-} from "../../../import";
-import { setUserData } from "../../../../../features/auth/authSlice";
+} from "../../../../../features/auth/authApiSlice";
+import Header from "../../../../../components/Header";
+import { tokens } from "../../../../../theme";
 const Profile = () => {
   const userData = useSelector(selectCurrentUser);
   const navigate = useNavigate();
@@ -68,17 +69,17 @@ const Profile = () => {
       });
   };
   const PersonalDetailsInitialValues = {
-    first_name: getValue(userData?.first_name),
-    last_name: getValue(userData?.last_name),
     email: getValue(userData?.email),
     username: getValue(userData?.username),
+    phone_number: getValue(userData?.phone_number),
+    first_name: getValue(userData?.first_name),
+    last_name: getValue(userData?.last_name),
     country: getValue(userData?.country),
     street1: getValue(userData?.street1),
     street2: getValue(userData?.street2),
     city: getValue(userData?.city),
     state: getValue(userData?.state),
     zipcode: getValue(userData?.zipcode),
-    phone_number: getValue(userData?.phone_number),
   };
   const changeYourPasswordInitialValues = {
     old_password: "",
@@ -86,50 +87,8 @@ const Profile = () => {
     passwordConfirmation: "",
   };
 
-  const phoneRegExp =
-    /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
-  // YupPassword(yup);
-  const PersonalDetailsCheckoutSchema = yup.object().shape({
-    first_name: yup.string().required("required"),
-    last_name: yup.string().required("required"),
-    username: yup.string().required("required"),
-    country: yup.string(),
-    street1: yup.string(),
-    street2: yup.string(),
-    city: yup.string(),
-    state: yup.string(),
-    zipcode: yup.string(),
-    email: yup.string(),
-    phone_number: yup
-      .string()
-      .matches(phoneRegExp, "phone number is not valid!"),
-  });
-  const changeYourPasswordCheckoutSchema = yup.object().shape({
-    old_password: yup.string().required("required"),
-    new_password: yup
-      .string()
-      .required("required")
-      .matches(
-        /(?=.*[a-zA-Z])/,
-        "The string must contain at least 1 lowercase alphabetical character"
-      )
-      .matches(
-        /(?=.*[0-9])/,
-        "The string must contain at least 1 numeric character"
-      )
-      .matches(
-        /(?=.*[!@#%^&*<>/_?,.:"'$%^&*)=+()])/,
-        "The string must contain at least one special character, but we are escaping reserved RegEx characters to avoid conflict"
-      )
-      .matches(/(?=.{8,})/, "The string must be eight characters or longer"),
-
-    passwordConfirmation: yup
-      .string()
-      .required("required")
-      .oneOf([yup.ref("new_password"), null], "Passwords must match"),
-  });
   return (
-    <Box className={`flex flex-col gap-8 mt-20 md:mt-40c`}>
+    <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Breadcrumbs aria-label="breadcrumb">
           <Button
@@ -246,15 +205,46 @@ const Profile = () => {
           </Box>
         </Box>
       </Box>
-
-      <Box
-        backgroundColor={colors.primary[400]}
-        className="px-2 md:px-4 flex justify-center lg:px-auto py-[80px] items-center my-[50px]"
-      >
-        <Service />
-      </Box>
     </Box>
   );
 };
+const phoneRegExp = /^\+?1?\d{9,15}$/;
+// YupPassword(yup);
+const PersonalDetailsCheckoutSchema = yup.object().shape({
+  first_name: yup.string().required("required"),
+  last_name: yup.string().required("required"),
+  username: yup.string().required("required"),
+  country: yup.string(),
+  street1: yup.string(),
+  street2: yup.string(),
+  city: yup.string(),
+  state: yup.string(),
+  zipcode: yup.string(),
+  email: yup.string(),
+  phone_number: yup.string().matches(phoneRegExp, "phone number is not valid!"),
+});
+const changeYourPasswordCheckoutSchema = yup.object().shape({
+  old_password: yup.string().required("required"),
+  new_password: yup
+    .string()
+    .required("required")
+    .matches(
+      /(?=.*[a-zA-Z])/,
+      "The string must contain at least 1 lowercase alphabetical character"
+    )
+    .matches(
+      /(?=.*[0-9])/,
+      "The string must contain at least 1 numeric character"
+    )
+    .matches(
+      /(?=.*[!@#%^&*<>/_?,.:"'$%^&*)=+()])/,
+      "The string must contain at least one special character, but we are escaping reserved RegEx characters to avoid conflict"
+    )
+    .matches(/(?=.{8,})/, "The string must be eight characters or longer"),
 
+  passwordConfirmation: yup
+    .string()
+    .required("required")
+    .oneOf([yup.ref("new_password"), null], "Passwords must match"),
+});
 export default Profile;

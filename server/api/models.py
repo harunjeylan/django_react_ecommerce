@@ -3,6 +3,7 @@ from django.contrib.auth.models import  User
 from django.core.validators import RegexValidator
 # Create your models here.
 
+
 class Category(models.Model):
     name = models.CharField(unique=True,max_length=100)
     def __str__(self):
@@ -110,6 +111,7 @@ class RecommendedProduct(models.Model):
     subtitle = models.CharField(max_length=200)
     def __str__(self):
         return f"{self.title}"
+    
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
@@ -124,19 +126,44 @@ class Review(models.Model):
         return f"{self.first_name} {self.last_name}-> {self.rating}: {self.product}"
 
 
+class OrderAddress(models.Model):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    PHONE_REGEX = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+    phone_number = models.CharField(validators=[PHONE_REGEX], max_length=17, null=True,blank=True)
+    email = models.EmailField(max_length=100)
+    country = models.CharField(max_length=50, null=True,blank=True)
+    street1 = models.CharField(max_length=100, null=True,blank=True)
+    street2 = models.CharField(max_length=100, null=True,blank=True)
+    city = models.CharField(max_length=100, null=True,blank=True)
+    zipcode = models.CharField(max_length=100, null=True,blank=True)
+    state = models.CharField(max_length=100, null=True,blank=True)
+    def __str__(self):
+        return f"{self.street1} | {self.city} | {self.state}"
+
+class OrderdVariantOption(models.Model):
+    variant = models.ForeignKey(Variant, on_delete=models.CASCADE)
+    option = models.ForeignKey(Option, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.variant}" 
+    
+class OrderdProduct(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    variants = models.ManyToManyField(OrderdVariantOption, blank=True)
+    count = models.IntegerField(default=1)
+    def __str__(self):
+        return f"{self.product}" 
     
 class Order(models.Model):
+    products = models.ManyToManyField(OrderdProduct, blank=True)
     customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    products = models.ManyToManyField(Product, blank=True)
-    email = models.EmailField()
+    billing_address=models.ForeignKey(OrderAddress,related_name="order_billing_address", on_delete=models.SET_NULL, null=True)
+    shipping_address=models.ForeignKey(OrderAddress, related_name="order_shipping_address", on_delete=models.SET_NULL, null=True)
     FULFILLMENT_STATUS = [
         ("complete","Complete"),
         ("failed","Failed"),
         ("cancelled","Cancelled"),
-        ("complete","Complete"),
         ("pending","Pending"),
-        ("partially_fulfilled","Partially Fulfilled"),
-        
     ]
     fulfillment_status = models.CharField(choices=FULFILLMENT_STATUS,default="pending" ,max_length=25)
     DELIVERY_TYPE=[
@@ -144,15 +171,24 @@ class Order(models.Model):
         ("selected_countries","Selected Countries"),
         ("local_delivery","Local Delivery")
     ]
-    delivery_type = models.CharField(choices=DELIVERY_TYPE,default="local_delivery",max_length=25)
-    countries = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True, blank=True)
-    date = models.DateField(auto_now_add=True)
+    delivery_type = models.CharField(choices=DELIVERY_TYPE,default="local_delivery",max_length=25, null=True, blank=True)
+    DELIVERY_METHOD=[
+        ("none","NONE"),
+        ("ppl","PPL"),
+        ("ups","UPS"),
+        ("dhl","SHL"),
+        ("usps","Usps next day"),
+    ]
+    delivery_method = models.CharField(choices=DELIVERY_METHOD,default="none",max_length=25)
+    total_price = models.FloatField()
+    date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.customer.get_full_name: self.date}"
+        return f"{self.customer.get_full_name()}: {self.date}"
 
 class WishList(models.Model):
     customer = models.OneToOneField(User, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product)
+
     def __str__(self):
         return f"{self.customer.get_full_name()}"

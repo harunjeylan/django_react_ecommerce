@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
@@ -17,13 +17,19 @@ import {
 } from "@mui/material";
 
 import Payment from "./Payment";
-import Shipping from "../../../components/Shipping";
+import Shipping from "./Shipping";
 import Delivery from "./Delivery";
 import OrderReview from "./OrderReview";
 
-import { tokens, Header } from "../../../import";
+import { useAddOrderMutation } from "../../../../../features/services/orderApiSlice";
+import { clearCart } from "../../../../../features/services/cartReducer";
+import { selectCurrentUser } from "../../../../../features/auth/authSlice";
+import { tokens } from "../../../../../theme";
+import Header from "../../../../../components/Header";
 
 const Checkout = () => {
+  const dispatch = useDispatch();
+  const userData = useSelector(selectCurrentUser);
   const [activeStep, setActiveStep] = useState(0);
   const cart = useSelector((state) => state.cart.cart);
   const isFirstStep = activeStep === 0;
@@ -31,30 +37,86 @@ const Checkout = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
+  const [addOrder] = useAddOrderMutation();
   const handleFormSubmit = async (values, actions) => {
-    setActiveStep(activeStep + 1);
-
-    // this copies the billing address onto shipping address
+    console.log(values);
+    !isLastStep && setActiveStep(activeStep + 1);
     if (isFirstStep && values.shippingAddress.isSameAddress) {
       actions.setFieldValue("shippingAddress", {
         ...values.billingAddress,
         isSameAddress: true,
       });
     }
-
-    if (isLastStep) {
-      makePayment(values);
-    }
-
+    isLastStep && makePayment(values);
     actions.setTouched({});
   };
-
-  async function makePayment(values) {}
+  console.log(cart);
+  async function makePayment(values) {
+    console.log({
+      ...values,
+      products: cart?.map((product) => ({
+        id: product.id,
+        variants: product.selectedVariants,
+        count: product.count,
+      })),
+    });
+    addOrder({
+      post: {
+        ...values,
+        products: cart?.map((product) => ({
+          id: product.id,
+          variants: product.selectedVariants,
+          count: product.count,
+        })),
+      },
+    })
+      .then((response) => {
+        if (!response.error) {
+          console.log(response);
+          dispatch(clearCart());
+          navigate(`/checkout/success`, { replace: true });
+        } else {
+          console.log(response.error);
+        }
+      })
+      .catch((error) => console.log(error));
+  }
   const totalPrice = cart.reduce((total, item) => {
-    return total + item.count * item.price;
+    return total + item.count * item.sale_pricing;
   }, 0);
+  const getValue = (value) => {
+    return value ? value : "";
+  };
+  const initialValues = {
+    billingAddress: {
+      first_name: getValue(userData?.first_name),
+      last_name: getValue(userData?.last_name),
+      phone_number: getValue(userData?.phone_number),
+      email: getValue(userData?.email),
+      country: getValue(userData?.country),
+      street1: getValue(userData?.street1),
+      street2: getValue(userData?.street2),
+      city: getValue(userData?.city),
+      state: getValue(userData?.state),
+      zipcode: getValue(userData?.zipcode),
+    },
+    shippingAddress: {
+      isSameAddress: true,
+      first_name: "",
+      last_name: "",
+      phone_number: "",
+      email: "",
+      country: "",
+      street1: "",
+      street2: "",
+      city: "",
+      state: "",
+      zipcode: "",
+    },
+    deliveryMethod: "none",
+  };
   return (
-    <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
+    <Box className={`w-full flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Breadcrumbs aria-label="breadcrumb">
           <Button
@@ -81,24 +143,26 @@ const Checkout = () => {
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Box className="flex flex-col gap-8 md:flex-row">
           <Box className="w-full md:max-w-[60%]">
-            <Stepper
-              sx={{ backgroundColor: colors.primary[400] }}
-              activeStep={activeStep}
-              className="p-4 rounded-md"
-            >
-              <Step>
-                <StepLabel>Billing</StepLabel>
-              </Step>
-              <Step>
-                <StepLabel>Delivery Method</StepLabel>
-              </Step>
-              <Step>
-                <StepLabel>Payment Method</StepLabel>
-              </Step>
-              <Step>
-                <StepLabel>Order Review</StepLabel>
-              </Step>
-            </Stepper>
+            <Box className="overflow-x-auto">
+              <Stepper
+                sx={{ backgroundColor: colors.primary[400] }}
+                activeStep={activeStep}
+                className="p-4 rounded-md"
+              >
+                <Step>
+                  <StepLabel color="secondary">Billing</StepLabel>
+                </Step>
+                <Step>
+                  <StepLabel color="secondary">Delivery Method</StepLabel>
+                </Step>
+                <Step>
+                  <StepLabel color="secondary">Payment Method</StepLabel>
+                </Step>
+                <Step>
+                  <StepLabel color="secondary">Order Review</StepLabel>
+                </Step>
+              </Stepper>
+            </Box>
             <Box className="mt-8">
               <Formik
                 onSubmit={handleFormSubmit}
@@ -235,55 +299,51 @@ const Checkout = () => {
     </Box>
   );
 };
-
-const initialValues = {
-  billingAddress: {
-    firstName: "",
-    lastName: "",
-    country: "",
-    street1: "",
-    street2: "",
-    city: "",
-    state: "",
-    zipCode: "",
-  },
-  shippingAddress: {
-    isSameAddress: true,
-    firstName: "",
-    lastName: "",
-    country: "",
-    street1: "",
-    street2: "",
-    city: "",
-    state: "",
-    zipCode: "",
-  },
-  deliveryMethod: "none",
-  email: "",
-  phoneNumber: "",
-};
+const phoneRegExp = /^\+?1?\d{9,15}$/;
 
 const checkoutSchema = [
   yup.object().shape({
     billingAddress: yup.object().shape({
-      firstName: yup.string().required("required"),
-      lastName: yup.string().required("required"),
+      first_name: yup.string().required("required"),
+      last_name: yup.string().required("required"),
+      email: yup.string().required("required"),
+      phone_number: yup
+        .string()
+        .required("required")
+        .matches(
+          phoneRegExp,
+          "Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
+        ),
       country: yup.string().required("required"),
       street1: yup.string().required("required"),
       street2: yup.string(),
       city: yup.string().required("required"),
       state: yup.string().required("required"),
-      zipCode: yup.string().required("required"),
+      zipcode: yup.string(),
     }),
     shippingAddress: yup.object().shape({
       isSameAddress: yup.boolean(),
-      firstName: yup.string().when("isSameAddress", {
+      first_name: yup.string().when("isSameAddress", {
         is: false,
         then: yup.string().required("required"),
       }),
-      lastName: yup.string().when("isSameAddress", {
+      last_name: yup.string().when("isSameAddress", {
         is: false,
         then: yup.string().required("required"),
+      }),
+      email: yup.string().when("isSameAddress", {
+        is: false,
+        then: yup.string().required("required"),
+      }),
+      phone_number: yup.string().when("isSameAddress", {
+        is: false,
+        then: yup
+          .string()
+          .required("required")
+          .matches(
+            phoneRegExp,
+            "Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
+          ),
       }),
       country: yup.string().when("isSameAddress", {
         is: false,
@@ -302,17 +362,10 @@ const checkoutSchema = [
         is: false,
         then: yup.string().required("required"),
       }),
-      zipCode: yup.string().when("isSameAddress", {
-        is: false,
-        then: yup.string().required("required"),
-      }),
+      zipcode: yup.string(),
     }),
   }),
   yup.object().shape({ deliveryMethod: yup.string() }),
-  yup.object().shape({
-    email: yup.string().required("required"),
-    phoneNumber: yup.string().required("required"),
-  }),
 ];
 
 export default Checkout;

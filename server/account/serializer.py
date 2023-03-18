@@ -68,7 +68,7 @@ class UpdateAddressSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = [ 'id', 'username', 'first_name', 'last_name', 'email', 'is_superuser']
+        fields = [ 'id', 'username', 'first_name', 'last_name', 'email', 'is_superuser','date_joined']
 
     # def __init__(self,user, *args, **kwargs):
     #     profile = Profile.objects.get(user=user)

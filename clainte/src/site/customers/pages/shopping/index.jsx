@@ -7,38 +7,34 @@ import {
   Typography,
   FormControlLabel,
   Checkbox,
-  Radio,
   CircularProgress,
   Breadcrumbs,
   FormControl,
   FormLabel,
-  RadioGroup,
   Collapse,
   Slider,
   useMediaQuery,
   Divider,
-  ListItem,
   List,
-  ListItemButton,
   TextField,
   ButtonGroup,
-  LinearProgress,
 } from "@mui/material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import PaletteIcon from "@mui/icons-material/Palette";
-import PaletteOutlinedIcon from "@mui/icons-material/PaletteOutlined";
 
 import Service from "../../components/Service";
 import Banner from "../../components/Banner";
-import ProductCarouse from "../../components/ProductCarouse";
 import ProductsList from "../../components/ProductsList";
 
-import { tokens, Header } from "../../import";
 import { useGetAllOrganizeQuery } from "../../../../features/services/organizeApiSlice";
-import { useSearchAndFilterProductsQuery } from "../../import";
+import {
+  useSearchAndFilterProductsQuery,
+  useGetRatingsQuery,
+} from "../../../../features/services/productApiSlice";
+
 import { useGetAllBrandsQuery } from "../../../../features/services/brandApiSlice";
 import { useGetAllVariantsQuery } from "../../../../features/services/variantApiSlice";
+import { tokens } from "../../../../theme";
 const Shopping = () => {
   const isNoneMobile = useMediaQuery("(min-width:1024px)");
   const [openCategory, setOpenCategory] = useState(false);
@@ -53,8 +49,9 @@ const Shopping = () => {
   const [searchValue, setSearchValue] = useState("");
   const [priceValue, setPriceValue] = useState({ from: 0, to: 0 });
   const [brandValue, setBradValue] = useState([]);
+  const [ratingValue, setRatingValue] = useState([]);
   const [organizeValue, setOrganizeValue] = useState({});
-  const [variantsValue, setValriantsValue] = useState([]);
+  const [variantsValue, setVariantValue] = useState([]);
 
   const {
     data: searchAndFilterProducts,
@@ -64,6 +61,7 @@ const Shopping = () => {
   });
 
   const { data: brands, isFetching: isFetchingBrands } = useGetAllBrandsQuery();
+  const { data: ratings, isFetching: isFetchingRatings } = useGetRatingsQuery();
   const { data: organize, isFetching: isFetchingOrganize } =
     useGetAllOrganizeQuery();
   const { data: variants, isFetching: isFetchingVariants } =
@@ -75,6 +73,17 @@ const Shopping = () => {
         return [...prevBradValue, e.target.value];
       } else {
         return prevBradValue.filter(
+          (prevValue) => prevValue !== e.target.value
+        );
+      }
+    });
+  };
+  const handleCheckRating = (e) => {
+    setRatingValue((prevRatingValue) => {
+      if (e.target.checked) {
+        return [...prevRatingValue, e.target.value];
+      } else {
+        return prevRatingValue.filter(
           (prevValue) => prevValue !== e.target.value
         );
       }
@@ -104,6 +113,11 @@ const Shopping = () => {
         searchAndFilterValue = searchAndFilterValue + `brand=${brand}&`;
       }
     });
+    ratingValue.forEach((rating) => {
+      if (rating !== "") {
+        searchAndFilterValue = searchAndFilterValue + `rating=${rating}&`;
+      }
+    });
     Object.keys(organizeValue).forEach((key) => {
       organizeValue[key].forEach((organize) => {
         if (organize !== "") {
@@ -126,6 +140,7 @@ const Shopping = () => {
     organizeValue,
     priceValue.from,
     priceValue.to,
+    ratingValue,
     searchValue,
     variantsValue,
   ]);
@@ -192,7 +207,7 @@ const Shopping = () => {
                 </Typography>
                 <List className={``}>
                   {!isFetchingOrganize &&
-                    organize.categories.map((categorie) => (
+                    organize?.categories.map((categorie) => (
                       <FormControlLabel
                         key={categorie.id}
                         value={categorie.name}
@@ -371,6 +386,49 @@ const Shopping = () => {
                     </Box>
                   </FormControl>
                 </Box>
+                <Box className={`my-4 w-full`}>
+                  <FormControl className="w-full">
+                    <FormLabel id="demo-radio-buttons-group-label">
+                      <Typography
+                        variant="h1"
+                        color={colors.grey[100]}
+                        fontWeight="bold"
+                        className={`text-xl md:text-2xl  text-left mb-2`}
+                      >
+                        Rating
+                      </Typography>
+                    </FormLabel>
+                    <Box className={`flex flex-col w-full`}>
+                      {!isFetchingRatings &&
+                        ratings?.map((rating) => (
+                          <Box
+                            key={rating.rating}
+                            className={`flex gap-2 w-full items-center`}
+                          >
+                            <FormControlLabel
+                              value={rating.rating}
+                              name={"rating"}
+                              control={<Checkbox color="secondary" />}
+                              onChange={handleCheckRating}
+                              label={rating.rating}
+                              labelPlacement="end"
+                              className="block ml-4 w-20"
+                            />
+                            <Box
+                              backgroundColor={colors.primary[300]}
+                              className="w-full h-4 outline-1 flex justify-start items-center rounded-md"
+                            >
+                              <span
+                                style={{ width: `${rating?.average}%` }}
+                                className={`py1 bg-yellow-500 h-full rounded-md`}
+                              />
+                            </Box>
+                            <strong>{rating?.total}</strong>
+                          </Box>
+                        ))}
+                    </Box>
+                  </FormControl>
+                </Box>
                 <Divider />
                 <Box className={`my-4 w-full`}>
                   <FormControl>
@@ -403,7 +461,7 @@ const Shopping = () => {
                                 name={variantOprions.label}
                                 control={<Checkbox color="secondary" />}
                                 onClick={(e) =>
-                                  handleCheckFilter(e, setValriantsValue)
+                                  handleCheckFilter(e, setVariantValue)
                                 }
                                 label={option?.label}
                                 labelPlacement="end"
@@ -480,7 +538,7 @@ const Shopping = () => {
                 </Box>
               )
             ) : (
-              <Box className="w-full flex items-center justify-center h-40">
+              <Box className="w-full flex items-center justify-center h-full min-h-40">
                 <CircularProgress color="secondary" />
               </Box>
             )}

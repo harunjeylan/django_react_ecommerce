@@ -1,15 +1,15 @@
 import React from "react";
 import { ResponsiveLine } from "@nivo/line";
 import { useTheme } from "@mui/material";
-import { tokens, mockLineData } from "../import";
+import { tokens } from "../../../theme";
 
-const LineChart = ({ isDashboard = false }) => {
+const LineChart = ({ isDashboard = false, data }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
     <>
       <ResponsiveLine
-        data={mockLineData}
+        data={data}
         theme={{
           axis: {
             domain: {
@@ -48,12 +48,11 @@ const LineChart = ({ isDashboard = false }) => {
         xScale={{ type: "point" }}
         yScale={{
           type: "linear",
-          min: "auto",
+          min: 0,
           max: "auto",
           stacked: true,
           reverse: false,
         }}
-        colors={isDashboard ? { datum: "color" } : { scheme: "nivo" }}
         yFormat=" >-.2f"
         axisTop={null}
         axisRight={null}

@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
-import { tokens } from "../import";
+import { tokens } from "../../../theme";
 
 function Footer() {
   const theme = useTheme();

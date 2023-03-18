@@ -1,17 +1,27 @@
 import React from "react";
-import { applyInitialState } from "@mui/x-data-grid/hooks/features/columns/gridColumnsUtils";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { Box, Button, Typography, Breadcrumbs, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  Breadcrumbs,
+  useTheme,
+  CircularProgress,
+} from "@mui/material";
 
-import { mockDataOrders, Header, tokens } from "../../../import";
+import { useGetAllOrdersForAdminQuery } from "../../../../../features/services/orderApiSlice";
+import { tokens } from "../../../../../theme";
+import Header from "../../../../../components/Header";
 
 const OrdersForAdmin = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
 
+  const { data: orders, isFetching: isFetchingOrders } =
+    useGetAllOrdersForAdminQuery();
   const columns = [
     {
       field: "id",
@@ -31,26 +41,26 @@ const OrdersForAdmin = () => {
       },
     },
     {
-      field: "total",
+      field: "total_price",
       headerName: "Total",
       width: 100,
-      renderCell: ({ row: { total } }) => {
-        return <Typography>${total}</Typography>;
+      renderCell: ({ row: { total_price } }) => {
+        return <Typography>${total_price}</Typography>;
       },
     },
     {
       field: "first_name",
       headerName: "Customer",
       width: 200,
-      hieght: 200,
-      renderCell: ({ row: { first_name, last_name, avator } }) => {
+      height: 200,
+      renderCell: ({ row: { full_name, avatar } }) => {
         return (
           <Box className="flex justify-start gap-4 items-center py-2 w-full h-full">
             <Link to={`/admin/customers/${1}`}>
               <img
                 className="h-[60px] w-[60px] cursor-pointer rounded-[50%]"
-                src={avator}
-                alt={`${first_name}-${last_name}`}
+                src={avatar}
+                alt={`${full_name}`}
               />{" "}
             </Link>
             <Link to={`/admin/customers/${1}`}>
@@ -58,16 +68,19 @@ const OrdersForAdmin = () => {
                 className="cursor-pointer"
                 color={colors.greenAccent[500]}
               >
-                {first_name} {last_name}
+                {full_name}
               </Typography>
             </Link>
           </Box>
         );
       },
     },
-    { field: "payment_status", headerName: "Payment status", width: 200 },
-    { field: "fulfilment_status", headerName: "Fulfilment status", width: 200 },
-    { field: "delivery_type", headerName: "Delivery Type", width: 200 },
+    {
+      field: "fulfillment_status",
+      headerName: "Fulfillment status",
+      width: 200,
+    },
+    { field: "delivery_method", headerName: "Delivery Method", width: 200 },
     { field: "date", headerName: "Date", width: 100 },
   ];
 
@@ -80,13 +93,13 @@ const OrdersForAdmin = () => {
             variant="text"
             color="secondary"
           >
-            Admin Dashboadrd
+            Admin Dashboard
           </Button>
-          <Typography color="text.primary">Customers</Typography>
+          <Typography color="text.primary">Order</Typography>
         </Breadcrumbs>
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
-        <Header title="Customers" subtitle="welcome to you Customers" />
+        <Header title="Order" subtitle="welcome to you Order" />
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Box className="flex gap-4">
@@ -95,7 +108,7 @@ const OrdersForAdmin = () => {
             <Typography color={colors.greenAccent[500]}>(10000)</Typography>
           </Box>
           <Box className="flex gap-1">
-            <Typography>Publishd</Typography>
+            <Typography>Published</Typography>
             <Typography color={colors.greenAccent[500]}>(5600)</Typography>
           </Box>
           <Box className="flex gap-1">
@@ -130,19 +143,28 @@ const OrdersForAdmin = () => {
             "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
               color: `${colors.grey[100]} !important`,
             },
-            "& .MuiDataGrid-cell": {
-              width: "100%",
-            },
           }}
         >
-          <DataGrid
-            density="comfortable"
-            rows={mockDataOrders}
-            columns={columns}
-            autoPageSize
-            checkboxSelection
-            components={{ Toolbar: GridToolbar }}
-          />
+          {!isFetchingOrders ? (
+            orders?.length ? (
+              <DataGrid
+                density="comfortable"
+                rows={orders}
+                columns={columns}
+                autoPageSize
+                checkboxSelection
+                components={{ Toolbar: GridToolbar }}
+              />
+            ) : (
+              <Box className="w-full flex items-center justify-center h-full min-h-40">
+                <Typography>No data</Typography>
+              </Box>
+            )
+          ) : (
+            <Box className="w-full flex items-center justify-center h-full min-h-40">
+              <CircularProgress color="secondary" />
+            </Box>
+          )}
         </Box>
       </Box>
     </Box>

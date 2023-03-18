@@ -24,8 +24,7 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { selectCurrentUser } from "../../../features/auth/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useSidebarContext } from "./SidebarContext";
-import { adminImage, logo2 } from "../import";
-import { tokens } from "../import";
+import { tokens } from "../../../theme";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -79,6 +78,7 @@ const MyProSidebar = () => {
           color: `${colors.greenAccent[500]} !important`,
           backgroundColor: "transparent !important",
         },
+
         "& .sub-menu-content": {
           backgroundColor: colors.primary[400],
           height: "100%",
@@ -221,7 +221,7 @@ const MyProSidebar = () => {
             </Typography>
             <SubMenu label="Ecommerce" icon={<ShoppingCartOutlinedIcon />}>
               <Item
-                title="Add New Products"
+                title="Add Products"
                 to="/admin/products/new"
                 selected={selected}
                 setSelected={setSelected}
@@ -267,37 +267,6 @@ const MyProSidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-
-            <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 20px 5px 20px" }}
-            >
-              Charts
-            </Typography>
-            <SubMenu label="Charts" icon={<BarChartOutlinedIcon />}>
-              <Item
-                title="Bar Chart"
-                to="/admin/charts/bar"
-                icon={<BarChartOutlinedIcon />}
-                selected={selected}
-                setSelected={setSelected}
-              />
-              <Item
-                title="Line Chart"
-                to="/admin/charts/line"
-                icon={<TimelineOutlinedIcon />}
-                selected={selected}
-                setSelected={setSelected}
-              />
-              <Item
-                title="Pie Chart"
-                to="/admin/charts/pie"
-                icon={<PieChartOutlineOutlinedIcon />}
-                selected={selected}
-                setSelected={setSelected}
-              />
-            </SubMenu>
           </Box>
         </Menu>
       </Sidebar>
