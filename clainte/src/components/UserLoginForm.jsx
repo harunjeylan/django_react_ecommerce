@@ -50,10 +50,12 @@ const UserLoginForm = ({
         dispatch(setCredentials(userData));
         setErrorMessage("");
         dispatch(authEndpoints.getUseData.initiate()).then((response) => {
-          dispatch(setUserData(response.data));
-          navigate(from, { replace: true });
-          if (handleCloseAccountDialog !== undefined) {
-            handleCloseAccountDialog();
+          if (response.isSuccess) {
+            dispatch(setUserData(response.data));
+            navigate(from, { replace: true });
+            if (handleCloseAccountDialog !== undefined) {
+              handleCloseAccountDialog();
+            }
           }
         });
         resetForm();

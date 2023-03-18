@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Formik } from "formik";
 
@@ -6,6 +6,8 @@ import { Box, Button, Typography, Breadcrumbs } from "@mui/material";
 import {
   useUploadImageMutation,
   useAddProductMutation,
+  productApi,
+  useUpdateProductMutation,
 } from "../../../../../features/services/productApiSlice";
 import { newProductSchema } from "./newProductSchema";
 import { getInitialValues } from "./getInitialValues";
@@ -15,20 +17,33 @@ import InventoryForm from "./Inventory";
 import OrganizeForm from "./OrganizeForm";
 import VariantsForm from "./VariantsForm";
 import Header from "../../../../../components/Header";
+import { useDispatch } from "react-redux";
 
 const AddEditProduct = ({ isEditing }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [addProduct] = useAddProductMutation();
+  const [updateProduct] = useUpdateProductMutation();
   const [uploadImage] = useUploadImageMutation();
   const [initialValues, setInitialValues] = useState({});
   const { productId } = useParams();
 
-  if (productId && isEditing) {
-    setInitialValues();
-  }
+  useEffect(() => {
+    if (productId && isEditing) {
+      dispatch(
+        productApi.endpoints.getProductsData.initiate({
+          productId,
+        })
+      ).then((response) => {
+        if (response.isSuccess) {
+          // console.log(response.data);
+          setInitialValues(response.data);
+        }
+      });
+    }
+  }, [productId, isEditing, dispatch]);
 
   const handleFormSubmit = (values) => {
-    console.log(values);
     let data = values?.expiryDate?.date;
     let formattedDate;
     if (data.hasOwnProperty("format")) {
@@ -44,20 +59,39 @@ const AddEditProduct = ({ isEditing }) => {
         data: formattedDate,
       },
     };
-    // console.log(post);
-    addProduct({ post }).then((res) => {
-      let postForm = new FormData();
-      postForm.append("thumbnail", values.thumbnail[0]?.file);
-      values.images.forEach((image) => {
-        postForm.append("images", image.file);
+
+    console.log(post);
+
+    if (productId) {
+      updateProduct({ post, productId }).then((res) => {
+        let postForm = new FormData();
+        postForm.append("thumbnail", values.thumbnail[0]?.file);
+        values.images.forEach((image) => {
+          postForm.append("images", image.file);
+        });
+        postForm.append("productId", res.data.id);
+        uploadImage({
+          post: postForm,
+        }).then((response) => {
+          console.log(response);
+          navigate(`/admin/products/${productId}`);
+        });
       });
-      postForm.append("productId", res.data.id);
-      uploadImage({
-        post: postForm,
-      }).then((response) => {
-        console.log(response);
+    } else {
+      addProduct({ post }).then((res) => {
+        let postForm = new FormData();
+        postForm.append("thumbnail", values.thumbnail[0]?.file);
+        values.images.forEach((image) => {
+          postForm.append("images", image.file);
+        });
+        postForm.append("productId", res.data.id);
+        uploadImage({
+          post: postForm,
+        }).then((response) => {
+          navigate(`/admin/products/${res.data.id}`);
+        });
       });
-    });
+    }
   };
 
   return (
@@ -94,6 +128,7 @@ const AddEditProduct = ({ isEditing }) => {
           onSubmit={handleFormSubmit}
           initialValues={getInitialValues(initialValues)}
           validationSchema={newProductSchema}
+          enableReinitialize={true}
         >
           {({
             values,
@@ -150,6 +185,7 @@ const AddEditProduct = ({ isEditing }) => {
                         handleChange={handleChange}
                         handleSubmit={handleSubmit}
                         setFieldValue={setFieldValue}
+                        initialValues={initialValues}
                       />
                     </Box>
                   </Box>
@@ -161,7 +197,7 @@ const AddEditProduct = ({ isEditing }) => {
                     variant="outlined"
                     className={`px-8 py-3 `}
                   >
-                    Create New product
+                    {productId && isEditing ? "Save Product" : "Create Product"}
                   </Button>
                 </Box>
               </form>

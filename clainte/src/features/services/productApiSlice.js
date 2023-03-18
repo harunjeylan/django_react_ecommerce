@@ -19,6 +19,14 @@ export const productApi = authApi.injectEndpoints({
       }),
       invalidatesTags: ["products", "recommended-products"],
     }),
+    updateProduct: builder.mutation({
+      query: ({ post, productId }) => ({
+        url: `api/products/${productId}/edit/`,
+        method: "PUT",
+        body: post,
+        invalidatesTags: ["products", "products_details", "products_data"],
+      }),
+    }),
     getAllProducts: builder.query({
       query: () => "api/products/",
       providesTags: ["products"],
@@ -38,7 +46,9 @@ export const productApi = authApi.injectEndpoints({
       providesTags: ["products_details"],
     }),
     getProductsData: builder.query({
-      query: ({ productId }) => `api/admin/products/${productId}/`,
+      query: ({ productId }) => {
+        return `api/admin/products/${productId}/`;
+      },
       providesTags: ["products_data"],
     }),
     getProductsByCategory: builder.query({
@@ -92,6 +102,6 @@ export const {
   useGetProductsByCategoryQuery,
   useGetAllCategoryQuery,
   useSearchAndFilterProductsQuery,
-
+  useUpdateProductMutation,
   useGetProductsForAdminQuery,
 } = productApi;

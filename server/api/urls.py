@@ -14,6 +14,7 @@ urlpatterns = [
   path("products/search-and-filter/", api.searchAndFilterProducts , name="search_and_filter_products"),
   path("products/category/<category_name>/", api.getProductsByCategory , name="products_by_category"),
   path("products/<pk>/", api.getProductsDetails , name="products_details"),
+  path("products/<pk>/edit/", api.updateProduct , name="products_edit"),
   path("products/<pk>/related/", api.getRelatedProducts , name="related_products"),
   path("products/<pk>/review/add/", api.addProductReview , name="new_products_review"),
 

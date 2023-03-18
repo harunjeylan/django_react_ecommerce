@@ -16,6 +16,9 @@ import {
 } from "@mui/material";
 import { useGetProductsDetailsQuery } from "../../../../../features/services/productApiSlice";
 import StarIcon from "@mui/icons-material/Star";
+import { tokens } from "../../../../../theme";
+import Header from "../../../../../components/Header";
+import Reviews from "../../../../../components/Reviews";
 
 const ProductDetails = () => {
   const theme = useTheme();
@@ -55,10 +58,20 @@ const ProductDetails = () => {
           subtitle={`Product ID : ${productId}`}
         />
         <ButtonGroup>
-          <Button color="secondary" variant="outlined" size="large">
+          <Button
+            onClick={() => navigate(`/admin/products/${productId}/edit`)}
+            color="secondary"
+            variant="outlined"
+            size="large"
+          >
             Edit
           </Button>
-          <Button color="secondary" variant="outlined" size="large">
+          <Button
+            onClick={() => navigate(`/admin/products/new`)}
+            color="secondary"
+            variant="outlined"
+            size="large"
+          >
             Add New
           </Button>
         </ButtonGroup>
@@ -317,7 +330,7 @@ const ProductDetails = () => {
             aria-label="secondary tabs example"
           >
             <Tab label="Description" value="description" />
-            <Tab label="Additional Information" value="additiona-information" />
+            <Tab label="Additional Information" value="addition-information" />
             <Tab label="Reviews" value="reviews" />
           </Tabs>
           <Box className="flex flex-wrap gap-4  mt-8">
@@ -329,7 +342,7 @@ const ProductDetails = () => {
                 ))}
               </Box>
             )}
-            {value === "additiona-information" && (
+            {value === "addition-information" && (
               <Box>additional-information</Box>
             )}
           </Box>

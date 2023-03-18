@@ -221,7 +221,7 @@ const MyProSidebar = () => {
             </Typography>
             <SubMenu label="Ecommerce" icon={<ShoppingCartOutlinedIcon />}>
               <Item
-                title="Add New Products"
+                title="Add Products"
                 to="/admin/products/new"
                 selected={selected}
                 setSelected={setSelected}

@@ -94,8 +94,6 @@ const ProductInformationForm = ({
   };
   const handleUpdate = ({ id, name }) => {
     let brand = brands.find((brand) => brand.id === id);
-    console.log(brand);
-    console.log(values.brand);
     const data = {
       id,
       name,
@@ -107,12 +105,9 @@ const ProductInformationForm = ({
   };
   const handleDelete = ({ id }) => {
     let brand = brands.find((brand) => brand.id === id);
-    console.log(brand);
-
     const data = {
       id,
     };
-    console.log(data);
     deleteBrand({ post: data });
     if (values.brand === brand.name) {
       setFieldValue("brand", "");
@@ -255,15 +250,6 @@ const ProductInformationForm = ({
                 ))}
             </Dropzone>
           </Box>
-          {/* <Button
-            type="submit"
-            color="secondary"
-            variant="outlined"
-            className={`px-8 py-3 `}
-            onClick={() => handleUpload(values)}
-          >
-            Upload
-          </Button> */}
           <Box>
             <Typography variant="h6" fontWeight="bold" className="my-2">
               Display Images
@@ -345,26 +331,6 @@ const ProductInformationForm = ({
               )}
             </FormControl>
           </Box>
-          {/* <Box>
-            <Typography variant="h6" fontWeight="bold" className="my-2">
-              Brand
-            </Typography>
-
-            <TextField
-              color="secondary"
-              fullWidth
-              variant="filled"
-              type="text"
-              label="Brand"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              value={values.brand}
-              name="brand"
-              error={!!touched.brand && !!errors.brand}
-              helperText={touched.brand && errors.brand}
-              sx={{ gridColumn: "span 4" }}
-            />
-          </Box> */}
         </FormGroup>
       </FormControl>
     </Box>

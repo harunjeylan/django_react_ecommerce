@@ -297,8 +297,11 @@ def getProductsDataForAdmin(request,pk):
         }
     variants = []
     for variant_option in product.variants.all():
+        options = []
+        for option in variant_option.options.all():
+            options.append(option.label)
         variants.append({
-            "options":OptionSerializer(variant_option.options.all(), many=True).data,
+            "options":options,
             "variantLabel":variant_option.variant.label,
         })
     serialized_data = {
@@ -352,14 +355,14 @@ def newProduct(request):
         organize.tags.add(tag)
         tags.append(TagSerializer(tag).data),
     brand,created = Brand.objects.get_or_create(name=request.data.get("brand"))
-    product_feilds = {
+    product_felids = {
         "title":request.data.get("title"),
         "brand":brand.id,
         "description":request.data.get("description"),
         "organize":organize.id,
     }
 
-    product_serializer_form = ProductSerializer(data=product_feilds)
+    product_serializer_form = ProductSerializer(data=product_felids)
     product = None
     if product_serializer_form.is_valid():
         product = product_serializer_form.save()
@@ -389,7 +392,7 @@ def newProduct(request):
     expiry_date_selectd=request.data.get("expiryDate")["selected"]
     expiry_date=request.data.get("expiryDate")["date"] if expiry_date_selectd else None
 
-    inventory_feilds = {
+    inventory_felids = {
         "regular_pricing":request.data.get("regularPrice"),
         "sale_pricing":request.data.get("salePrice"),
         "stock":request.data.get("restockQuantity"),
@@ -401,10 +404,10 @@ def newProduct(request):
         "product":product.id,
     }
     if request.data.get("shoppingType") == "fulfilled_by_seller" or request.data.get("shoppingType") == "fulfilled_by_phoenix":
-        inventory_feilds["shipping_type"] = request.data.get("shoppingType")
+        inventory_felids["shipping_type"] = request.data.get("shoppingType")
 
     inventory = None
-    inventory_serializer_form = InventorySerializer(data=inventory_feilds)
+    inventory_serializer_form = InventorySerializer(data=inventory_felids)
 
     countries = []
     if inventory_serializer_form.is_valid():
@@ -421,6 +424,93 @@ def newProduct(request):
     
     serialized_data = {
         **InventorySerializer(inventory).data,
+        **ProductSerializer(product, context={"request":request}).data,
+        "variants":variants,
+        "images":[],
+        "reviews":[],
+        "organize":{
+            "category":CategorySerializer(category).data,
+            "collection":CollectionSerializer(collection).data,
+            "vendor":VendorSerializer(vendor).data,
+            "tags":tags,
+        },
+    }
+
+    
+    
+    return Response(serialized_data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateProduct(request, pk):
+    product = Product.objects.get(pk=pk)
+    product.description = request.data.get("description")
+    product.title = request.data.get("title")
+    category, created_category = Category.objects.get_or_create(name=request.data.get("category"))
+    collection, created_collection = Collection.objects.get_or_create(name=request.data.get("collection"))
+    vendor, created_vendor = Vendor.objects.get_or_create(name=request.data.get("vendor"))
+    brand,created = Brand.objects.get_or_create(name=request.data.get("brand"))
+    product.organize.category=category 
+    product.organize.collection=collection
+    product.organize.vendor=vendor
+    product.brand = brand
+
+    tags = []
+    product.organize.tags.clear()
+    for tag_name in request.data.get("tags"):
+        tag, created_tag = Tag.objects.get_or_create(name=tag_name)
+        product.organize.tags.add(tag)
+        tags.append(TagSerializer(tag).data)
+
+    product.organize.save()
+
+    variants = []
+    for variant_option in product.variants.all():
+        product.variants.remove(variant_option)
+        variant_option.delete()
+
+    for variant_dic in request.data.get("variants"):
+        print(variant_dic["variantLabel"],variant_dic["options"])
+        variant = Variant.objects.get(label=variant_dic["variantLabel"])
+        variant_option = VariantOption.objects.create(variant=variant)
+        for optionLabel in variant_dic["options"]:
+            option = Option.objects.get(label=optionLabel)
+            variant_option.options.add(option)
+        print(variant_option)
+        product.variants.add(variant_option)
+        variants.append({
+            **VariantOptionSerializer(variant_option).data,
+            "variant":VariantSerializer(variant).data,
+            "options":OptionSerializer(variant_option.options, many=True).data,
+        })
+    # print(product.variants)
+    product.save()
+
+    product.inventory.regular_pricing=request.data.get("regularPrice")
+    product.inventory.sale_pricing=request.data.get("salePrice")
+    product.inventory.stock=request.data.get("restockQuantity")
+    product.inventory.expiry_date=request.data.get("expiryDate")["date"] if request.data.get("expiryDate")["selected"] else None
+    product.inventory.fragile_product=request.data.get("fragileProduct")
+    product.inventory.biodegradable=request.data.get("biodegradable")
+    product.inventory.frozen_product=request.data.get("frozenProduct")["selected"]
+    product.inventory.max_allowed_temperature=request.data.get("frozenProduct")["maxAllowedTemperature"] if request.data.get("frozenProduct")["selected"] else None
+
+    if request.data.get("shoppingType") == "fulfilled_by_seller" or request.data.get("shoppingType") == "fulfilled_by_phoenix":
+        product.inventory.shipping_type = request.data.get("shoppingType")
+
+    countries = []
+    global_delivery_type = request.data.get("globalDelivery")["type"]
+    if global_delivery_type == "selected_countries":
+        product.inventory.countries.clear()
+        for country_code in request.data.get("globalDelivery")["selectedCountries"]:
+            country = Country.objects.get(code = country_code)
+            product.inventory.countries.add(country)
+            countries.append(CountrySerializer(country).data)
+    product.inventory.save()
+
+    serialized_data = {
+        **InventorySerializer(product.inventory).data,
         **ProductSerializer(product, context={"request":request}).data,
         "variants":variants,
         "images":[],

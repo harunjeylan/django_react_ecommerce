@@ -1,130 +1,52 @@
-const test = {
-  title: "test2",
-  brand: "adiads",
-  description: "erewrwe",
-  salePrice: 0,
-  regularPrice: 0,
-  restockQuantity: 0,
-  thumbnail: [
-    {
-      id: 2,
-      file: {},
-      valid: true,
-      errors: [],
-    },
-  ],
-  images: [
-    {
-      id: 3,
-      file: {},
-      valid: true,
-      errors: [],
-    },
-    {
-      id: 4,
-      file: {},
-      valid: true,
-      errors: [],
-    },
-    {
-      id: 5,
-      file: {},
-      valid: true,
-      errors: [],
-    },
-    {
-      id: 6,
-      file: {},
-      valid: true,
-      errors: [],
-    },
-  ],
-  variants: [
-    {
-      variantLabel: "size",
-      options: ["large", "small"],
-    },
-    {
-      variantLabel: "Color",
-      options: ["red", "yellow"],
-    },
-  ],
-  shoppingType: "",
-  category: "Shoose",
-  collection: "Best Product",
-  vendor: "Jaket",
-  tags: ["hash", "bash"],
-  globalDelivery: {
-    type: "",
-    selectedCountries: [],
-  },
-  fragileProduct: false,
-  biodegradable: false,
-  frozenProduct: {
-    selected: false,
-    maxAllowedTemperature: "",
-  },
-  expiryDate: {
-    selected: false,
-    date: "2023-03-17T12:15:16.084Z",
-  },
-  productIDType: "",
-  productID: "",
+const getValue = (value, option) => {
+  if (value) {
+    return value;
+  } else {
+    return option;
+  }
 };
-
 export const getInitialValues = (initialValues) => {
   return {
-    title: initialValues?.title ? initialValues?.title : "",
-    brand: initialValues?.brand ? initialValues?.brand : "",
-    description: initialValues?.description ? initialValues?.description : "",
-    salePrice: initialValues?.salePrice ? initialValues?.salePrice : 0,
-    regularPrice: initialValues?.salePrice ? initialValues?.salePrice : 0,
-    restockQuantity: initialValues?.salePrice ? initialValues?.salePrice : 0,
-    thumbnail: initialValues?.salePrice ? initialValues?.salePrice : [],
-    images: initialValues?.salePrice ? initialValues?.salePrice : [],
-    variants: initialValues?.salePrice ? initialValues?.salePrice : [],
-    shoppingType: initialValues?.shoppingType
-      ? initialValues?.shoppingType
-      : "",
-    category: initialValues?.category ? initialValues?.category : "",
-    collection: initialValues?.collection ? initialValues?.collection : "",
-    vendor: initialValues?.vendor ? initialValues?.vendor : "",
-    tags: initialValues?.tags ? initialValues?.tags : [],
+    title: getValue(initialValues?.title, ""),
+    brand: getValue(initialValues?.brand?.name, ""),
+    description: getValue(initialValues?.description, ""),
+    salePrice: getValue(initialValues?.sale_pricing, 0),
+    regularPrice: getValue(initialValues?.regular_pricing, 0),
+    restockQuantity: getValue(initialValues?.stock, 0),
+    thumbnail: [],
+    images: [],
+    variants: getValue(initialValues.variants, []),
+    shoppingType: getValue(initialValues?.shipping_type, ""),
+    category: getValue(initialValues?.organize?.category?.name, ""),
+    collection: getValue(initialValues?.organize?.collection?.name, ""),
+    vendor: getValue(initialValues?.organize?.vendor?.name, ""),
+    tags: getValue(
+      initialValues?.organize?.tags?.map((tag) => tag.name),
+      []
+    ),
 
     globalDelivery: {
-      type: initialValues?.globalDelivery?.type
-        ? initialValues?.globalDelivery?.type
-        : "",
-      selectedCountries: initialValues?.globalDelivery?.selectedCountries
-        ? initialValues?.globalDelivery?.selectedCountries
-        : [],
+      type: getValue(initialValues?.globalDelivery?.type, ""),
+      selectedCountries: getValue(
+        initialValues?.globalDelivery?.selectedCountries,
+        []
+      ),
     },
-    fragileProduct: initialValues?.fragileProduct
-      ? initialValues?.fragileProduct
-      : false,
-    biodegradable: initialValues?.biodegradable
-      ? initialValues?.biodegradable
-      : false,
+    fragileProduct: getValue(initialValues?.fragile_product, false),
+    biodegradable: getValue(initialValues?.biodegradable, false),
     frozenProduct: {
-      selected: initialValues?.frozenProduct?.selected
-        ? initialValues?.frozenProduct?.selected
-        : false,
-      maxAllowedTemperature: initialValues?.frozenProduct?.maxAllowedTemperature
-        ? initialValues?.frozenProduct?.maxAllowedTemperature
-        : "",
+      selected: getValue(initialValues?.frozen_product, false),
+      maxAllowedTemperature: getValue(
+        initialValues?.max_allowed_temperature,
+        ""
+      ),
     },
     expiryDate: {
-      selected: initialValues?.expiryDate?.salePrice
-        ? initialValues?.expiryDate?.salePrice
-        : false,
-      date: initialValues?.expiryDate?.date
-        ? initialValues?.expiryDate?.date
-        : new Date(),
+      selected: getValue(initialValues?.expiryDate?.salePrice, false),
+      date: getValue(initialValues?.expiry_date, new Date()),
     },
 
-    productIDType: initialValues?.productIDType
-      ? initialValues?.productIDType
-      : "",
-    productID: initialValues?.productID ? initialValues?.productID : "",
+    productIDType: getValue(initialValues?.productIDType, ""),
+    productID: getValue(initialValues?.productID, ""),
   };
 };
