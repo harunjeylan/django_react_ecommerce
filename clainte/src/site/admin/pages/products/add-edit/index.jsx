@@ -152,7 +152,8 @@ const AddEditProduct = ({ isEditing }) => {
                         handleChange={handleChange}
                         handleSubmit={handleSubmit}
                         setFieldValue={setFieldValue}
-                        // handleUpload={handleUpload}
+                        initialValues={initialValues}
+                        setInitialValues={setInitialValues}
                       />
                       <InventoryForm
                         values={values}

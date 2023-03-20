@@ -12,7 +12,10 @@ import {
   CircularProgress,
 } from "@mui/material";
 
-import { useGetProductsForAdminQuery } from "../../../../../features/services/productApiSlice";
+import {
+  useDeleteProductMutation,
+  useGetProductsForAdminQuery,
+} from "../../../../../features/services/productApiSlice";
 import Header from "../../../../../components/Header";
 import { tokens } from "../../../../../theme";
 
@@ -22,6 +25,11 @@ const ProductsForAdmin = () => {
   const navigate = useNavigate();
   const { data: productsData, isFetching: isFetchingProductsData } =
     useGetProductsForAdminQuery();
+  const [deleteProduct] = useDeleteProductMutation();
+  const handelDelete = (id) => {
+    console.log(id);
+    deleteProduct({ post: { id } }).then((response) => console.log(response));
+  };
   const columns = [
     {
       field: "id",
@@ -43,7 +51,7 @@ const ProductsForAdmin = () => {
     {
       field: "title",
       headerName: "Product Name",
-      width: 360,
+      width: 300,
       renderCell: ({ row: { id, title, thumbnail } }) => {
         return (
           <Box className="flex gap-4 items-center py-2 w-full h-full">
@@ -74,6 +82,29 @@ const ProductsForAdmin = () => {
     { field: "vendor", headerName: "Vendor", width: 150 },
     { field: "brand", headerName: "Brand", width: 150 },
     { field: "date", headerName: "Date", width: 200 },
+    {
+      field: "is",
+      headerName: "Action",
+      width: 360,
+      renderCell: ({ row: { id } }) => {
+        return (
+          <Box className="flex gap-4 items-center py-2 w-full h-full">
+            <Link to={`/admin/products/${id}/edit`}>
+              <Button color="secondary" variant="outlined">
+                edit
+              </Button>
+            </Link>
+            <Button
+              onClick={() => handelDelete(id)}
+              color="error"
+              variant="outlined"
+            >
+              Delete
+            </Button>
+          </Box>
+        );
+      },
+    },
   ];
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20 mb-10`}>

@@ -8,9 +8,17 @@ urlpatterns = [
   
   path("products/", api.getProducts , name="products"),
   path("products/add/", api.newProduct , name="new_products"),
+  path("products/delete/", api.deleteProduct , name="delete_products"),
+
   path("products/recommended/", api.getRecommendedProducts , name="recommended_products"),
   path("products/ratings/", api.getRatings , name="products_ratings"),
   path("products/images/upload/", api.uploadImage , name="upload_image"),
+  
+  path("products/thumbnail/remove/", api.removeThumbnail , name="remove_image"),
+  path("products/images/remove/", api.removeImage , name="remove_image"),
+
+  
+
   path("products/search-and-filter/", api.searchAndFilterProducts , name="search_and_filter_products"),
   path("products/category/<category_name>/", api.getProductsByCategory , name="products_by_category"),
   path("products/<pk>/", api.getProductsDetails , name="products_details"),

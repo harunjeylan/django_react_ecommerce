@@ -9,19 +9,20 @@ import { StyledEngineProvider } from "@mui/material";
 import store from "./app/store";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
+import { ErrorBoundary } from "./utils/ErrorBoundary";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
-
-  
   <React.StrictMode>
     <StyledEngineProvider injectFirst>
       <Provider store={store}>
-        <PersistGate loading={null} persistor={persistStore(store)}>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </PersistGate>
+        <ErrorBoundary fallback={<h1>There is error happen!</h1>}>
+          <PersistGate loading={null} persistor={persistStore(store)}>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </PersistGate>
+        </ErrorBoundary>
       </Provider>
     </StyledEngineProvider>
   </React.StrictMode>
