@@ -11,7 +11,7 @@ import ProductCarouse from "../../components/ProductCarouse";
 
 import Banner from "../../components/Banner";
 import { tokens } from "../../../../theme";
-import { useGetRecommendedProductsQuery } from "../../../../features/services/productApiSlice";
+import { useGetAllProductsQuery } from "../../../../features/services/productApiSlice";
 import Header from "../../../../components/Header";
 
 function Home() {
@@ -21,7 +21,7 @@ function Home() {
   const {
     data: recommendedProducts,
     isFetching: isFetchingRecommendedProducts,
-  } = useGetRecommendedProductsQuery();
+  } = useGetAllProductsQuery();
 
   console.log(recommendedProducts);
   return (
@@ -33,7 +33,7 @@ function Home() {
       <Box backgroundColor={colors.primary[400]} className={`px-auto`}>
         <Banner />
       </Box>
-      {!isFetchingRecommendedProducts &&
+      {/* {!isFetchingRecommendedProducts &&
         recommendedProducts?.map((recommendedProduct) => (
           <Box
             key={recommendedProduct.id}
@@ -54,11 +54,14 @@ function Home() {
                 More
               </Button>
             </Box>
-            <Box className="">
-              <ProductCarouse products={recommendedProduct?.products} />
-            </Box>
           </Box>
-        ))}
+        ))} */}
+      {!isFetchingRecommendedProducts && (
+        <Box className="">
+          <ProductCarouse products={recommendedProducts} />
+        </Box>
+      )}
+
       <Box backgroundColor={colors.primary[400]} className={`px-1 md:px-auto`}>
         <Banner />
       </Box>

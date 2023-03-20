@@ -87,6 +87,38 @@ export const productApi = authApi.injectEndpoints({
       query: () => "api/admin/products/",
       providesTags: ["admin_products"],
     }),
+    deleteProduct: builder.mutation({
+      query: ({ post }) => ({
+        url: `api/products/delete/`,
+        method: "DELETE",
+        body: post,
+        invalidatesTags: [
+          "products",
+          "recommended-products",
+          "products-by-category",
+          "products_details",
+          "brands",
+          "admin_products",
+          "products_data",
+        ],
+      }),
+    }),
+    removeThumbnail: builder.mutation({
+      query: ({ post }) => ({
+        url: `api/products/thumbnail/remove/`,
+        method: "DELETE",
+        body: post,
+        invalidatesTags: ["products_data"],
+      }),
+    }),
+    removeImage: builder.mutation({
+      query: ({ post }) => ({
+        url: `api/products/images/remove/`,
+        method: "DELETE",
+        body: post,
+        invalidatesTags: ["products_data"],
+      }),
+    }),
   }),
 });
 
@@ -103,5 +135,9 @@ export const {
   useGetAllCategoryQuery,
   useSearchAndFilterProductsQuery,
   useUpdateProductMutation,
+  useDeleteProductMutation,
+  useRemoveImageMutation,
+  useRemoveThumbnailMutation,
+
   useGetProductsForAdminQuery,
 } = productApi;

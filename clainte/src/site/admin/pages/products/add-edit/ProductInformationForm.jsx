@@ -13,6 +13,7 @@ import {
   InputLabel,
   Select,
   IconButton,
+  Button,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
@@ -25,6 +26,10 @@ import {
 } from "../../../../../features/services/brandApiSlice";
 import { tokens } from "../../../../../theme";
 import Model from "../../../../../components/ui/Model";
+import {
+  useRemoveImageMutation,
+  useRemoveThumbnailMutation,
+} from "../../../../../features/services/productApiSlice";
 
 const Brand = ({ brand, handleUpdate, handleDelete }) => {
   const InputRef = useRef();
@@ -69,7 +74,8 @@ const ProductInformationForm = ({
   handleBlur,
   handleChange,
   setFieldValue,
-  // handleUpload,
+  initialValues,
+  setInitialValues
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -79,6 +85,8 @@ const ProductInformationForm = ({
   const [addBrand] = useAddBrandMutation();
   const [updateBrand, { isLoading: isUpdating }] = useUpdateBrandMutation();
   const [deleteBrand, { isLoading: isDeleting }] = useDeleteBrandMutation();
+  const [removeImage] = useRemoveImageMutation();
+  const [removeThumbnail] = useRemoveThumbnailMutation();
 
   const handleClean = (image) => {
     console.log("list cleaned", image);
@@ -112,6 +120,19 @@ const ProductInformationForm = ({
     if (values.brand === brand.name) {
       setFieldValue("brand", "");
     }
+  };
+  const handelRemoveThumbnail = () => {
+    removeThumbnail({ post: { id: initialValues?.id } }).then((response) =>{
+        console.log(response)
+        setInitialValues(prev=>({...prev,thumbnail:undefined}))
+      }
+    );
+  };
+  const handelRemoveImage = (imageId) => {
+    removeImage({ post: { id: imageId } }).then((response) => {
+      console.log(response);
+      setInitialValues((prev) => ({ ...prev, images: prev.images.filter(image=>image.id!==imageId) }));
+    });
   };
 
   return (
@@ -209,6 +230,30 @@ const ProductInformationForm = ({
               sx={{ gridColumn: "span 4" }}
             />
           </Box>
+          {initialValues?.thumbnail && (
+            <Box className="w-full ">
+              <Typography variant="h6" fontWeight="bold" className="my-2">
+                Old Display thumbnail
+              </Typography>
+              <Box
+                backgroundColor={colors.primary[400]}
+                className="w-full p-4 "
+              >
+                <Box className="w-fit flex flex-col gap-2  outline outline-1 p-1 rounded-sm">
+                  <img
+                    alt="Display Thumbnail"
+                    className="h-[400px] "
+                    src={initialValues?.thumbnail}
+                  />
+                  <Box>
+                    <Button onClick={handelRemoveThumbnail} color="error">
+                      Remove
+                    </Button>
+                  </Box>
+                </Box>
+              </Box>
+            </Box>
+          )}
           <Box>
             <Typography variant="h6" fontWeight="bold" className="my-2">
               Display Thumbnail
@@ -220,8 +265,8 @@ const ProductInformationForm = ({
                 backgroundColor: colors.primary[400],
               }}
               label="Drop your Display thumbnail here or click to browse"
-              onChange={(incommingImages) =>
-                setFieldValue("thumbnail", incommingImages)
+              onChange={(incomingImages) =>
+                setFieldValue("thumbnail", incomingImages)
               }
               onClean={handleClean}
               value={values.thumbnail}
@@ -250,6 +295,35 @@ const ProductInformationForm = ({
                 ))}
             </Dropzone>
           </Box>
+          {initialValues?.images && (
+            <Box className="w-full">
+              <Typography variant="h6" fontWeight="bold" className="my-2">
+                Display Images
+              </Typography>
+              <Box
+                backgroundColor={colors.primary[400]}
+                className="grid grid-cols-4 gap-4 p-4"
+              >
+                {initialValues?.images?.map((imageUrl, index) => (
+                  <Box key={`product_image ${index}`} className="w-full flex flex-col gap-2 outline outline-1 p-1 rounded-sm">
+                    <img
+                      
+                      alt={`product_image ${index}`}
+                      src={imageUrl.image}
+                    />
+                    <Box>
+                      <Button
+                        onClick={() => handelRemoveImage(imageUrl.id)}
+                        color="error"
+                      >
+                        Remove
+                      </Button>
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          )}
           <Box>
             <Typography variant="h6" fontWeight="bold" className="my-2">
               Display Images
@@ -261,12 +335,12 @@ const ProductInformationForm = ({
                 backgroundColor: colors.primary[400],
               }}
               label="Drop your Display images here or click to browse"
-              onChange={(incommingImages) =>
-                setFieldValue("images", incommingImages)
+              onChange={(incomingImages) =>
+                setFieldValue("images", incomingImages)
               }
               onClean={handleClean}
               value={values.images}
-              maxFiles={5}
+              maxFiles={10}
               maxFileSize={2998000}
               accept=".png,image/*"
               uploadingMessage={"Uploading..."}

@@ -70,7 +70,6 @@ from api.serializer import (
 )
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def getProducts(request):
     products = Product.objects.all()
     serialized_data = []
@@ -166,7 +165,7 @@ def searchAndFilterProducts(request):
     
     if "rating" in request.GET:
         ratings = request.GET.getlist("rating")
-        products = products.annotate(avetage_rating=Round(Avg("review__rating"))).filter(avetage_rating__in = ratings).distinct()
+        products = products.annotate(average_rating=Round(Avg("review__rating"))).filter(average_rating__in = ratings).distinct()
 
     if "organize" in request.GET:
         organize_products = []
@@ -546,15 +545,50 @@ def uploadImage(request):
     return Response({"success":"image is uploaded"}, status=status.HTTP_201_CREATED)
 
 
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def deleteProduct(request):
+    product = Product.objects.get(id=request.data.get("id"))
+    product.organize.delete()
+    for image in product.images.all():
+        image.delete()
+    for variant in product.variants.all():
+        variant.delete()
+    product.inventory.delete()
+    product.delete()
+    return Response({"success":"product is deleted"}, status=status.HTTP_202_ACCEPTED)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def removeThumbnail(request):
+    product = Product.objects.get(id=request.data.get("id"))
+    product.thumbnail = None
+    product.save()
+    return Response({"success":"thumbnail is deleted"}, status=status.HTTP_202_ACCEPTED)
+
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def removeImage(request):
+    image = Image.objects.get(id=request.data.get("id"))
+    image.delete()
+    return Response({"success":"image is deleted"}, status=status.HTTP_202_ACCEPTED)
+
+
+
+
+
 @api_view(['GET'])
 def getRatings(request):
-    rating_5 = Product.objects.annotate(avetage_rating=Round(Avg("review__rating"))).filter(avetage_rating=5).count()
-    rating_4 = Product.objects.annotate(avetage_rating=Round(Avg("review__rating"))).filter(avetage_rating=4).count()
-    rating_3 = Product.objects.annotate(avetage_rating=Round(Avg("review__rating"))).filter(avetage_rating=3).count()
-    rating_2 = Product.objects.annotate(avetage_rating=Round(Avg("review__rating"))).filter(avetage_rating=2).count()
-    rating_1 = Product.objects.annotate(avetage_rating=Round(Avg("review__rating"))).filter(avetage_rating=1).count()
-    rating_0 = Product.objects.annotate(avetage_rating=Round(Avg("review__rating"))).filter(avetage_rating=0).count()
-    total_reviews = Product.objects.annotate(avetage_rating=Count("review")).all().count()
+    rating_5 = Product.objects.annotate(average_rating=Round(Avg("review__rating"))).filter(average_rating=5).count()
+    rating_4 = Product.objects.annotate(average_rating=Round(Avg("review__rating"))).filter(average_rating=4).count()
+    rating_3 = Product.objects.annotate(average_rating=Round(Avg("review__rating"))).filter(average_rating=3).count()
+    rating_2 = Product.objects.annotate(average_rating=Round(Avg("review__rating"))).filter(average_rating=2).count()
+    rating_1 = Product.objects.annotate(average_rating=Round(Avg("review__rating"))).filter(average_rating=1).count()
+    rating_0 = Product.objects.annotate(average_rating=Round(Avg("review__rating"))).filter(average_rating=0).count()
+    total_reviews = Product.objects.annotate(average_rating=Count("review")).all().count()
     data = [
         {"rating":5,"average":getAverage(rating_5, total_reviews),"total":rating_5},
         {"rating":4,"average":getAverage(rating_4, total_reviews),"total":rating_4},
