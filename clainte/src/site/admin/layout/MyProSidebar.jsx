@@ -36,7 +36,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
       style={{ color: colors.grey[100] }}
       onClick={() => setSelected(title)}
       icon={icon}
-      routerLink={<Link to={to} />}
+      component={<Link to={to} />}
     >
       <Typography>{title}</Typography>
     </MenuItem>
@@ -66,11 +66,11 @@ const MyProSidebar = () => {
         "& .menu-icon": {
           backgroundColor: "transparent !important",
         },
-        "& .menu-anchor": {
+        "& .ps-menu-button, & .ps-submenu-content": {
           backgroundColor: "transparent !important",
           color: "inherit !important",
         },
-        "& .menu-anchor:hover": {
+        "& .ps-menu-button:hover": {
           color: `${colors.blueAccent[500]} !important`,
           backgroundColor: "transparent !important",
         },
@@ -219,7 +219,7 @@ const MyProSidebar = () => {
             >
               E commerce
             </Typography>
-            <SubMenu label="Ecommerce" icon={<ShoppingCartOutlinedIcon />}>
+            <SubMenu label="E Commerce" icon={<ShoppingCartOutlinedIcon />}>
               <Item
                 title="Add Products"
                 to="/admin/products/new"
@@ -241,6 +241,21 @@ const MyProSidebar = () => {
               <Item
                 title="Orders"
                 to="/admin/orders"
+                selected={selected}
+                setSelected={setSelected}
+              />
+            </SubMenu>
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "15px 20px 5px 20px" }}
+            >
+              Appearance
+            </Typography>
+            <SubMenu label="Appearance" icon={<HomeOutlinedIcon />}>
+              <Item
+                title="Home Page"
+                to="/admin/appearance/home"
                 selected={selected}
                 setSelected={setSelected}
               />
