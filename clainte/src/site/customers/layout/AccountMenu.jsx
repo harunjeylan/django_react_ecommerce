@@ -16,7 +16,7 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import ViewListOutlinedIcon from "@mui/icons-material/ViewListOutlined";
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-
+import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import { LayoutContext } from "./LayoutContext";
 import { tokens } from "../../../theme";
 import { logOut, selectCurrentUser } from "../../../features/auth/authSlice";
@@ -78,6 +78,14 @@ export default function AccountMenu() {
       </MenuItem>
 
       <Divider />
+      {userData?.is_superuser && (
+        <MenuItem onClick={() => navigate("/admin/")}>
+          <ListItemIcon>
+            <DashboardOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          Dashboard
+        </MenuItem>
+      )}
       <MenuItem onClick={() => navigate("/profile/wishlist/")}>
         <ListItemIcon>
           <FavoriteBorderOutlinedIcon fontSize="small" />

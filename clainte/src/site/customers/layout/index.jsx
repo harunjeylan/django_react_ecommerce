@@ -11,7 +11,7 @@ import { useGetWishlistQuery } from "../../../features/services/wishlistApiSlice
 import { setWishlist } from "../../../features/services/wishlistReducer";
 import { selectCurrentUser } from "../../../features/auth/authSlice";
 
-function Customer({ children }) {
+function CustomerLayout({ children }) {
   const { pathname } = useLocation();
   const dispatch = useDispatch();
   const user = useSelector(selectCurrentUser);
@@ -41,4 +41,4 @@ function Customer({ children }) {
   );
 }
 
-export default Customer;
+export default CustomerLayout;

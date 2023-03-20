@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 // import { useGetUseUseDataQuery } from "../../../import";
@@ -14,6 +14,7 @@ import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
+import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import { tokens } from "../../../../../theme";
 import {
   logOut,
@@ -65,6 +66,18 @@ const ProfileCard = () => {
       </Box>
 
       <List className={`bg-transparent w-[100%]`}>
+        {userData?.is_superuser && (
+          <ListItemButton onClick={() => navigate("/admin/")}>
+            <ListItemIcon>
+              <DashboardOutlinedIcon fontSize="large" />
+            </ListItemIcon>
+            <Box className="flex justify-start items-center w-full">
+              <Typography fontWeight="bold" variant="subtitle1" className={``}>
+                Dashboard
+              </Typography>
+            </Box>
+          </ListItemButton>
+        )}
         <ListItemButton onClick={() => navigate("/profile/")}>
           <ListItemIcon>
             <PersonOutlineIcon fontSize="large" />

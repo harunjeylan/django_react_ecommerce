@@ -127,11 +127,7 @@ function Navbar() {
             </Badge>
           )}
 
-          {user?.is_superuser ? (
-            <IconButton onClick={() => navigate("/admin/")}>
-              <DashboardOutlinedIcon />
-            </IconButton>
-          ) : user === null ? (
+          {user === null ? (
             <Box className="flex gap-2">
               <Button
                 onClick={() => handleClickOpenAccountDialog("login")}

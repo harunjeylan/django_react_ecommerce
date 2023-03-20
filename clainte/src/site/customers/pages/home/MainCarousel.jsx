@@ -25,7 +25,7 @@ const MainCarousel = () => {
         pauseOnMouseEnter: true,
       }}
       modules={[Autoplay]}
-      className="mySwiper h-[800px]"
+      className="mySwiper h-[500px]"
     >
       {Object.values(heroTexture).map((texture, index) => (
         <SwiperSlide key={`carousel-image-${index}`}>
@@ -33,7 +33,7 @@ const MainCarousel = () => {
             <img
               src={texture}
               alt={`carousel-${index}`}
-              className={`w-[100%] h-[800px]`}
+              className={`w-full h-[500px]`}
               style={{
                 objectFit: "cover",
                 backgroundAttachment: "fixed",

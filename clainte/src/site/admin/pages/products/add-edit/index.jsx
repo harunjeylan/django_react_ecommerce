@@ -1,8 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Formik } from "formik";
 
-import { Box, Button, Typography, Breadcrumbs } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  Breadcrumbs,
+  CircularProgress,
+} from "@mui/material";
 import {
   useUploadImageMutation,
   useAddProductMutation,
@@ -27,6 +33,7 @@ const AddEditProduct = ({ isEditing }) => {
   const [uploadImage] = useUploadImageMutation();
   const [initialValues, setInitialValues] = useState({});
   const { productId } = useParams();
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     if (productId && isEditing) {
@@ -44,54 +51,56 @@ const AddEditProduct = ({ isEditing }) => {
   }, [productId, isEditing, dispatch]);
 
   const handleFormSubmit = (values) => {
-    let data = values?.expiryDate?.date;
-    let formattedDate;
-    if (data.hasOwnProperty("format")) {
-      formattedDate = data.hasOwnProperty("format");
-    } else {
-      let objectDate = new Date();
-      formattedDate = `${objectDate.getFullYear()}-${objectDate.getMonth()}-${objectDate.getDate()}`;
-    }
-    const post = {
-      ...values,
-      expiryDate: {
-        selected: values?.expiryDate?.selected,
-        data: formattedDate,
-      },
-    };
+    startTransition(() => {
+      let data = values?.expiryDate?.date;
+      let formattedDate;
+      if (data.hasOwnProperty("format")) {
+        formattedDate = data.hasOwnProperty("format");
+      } else {
+        let objectDate = new Date();
+        formattedDate = `${objectDate.getFullYear()}-${objectDate.getMonth()}-${objectDate.getDate()}`;
+      }
+      const post = {
+        ...values,
+        expiryDate: {
+          selected: values?.expiryDate?.selected,
+          data: formattedDate,
+        },
+      };
 
-    console.log(post);
+      console.log(post);
 
-    if (productId) {
-      updateProduct({ post, productId }).then((res) => {
-        let postForm = new FormData();
-        postForm.append("thumbnail", values.thumbnail[0]?.file);
-        values.images.forEach((image) => {
-          postForm.append("images", image.file);
+      if (productId) {
+        updateProduct({ post, productId }).then((res) => {
+          let postForm = new FormData();
+          postForm.append("thumbnail", values.thumbnail[0]?.file);
+          values.images.forEach((image) => {
+            postForm.append("images", image.file);
+          });
+          postForm.append("productId", res.data.id);
+          uploadImage({
+            post: postForm,
+          }).then((response) => {
+            console.log(response);
+            navigate(`/admin/products/${productId}`);
+          });
         });
-        postForm.append("productId", res.data.id);
-        uploadImage({
-          post: postForm,
-        }).then((response) => {
-          console.log(response);
-          navigate(`/admin/products/${productId}`);
+      } else {
+        addProduct({ post }).then((res) => {
+          let postForm = new FormData();
+          postForm.append("thumbnail", values.thumbnail[0]?.file);
+          values.images.forEach((image) => {
+            postForm.append("images", image.file);
+          });
+          postForm.append("productId", res.data.id);
+          uploadImage({
+            post: postForm,
+          }).then((response) => {
+            navigate(`/admin/products/${res.data.id}`);
+          });
         });
-      });
-    } else {
-      addProduct({ post }).then((res) => {
-        let postForm = new FormData();
-        postForm.append("thumbnail", values.thumbnail[0]?.file);
-        values.images.forEach((image) => {
-          postForm.append("images", image.file);
-        });
-        postForm.append("productId", res.data.id);
-        uploadImage({
-          post: postForm,
-        }).then((response) => {
-          navigate(`/admin/products/${res.data.id}`);
-        });
-      });
-    }
+      }
+    });
   };
 
   return (
@@ -198,7 +207,13 @@ const AddEditProduct = ({ isEditing }) => {
                     variant="outlined"
                     className={`px-8 py-3 `}
                   >
-                    {productId && isEditing ? "Save Product" : "Create Product"}
+                    {isPending ? (
+                      <CircularProgress color="secondary" />
+                    ) : productId && isEditing ? (
+                      "Save Product"
+                    ) : (
+                      "Create Product"
+                    )}
                   </Button>
                 </Box>
               </form>

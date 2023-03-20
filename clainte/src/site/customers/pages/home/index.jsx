@@ -12,7 +12,6 @@ import ProductCarouse from "../../components/ProductCarouse";
 import Banner from "../../components/Banner";
 import { tokens } from "../../../../theme";
 import { useGetAllProductsQuery } from "../../../../features/services/productApiSlice";
-import Header from "../../../../components/Header";
 
 function Home() {
   const theme = useTheme();

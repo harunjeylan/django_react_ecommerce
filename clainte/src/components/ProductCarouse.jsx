@@ -1,29 +1,24 @@
-import { Box, Typography, IconButton, useMediaQuery } from "@mui/material";
-import { Carousel } from "react-responsive-carousel";
+import { Box, useMediaQuery } from "@mui/material";
 import "swiper/css";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { useTheme } from "@emotion/react";
-import { tokens } from "../theme";
 import { useGetLimitAndSkipProductsQuery } from "../redux/services/products";
 import ProductCard2 from "./ProductCard2";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { EffectCoverflow, Autoplay } from "swiper";
-import Header from "./Header";
+
 const ProductCarouse = () => {
   const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-
-  const isNoneMobile = useMediaQuery("(min-width:768px)");
-  const {
-    data: products,
-    isFetching,
-    error,
-  } = useGetLimitAndSkipProductsQuery({ limit: 10, skip: 10 });
+  const { data: products, isFetching } = useGetLimitAndSkipProductsQuery({
+    limit: 10,
+    skip: 10,
+  });
   return (
     <Box className="max-w-screen">
       <Swiper
@@ -45,7 +40,7 @@ const ProductCarouse = () => {
           delay: 5000,
           disableOnInteraction: false,
         }}
-        modules={[EffectCoverflow, Autoplay]} //Autoplay
+        modules={[EffectCoverflow, Autoplay, Navigation]} //Autoplay
       >
         {isFetching ? (
           <Box sx={{ display: "flex" }}>
