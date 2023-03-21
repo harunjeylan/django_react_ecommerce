@@ -323,7 +323,8 @@ def getProductsDataForAdmin(request,pk):
 # =================================================================================
 @api_view(['GET'])
 def getAllCategory(request):
-    return Response([], status=status.HTTP_200_OK)
+    categories = CategorySerializer(Category.objects.all(), many=True).data
+    return Response(categories, status=status.HTTP_200_OK)
 
 
 # =================================================================================

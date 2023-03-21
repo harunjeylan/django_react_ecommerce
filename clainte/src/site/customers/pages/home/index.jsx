@@ -9,7 +9,7 @@ import Subscribe from "../../components/Subscribe";
 // import CategoryBanner from "./CategoryBanner";
 import ProductCarouse from "../../components/ProductCarouse";
 
-import Banner from "../../components/Banner";
+import Banner from "../../../../components/Banner";
 import { tokens } from "../../../../theme";
 import { useGetAllProductsQuery } from "../../../../features/services/productApiSlice";
 

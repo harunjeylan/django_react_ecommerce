@@ -11,8 +11,6 @@ import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
 
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
@@ -25,7 +23,7 @@ import { selectCurrentUser } from "../../../features/auth/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useSidebarContext } from "./SidebarContext";
 import { tokens } from "../../../theme";
-
+import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -192,13 +190,6 @@ const MyProSidebar = () => {
               Data
             </Typography>
             <Item
-              title="Manage Team"
-              to="/admin/data/team"
-              icon={<PeopleOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
               title="Contacts Information"
               to="/admin/data/contacts"
               icon={<ContactsOutlinedIcon />}
@@ -219,32 +210,34 @@ const MyProSidebar = () => {
             >
               E commerce
             </Typography>
-            <SubMenu label="E Commerce" icon={<ShoppingCartOutlinedIcon />}>
-              <Item
-                title="Add Products"
-                to="/admin/products/new"
-                selected={selected}
-                setSelected={setSelected}
-              />
-              <Item
-                title="Products"
-                to="/admin/products"
-                selected={selected}
-                setSelected={setSelected}
-              />
-              <Item
-                title="Customers"
-                to="/admin/customers"
-                selected={selected}
-                setSelected={setSelected}
-              />
-              <Item
-                title="Orders"
-                to="/admin/orders"
-                selected={selected}
-                setSelected={setSelected}
-              />
-            </SubMenu>
+            <Item
+              title="Add Products"
+              to="/admin/products/new"
+              icon={<AddBoxOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Products"
+              to="/admin/products"
+              icon={<CategoryOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Customers"
+              to="/admin/customers"
+              icon={<PeopleOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Orders"
+              to="/admin/orders"
+              icon={<ShoppingCartOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -252,14 +245,13 @@ const MyProSidebar = () => {
             >
               Appearance
             </Typography>
-            <SubMenu label="Appearance" icon={<HomeOutlinedIcon />}>
-              <Item
-                title="Home Page"
-                to="/admin/appearance/home"
-                selected={selected}
-                setSelected={setSelected}
-              />
-            </SubMenu>
+            <Item
+              title="Home Page"
+              to="/admin/appearance/home"
+              icon={<HomeOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
 
             <Typography
               variant="h6"

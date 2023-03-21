@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Countdown from "react-countdown";
 import { Typography, Box, useTheme, Button } from "@mui/material";
-import { tokens } from "../../../theme";
+import { tokens } from "../theme";
 
 const Banner = () => {
   const theme = useTheme();

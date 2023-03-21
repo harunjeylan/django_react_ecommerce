@@ -23,7 +23,7 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
 import Service from "../../components/Service";
-import Banner from "../../components/Banner";
+import Banner from "../../../../components/Banner";
 import ProductsList from "../../components/ProductsList";
 
 import { useGetAllOrganizeQuery } from "../../../../features/services/organizeApiSlice";

@@ -44,6 +44,7 @@ urlpatterns = [
   path("organize/add/", api.addOrganize , name="new_organize"),
   path("organize/update/", api.updateOrganize , name="update_organize"),
   path("organize/delete/", api.deleteOrganize , name="delete_organize"),
+  path("organize/categories/", api.getAllCategory , name="delete_organize"),
 
   # ===================================================================
   path("wishlists/", api.getWishlist , name="wishlists"),

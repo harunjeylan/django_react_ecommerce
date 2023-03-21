@@ -1,5 +1,5 @@
 //IMPORTING LIBRARY
-import React, { useRef, Suspense } from "react";
+import React, { useRef } from "react";
 import { Routes, Route } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { useEffect } from "react";
@@ -20,8 +20,7 @@ import { refreshAccessToken } from "./features/auth/authApi";
 
 import store from "./app/store";
 import dayjs from "dayjs";
-import { CircularProgress } from "@mui/material";
-import { ErrorBoundary } from "./utils/ErrorBoundary";
+
 // import CustomerLayout from "./site/customers/layout";
 // import Home from "./site/customers/pages/home";
 
@@ -144,252 +143,243 @@ function App() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <ErrorBoundary fallback={<h1>There is error happen!</h1>}>
-          <Suspense
-            fallback={
-              <Box className="w-full h-screen flex justify-center items-center">
-                <CircularProgress />
-              </Box>
-            }
-          >
-            <Routes>
-              {/* Authentication pages */}
 
-              <Route path="/auth">
-                <Route path="login" element={<Login />} />
-                <Route path="register" element={<Register />} />
-              </Route>
+        <Routes>
+          {/* Authentication pages */}
 
-              <Route element={<AdminPrivateRoutes />} path="admin">
+          <Route path="/auth">
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+          </Route>
+
+          <Route element={<AdminPrivateRoutes />} path="admin">
+            <Route
+              index
+              element={
+                <AdminLayout>
+                  <Dashboard />
+                </AdminLayout>
+              }
+            />
+            <Route path="pages">
+              <Route
+                path="faq"
+                element={
+                  <AdminLayout>
+                    <FAQ />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path="newuser"
+                element={
+                  <AdminLayout>
+                    <NewCustomer />
+                  </AdminLayout>
+                }
+              />
+            </Route>
+            <Route path="data">
+              <Route
+                path="contacts"
+                element={
+                  <AdminLayout>
+                    <Contacts />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path="invoices"
+                element={
+                  <AdminLayout>
+                    <Invoices />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path="team"
+                element={
+                  <AdminLayout>
+                    <Team />
+                  </AdminLayout>
+                }
+              />
+            </Route>
+            <Route path="orders/">
+              <Route
+                index
+                element={
+                  <AdminLayout>
+                    <OrdersListAdmin />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path=":orderId"
+                element={
+                  <AdminLayout>
+                    <OrderDetailsAdmin />
+                  </AdminLayout>
+                }
+              />
+            </Route>
+            <Route path="products">
+              <Route
+                index
+                element={
+                  <AdminLayout>
+                    <ProductsListAdmin />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path="new"
+                element={
+                  <AdminLayout>
+                    <AddEditProduct />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path=":productId"
+                element={
+                  <AdminLayout>
+                    <ProductDetailsAdmin />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path=":productId/edit"
+                element={
+                  <AdminLayout>
+                    <AddEditProduct isEditing={true} />
+                  </AdminLayout>
+                }
+              />
+            </Route>
+            <Route path="customers">
+              <Route
+                index
+                element={
+                  <AdminLayout>
+                    <CustomersList />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path=":customerId"
+                element={
+                  <AdminLayout>
+                    <CustomerDetails />
+                  </AdminLayout>
+                }
+              />
+            </Route>
+            <Route path="appearance">
+              <Route
+                path="home"
+                element={
+                  <AdminLayout>
+                    <HomeAppearance />
+                  </AdminLayout>
+                }
+              />
+            </Route>
+          </Route>
+
+          <Route path="/">
+            <Route
+              index
+              element={
+                <CustomerLayout>
+                  <Home />
+                </CustomerLayout>
+              }
+            />
+            <Route
+              path="shopping"
+              element={
+                <CustomerLayout>
+                  <Shopping />
+                </CustomerLayout>
+              }
+            />
+            <Route
+              path="product/:productId"
+              element={
+                <CustomerLayout>
+                  <ProductDetailsCustomer />
+                </CustomerLayout>
+              }
+            />
+
+            <Route element={<CustomerPrivateRoutes />} path="profile">
+              <Route
+                index
+                element={
+                  <CustomerLayout>
+                    <Profile />
+                  </CustomerLayout>
+                }
+              />
+              <Route path="orders">
                 <Route
                   index
                   element={
-                    <AdminLayout>
-                      <Dashboard />
-                    </AdminLayout>
+                    <CustomerLayout>
+                      <OrdersListCustomer />
+                    </CustomerLayout>
                   }
                 />
-                <Route path="pages">
-                  <Route
-                    path="faq"
-                    element={
-                      <AdminLayout>
-                        <FAQ />
-                      </AdminLayout>
-                    }
-                  />
-                  <Route
-                    path="newuser"
-                    element={
-                      <AdminLayout>
-                        <NewCustomer />
-                      </AdminLayout>
-                    }
-                  />
-                </Route>
-                <Route path="data">
-                  <Route
-                    path="contacts"
-                    element={
-                      <AdminLayout>
-                        <Contacts />
-                      </AdminLayout>
-                    }
-                  />
-                  <Route
-                    path="invoices"
-                    element={
-                      <AdminLayout>
-                        <Invoices />
-                      </AdminLayout>
-                    }
-                  />
-                  <Route
-                    path="team"
-                    element={
-                      <AdminLayout>
-                        <Team />
-                      </AdminLayout>
-                    }
-                  />
-                </Route>
-                <Route path="orders/">
-                  <Route
-                    index
-                    element={
-                      <AdminLayout>
-                        <OrdersListAdmin />
-                      </AdminLayout>
-                    }
-                  />
-                  <Route
-                    path=":orderId"
-                    element={
-                      <AdminLayout>
-                        <OrderDetailsAdmin />
-                      </AdminLayout>
-                    }
-                  />
-                </Route>
-                <Route path="products">
-                  <Route
-                    index
-                    element={
-                      <AdminLayout>
-                        <ProductsListAdmin />
-                      </AdminLayout>
-                    }
-                  />
-                  <Route
-                    path="new"
-                    element={
-                      <AdminLayout>
-                        <AddEditProduct />
-                      </AdminLayout>
-                    }
-                  />
-                  <Route
-                    path=":productId"
-                    element={
-                      <AdminLayout>
-                        <ProductDetailsAdmin />
-                      </AdminLayout>
-                    }
-                  />
-                  <Route
-                    path=":productId/edit"
-                    element={
-                      <AdminLayout>
-                        <AddEditProduct isEditing={true} />
-                      </AdminLayout>
-                    }
-                  />
-                </Route>
-                <Route path="customers">
-                  <Route
-                    index
-                    element={
-                      <AdminLayout>
-                        <CustomersList />
-                      </AdminLayout>
-                    }
-                  />
-                  <Route
-                    path=":customerId"
-                    element={
-                      <AdminLayout>
-                        <CustomerDetails />
-                      </AdminLayout>
-                    }
-                  />
-                </Route>
-                <Route path="appearance">
-                  <Route
-                    path="home"
-                    element={
-                      <AdminLayout>
-                        <HomeAppearance />
-                      </AdminLayout>
-                    }
-                  />
-                </Route>
+                <Route
+                  path=":orderId"
+                  element={
+                    <CustomerLayout>
+                      <OrderDetailsCustomer />
+                    </CustomerLayout>
+                  }
+                />
               </Route>
+              <Route
+                path="wishlist"
+                element={
+                  <CustomerLayout>
+                    <Wishlist />
+                  </CustomerLayout>
+                }
+              />
+            </Route>
 
-              <Route path="/">
-                <Route
-                  index
-                  element={
-                    <CustomerLayout>
-                      <Home />
-                    </CustomerLayout>
-                  }
-                />
-                <Route
-                  path="shopping"
-                  element={
-                    <CustomerLayout>
-                      <Shopping />
-                    </CustomerLayout>
-                  }
-                />
-                <Route
-                  path="product/:productId"
-                  element={
-                    <CustomerLayout>
-                      <ProductDetailsCustomer />
-                    </CustomerLayout>
-                  }
-                />
+            <Route element={<CustomerPrivateRoutes />} path="checkout">
+              <Route
+                index
+                element={
+                  <CustomerLayout>
+                    <Checkout />
+                  </CustomerLayout>
+                }
+              />
+              <Route
+                path="viewcart"
+                element={
+                  <CustomerLayout>
+                    <ViewCart />
+                  </CustomerLayout>
+                }
+              />
 
-                <Route element={<CustomerPrivateRoutes />} path="profile">
-                  <Route
-                    index
-                    element={
-                      <CustomerLayout>
-                        <Profile />
-                      </CustomerLayout>
-                    }
-                  />
-                  <Route path="orders">
-                    <Route
-                      index
-                      element={
-                        <CustomerLayout>
-                          <OrdersListCustomer />
-                        </CustomerLayout>
-                      }
-                    />
-                    <Route
-                      path=":orderId"
-                      element={
-                        <CustomerLayout>
-                          <OrderDetailsCustomer />
-                        </CustomerLayout>
-                      }
-                    />
-                  </Route>
-                  <Route
-                    path="wishlist"
-                    element={
-                      <CustomerLayout>
-                        <Wishlist />
-                      </CustomerLayout>
-                    }
-                  />
-                </Route>
-
-                <Route element={<CustomerPrivateRoutes />} path="checkout">
-                  <Route
-                    index
-                    element={
-                      <CustomerLayout>
-                        <Checkout />
-                      </CustomerLayout>
-                    }
-                  />
-                  <Route
-                    path="viewcart"
-                    element={
-                      <CustomerLayout>
-                        <ViewCart />
-                      </CustomerLayout>
-                    }
-                  />
-
-                  <Route
-                    path="success"
-                    element={
-                      <CustomerLayout>
-                        <Confirmation />
-                      </CustomerLayout>
-                    }
-                  />
-                </Route>
-              </Route>
-              <Route path="*" element={<Page404 />} />
-            </Routes>
-          </Suspense>
-        </ErrorBoundary>
+              <Route
+                path="success"
+                element={
+                  <CustomerLayout>
+                    <Confirmation />
+                  </CustomerLayout>
+                }
+              />
+            </Route>
+          </Route>
+          <Route path="*" element={<Page404 />} />
+        </Routes>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );
