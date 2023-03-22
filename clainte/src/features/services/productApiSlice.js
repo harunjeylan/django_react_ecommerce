@@ -41,6 +41,10 @@ export const productApi = authApi.injectEndpoints({
         `api/products/search-and-filter/${searchAndFilter}`,
       providesTags: ["products-by-searchAndFilter"],
     }),
+    searchProducts: builder.query({
+      query: ({ search }) => `api/products/search/?${search}`,
+      providesTags: ["products-by-search"],
+    }),
     getProductsDetails: builder.query({
       query: ({ productId }) => `api/products/${productId}/`,
       providesTags: ["products_details"],
@@ -138,6 +142,6 @@ export const {
   useDeleteProductMutation,
   useRemoveImageMutation,
   useRemoveThumbnailMutation,
-
+  useSearchProductsQuery,
   useGetProductsForAdminQuery,
 } = productApi;

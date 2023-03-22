@@ -20,6 +20,7 @@ urlpatterns = [
   
 
   path("products/search-and-filter/", api.searchAndFilterProducts , name="search_and_filter_products"),
+  path("products/search/", api.searchProducts , name="search_and_filter_products"),
   path("products/category/<category_name>/", api.getProductsByCategory , name="products_by_category"),
   path("products/<pk>/", api.getProductsDetails , name="products_details"),
   path("products/<pk>/edit/", api.updateProduct , name="products_edit"),

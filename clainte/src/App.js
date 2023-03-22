@@ -38,7 +38,7 @@ const Dashboard = React.lazy(() => import("./site/admin/pages/dashboard"));
 const Team = React.lazy(() => import("./site/admin/pages/team"));
 const Invoices = React.lazy(() => import("./site/admin/pages/invoices"));
 const Contacts = React.lazy(() => import("./site/admin/pages/contacts"));
-const FAQ = React.lazy(() => import("./site/admin/pages/faq"));
+const AdminFAQ = React.lazy(() => import("./site/admin/pages/faq"));
 
 const OrdersListAdmin = React.lazy(() =>
   import("./site/admin/pages/orders").then((module) => ({
@@ -109,6 +109,17 @@ const Confirmation = React.lazy(() =>
 const HomeAppearance = React.lazy(() =>
   import("./site/admin/pages/appearance/HomeAppearance")
 );
+
+const Blog = React.lazy(() => import("./site/customers/pages/blog"));
+const Contact = React.lazy(() => import("./site/customers/pages/contact"));
+const About = React.lazy(() => import("./site/customers/pages/about"));
+const CustomerFAQ = React.lazy(() => import("./site/customers/pages/faq"));
+
+const AddEditBlog = React.lazy(() => import("./site/admin/pages/blog/addEdit"));
+const AdminBlogDetails = React.lazy(() => import("./site/admin/pages/blog/details"));
+const AdminListBlog = React.lazy(() => import("./site/admin/pages/blog/list"));
+
+
 function App() {
   const [theme, colorMode] = useMode();
   const accessToken = useSelector(selectCurrentToken);
@@ -166,7 +177,7 @@ function App() {
                 path="faq"
                 element={
                   <AdminLayout>
-                    <FAQ />
+                    <AdminFAQ />
                   </AdminLayout>
                 }
               />
@@ -178,7 +189,40 @@ function App() {
                   </AdminLayout>
                 }
               />
+              
             </Route>
+            <Route
+              path="blog"
+              element={
+                <AdminLayout>
+                  <AdminListBlog />
+                </AdminLayout>
+              }
+            />
+            <Route
+              path="blog/:blogId"
+              element={
+                <AdminLayout>
+                  <AdminBlogDetails />
+                </AdminLayout>
+              }
+            />
+            <Route
+              path="blog/new"
+              element={
+                <AdminLayout>
+                  <AddEditBlog isEditing={false} />
+                </AdminLayout>
+              }
+            />
+            <Route
+              path="blog/:blogId/edit"
+              element={
+                <AdminLayout>
+                  <AddEditBlog isEditing={true} />
+                </AdminLayout>
+              }
+            />
             <Route path="data">
               <Route
                 path="contacts"
@@ -301,6 +345,38 @@ function App() {
               element={
                 <CustomerLayout>
                   <Shopping />
+                </CustomerLayout>
+              }
+            />
+            <Route
+              path="blog"
+              element={
+                <CustomerLayout>
+                  <Blog />
+                </CustomerLayout>
+              }
+            />
+            <Route
+              path="contact"
+              element={
+                <CustomerLayout>
+                  <Contact />
+                </CustomerLayout>
+              }
+            />
+            <Route
+              path="about"
+              element={
+                <CustomerLayout>
+                  <About />
+                </CustomerLayout>
+              }
+            />
+            <Route
+              path="faq"
+              element={
+                <CustomerLayout>
+                  <CustomerFAQ />
                 </CustomerLayout>
               }
             />

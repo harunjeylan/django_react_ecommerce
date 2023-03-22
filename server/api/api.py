@@ -136,6 +136,41 @@ def getRelatedProducts(request, pk):
     return Response(serialized_data, status=status.HTTP_200_OK) 
 
 # =================================================================================
+
+@api_view(['GET'])
+def searchProducts(request):
+    products = []
+    if "search" in request.GET:
+        search = request.GET["search"]
+        products = Product.objects.filter(
+            Q(title__icontains=search)|
+            Q(brand__name__icontains=search)|
+            Q(description__icontains=search)|
+            Q(organize__category__name__icontains=search)|
+            Q(organize__collection__name__icontains=search)|
+            Q(organize__vendor__name__icontains=search)|
+            Q(organize__tags__name__icontains=search)
+        ).distinct()
+
+    serialized_data = [] 
+    for product in products:
+        inventory = Inventory.objects.filter(product=product)
+        inventory_data = {}
+        if inventory.exists():
+            inventory_data = {
+                **InventorySerializer(inventory.first()).data, 
+                **inventory_data
+            }
+       
+        serialized_data.append({
+            **inventory_data,
+            **ProductSerializer(product,context={"request":request}).data,
+            "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
+            "rating":product.review_set.all().aggregate(average_rating = Round(Avg("rating")))["average_rating"],
+        })
+    return Response(serialized_data, status=status.HTTP_200_OK) 
+
+
 @api_view(['GET'])
 def searchAndFilterProducts(request):
     products = Product.objects.all()
@@ -151,6 +186,7 @@ def searchAndFilterProducts(request):
             Q(organize__vendor__name__icontains=search)|
             Q(organize__tags__name__icontains=search)
         ).distinct()
+    
     
     if "price" in request.GET:
         price_from, price_to = request.GET["price"].split("-")

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, Button } from "@mui/material";
 
 import MainCarousel from "./MainCarousel";
-import Service from "../../components/Service";
+import Service from "../../../../components/Service";
 import Subscribe from "../../components/Subscribe";
 // import CategoryBanner from "./CategoryBanner";
 import ProductCarouse from "../../components/ProductCarouse";

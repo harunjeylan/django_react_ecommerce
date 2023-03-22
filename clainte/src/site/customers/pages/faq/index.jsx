@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { tokens } from "../../../../theme";
 import Header from "../../../../components/Header";
 
-const AdminFAQ = () => {
+const CustomerFAQ = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
@@ -27,7 +27,10 @@ const AdminFAQ = () => {
         </Breadcrumbs>
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
-        <Header title="AdminFAQ" subtitle="Frequently Asked Questions Page" />
+        <Header
+          title="CustomerFAQ"
+          subtitle="Frequently Asked Questions Page"
+        />
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Accordion
@@ -120,4 +123,4 @@ const AdminFAQ = () => {
   );
 };
 
-export default AdminFAQ;
+export default CustomerFAQ;

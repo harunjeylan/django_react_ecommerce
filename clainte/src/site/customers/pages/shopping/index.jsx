@@ -19,10 +19,15 @@ import {
   TextField,
   ButtonGroup,
 } from "@mui/material";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
-import Service from "../../components/Service";
+import Service from "../../../../components/Service";
 import Banner from "../../../../components/Banner";
 import ProductsList from "../../components/ProductsList";
 
@@ -47,6 +52,7 @@ const Shopping = () => {
 
   const [searchAndFilter, setSearchAndFilter] = useState("");
   const [searchValue, setSearchValue] = useState("");
+  const [search, setSearch] = useState("");
   const [priceValue, setPriceValue] = useState({ from: 0, to: 0 });
   const [brandValue, setBradValue] = useState([]);
   const [ratingValue, setRatingValue] = useState([]);
@@ -54,7 +60,7 @@ const Shopping = () => {
   const [variantsValue, setVariantValue] = useState([]);
 
   const {
-    data: searchAndFilterProducts,
+    data: searchAndFilterProducts=[],
     isFetching: isFetchingSearchAndFilterProducts,
   } = useSearchAndFilterProductsQuery({
     searchAndFilter,
@@ -89,15 +95,22 @@ const Shopping = () => {
       }
     });
   };
-  const handleSearch = () => {
-    setSearchValue(searchRef.current.value);
-  };
+
   useEffect(() => {
     let timeOut = setTimeout(() => {
       setPriceValue({ from: price[0], to: price[1] });
     }, 2000);
     return () => clearTimeout(timeOut);
   }, [price]);
+
+  useEffect(() => {
+    let timeOut = setTimeout(() => {
+      if (search !== "") {
+        setSearchValue(search);
+      }
+    }, 1000);
+    return () => clearTimeout(timeOut);
+  }, [search]);
 
   useEffect(() => {
     let searchAndFilterValue = "?";
@@ -126,6 +139,7 @@ const Shopping = () => {
         }
       });
     });
+    console.log(variantsValue);
     Object.keys(variantsValue).forEach((key) => {
       variantsValue[key].forEach((variant) => {
         if (variant !== "") {
@@ -145,7 +159,7 @@ const Shopping = () => {
     variantsValue,
   ]);
   return (
-    <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
+    <Box className={`flex flex-col gap-4 md:gap-8 mt-2`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Breadcrumbs aria-label="breadcrumb">
           <Button
@@ -159,25 +173,23 @@ const Shopping = () => {
         </Breadcrumbs>
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
-        <ButtonGroup className="w-full">
-          <TextField
-            variant="outlined"
-            color="secondary"
-            fullWidth
-            placeholder="search.."
-            inputRef={searchRef}
-          />
-          <Button onClick={handleSearch} variant="outlined" color="secondary">
-            search
-          </Button>
-        </ButtonGroup>
-      </Box>
-
-      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Box className={`flex flex-col lg:flex-row space-4 h-full w-full`}>
           <Box
             className={`w-full bg-transparent lg:w-[25%] lg:rounded-lg mx-2 h-full `}
           >
+            <Box
+              backgroundColor={colors.primary[400]}
+              className=" w-full rounded-md mb-4"
+            >
+              <TextField
+                variant="outlined"
+                color="secondary"
+                fullWidth
+                placeholder="search.."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </Box>
             <Collapse
               in={isNoneMobile || openCategory}
               timeout="auto"
@@ -196,107 +208,158 @@ const Shopping = () => {
                 >
                   Organizes
                 </Typography>
-                <Divider />
-                <Typography
-                  variant="h4"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  className={`text-lg md:text-xl px-4 mt-4 text-left mb-2`}
+                <Accordion
+                  sx={{ backgroundColor: colors.primary[400] }}
+                  className="w-full"
                 >
-                  Category
-                </Typography>
-                <List className={``}>
-                  {!isFetchingOrganize &&
-                    organize?.categories.map((categorie) => (
-                      <FormControlLabel
-                        key={categorie.id}
-                        value={categorie.name}
-                        name="category"
-                        onClick={(e) => handleCheckFilter(e, setOrganizeValue)}
-                        control={<Checkbox color="secondary" />}
-                        label={categorie.name}
-                        labelPlacement="end"
-                        className="block ml-4"
-                      />
-                    ))}
-                </List>
-
-                <Divider />
-                <Typography
-                  variant="h4"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  className={`text-lg md:text-xl px-4 mt-4 text-left mb-2`}
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                  >
+                    <Typography
+                      variant="h4"
+                      color={colors.grey[100]}
+                      fontWeight="bold"
+                      className={`text-lg md:text-xl px-4 text-left`}
+                    >
+                      Category
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <List className={``}>
+                      {!isFetchingOrganize &&
+                        organize?.categories.map((categorie) => (
+                          <FormControlLabel
+                            key={categorie.id}
+                            value={categorie.name}
+                            name="category"
+                            onClick={(e) =>
+                              handleCheckFilter(e, setOrganizeValue)
+                            }
+                            control={<Checkbox color="secondary" />}
+                            label={categorie.name}
+                            labelPlacement="end"
+                            className="block ml-4"
+                          />
+                        ))}
+                    </List>
+                  </AccordionDetails>
+                </Accordion>
+                <Accordion
+                  sx={{ backgroundColor: colors.primary[400] }}
+                  className="w-full"
                 >
-                  Collection
-                </Typography>
-                <List className={``}>
-                  {!isFetchingOrganize &&
-                    organize.collections.map((collection) => (
-                      <FormControlLabel
-                        key={collection.id}
-                        value={collection.name}
-                        name={"collection"}
-                        onClick={(e) => handleCheckFilter(e, setOrganizeValue)}
-                        control={<Checkbox color="secondary" />}
-                        label={collection.name}
-                        labelPlacement="end"
-                        className="block ml-4"
-                      />
-                    ))}
-                </List>
-                <Divider />
-                <Typography
-                  variant="h4"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  className={`text-lg md:text-xl px-4 mt-4 text-left mb-2`}
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                  >
+                    <Typography
+                      variant="h4"
+                      color={colors.grey[100]}
+                      fontWeight="bold"
+                      className={`text-lg md:text-xl px-4 text-left`}
+                    >
+                      Collection
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <List className={``}>
+                      {!isFetchingOrganize &&
+                        organize.collections.map((collection) => (
+                          <FormControlLabel
+                            key={collection.id}
+                            value={collection.name}
+                            name={"collection"}
+                            onClick={(e) =>
+                              handleCheckFilter(e, setOrganizeValue)
+                            }
+                            control={<Checkbox color="secondary" />}
+                            label={collection.name}
+                            labelPlacement="end"
+                            className="block ml-4"
+                          />
+                        ))}
+                    </List>
+                  </AccordionDetails>
+                </Accordion>
+                <Accordion
+                  sx={{ backgroundColor: colors.primary[400] }}
+                  className="w-full"
                 >
-                  Vendor
-                </Typography>
-                <List className={``}>
-                  {!isFetchingOrganize &&
-                    organize.vendors.map((vendor) => (
-                      <FormControlLabel
-                        key={vendor.id}
-                        value={vendor.name}
-                        name={"vendor"}
-                        onClick={(e) => handleCheckFilter(e, setOrganizeValue)}
-                        control={<Checkbox color="secondary" />}
-                        label={vendor.name}
-                        labelPlacement="end"
-                        className="block ml-4"
-                      />
-                    ))}
-                </List>
-                <Divider />
-                <Typography
-                  variant="h4"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  className={`text-lg md:text-xl px-4 mt-4 text-left mb-2`}
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                  >
+                    <Typography
+                      variant="h4"
+                      color={colors.grey[100]}
+                      fontWeight="bold"
+                      className={`text-lg md:text-xl px-4 text-left`}
+                    >
+                      Vendor
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <List className={``}>
+                      {!isFetchingOrganize &&
+                        organize.vendors.map((vendor) => (
+                          <FormControlLabel
+                            key={vendor.id}
+                            value={vendor.name}
+                            name={"vendor"}
+                            onClick={(e) =>
+                              handleCheckFilter(e, setOrganizeValue)
+                            }
+                            control={<Checkbox color="secondary" />}
+                            label={vendor.name}
+                            labelPlacement="end"
+                            className="block ml-4"
+                          />
+                        ))}
+                    </List>
+                  </AccordionDetails>
+                </Accordion>
+                <Accordion
+                  sx={{ backgroundColor: colors.primary[400] }}
+                  className="w-full"
                 >
-                  Tag
-                </Typography>
-                <List className={``}>
-                  <Typography className="mx-4">
-                    {!isFetchingOrganize &&
-                      organize.tags.map((tag) => (
-                        <FormControlLabel
-                          key={tag.id}
-                          value={tag.name}
-                          name={"tags"}
-                          onClick={(e) =>
-                            handleCheckFilter(e, setOrganizeValue)
-                          }
-                          control={<Checkbox color="secondary" />}
-                          label={tag.name}
-                          labelPlacement="end"
-                          className=""
-                        />
-                      ))}
-                  </Typography>
-                </List>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                  >
+                    <Typography
+                      variant="h4"
+                      color={colors.grey[100]}
+                      fontWeight="bold"
+                      className={`text-lg md:text-xl px-4 text-left`}
+                    >
+                      Tag
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <List className={``}>
+                      {!isFetchingOrganize &&
+                        organize.tags.map((tag) => (
+                          <FormControlLabel
+                            key={tag.id}
+                            value={tag.name}
+                            name={"tags"}
+                            onClick={(e) =>
+                              handleCheckFilter(e, setOrganizeValue)
+                            }
+                            control={<Checkbox color="secondary" />}
+                            label={tag.name}
+                            labelPlacement="end"
+                            className="block ml-4"
+                          />
+                        ))}
+                    </List>
+                  </AccordionDetails>
+                </Accordion>
               </Box>
             </Collapse>
             <Collapse
@@ -307,18 +370,18 @@ const Shopping = () => {
             >
               <Box
                 backgroundColor={colors.primary[400]}
-                className=" w-full  p-4 rounded-md"
+                className=" w-full rounded-md"
               >
                 <Typography
                   variant="h1"
                   color={colors.grey[100]}
                   fontWeight="bold"
-                  className={`text-xl md:text-2xl  text-left my-4`}
+                  className={`text-xl md:text-2xl p-4 text-left`}
                 >
                   Filter
                 </Typography>
                 <Divider />
-                <Box className={`my-4 w-full`}>
+                <Box className={`my-4 w-full px-4`}>
                   <FormControl className={`w-[100%]`}>
                     <FormLabel id="demo-radio-buttons-group-label">
                       <Typography
@@ -351,19 +414,25 @@ const Shopping = () => {
                     </Box>
                   </FormControl>
                 </Box>
-                <Divider />
-                <Box className={`my-4 w-full`}>
-                  <FormControl>
-                    <FormLabel id="demo-radio-buttons-group-label">
-                      <Typography
-                        variant="h1"
-                        color={colors.grey[100]}
-                        fontWeight="bold"
-                        className={`text-xl md:text-2xl  text-left mb-2`}
-                      >
-                        Brands
-                      </Typography>
-                    </FormLabel>
+                <Accordion
+                  sx={{ backgroundColor: colors.primary[400] }}
+                  className="w-full"
+                >
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                  >
+                    <Typography
+                      variant="h4"
+                      color={colors.grey[100]}
+                      fontWeight="bold"
+                      className={`text-lg md:text-xl px-4 text-left`}
+                    >
+                      Brands
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
                     <Box className={`flex flex-col`}>
                       {!isFetchingBrands &&
                         brands.map((brand) => (
@@ -384,20 +453,27 @@ const Shopping = () => {
                           />
                         ))}
                     </Box>
-                  </FormControl>
-                </Box>
-                <Box className={`my-4 w-full`}>
-                  <FormControl className="w-full">
-                    <FormLabel id="demo-radio-buttons-group-label">
-                      <Typography
-                        variant="h1"
-                        color={colors.grey[100]}
-                        fontWeight="bold"
-                        className={`text-xl md:text-2xl  text-left mb-2`}
-                      >
-                        Rating
-                      </Typography>
-                    </FormLabel>
+                  </AccordionDetails>
+                </Accordion>
+                <Accordion
+                  sx={{ backgroundColor: colors.primary[400] }}
+                  className="w-full"
+                >
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                  >
+                    <Typography
+                      variant="h4"
+                      color={colors.grey[100]}
+                      fontWeight="bold"
+                      className={`text-lg md:text-xl px-4 text-left`}
+                    >
+                      Rating
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
                     <Box className={`flex flex-col w-full`}>
                       {!isFetchingRatings &&
                         ratings?.map((rating) => (
@@ -427,48 +503,66 @@ const Shopping = () => {
                           </Box>
                         ))}
                     </Box>
-                  </FormControl>
-                </Box>
-                <Divider />
+                  </AccordionDetails>
+                </Accordion>
+              </Box>
+              <Box
+                backgroundColor={colors.primary[400]}
+                className=" w-full rounded-md"
+              >
                 <Box className={`my-4 w-full`}>
-                  <FormControl>
+                  <FormControl className={`w-full`}>
                     <FormLabel id="demo-radio-buttons-group-label">
                       <Typography
                         variant="h1"
                         color={colors.grey[100]}
                         fontWeight="bold"
-                        className={`text-xl md:text-2xl  text-left mb-2`}
+                        className={`text-xl md:text-2xl p-4 text-left`}
                       >
                         Variants
                       </Typography>
                     </FormLabel>
-                    <Box className={`flex flex-col`}>
+                    <Box className={`w-full flex flex-col`}>
                       {!isFetchingVariants &&
                         variants.map((variantOprions) => (
-                          <Box key={variantOprions.id}>
-                            <Typography
-                              variant="h4"
-                              color={colors.grey[100]}
-                              fontWeight="bold"
-                              className={`text-lg md:text-xl px-4 mt-4 text-left mb-2`}
+                          <Accordion
+                            key={variantOprions.id}
+                            sx={{ backgroundColor: colors.primary[400] }}
+                            className="w-full"
+                          >
+                            <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              aria-controls="panel1a-content"
+                              id="panel1a-header"
                             >
-                              {variantOprions.label}
-                            </Typography>
-                            {variantOprions.options.map((option) => (
-                              <FormControlLabel
-                                key={option.id}
-                                value={option?.label}
-                                name={variantOprions.label}
-                                control={<Checkbox color="secondary" />}
-                                onClick={(e) =>
-                                  handleCheckFilter(e, setVariantValue)
-                                }
-                                label={option?.label}
-                                labelPlacement="end"
-                                className="block ml-4"
-                              />
-                            ))}
-                          </Box>
+                              <Typography
+                                variant="h4"
+                                color={colors.grey[100]}
+                                fontWeight="bold"
+                                className={`text-lg md:text-xl px-4 text-left`}
+                              >
+                                {variantOprions.label}
+                              </Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                              <Box>
+                                {variantOprions.options.map((option) => (
+                                  <FormControlLabel
+                                    key={option.id}
+                                    value={option?.label}
+                                    name={variantOprions.label}
+                                    control={<Checkbox color="secondary" />}
+                                    onClick={(e) =>
+                                      handleCheckFilter(e, setVariantValue)
+                                    }
+                                    label={option?.label}
+                                    labelPlacement="end"
+                                    className="block ml-4"
+                                  />
+                                ))}
+                              </Box>
+                            </AccordionDetails>
+                          </Accordion>
                         ))}
                     </Box>
                   </FormControl>
