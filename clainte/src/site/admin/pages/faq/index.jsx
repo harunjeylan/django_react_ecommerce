@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { tokens } from "../../../../theme";
 import Header from "../../../../components/Header";
 
-const FAQ = () => {
+const AdminFAQ = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
@@ -27,10 +27,13 @@ const FAQ = () => {
         </Breadcrumbs>
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
-        <Header title="FAQ" subtitle="Frequently Asked Questions Page" />
+        <Header title="AdminFAQ" subtitle="Frequently Asked Questions Page" />
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
-        <Accordion defaultExpanded>
+        <Accordion
+          defaultExpanded
+          sx={{ backgroundColor: colors.primary[400] }}
+        >
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography color={colors.greenAccent[500]} variant="h5">
               An Important Question
@@ -44,7 +47,10 @@ const FAQ = () => {
             </Typography>
           </AccordionDetails>
         </Accordion>
-        <Accordion defaultExpanded>
+        <Accordion
+          defaultExpanded
+          sx={{ backgroundColor: colors.primary[400] }}
+        >
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography color={colors.greenAccent[500]} variant="h5">
               Another Important Question
@@ -58,7 +64,10 @@ const FAQ = () => {
             </Typography>
           </AccordionDetails>
         </Accordion>
-        <Accordion defaultExpanded>
+        <Accordion
+          defaultExpanded
+          sx={{ backgroundColor: colors.primary[400] }}
+        >
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography color={colors.greenAccent[500]} variant="h5">
               Your Favorite Question
@@ -72,7 +81,10 @@ const FAQ = () => {
             </Typography>
           </AccordionDetails>
         </Accordion>
-        <Accordion defaultExpanded>
+        <Accordion
+          defaultExpanded
+          sx={{ backgroundColor: colors.primary[400] }}
+        >
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography color={colors.greenAccent[500]} variant="h5">
               Some Random Question
@@ -86,7 +98,10 @@ const FAQ = () => {
             </Typography>
           </AccordionDetails>
         </Accordion>
-        <Accordion defaultExpanded>
+        <Accordion
+          defaultExpanded
+          sx={{ backgroundColor: colors.primary[400] }}
+        >
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography color={colors.greenAccent[500]} variant="h5">
               The Final Question
@@ -105,4 +120,4 @@ const FAQ = () => {
   );
 };
 
-export default FAQ;
+export default AdminFAQ;

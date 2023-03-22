@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import Navbar from "./Navbar";
+import AppBar from "./AppBar";
 import Footer from "./Footer";
 import CartMenu from "./CartMenu";
 import LayoutProvider from "./LayoutContext";
@@ -10,8 +10,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useGetWishlistQuery } from "../../../features/services/wishlistApiSlice";
 import { setWishlist } from "../../../features/services/wishlistReducer";
 import { selectCurrentUser } from "../../../features/auth/authSlice";
+import NavBar from "./NavBar";
 
-function Customer({ children }) {
+function CustomerLayout({ children }) {
   const { pathname } = useLocation();
   const dispatch = useDispatch();
   const user = useSelector(selectCurrentUser);
@@ -32,7 +33,8 @@ function Customer({ children }) {
       <LayoutProvider>
         <AccountDialog />
         <AccountMenu />
-        <Navbar />
+        <AppBar />
+        <NavBar />
       </LayoutProvider>
       {children}
       <CartMenu />
@@ -41,4 +43,4 @@ function Customer({ children }) {
   );
 }
 
-export default Customer;
+export default CustomerLayout;

@@ -16,8 +16,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { tokens } from "../../../theme";
-import { decreaseCount, increaseCount, removeFromCart, setCount, setIsCartOpen } from "../../../features/services/cartReducer";
-
+import {
+  decreaseCount,
+  increaseCount,
+  removeFromCart,
+  setCount,
+  setIsCartOpen,
+} from "../../../features/services/cartReducer";
 
 const CartMenu = () => {
   const navigate = useNavigate();
@@ -56,103 +61,101 @@ const CartMenu = () => {
                 className={`overflow-auto px-8 flex flex-col gap-4`}
               >
                 {cart.map((item, ind) => (
-                  <Box key={`${item?.title}-${item?.id}-${ind}`}>
-                    <Box className="flex flex-col md:flex-row gap-2 items-center pb-4">
-                      <CardActionArea
-                        onClick={() => navigate(`/product/${item?.id}`)}
-                        className={`${
-                          theme.palette.mode === "dark"
-                            ? "bg-white/5"
-                            : "bg-black/5"
-                        } bg-opacity-90 p-1 w-[180px] h-[140px] rounded-md flex
+                  <Box
+                    key={`${item?.title}-${item?.id}-${ind}`}
+                    className="flex flex-col md:flex-row gap-2 justify-center items-center pb-4"
+                  >
+                    <CardActionArea
+                      onClick={() => navigate(`/product/${item?.id}`)}
+                      className={`${
+                        theme.palette.mode === "dark"
+                          ? "bg-white/5"
+                          : "bg-black/5"
+                      } bg-opacity-90 p-1 w-[120px] h-[140px] rounded-md flex
                         items-center ease-in-out duration-300`}
-                      >
-                        <img
-                          alt={item?.title}
-                          className="w-full h-full rounded-md"
-                          src={`${item?.thumbnail}`}
-                        />
-                      </CardActionArea>
-                      <Box className="flex flex-col px-2 w-full">
-                        <Box className="flex justify-between items-center">
+                    >
+                      <img
+                        alt={item?.title}
+                        className="w-full h-full rounded-md"
+                        src={`${item?.thumbnail}`}
+                      />
+                    </CardActionArea>
+                    <Box className="flex flex-col px-2 w-full">
+                      <Box className="flex justify-between items-center">
+                        <Typography fontWeight="bold">{item?.title}</Typography>
+                        <IconButton
+                          onClick={() =>
+                            dispatch(removeFromCart({ id: item?.id }))
+                          }
+                        >
+                          <CloseIcon />
+                        </IconButton>
+                      </Box>
+                      <Typography className="mr-4">
+                        {item?.description?.slice(0, 60)}
+                      </Typography>
+                      <Divider />
+                      <Box className="flex justify-between w-full">
+                        <Box>
+                          {item?.selectedVariants?.map(
+                            (selectedVariant, index) => (
+                              <Typography key={index}>
+                                <strong>
+                                  {selectedVariant.variantLabel} :{" "}
+                                </strong>
+                                <span> {selectedVariant.optionLabel} </span>,
+                              </Typography>
+                            )
+                          )}
                           <Typography fontWeight="bold">
-                            {item?.title}
+                            <strong>Price</strong> : ${item?.sale_pricing}
                           </Typography>
-                          <IconButton
-                            onClick={() =>
-                              dispatch(removeFromCart({ id: item?.id }))
-                            }
-                          >
-                            <CloseIcon />
-                          </IconButton>
                         </Box>
-                        <Typography className="mr-4">
-                          {item?.description?.slice(0, 60)}
-                        </Typography>
-                        <Divider />
-                        <Box className="flex justify-between w-full">
-                          <Box>
-                            {item?.selectedVariants?.map(
-                              (selectedVariant, index) => (
-                                <Typography key={index}>
-                                  <strong>
-                                    {selectedVariant.variantLabel} :{" "}
-                                  </strong>
-                                  <span> {selectedVariant.optionLabel} </span>,
-                                </Typography>
-                              )
-                            )}
-                            <Typography fontWeight="bold">
-                              <strong>Price</strong> : ${item?.sale_pricing}
-                            </Typography>
-                          </Box>
-                          <Box className="flex justify-between items-center">
-                            <Box
-                              display="flex"
-                              alignItems="center"
-                              className="my-2"
-                              border={`1.5px solid ${colors.neutral[500]}`}
+                        <Box className="flex justify-between items-center">
+                          <Box
+                            display="flex"
+                            alignItems="center"
+                            className="my-2"
+                            border={`1.5px solid ${colors.neutral[500]}`}
+                          >
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                dispatch(decreaseCount({ id: item?.id }))
+                              }
                             >
-                              <IconButton
-                                size="small"
-                                onClick={() =>
-                                  dispatch(decreaseCount({ id: item?.id }))
-                                }
-                              >
-                                <RemoveIcon />
-                              </IconButton>
-                              <TextField
-                                size="small"
-                                className="w-[100px]"
-                                id="outlined-number"
-                                type="number"
-                                value={item?.count}
-                                onChange={(event) =>
-                                  dispatch(
-                                    setCount({
-                                      id: item?.id,
-                                      count: event.target.value,
-                                    })
-                                  )
-                                }
-                                InputLabelProps={{
-                                  shrink: true,
-                                }}
-                              />
-                              <IconButton
-                                size="small"
-                                onClick={() =>
-                                  dispatch(increaseCount({ id: item?.id }))
-                                }
-                              >
-                                <AddIcon />
-                              </IconButton>
-                            </Box>
+                              <RemoveIcon />
+                            </IconButton>
+                            <TextField
+                              size="small"
+                              className="w-[100px]"
+                              id="outlined-number"
+                              type="number"
+                              value={item?.count}
+                              onChange={(event) =>
+                                dispatch(
+                                  setCount({
+                                    id: item?.id,
+                                    count: event.target.value,
+                                  })
+                                )
+                              }
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
+                            />
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                dispatch(increaseCount({ id: item?.id }))
+                              }
+                            >
+                              <AddIcon />
+                            </IconButton>
                           </Box>
                         </Box>
                       </Box>
                     </Box>
-                    <Divider />
                   </Box>
                 ))}
               </Box>

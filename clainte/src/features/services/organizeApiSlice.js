@@ -1,7 +1,7 @@
 import { authApi } from "../auth/authApi";
 
 export const organizeApi = authApi.injectEndpoints({
-  tagTypes: ["organize", "categoreis"],
+  tagTypes: ["organize", "categories"],
   endpoints: (builder) => ({
     getAllOrganize: builder.query({
       query: () => "api/organize/",
@@ -9,7 +9,7 @@ export const organizeApi = authApi.injectEndpoints({
     }),
     getAllCategory: builder.query({
       query: () => `api/organize/categories/`,
-      providesTags: ["categoreis"],
+      providesTags: ["categories"],
     }),
     addOrganize: builder.mutation({
       query: ({ post }) => ({

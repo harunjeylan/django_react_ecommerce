@@ -29,7 +29,7 @@ import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
-import Service from "../../../components/Service";
+import Service from "../../../../../components/Service";
 import Subscribe from "../../../components/Subscribe";
 
 import {

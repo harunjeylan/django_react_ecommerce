@@ -1,45 +1,18 @@
-//IMPORTING LIBRARYS
+//IMPORTING LIBRARY
 import React, { useRef } from "react";
 import { Routes, Route } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { useEffect } from "react";
 import jwt_decode from "jwt-decode";
 //IMPORTING APP SETUP
-import CustomerPrivateRoutes from "./utils/CustomerPrivateRoutes";
-import AdminPrivateRoutes from "./utils/AdminPrivateRoutes";
 import { ColorModeContext, useMode } from "./theme";
-import AdminLayout from "./site/admin/layout";
-import CustomerLayout from "./site/customers/layout";
-
-//IMPORTING ADMIN PAGE COMPONENTS
-
-import Dashboard from "./site/admin/pages/dashboard";
-import Team from "./site/admin/pages/team";
-import Invoices from "./site/admin/pages/invoices";
-import Contacts from "./site/admin/pages/contacts";
-import FAQ from "./site/admin/pages/faq";
-import { OrdersListAdmin, OrderDetailsAdmin } from "./site/admin/pages/orders";
-
-import ProductsListAdmin from "./site/admin/pages/products/list";
-import AddEditProduct from "./site/admin/pages/products/add-edit";
-import ProductDetailsAdmin from "./site/admin/pages/products/details";
-// IMPORTING Authentication pages
-
-import Login from "./site/auth/pages/Login";
-import Register from "./site/auth/pages/Register";
-
-//IMPORTING CUSTOMERS PAGE COMPONENTS
-
-import Home from "./site/customers/pages/home";
-import Shopping from "./site/customers/pages/shopping";
-import { ProductDetailsCustomer } from "./site/customers/pages/products";
-import Page404 from "./components/Page404";
 import {
   selectCurrentToken,
   selectCurrentRefresh,
   // selectCurrentUser,
 } from "./features/auth/authSlice";
 import { useSelector } from "react-redux";
+import { Box } from "@mui/material";
 // import {  useDispatch } from "react-redux";
 // import { useGetUseDataQuery } from "./features/auth/authApiSlice";
 // import { setUserData } from "./features/auth/authSlice";
@@ -47,20 +20,111 @@ import { refreshAccessToken } from "./features/auth/authApi";
 
 import store from "./app/store";
 import dayjs from "dayjs";
-import CustomersList from "./site/admin/pages/customers/list/index";
-import NewCustomer from "./site/admin/pages/customers/new/index";
-import CustomerDetails from "./site/admin/pages/customers/details/index";
-import Profile from "./site/customers/pages/profile/details/index";
-import OrdersListCustomer from "./site/customers/pages/profile/orders/List";
-import OrderDetailsCustomer from "./site/customers/pages/profile/orders/Details";
-import Wishlist from "./site/customers/pages/profile/wishlist/index";
-import Checkout from "./site/customers/pages/checkout/checkout/index";
-import ViewCart from "./site/customers/pages/checkout/viewcart/index";
-import Confirmation from "./site/customers/pages/checkout/confirmation/index";
+
+// import CustomerLayout from "./site/customers/layout";
+// import Home from "./site/customers/pages/home";
+
+const CustomerPrivateRoutes = React.lazy(() =>
+  import("./utils/CustomerPrivateRoutes")
+);
+const AdminPrivateRoutes = React.lazy(() =>
+  import("./utils/AdminPrivateRoutes")
+);
+const AdminLayout = React.lazy(() => import("./site/admin/layout"));
+const CustomerLayout = React.lazy(() => import("./site/customers/layout"));
+//IMPORTING ADMIN PAGE COMPONENTS
+
+const Dashboard = React.lazy(() => import("./site/admin/pages/dashboard"));
+const Team = React.lazy(() => import("./site/admin/pages/team"));
+const Invoices = React.lazy(() => import("./site/admin/pages/invoices"));
+const Contacts = React.lazy(() => import("./site/admin/pages/contacts"));
+const AdminFAQ = React.lazy(() => import("./site/admin/pages/faq"));
+
+const OrdersListAdmin = React.lazy(() =>
+  import("./site/admin/pages/orders").then((module) => ({
+    default: module.OrdersListAdmin,
+  }))
+);
+const OrderDetailsAdmin = React.lazy(() =>
+  import("./site/admin/pages/orders").then((module) => ({
+    default: module.OrderDetailsAdmin,
+  }))
+);
+
+const ProductsListAdmin = React.lazy(() =>
+  import("./site/admin/pages/products/list")
+);
+const AddEditProduct = React.lazy(() =>
+  import("./site/admin/pages/products/add-edit")
+);
+const ProductDetailsAdmin = React.lazy(() =>
+  import("./site/admin/pages/products/details")
+);
+// IMPORTING Authentication pages
+
+const Login = React.lazy(() => import("./site/auth/pages/Login"));
+const Register = React.lazy(() => import("./site/auth/pages/Register"));
+
+//IMPORTING CUSTOMERS PAGE COMPONENTS
+
+const Home = React.lazy(() => import("./site/customers/pages/home"));
+const Shopping = React.lazy(() => import("./site/customers/pages/shopping"));
+const ProductDetailsCustomer = React.lazy(() =>
+  import("./site/customers/pages/products").then((module) => ({
+    default: module.ProductDetailsCustomer,
+  }))
+);
+const Page404 = React.lazy(() => import("./components/Page404"));
+
+const CustomersList = React.lazy(() =>
+  import("./site/admin/pages/customers/list/index")
+);
+const NewCustomer = React.lazy(() =>
+  import("./site/admin/pages/customers/new/index")
+);
+const CustomerDetails = React.lazy(() =>
+  import("./site/admin/pages/customers/details/index")
+);
+const Profile = React.lazy(() =>
+  import("./site/customers/pages/profile/details/index")
+);
+const OrdersListCustomer = React.lazy(() =>
+  import("./site/customers/pages/profile/orders/List")
+);
+const OrderDetailsCustomer = React.lazy(() =>
+  import("./site/customers/pages/profile/orders/Details")
+);
+const Wishlist = React.lazy(() =>
+  import("./site/customers/pages/profile/wishlist/index")
+);
+const Checkout = React.lazy(() =>
+  import("./site/customers/pages/checkout/checkout/index")
+);
+const ViewCart = React.lazy(() =>
+  import("./site/customers/pages/checkout/viewcart/index")
+);
+const Confirmation = React.lazy(() =>
+  import("./site/customers/pages/checkout/confirmation/index")
+);
+const HomeAppearance = React.lazy(() =>
+  import("./site/admin/pages/appearance/HomeAppearance")
+);
+
+const Blog = React.lazy(() => import("./site/customers/pages/blog"));
+const Contact = React.lazy(() => import("./site/customers/pages/contact"));
+const About = React.lazy(() => import("./site/customers/pages/about"));
+const CustomerFAQ = React.lazy(() => import("./site/customers/pages/faq"));
+
+const AddEditBlog = React.lazy(() => import("./site/admin/pages/blog/addEdit"));
+const AdminBlogDetails = React.lazy(() => import("./site/admin/pages/blog/details"));
+const AdminListBlog = React.lazy(() => import("./site/admin/pages/blog/list"));
+
+
 function App() {
   const [theme, colorMode] = useMode();
   const accessToken = useSelector(selectCurrentToken);
   const refreshToken = useSelector(selectCurrentRefresh);
+
   // const userData = useSelector(selectCurrentUser);
   // const dispatch = useDispatch();
   // const { data: newUserData } = useGetUseDataQuery();
@@ -90,6 +154,7 @@ function App() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
+
         <Routes>
           {/* Authentication pages */}
 
@@ -112,7 +177,7 @@ function App() {
                 path="faq"
                 element={
                   <AdminLayout>
-                    <FAQ />
+                    <AdminFAQ />
                   </AdminLayout>
                 }
               />
@@ -124,7 +189,40 @@ function App() {
                   </AdminLayout>
                 }
               />
+              
             </Route>
+            <Route
+              path="blog"
+              element={
+                <AdminLayout>
+                  <AdminListBlog />
+                </AdminLayout>
+              }
+            />
+            <Route
+              path="blog/:blogId"
+              element={
+                <AdminLayout>
+                  <AdminBlogDetails />
+                </AdminLayout>
+              }
+            />
+            <Route
+              path="blog/new"
+              element={
+                <AdminLayout>
+                  <AddEditBlog isEditing={false} />
+                </AdminLayout>
+              }
+            />
+            <Route
+              path="blog/:blogId/edit"
+              element={
+                <AdminLayout>
+                  <AddEditBlog isEditing={true} />
+                </AdminLayout>
+              }
+            />
             <Route path="data">
               <Route
                 path="contacts"
@@ -221,6 +319,16 @@ function App() {
                 }
               />
             </Route>
+            <Route path="appearance">
+              <Route
+                path="home"
+                element={
+                  <AdminLayout>
+                    <HomeAppearance />
+                  </AdminLayout>
+                }
+              />
+            </Route>
           </Route>
 
           <Route path="/">
@@ -237,6 +345,38 @@ function App() {
               element={
                 <CustomerLayout>
                   <Shopping />
+                </CustomerLayout>
+              }
+            />
+            <Route
+              path="blog"
+              element={
+                <CustomerLayout>
+                  <Blog />
+                </CustomerLayout>
+              }
+            />
+            <Route
+              path="contact"
+              element={
+                <CustomerLayout>
+                  <Contact />
+                </CustomerLayout>
+              }
+            />
+            <Route
+              path="about"
+              element={
+                <CustomerLayout>
+                  <About />
+                </CustomerLayout>
+              }
+            />
+            <Route
+              path="faq"
+              element={
+                <CustomerLayout>
+                  <CustomerFAQ />
                 </CustomerLayout>
               }
             />

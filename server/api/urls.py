@@ -20,6 +20,7 @@ urlpatterns = [
   
 
   path("products/search-and-filter/", api.searchAndFilterProducts , name="search_and_filter_products"),
+  path("products/search/", api.searchProducts , name="search_and_filter_products"),
   path("products/category/<category_name>/", api.getProductsByCategory , name="products_by_category"),
   path("products/<pk>/", api.getProductsDetails , name="products_details"),
   path("products/<pk>/edit/", api.updateProduct , name="products_edit"),
@@ -44,6 +45,7 @@ urlpatterns = [
   path("organize/add/", api.addOrganize , name="new_organize"),
   path("organize/update/", api.updateOrganize , name="update_organize"),
   path("organize/delete/", api.deleteOrganize , name="delete_organize"),
+  path("organize/categories/", api.getAllCategory , name="delete_organize"),
 
   # ===================================================================
   path("wishlists/", api.getWishlist , name="wishlists"),

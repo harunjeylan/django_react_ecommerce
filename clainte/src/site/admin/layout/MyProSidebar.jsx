@@ -11,9 +11,8 @@ import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
-
+import PostAddOutlinedIcon from '@mui/icons-material/PostAddOutlined';
+import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined';
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
@@ -25,7 +24,7 @@ import { selectCurrentUser } from "../../../features/auth/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useSidebarContext } from "./SidebarContext";
 import { tokens } from "../../../theme";
-
+import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -36,7 +35,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
       style={{ color: colors.grey[100] }}
       onClick={() => setSelected(title)}
       icon={icon}
-      routerLink={<Link to={to} />}
+      component={<Link to={to} />}
     >
       <Typography>{title}</Typography>
     </MenuItem>
@@ -66,11 +65,11 @@ const MyProSidebar = () => {
         "& .menu-icon": {
           backgroundColor: "transparent !important",
         },
-        "& .menu-anchor": {
+        "& .ps-menu-button, & .ps-submenu-content": {
           backgroundColor: "transparent !important",
           color: "inherit !important",
         },
-        "& .menu-anchor:hover": {
+        "& .ps-menu-button:hover": {
           color: `${colors.blueAccent[500]} !important`,
           backgroundColor: "transparent !important",
         },
@@ -192,13 +191,6 @@ const MyProSidebar = () => {
               Data
             </Typography>
             <Item
-              title="Manage Team"
-              to="/admin/data/team"
-              icon={<PeopleOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
               title="Contacts Information"
               to="/admin/data/contacts"
               icon={<ContactsOutlinedIcon />}
@@ -219,32 +211,70 @@ const MyProSidebar = () => {
             >
               E commerce
             </Typography>
-            <SubMenu label="Ecommerce" icon={<ShoppingCartOutlinedIcon />}>
-              <Item
-                title="Add Products"
-                to="/admin/products/new"
-                selected={selected}
-                setSelected={setSelected}
-              />
-              <Item
-                title="Products"
-                to="/admin/products"
-                selected={selected}
-                setSelected={setSelected}
-              />
-              <Item
-                title="Customers"
-                to="/admin/customers"
-                selected={selected}
-                setSelected={setSelected}
-              />
-              <Item
-                title="Orders"
-                to="/admin/orders"
-                selected={selected}
-                setSelected={setSelected}
-              />
-            </SubMenu>
+            <Item
+              title="Add Products"
+              to="/admin/products/new"
+              icon={<AddBoxOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Products"
+              to="/admin/products"
+              icon={<CategoryOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Customers"
+              to="/admin/customers"
+              icon={<PeopleOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Orders"
+              to="/admin/orders"
+              icon={<ShoppingCartOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "15px 20px 5px 20px" }}
+            >
+              Blog
+            </Typography>
+            <Item
+              title="Add Blog"
+              to="/admin/blog/new"
+              icon={<PostAddOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Blogs"
+              to="/admin/blog"
+              icon={<ListAltOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "15px 20px 5px 20px" }}
+            >
+              Appearance
+            </Typography>
+            <Item
+              title="Home Page"
+              to="/admin/appearance/home"
+              icon={<HomeOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
 
             <Typography
               variant="h6"

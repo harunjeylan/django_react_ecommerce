@@ -4,15 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { Box, Button } from "@mui/material";
 
 import MainCarousel from "./MainCarousel";
-import Service from "../../components/Service";
+import Service from "../../../../components/Service";
 import Subscribe from "../../components/Subscribe";
 // import CategoryBanner from "./CategoryBanner";
 import ProductCarouse from "../../components/ProductCarouse";
 
-import Banner from "../../components/Banner";
+import Banner from "../../../../components/Banner";
 import { tokens } from "../../../../theme";
 import { useGetAllProductsQuery } from "../../../../features/services/productApiSlice";
-import Header from "../../../../components/Header";
 
 function Home() {
   const theme = useTheme();
