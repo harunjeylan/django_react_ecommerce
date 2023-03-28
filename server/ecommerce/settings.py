@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'main.apps.MainConfig',
     'account.apps.AccountConfig',
+    'blog.apps.BlogConfig',
 ]
 REST_FRAMEWORK = {
  

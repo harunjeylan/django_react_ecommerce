@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Box,
   Divider,
@@ -10,26 +11,86 @@ import {
   OutlinedInput,
   Chip,
   Avatar,
+  IconButton,
 } from "@mui/material";
 import { Breadcrumbs, Button } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { tokens } from "../../../../../theme";
 import Header from "../../../../../components/Header";
-import { useState } from "react";
 import { Dropzone, FullScreenPreview } from "@dropzone-ui/react";
 import { FileItem } from "@dropzone-ui/react";
-
-const AddEditBlog = () => {
+import { Formik } from "formik";
+import { useDispatch } from "react-redux";
+import { getInitialValues } from "./getInitialValues";
+import { blogSchema } from "./blogSchema";
+import {
+  blogApi,
+  useAddBlogMutation,
+  useUpdateBlogMutation,
+  useUploadImageMutation,
+} from "../../../../../features/services/blogApiSlice";
+import DeleteIcon from "@mui/icons-material/Delete";
+import UnpublishedIcon from "@mui/icons-material/Unpublished";
+const AddEditBlog = ({ isEditing }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   // const [openModel, setOpenModel] = useState(false);
   const [imageSrc, setImageSrc] = useState(undefined);
   const [blogThumbnail, setBlogThumbnail] = useState([]);
+  const [initialValues, setInitialValues] = useState({});
+  const { blogId } = useParams();
+
+  const [addBlog] = useAddBlogMutation();
+  const [updateBlog] = useUpdateBlogMutation();
+  const [uploadImage] = useUploadImageMutation();
   // const [blogValue, setBlogValue] = useState("");
+  useEffect(() => {
+    if (blogId && isEditing) {
+      dispatch(
+        blogApi.endpoints.getBlogData.initiate({
+          blogId,
+        })
+      ).then((response) => {
+        if (response.isSuccess) {
+          // console.log(response.data);
+          setInitialValues(response.data);
+        }
+      });
+    }
+  }, [blogId, isEditing, dispatch]);
   const handleClean = (image) => {
     console.log("list cleaned", image);
+  };
+  const handleFormSubmit = (values) => {
+    console.log(values);
+
+    if (blogId) {
+      updateBlog({ post: values, blogId }).then((res) => {
+        let postForm = new FormData();
+        postForm.append("thumbnail", blogThumbnail[0]?.file);
+        postForm.append("blogId", res.data.id);
+        uploadImage({
+          post: postForm,
+        }).then((response) => {
+          console.log(response);
+          navigate(`/admin/blogs/${blogId}`);
+        });
+      });
+    } else {
+      addBlog({ post: values }).then((res) => {
+        let postForm = new FormData();
+        postForm.append("thumbnail", blogThumbnail[0]?.file);
+        postForm.append("blogId", res.data.id);
+        uploadImage({
+          post: postForm,
+        }).then((response) => {
+          navigate(`/admin/blogs/${res.data.id}`);
+        });
+      });
+    }
   };
   return (
     <>
@@ -71,144 +132,257 @@ const AddEditBlog = () => {
               Create Post
             </Typography>
             <Divider />
-            <Box className="w-full px-4 flex flex-col  gap-4">
-              <Box className="w-full">
-                <Typography variant="h6" fontWeight="bold" className="my-2">
-                  Display Thumbnail
-                </Typography>
-                <Dropzone
-                  style={{
-                    minHeight: "200px",
-                    minWidth: "100%",
-                    backgroundColor: colors.primary[400],
-                  }}
-                  label="Drop your Display thumbnail here or click to browse"
-                  onChange={(incomingImages) =>
-                    setBlogThumbnail(incomingImages)
-                  }
-                  onClean={handleClean}
-                  value={blogThumbnail}
-                  maxFiles={1}
-                  maxFileSize={2998000}
-                  accept=".png,image/*"
-                  uploadingMessage={"Uploading..."}
+            <Formik
+              onSubmit={handleFormSubmit}
+              initialValues={getInitialValues(initialValues)}
+              validationSchema={blogSchema}
+              enableReinitialize={true}
+            >
+              {({
+                values,
+                errors,
+                touched,
+                handleBlur,
+                handleChange,
+                handleSubmit,
+                setFieldValue,
+              }) => (
+                <form
+                  onSubmit={handleSubmit}
+                  encType="multipart/form-data"
+                  className="w-full px-4 flex flex-col  gap-4"
                 >
-                  {blogThumbnail.length &&
-                    blogThumbnail.map((file) => (
-                      <FileItem
-                        {...file}
-                        key={file.id}
-                        onDelete={(id) =>
-                          setBlogThumbnail(
-                            blogThumbnail.filter((x) => x.id !== id)
-                          )
-                        }
-                        onSee={(imageSource) => setImageSrc(imageSource)}
-                        resultOnTooltip
-                        preview
-                        info
-                        hd
-                      />
-                    ))}
-                </Dropzone>
-              </Box>
-              <Box className="w-full">
-                <Typography variant="h6" fontWeight="bold" className="my-2">
-                  Title
-                </Typography>
-                <TextField
-                  variant="filled"
-                  color="secondary"
-                  fullWidth
-                  placeholder="title"
-                />
-              </Box>
-              <Box className="w-full">
-                <Typography variant="h6" fontWeight="bold" className="my-2">
-                  Headline
-                </Typography>
-                <TextField
-                  variant="filled"
-                  color="secondary"
-                  fullWidth
-                  placeholder="headline"
-                />
-              </Box>
-              <Box className="w-full">
-                <Typography variant="h6" fontWeight="bold" className="my-2">
-                  Category
-                </Typography>
-                <FormControl variant="filled" className="w-full">
-                  <InputLabel id="category-select-label">Category</InputLabel>
-                  <Select
-                    fullWidth
-                    color="secondary"
-                    labelId="category-select-label"
-                    id="category-select"
-                    variant="filled"
-                    name="category"
-                    defaultValue=""
-                  >
-                    <MenuItem value={"category 1"}>{"category 1"}</MenuItem>
-                    <MenuItem value={"category 2"}>{"category 2"}</MenuItem>
-                    <MenuItem value={"category 3"}>{"category 3"}</MenuItem>
-                    <MenuItem value={"category 4"}>{"category 4"}</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-              <Box className="w-full">
-                <Typography variant="h6" fontWeight="bold" className="my-2">
-                  Tags
-                </Typography>
-                <FormControl variant="filled" className="w-full">
-                  <InputLabel id="tags-select-label">Tag</InputLabel>
-                  <Select
-                    fullWidth
-                    color="secondary"
-                    labelId="tags-select-label"
-                    id="tags-select"
-                    variant="filled"
-                    name="brand"
-                    multiple
-                    defaultValue={[]}
-                    input={
-                      <OutlinedInput id="select-multiple-chip" label="Chip" />
-                    }
-                    renderValue={(selected) => (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          gap: 0.5,
-                        }}
-                      >
-                        {selected?.map((value) => (
-                          <Chip key={value} label={value} />
+                  <Box className="w-full">
+                    <Typography variant="h6" fontWeight="bold" className="my-2">
+                      Display Thumbnail
+                    </Typography>
+                    <Dropzone
+                      style={{
+                        minHeight: "200px",
+                        minWidth: "100%",
+                        backgroundColor: colors.primary[400],
+                      }}
+                      label="Drop your Display thumbnail here or click to browse"
+                      onChange={(incomingImages) =>
+                        setBlogThumbnail(incomingImages)
+                      }
+                      onClean={handleClean}
+                      value={blogThumbnail}
+                      maxFiles={1}
+                      maxFileSize={2998000}
+                      accept=".png,image/*"
+                      uploadingMessage={"Uploading..."}
+                    >
+                      {blogThumbnail.length &&
+                        blogThumbnail.map((file) => (
+                          <FileItem
+                            {...file}
+                            key={file.id}
+                            onDelete={(id) =>
+                              setBlogThumbnail(
+                                blogThumbnail.filter((x) => x.id !== id)
+                              )
+                            }
+                            onSee={(imageSource) => setImageSrc(imageSource)}
+                            resultOnTooltip
+                            preview
+                            info
+                            hd
+                          />
                         ))}
-                      </Box>
-                    )}
-                  >
-                    <MenuItem value={"tag 1"}>{"tag 1"}</MenuItem>
-                    <MenuItem value={"tag 2"}>{"tag 2"}</MenuItem>
-                    <MenuItem value={"tag 3"}>{"tag 3"}</MenuItem>
-                    <MenuItem value={"tag 4"}>{"tag 4"}</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-              <Box className="w-full">
-                <Typography variant="h6" fontWeight="bold" className="my-2">
-                  Body
-                </Typography>
-                <TextField
-                  variant="filled"
-                  color="secondary"
-                  fullWidth
-                  placeholder="headline"
-                  multiline
-                  minRows={5}
-                />
-              </Box>
-            </Box>
+                    </Dropzone>
+                  </Box>
+                  <Box className="w-full">
+                    <Typography variant="h6" fontWeight="bold" className="my-2">
+                      Title
+                    </Typography>
+                    <TextField
+                      fullWidth
+                      variant="filled"
+                      color="secondary"
+                      placeholder="title"
+                      type="text"
+                      label="Blog Title"
+                      onChange={handleChange}
+                      value={values.title}
+                      name="title"
+                      onBlur={handleBlur}
+                      error={!!touched.title && !!errors.title}
+                      helperText={touched.title && errors.title}
+                    />
+                  </Box>
+                  <Box className="w-full">
+                    <Typography variant="h6" fontWeight="bold" className="my-2">
+                      Headline
+                    </Typography>
+                    <TextField
+                      fullWidth
+                      variant="filled"
+                      color="secondary"
+                      placeholder="headline"
+                      type="text"
+                      label="Headline"
+                      onChange={handleChange}
+                      value={values.headline}
+                      name="headline"
+                      onBlur={handleBlur}
+                      error={!!touched.headline && !!errors.headline}
+                      helperText={touched.headline && errors.headline}
+                    />
+                  </Box>
+                  <Box className="w-full">
+                    <Typography variant="h6" fontWeight="bold" className="my-2">
+                      Slug
+                    </Typography>
+                    <TextField
+                      fullWidth
+                      variant="filled"
+                      color="secondary"
+                      placeholder="slug"
+                      type="text"
+                      label="Slug"
+                      onChange={handleChange}
+                      value={values.slug}
+                      name="slug"
+                      onBlur={handleBlur}
+                      error={!!touched.slug && !!errors.slug}
+                      helperText={touched.slug && errors.slug}
+                    />
+                  </Box>
+                  <Box className="w-full">
+                    <Typography variant="h6" fontWeight="bold" className="my-2">
+                      Category
+                    </Typography>
+                    <FormControl variant="filled" className="w-full">
+                      <InputLabel id="category-select-label">
+                        Category
+                      </InputLabel>
+                      <Select
+                        fullWidth
+                        color="secondary"
+                        labelId="category-select-label"
+                        id="category-select"
+                        variant="filled"
+                        name="category"
+                        defaultValue=""
+                        onChange={handleChange}
+                        value={values.category}
+                        onBlur={handleBlur}
+                        error={!!touched.category && !!errors.category}
+                      >
+                        <MenuItem value={"category 1"}>{"category 1"}</MenuItem>
+                        <MenuItem value={"category 2"}>{"category 2"}</MenuItem>
+                        <MenuItem value={"category 3"}>{"category 3"}</MenuItem>
+                        <MenuItem value={"category 4"}>{"category 4"}</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Box>
+                  <Box className="w-full">
+                    <Typography variant="h6" fontWeight="bold" className="my-2">
+                      Tags
+                    </Typography>
+                    <FormControl variant="filled" className="w-full">
+                      <InputLabel id="tags-select-label">Tag</InputLabel>
+                      <Select
+                        fullWidth
+                        color="secondary"
+                        labelId="tags-select-label"
+                        id="tags-select"
+                        variant="filled"
+                        name="tags"
+                        multiple
+                        defaultValue={[]}
+                        onChange={handleChange}
+                        value={values.tags}
+                        onBlur={handleBlur}
+                        error={!!touched.tags && !!errors.tags}
+                        input={
+                          <OutlinedInput
+                            id="select-multiple-chip"
+                            label="Chip"
+                          />
+                        }
+                        renderValue={(selected) => (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                              gap: 0.5,
+                            }}
+                          >
+                            {selected?.map((value) => (
+                              <Chip key={value} label={value} />
+                            ))}
+                          </Box>
+                        )}
+                      >
+                        <MenuItem value={"tag 1"}>{"tag 1"}</MenuItem>
+                        <MenuItem value={"tag 2"}>{"tag 2"}</MenuItem>
+                        <MenuItem value={"tag 3"}>{"tag 3"}</MenuItem>
+                        <MenuItem value={"tag 4"}>{"tag 4"}</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Box>
+                  <Box className="w-full">
+                    <Typography variant="h6" fontWeight="bold" className="my-2">
+                      Body
+                    </Typography>
+                    <TextField
+                      variant="filled"
+                      color="secondary"
+                      fullWidth
+                      placeholder="headline"
+                      multiline
+                      minRows={5}
+                      type="text"
+                      label="Blog Body"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.body}
+                      name="body"
+                      error={!!touched.body && !!errors.body}
+                      helperText={touched.body && errors.body}
+                    />
+                  </Box>
+                  <Box className="w-full">
+                    <Typography variant="h6" fontWeight="bold" className="my-2">
+                      Status
+                    </Typography>
+                    <FormControl variant="filled" className="w-full">
+                      <InputLabel id="status-select-label">Status</InputLabel>
+                      <Select
+                        fullWidth
+                        color="secondary"
+                        labelId="status-select-label"
+                        id="status-select"
+                        variant="filled"
+                        name="status"
+                        defaultValue=""
+                        onChange={handleChange}
+                        value={values.status}
+                        onBlur={handleBlur}
+                        error={!!touched.status && !!errors.status}
+                      >
+                        <MenuItem value={"status 1"}>{"status 1"}</MenuItem>
+                        <MenuItem value={"status 2"}>{"status 2"}</MenuItem>
+                        <MenuItem value={"status 3"}>{"status 3"}</MenuItem>
+                        <MenuItem value={"status 4"}>{"status 4"}</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Box>
+                  <Box className="flex justify-start my-4">
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      variant="outlined"
+                      className={`px-8 py-3 `}
+                    >
+                      {blogId && isEditing ? "Save Blog" : "Create Blog"}
+                    </Button>
+                  </Box>
+                </form>
+              )}
+            </Formik>
           </Box>
           <Box className="w-full md:w-1/4 flex flex-col gap-4">
             <Box
@@ -354,23 +528,9 @@ const AddEditBlog = () => {
                 >
                   Unpublished
                 </Typography>
-                <Typography fontWeight={"bold"} variant="h5">
-                  8693637308
-                </Typography>
-              </Box>
-              <Divider />
-              <Box className="w-full px-4 flex justify-between items-center gap-2">
-                <Typography
-                  fontWeight={"bold"}
-                  variant="h5"
-                  sx={{ color: colors.grey[200] }}
-                  className=""
-                >
-                  Duplicate
-                </Typography>
-                <Typography fontWeight={"bold"} variant="h5">
-                  8693637308
-                </Typography>
+                <IconButton>
+                  <UnpublishedIcon color="warning" />
+                </IconButton>
               </Box>
               <Divider />
               <Box className="w-full px-4 flex justify-between items-center gap-2">
@@ -382,9 +542,9 @@ const AddEditBlog = () => {
                 >
                   Delete
                 </Typography>
-                <Typography fontWeight={"bold"} variant="h5">
-                  8693637308
-                </Typography>
+                <IconButton>
+                  <DeleteIcon color="error" />
+                </IconButton>
               </Box>
               <Divider />
             </Box>
@@ -424,5 +584,4 @@ const AddEditBlog = () => {
     </>
   );
 };
-
 export default AddEditBlog;

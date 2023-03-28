@@ -24,7 +24,7 @@ const Header2 = ({ title, subtitle, bodyText }) => {
         {subtitle}
       </Typography>
       <Typography
-        variant="subtitle2"
+        variant="subtitle1"
         className={`w-full px-auto  my-auto max-w-lg`}
       >
         {bodyText}

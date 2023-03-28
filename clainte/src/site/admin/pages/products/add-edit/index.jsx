@@ -33,7 +33,6 @@ const AddEditProduct = ({ isEditing }) => {
   const [uploadImage] = useUploadImageMutation();
   const [initialValues, setInitialValues] = useState({});
   const { productId } = useParams();
-  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     if (productId && isEditing) {
@@ -51,56 +50,54 @@ const AddEditProduct = ({ isEditing }) => {
   }, [productId, isEditing, dispatch]);
 
   const handleFormSubmit = (values) => {
-    startTransition(() => {
-      let data = values?.expiryDate?.date;
-      let formattedDate;
-      if (data.hasOwnProperty("format")) {
-        formattedDate = data.hasOwnProperty("format");
-      } else {
-        let objectDate = new Date();
-        formattedDate = `${objectDate.getFullYear()}-${objectDate.getMonth()}-${objectDate.getDate()}`;
-      }
-      const post = {
-        ...values,
-        expiryDate: {
-          selected: values?.expiryDate?.selected,
-          data: formattedDate,
-        },
-      };
+    let data = values?.expiryDate?.date;
+    let formattedDate;
+    if (data.hasOwnProperty("format")) {
+      formattedDate = data.hasOwnProperty("format");
+    } else {
+      let objectDate = new Date();
+      formattedDate = `${objectDate.getFullYear()}-${objectDate.getMonth()}-${objectDate.getDate()}`;
+    }
+    const post = {
+      ...values,
+      expiryDate: {
+        selected: values?.expiryDate?.selected,
+        data: formattedDate,
+      },
+    };
 
-      console.log(post);
+    console.log(post);
 
-      if (productId) {
-        updateProduct({ post, productId }).then((res) => {
-          let postForm = new FormData();
-          postForm.append("thumbnail", values.thumbnail[0]?.file);
-          values.images.forEach((image) => {
-            postForm.append("images", image.file);
-          });
-          postForm.append("productId", res.data.id);
-          uploadImage({
-            post: postForm,
-          }).then((response) => {
-            console.log(response);
-            navigate(`/admin/products/${productId}`);
-          });
+    if (productId) {
+      updateProduct({ post, productId }).then((res) => {
+        let postForm = new FormData();
+        postForm.append("thumbnail", values.thumbnail[0]?.file);
+        values.images.forEach((image) => {
+          postForm.append("images", image.file);
         });
-      } else {
-        addProduct({ post }).then((res) => {
-          let postForm = new FormData();
-          postForm.append("thumbnail", values.thumbnail[0]?.file);
-          values.images.forEach((image) => {
-            postForm.append("images", image.file);
-          });
-          postForm.append("productId", res.data.id);
-          uploadImage({
-            post: postForm,
-          }).then((response) => {
-            navigate(`/admin/products/${res.data.id}`);
-          });
+        postForm.append("productId", res.data.id);
+        uploadImage({
+          post: postForm,
+        }).then((response) => {
+          console.log(response);
+          navigate(`/admin/products/${productId}`);
         });
-      }
-    });
+      });
+    } else {
+      addProduct({ post }).then((res) => {
+        let postForm = new FormData();
+        postForm.append("thumbnail", values.thumbnail[0]?.file);
+        values.images.forEach((image) => {
+          postForm.append("images", image.file);
+        });
+        postForm.append("productId", res.data.id);
+        uploadImage({
+          post: postForm,
+        }).then((response) => {
+          navigate(`/admin/products/${res.data.id}`);
+        });
+      });
+    }
   };
 
   return (
@@ -207,13 +204,7 @@ const AddEditProduct = ({ isEditing }) => {
                     variant="outlined"
                     className={`px-8 py-3 `}
                   >
-                    {isPending ? (
-                      <CircularProgress color="secondary" />
-                    ) : productId && isEditing ? (
-                      "Save Product"
-                    ) : (
-                      "Create Product"
-                    )}
+                    {productId && isEditing ? "Save Product" : "Create Product"}
                   </Button>
                 </Box>
               </form>

@@ -49,12 +49,6 @@ export const productApi = authApi.injectEndpoints({
       query: ({ productId }) => `api/products/${productId}/`,
       providesTags: ["products_details"],
     }),
-    getProductsData: builder.query({
-      query: ({ productId }) => {
-        return `api/admin/products/${productId}/`;
-      },
-      providesTags: ["products_data"],
-    }),
     getProductsByCategory: builder.query({
       query: ({ category }) => `api/products/category/${category}/`,
       providesTags: ["products-by-category"],
