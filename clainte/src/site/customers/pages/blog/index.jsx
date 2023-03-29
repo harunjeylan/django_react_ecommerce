@@ -130,7 +130,7 @@ const Blog = () => {
               {collection.last_blog.thumbnail && (
                 <CardMedia
                   sx={{ height: 360, width: "100%" }}
-                  title="the-first-blog"
+                  title={"the-first-blog" + collection.last_blog.thumbnail}
                   image={
                     SERVER_HOST + "media/" + collection.last_blog.thumbnail
                   }
