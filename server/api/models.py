@@ -6,6 +6,12 @@ from django.core.validators import RegexValidator
 
 class Category(models.Model):
     name = models.CharField(unique=True,max_length=100)
+    def get_blogs(self):
+        return self.blog_set.all()
+       
+    def get_published_blogs(self):
+        return self.blog_set.filter(status="published")
+    
     def __str__(self):
         return f"{self.name}" 
 class Vendor(models.Model):
@@ -19,6 +25,12 @@ class Collection(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(unique=True,max_length=100)
+    def get_blogs(self):
+        return self.blog_set.all()
+       
+    def get_published_blogs(self):
+        return self.blog_set.filter(status="published")
+    
     def __str__(self):
         return f"{self.name}" 
 class Brand(models.Model):

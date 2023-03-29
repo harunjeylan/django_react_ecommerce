@@ -24,9 +24,12 @@ import { orderApi } from "../features/services/orderApiSlice";
 import { wishlistApi } from "../features/services/wishlistApiSlice";
 import { customerApi } from "../features/services/customerApiSlice";
 
+import { blogApi } from "../features/services/blogApiSlice";
+
 import productReducer from "../features/services/productSlice";
 import cartReducer from "../features/services/cartReducer";
 import wishlistReducer from "../features/services/wishlistReducer";
+
 // ===================================================================
 
 import { dashboardApi } from "../features/main/dashboardApiSlice";
@@ -62,6 +65,8 @@ const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
 
+    [blogApi.reducerPath]: blogApi.reducer,
+
     [wishlistApi.reducerPath]: wishlistApi.reducer,
 
     [dashboardApi.reducerPath]: dashboardApi.reducer,
@@ -81,7 +86,9 @@ const store = configureStore({
       .concat(orderApi.middleware)
       .concat(dashboardApi.middleware)
       .concat(customerApi.middleware)
-      .concat(wishlistApi.middleware);
+      .concat(wishlistApi.middleware)
+
+      .concat(blogApi.middleware);
   },
   devTools: true,
 });
