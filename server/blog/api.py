@@ -30,40 +30,108 @@ from api.models import (
 
 @api_view(['GET'])
 def getAllBlogs(request):
-    blogs = Blog.objects.order_by("-published").filter(status="published")
+    blogs = Blog.objects.order_by(
+        "-published"
+    ).filter(
+        status="published"
+    )
+    serialized_data = blogs.values(
+        "title",
+        "headline",
+        "slug",
+        "thumbnail",
+        "category",
+        "tags",
+        "published",
+    )
     
-  
-    return Response(BlogSerializer(blogs,context={"request":request}, many=True).data, status=status.HTTP_200_OK) 
+    return Response(serialized_data, status=status.HTTP_200_OK) 
 
 @api_view(['GET'])
 def searchAndFilterBlog(request):
     blogs = Blog.objects.order_by("-published").filter(status="published")
     if request.GET.get("search"):
         search =  request.GET.get("search")
-        print(search)
         blogs = blogs.order_by("-published").filter(
             Q(category__name__icontains= search) |
-            Q(title__icontains = search),
-            Q(headline__icontains = search),
+            Q(title__icontains = search) | 
+            Q(headline__icontains = search) |
             Q(body__icontains = search),
-            status="published"
         )
-        
-        
-    if request.GET.get("category") and request.GET.get("category") != "all":
+
+    if request.GET.get("category"):
         category =  request.GET.get("category")
-        blogs = blogs.order_by("-published").filter(category__title = category, status="published")
-    
-    if request.GET.get("date"):
-        dateFilter =  request.GET.get("date")
+        blogs = blogs.order_by("-published").filter(category__name = category.lower())
+
+    if request.GET.get("tag"):
+        tag =  request.GET.get("tag")
+        blogs = blogs.order_by("-published").filter(tags__name = tag.lower())
+
+    if request.GET.get("archive"):
+        dateFilter =  request.GET.get("archive")
         year, month, *_ = dateFilter.split("-")
         blogs = blogs.order_by("-published").filter(
             published__gt = datetime(int(year), int(month), 1, tzinfo=pytz.UTC), 
-            published__lte = datetime(int(year), int(month), 31, tzinfo=pytz.UTC), 
-            status="published")
-        print("int is working")
- 
-    return Response(BlogSerializer(blogs,context={"request":request}, many=True).data, status=status.HTTP_200_OK) 
+            published__lte = datetime(int(year), int(month), 31, tzinfo=pytz.UTC))
+    serialized_data = blogs.values(
+        "title",
+        "headline",
+        "slug",
+        "thumbnail",
+        "category",
+        "tags",
+        "published",
+    )
+    return Response(serialized_data, status=status.HTTP_200_OK) 
+
+@api_view(['GET'])
+def getBlogCollections(request):
+    recent_blogs = Blog.objects.order_by(
+        "-published"
+    ).filter(
+        status="published"
+    )[:5].values(
+        "title",
+        "headline",
+        "slug",
+        "thumbnail",
+        "category",
+        "tags",
+        "published",
+    )
+    last_blog = Blog.objects.order_by(
+        "-published"
+    ).filter(
+        status="published"
+    ).values(
+        "title",
+        "headline",
+        "slug",
+        "thumbnail",
+        "category",
+        "tags",
+        "published",
+    ).first()
+    pin_blogs = Blog.objects.order_by(
+        "-published"
+    ).filter(
+        status="published", 
+        pin_to_top=True
+    ).values(
+        "title",
+        "headline",
+        "slug",
+        "thumbnail",
+        "category",
+        "tags",
+        "published",
+    )
+    serialized_data = {
+        "pin_blogs":pin_blogs,
+        "last_blog":last_blog,
+        "recent_blogs":recent_blogs,
+    }
+    return Response(serialized_data, status=status.HTTP_200_OK) 
 
 @api_view(['GET'])
 def getRecentBlogs(request):
@@ -72,7 +140,16 @@ def getRecentBlogs(request):
         context={"request":request}, 
         many=True
     ).data
-    return Response(blogs, status=status.HTTP_200_OK)
+    serialized_data = blogs.values(
+        "title",
+        "headline",
+        "slug",
+        "thumbnail",
+        "category",
+        "tags",
+        "published",
+    )
+    return Response(serialized_data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def getLastBlogs(request):
@@ -80,7 +157,16 @@ def getLastBlogs(request):
         Blog.objects.order_by("-published").filter(status="published").first(),
         context={"request":request}
     ).data
-    return Response(blogs, status=status.HTTP_200_OK)
+    serialized_data = blogs.values(
+        "title",
+        "headline",
+        "slug",
+        "thumbnail",
+        "category",
+        "tags",
+        "published",
+    )
+    return Response(serialized_data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def getPinToTopBlogs(request):
@@ -89,7 +175,30 @@ def getPinToTopBlogs(request):
         context={"request":request}, 
         many=True
     ).data
-    return Response(blogs, status=status.HTTP_200_OK)
+    serialized_data = blogs.values(
+        "title",
+        "headline",
+        "slug",
+        "thumbnail",
+        "category",
+        "tags",
+        "published",
+    )
+    return Response(serialized_data, status=status.HTTP_200_OK)
+
+
+
+@api_view(['GET'])
+def getBlogFilter(request):
+    archives = Blog.objects.dates('published', 'month')
+    categories = CategorySerializer(Category.objects.filter(blog__status="published"), many=True).data
+    tags = TagSerializer(Tag.objects.filter(blog__status="published"), many=True).data
+    serialized_data = {
+        "archives":archives,
+        "categories":categories,
+        "tags":tags,
+    }
+    return Response(serialized_data, status=status.HTTP_200_OK) 
 
 @api_view(['GET'])
 def getArchives(request):
@@ -104,5 +213,5 @@ def getAllCategory(request):
 
 @api_view(['GET'])
 def getAllTags(request):
-    categories = TagSerializer(Tag.objects.filter(blog__status="published"), many=True).data
-    return Response(categories, status=status.HTTP_200_OK)
+    tags = TagSerializer(Tag.objects.filter(blog__status="published"), many=True).data
+    return Response(tags, status=status.HTTP_200_OK)

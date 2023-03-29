@@ -11,6 +11,8 @@ export const blogApi = authApi.injectEndpoints({
     "blogs-archives",
     "blogs-categories",
     "blogs-tags",
+    "blog-collections",
+    "blog-filter",
   ],
   endpoints: (builder) => ({
     addBlog: builder.mutation({
@@ -57,31 +59,41 @@ export const blogApi = authApi.injectEndpoints({
     }),
 
     searchAndFilterBlogs: builder.query({
-      query: ({ searchAndFilter }) => `search-and-filter/?${searchAndFilter}`,
+      query: ({ searchAndFilter }) =>
+        `blogs/search-and-filter/?${searchAndFilter}`,
       providesTags: ["blogs-by-searchAndFilter"],
     }),
+    getBlogCollections: builder.query({
+      query: () => `blogs/collections/`,
+      providesTags: ["blog-collections"],
+    }),
     getPinToTopBlogs: builder.query({
-      query: () => `pin-to-top/`,
+      query: () => `blogs/pin/`,
       providesTags: ["pin-to-top-blogs"],
     }),
     getLastBlogs: builder.query({
-      query: () => `last/`,
+      query: () => `blogs/last/`,
       providesTags: ["last-blogs"],
     }),
     getRecentBlogs: builder.query({
-      query: () => `recent/`,
+      query: () => `blogs/recent/`,
       providesTags: ["recent-blogs"],
     }),
+
+    getBlogFilter: builder.query({
+      query: () => `blogs/filter/`,
+      providesTags: ["blog-filter"],
+    }),
     getArchives: builder.query({
-      query: () => `archives/`,
+      query: () => `blogs/archives/`,
       providesTags: ["blogs-archives"],
     }),
     getAllCategory: builder.query({
-      query: () => `categories/`,
+      query: () => `blogs/categories/`,
       providesTags: ["blogs-categories"],
     }),
     getAllTags: builder.query({
-      query: () => `tags/`,
+      query: () => `blogs/tags/`,
       providesTags: ["blogs-tags"],
     }),
 
@@ -109,9 +121,11 @@ export const {
 
   useSearchAndFilterBlogsQuery,
   useGetPinToTopBlogsQuery,
+  useGetBlogCollectionsQuery,
   useGetLastBlogsQuery,
   useGetRecentBlogsQuery,
   useGetArchivesQuery,
+  useGetBlogFilterQuery,
   useGetAllCategoryQuery,
   useGetAllTagsQuery,
 

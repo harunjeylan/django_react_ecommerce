@@ -60,7 +60,7 @@ const Shopping = () => {
   const [variantsValue, setVariantValue] = useState([]);
 
   const {
-    data: searchAndFilterProducts=[],
+    data: searchAndFilterProducts = [],
     isFetching: isFetchingSearchAndFilterProducts,
   } = useSearchAndFilterProductsQuery({
     searchAndFilter,
@@ -169,7 +169,7 @@ const Shopping = () => {
           >
             Home
           </Button>
-          <Typography color="text.primary">Shoping</Typography>
+          <Typography color="text.primary">Shopping</Typography>
         </Breadcrumbs>
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
@@ -211,6 +211,7 @@ const Shopping = () => {
                 <Accordion
                   sx={{ backgroundColor: colors.primary[400] }}
                   className="w-full"
+                  defaultExpanded={isNoneMobile}
                 >
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -249,6 +250,7 @@ const Shopping = () => {
                 <Accordion
                   sx={{ backgroundColor: colors.primary[400] }}
                   className="w-full"
+                  defaultExpanded={isNoneMobile}
                 >
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -287,6 +289,7 @@ const Shopping = () => {
                 <Accordion
                   sx={{ backgroundColor: colors.primary[400] }}
                   className="w-full"
+                  defaultExpanded={isNoneMobile}
                 >
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -325,6 +328,7 @@ const Shopping = () => {
                 <Accordion
                   sx={{ backgroundColor: colors.primary[400] }}
                   className="w-full"
+                  defaultExpanded={isNoneMobile}
                 >
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -417,6 +421,7 @@ const Shopping = () => {
                 <Accordion
                   sx={{ backgroundColor: colors.primary[400] }}
                   className="w-full"
+                  defaultExpanded={isNoneMobile}
                 >
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -458,6 +463,7 @@ const Shopping = () => {
                 <Accordion
                   sx={{ backgroundColor: colors.primary[400] }}
                   className="w-full"
+                  defaultExpanded={isNoneMobile}
                 >
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -524,11 +530,12 @@ const Shopping = () => {
                     </FormLabel>
                     <Box className={`w-full flex flex-col`}>
                       {!isFetchingVariants &&
-                        variants.map((variantOprions) => (
+                        variants.map((variantOptions) => (
                           <Accordion
-                            key={variantOprions.id}
+                            key={variantOptions.id}
                             sx={{ backgroundColor: colors.primary[400] }}
                             className="w-full"
+                            defaultExpanded={isNoneMobile}
                           >
                             <AccordionSummary
                               expandIcon={<ExpandMoreIcon />}
@@ -541,16 +548,16 @@ const Shopping = () => {
                                 fontWeight="bold"
                                 className={`text-lg md:text-xl px-4 text-left`}
                               >
-                                {variantOprions.label}
+                                {variantOptions.label}
                               </Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                               <Box>
-                                {variantOprions.options.map((option) => (
+                                {variantOptions.options.map((option) => (
                                   <FormControlLabel
                                     key={option.id}
                                     value={option?.label}
-                                    name={variantOprions.label}
+                                    name={variantOptions.label}
                                     control={<Checkbox color="secondary" />}
                                     onClick={(e) =>
                                       handleCheckFilter(e, setVariantValue)
