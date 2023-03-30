@@ -7,6 +7,10 @@ urlpatterns = [
     path("", api.getAllBlogs, name="blogs"),
     path("search-and-filter/", api.searchAndFilterBlog , name="search_and_filter_blogs"),
 
+    path("<slug>", api.getBlogDetails, name="blog-details"),
+    path("<slug>/related/", api.getRelatedBlogs, name="blog-related"),
+
+
     path("collections/", api.getBlogCollections , name="collections"),
     path("pin/", api.getPinToTopBlogs , name="pin-to-top"),
     path("last/", api.getLastBlogs, name="last"),

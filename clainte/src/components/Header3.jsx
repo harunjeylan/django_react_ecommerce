@@ -2,7 +2,7 @@ import React from "react";
 import { Typography, Box, useTheme } from "@mui/material";
 import { tokens } from "../theme";
 
-const Header2 = ({ title, subtitle, bodyText }) => {
+const Header3 = ({ title, subtitle, bodyText }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -23,14 +23,8 @@ const Header2 = ({ title, subtitle, bodyText }) => {
       >
         {subtitle}
       </Typography>
-      <Typography
-        variant="subtitle1"
-        className={`text-lg md:text-xl w-full px-auto  my-auto max-w-lg`}
-      >
-        {bodyText}
-      </Typography>
     </Box>
   );
 };
 
-export default Header2;
+export default Header3;

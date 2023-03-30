@@ -4,17 +4,17 @@ import { Box } from "@mui/system";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../../../components/Header";
-import { useGetRelatedProductsQuery } from "../../../../../features/services/productApiSlice";
+import { useGetRelatedBlogsQuery } from "../../../../../features/services/blogApiSlice";
 import { tokens } from "../../../../../theme";
-import ProductCarouse from "../../../components/ProductCarouse";
+import BlogCarouse from "../../../components/BlogCarouse";
 
-const RelatedProducts = ({ productId }) => {
+const RelatedBlogs = ({ blogSlug }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
-  const { data: relatedProducts = [], isFetching: isFetchingRelatedProducts } =
-    useGetRelatedProductsQuery({ productId });
-  return relatedProducts.length ? (
+  const { data: relatedBlogs = [], isFetching: isFetchingRelatedBlogs } =
+    useGetRelatedBlogsQuery({ blogSlug });
+  return relatedBlogs.length ? (
     <Box className="md:container px-2 md:mx-auto md:px-auto">
       <Box className="flex justify-between items-center">
         <Header
@@ -34,12 +34,10 @@ const RelatedProducts = ({ productId }) => {
         </Button>
       </Box>
       <Box className="">
-        {!isFetchingRelatedProducts && (
-          <ProductCarouse products={relatedProducts} />
-        )}
+        {!isFetchingRelatedBlogs && <BlogCarouse blogs={relatedBlogs} />}
       </Box>
     </Box>
   ) : undefined;
 };
 
-export default RelatedProducts;
+export default RelatedBlogs;

@@ -41,7 +41,7 @@ const NavBar = () => {
             <Link to="/shopping">Shop</Link>
           </Box>
           <Box className={`my-2 cursor-pointer hover:text-green-400`}>
-            <Link to="/blog">Blog</Link>
+            <Link to="/blogs">Blog</Link>
           </Box>
           <Box className={`my-2 cursor-pointer hover:text-green-400`}>
             <Link to="/about">About Us</Link>

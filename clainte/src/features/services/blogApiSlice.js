@@ -30,7 +30,11 @@ export const blogApi = authApi.injectEndpoints({
       providesTags: ["blogs-data"],
     }),
     getBlogDetails: builder.query({
-      query: ({ blogId }) => `blogs/${blogId}/`,
+      query: ({ blogSlug }) => `blogs/${blogSlug}`,
+      providesTags: ["blogs-details"],
+    }),
+    getRelatedBlogs: builder.query({
+      query: ({ blogSlug }) => `blogs/${blogSlug}/related/`,
       providesTags: ["blogs-details"],
     }),
     uploadImage: builder.mutation({
@@ -42,8 +46,8 @@ export const blogApi = authApi.injectEndpoints({
       }),
     }),
     addBlogReview: builder.mutation({
-      query: ({ post, blogId }) => ({
-        url: `blogs/${blogId}/review/add/`,
+      query: ({ post, blogSlug }) => ({
+        url: `blogs/${blogSlug}/review/add/`,
         method: "POST",
         body: post,
         invalidatesTags: ["blogs", "blogs-details"],
@@ -137,4 +141,5 @@ export const {
   useGetRatingsQuery,
   useGetBlogDetailsQuery,
   useGetBlogForAdminQuery,
+  useGetRelatedBlogsQuery,
 } = blogApi;
