@@ -28,6 +28,8 @@ import {
   useSearchAndFilterBlogsQuery,
 } from "../../../../features/services/blogApiSlice.js";
 import { SERVER_HOST } from "../../../../features/auth/authApi.js";
+import BlogCard from "../../components/BlogCard.jsx";
+import LargeBlogCard from "../../components/LargeBlogCard";
 const Blog = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -120,121 +122,48 @@ const Blog = () => {
         className={`md:container px-2 md:mx-auto md:px-auto flex flex-col-reverse md:flex-row gap-4`}
       >
         <Box className="w-full md:w-3/4 rounded-md px-2">
-          {!isFetchingCollection && (
-            <Card
-              sx={{
-                backgroundColor: colors.primary[400],
-              }}
-              className="shadow md:col-span-2 flex flex-col md:flex-row items-center hover:drop-shadow-md"
-            >
-              {collection.last_blog.thumbnail && (
-                <CardMedia
-                  sx={{ height: 360, width: "100%" }}
-                  title={"the-first-blog" + collection.last_blog.thumbnail}
-                  image={
-                    SERVER_HOST + "media/" + collection.last_blog.thumbnail
-                  }
-                />
-              )}
-
-              <CardContent>
-                <Link to={`blog/the-first-blog`}>
-                  <Typography
-                    variant="h1"
-                    color={colors.grey[100]}
-                    fontWeight="bold"
-                    className={`text-2xl md:text-3xl p-4 text-left hover:text-green-400`}
-                  >
-                    {collection.last_blog.title}
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    {collection.last_blog.headline}
-                  </Typography>
-                </Link>
-              </CardContent>
-            </Card>
-          )}
+          {!isFetchingBlogs && blogs.length ? (
+            <LargeBlogCard blog={blogs[0]} />
+          ) : undefined}
           {!isFetchingBlogs ? (
-            <Box className="w-full flex flex-col md:flex-row my-8 gap-8">
-              <Box className="w-full flex flex-col gap-8">
-                {blogs.map(
-                  (blog, index) =>
-                    index % 2 === 0 && (
-                      <Card
-                        key={blog.slug}
-                        sx={{
-                          backgroundColor: colors.primary[400],
-                        }}
-                        className="shadow hover:drop-shadow-md"
-                      >
-                        {blog.thumbnail && (
-                          <CardMedia
-                            sx={{ height: 300, width: "100%" }}
-                            title={"the-first-blog" + blog.thumbnail}
-                            image={SERVER_HOST + "media/" + blog.thumbnail}
-                          />
-                        )}
-
-                        <CardContent>
-                          <Link to={`blog/the-first-blog`}>
-                            <Typography
-                              variant="h1"
-                              color={colors.grey[100]}
-                              fontWeight="bold"
-                              className={`text-xl md:text-2xl py-4 text-left hover:text-green-400`}
-                            >
-                              {blog.title}
-                            </Typography>
-                            <Typography variant="subtitle1">
-                              {blog.headline}
-                            </Typography>
-                          </Link>
-                        </CardContent>
-                      </Card>
-                    )
-                )}
+            blogs.length ? (
+              <Box className="w-full flex flex-col md:flex-row my-8 gap-8">
+                <Box className="w-full flex flex-col gap-8">
+                  {blogs.map(
+                    (blog, index) =>
+                      index % 2 === 0 &&
+                      index !== 0 && (
+                        <BlogCard key={`${blog.slug}-${index}`} blog={blog} />
+                      )
+                  )}
+                </Box>
+                <Box className="w-full flex flex-col gap-8">
+                  {blogs.map(
+                    (blog, index) =>
+                      index % 2 === 1 &&
+                      index !== 0 && (
+                        <BlogCard
+                          blog={blog}
+                          key={`${blog?.title}-${blog?.slug}`}
+                        />
+                      )
+                  )}
+                </Box>
               </Box>
-              <Box className="w-full flex flex-col gap-8">
-                {blogs.map(
-                  (blog, index) =>
-                    index % 2 === 1 && (
-                      <Card
-                        key={blog.slug}
-                        sx={{
-                          backgroundColor: colors.primary[400],
-                        }}
-                        className="shadow hover:drop-shadow-md"
-                      >
-                        {blog.thumbnail && (
-                          <CardMedia
-                            sx={{ height: 300, width: "100%" }}
-                            title={"the-first-blog" + blog.thumbnail}
-                            image={SERVER_HOST + "media/" + blog.thumbnail}
-                          />
-                        )}
-
-                        <CardContent>
-                          <Link to={`blog/the-first-blog`}>
-                            <Typography
-                              variant="h1"
-                              color={colors.grey[100]}
-                              fontWeight="bold"
-                              className={`text-xl md:text-2xl py-4 text-left hover:text-green-400`}
-                            >
-                              {blog.title}
-                            </Typography>
-                            <Typography variant="subtitle1">
-                              {blog.headline}
-                            </Typography>
-                          </Link>
-                        </CardContent>
-                      </Card>
-                    )
-                )}
+            ) : (
+              <Box className="w-full flex mt-[20%] justify-center h-full min-h-40">
+                <Typography
+                  variant="h4"
+                  color={colors.grey[100]}
+                  fontWeight="bold"
+                  className={`text-lg md:text-xl px-4 text-left`}
+                >
+                  No Blog Found
+                </Typography>
               </Box>
-            </Box>
+            )
           ) : (
-            <Box className="w-full flex items-center justify-center h-full min-h-40">
+            <Box className="w-full flex mt-[20%] justify-center h-full min-h-40">
               <CircularProgress color="secondary" />
             </Box>
           )}
@@ -269,6 +198,43 @@ const Blog = () => {
                 fontWeight="bold"
                 className={`text-lg md:text-xl px-4 text-left`}
               >
+                Pin
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <List className={`flex flex-col gap-2`}>
+                {!isFetchingCollection &&
+                  collection?.pin_blogs.map((blog) => (
+                    <Link key={`blogs-${blog.slug}`} to={`/blogs/${blog.slug}`}>
+                      <Typography
+                        variant="p"
+                        fontWeight="bold"
+                        className={`hover:text-green-400 flex justify-between items-center`}
+                      >
+                        {blog.title}
+                        <ArrowRightAltIcon fontSize="large" />
+                      </Typography>
+                    </Link>
+                  ))}
+              </List>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion
+            sx={{ backgroundColor: colors.primary[400] }}
+            className="w-full"
+            defaultExpanded={isNoneMobile}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography
+                variant="h4"
+                color={colors.grey[100]}
+                fontWeight="bold"
+                className={`text-lg md:text-xl px-4 text-left`}
+              >
                 Recent Posts
               </Typography>
             </AccordionSummary>
@@ -276,7 +242,7 @@ const Blog = () => {
               <List className={`flex flex-col gap-2`}>
                 {!isFetchingCollection &&
                   collection?.recent_blogs.map((blog) => (
-                    <Link key={`blogs-${blog.slug}`} to={`blogs/${blog.slug}`}>
+                    <Link key={`blogs-${blog.slug}`} to={`/blogs/${blog.slug}`}>
                       <Typography
                         variant="p"
                         fontWeight="bold"

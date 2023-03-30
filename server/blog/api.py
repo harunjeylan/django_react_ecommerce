@@ -21,7 +21,7 @@ import pytz
 # import itertools
 
 from blog.models import Blog
-from blog.serializer import BlogSerializer
+from blog.serializer import BlogSerializer,BlogListSerializer
 from api.serializer import CategorySerializer,TagSerializer
 from api.models import (
     Category,
@@ -35,15 +35,11 @@ def getAllBlogs(request):
     ).filter(
         status="published"
     )
-    serialized_data = blogs.values(
-        "title",
-        "headline",
-        "slug",
-        "thumbnail",
-        "category",
-        "tags",
-        "published",
-    )
+    serialized_data = BlogListSerializer(
+        blogs,
+        context={"request":request}, 
+        many = True
+    ).data
     
     return Response(serialized_data, status=status.HTTP_200_OK) 
 
@@ -73,120 +69,95 @@ def searchAndFilterBlog(request):
         blogs = blogs.order_by("-published").filter(
             published__gt = datetime(int(year), int(month), 1, tzinfo=pytz.UTC), 
             published__lte = datetime(int(year), int(month), 31, tzinfo=pytz.UTC))
-    serialized_data = blogs.values(
-        "title",
-        "headline",
-        "slug",
-        "thumbnail",
-        "category",
-        "tags",
-        "published",
-    )
+        
+    serialized_data = BlogListSerializer(
+        blogs,
+        context={"request":request}, 
+        many = True
+    ).data
+
     return Response(serialized_data, status=status.HTTP_200_OK) 
 
 @api_view(['GET'])
 def getBlogCollections(request):
-    recent_blogs = Blog.objects.order_by(
+    recent_blogs = BlogListSerializer(
+        Blog.objects.order_by(
         "-published"
     ).filter(
         status="published"
-    )[:5].values(
-        "title",
-        "headline",
-        "slug",
-        "thumbnail",
-        "category",
-        "tags",
-        "published",
-    )
-    last_blog = Blog.objects.order_by(
+    )[:5],
+        context={"request":request}, 
+        many = True
+    ).data
+    
+    pin_blogs = BlogListSerializer(
+        Blog.objects.order_by(
         "-published"
-    ).filter(
-        status="published"
-    ).values(
-        "title",
-        "headline",
-        "slug",
-        "thumbnail",
-        "category",
-        "tags",
-        "published",
-    ).first()
-    pin_blogs = Blog.objects.order_by(
-        "-published"
-    ).filter(
-        status="published", 
-        pin_to_top=True
-    ).values(
-        "title",
-        "headline",
-        "slug",
-        "thumbnail",
-        "category",
-        "tags",
-        "published",
-    )
+        ).filter(
+            status="published", 
+            pin_to_top=True
+        ),
+        context={"request":request}, 
+        many = True
+    ).data
+
     serialized_data = {
         "pin_blogs":pin_blogs,
-        "last_blog":last_blog,
         "recent_blogs":recent_blogs,
     }
     return Response(serialized_data, status=status.HTTP_200_OK) 
 
 @api_view(['GET'])
 def getRecentBlogs(request):
-    blogs = BlogSerializer(
-        Blog.objects.order_by("-published").filter(status="published")[:5],
+    blogs =Blog.objects.order_by("-published").filter(status="published")[:5]
+    serialized_data = BlogListSerializer(
+       blogs,
         context={"request":request}, 
-        many=True
+        many = True
     ).data
-    serialized_data = blogs.values(
-        "title",
-        "headline",
-        "slug",
-        "thumbnail",
-        "category",
-        "tags",
-        "published",
-    )
     return Response(serialized_data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def getLastBlogs(request):
-    blogs = BlogSerializer(
-        Blog.objects.order_by("-published").filter(status="published").first(),
-        context={"request":request}
+    blogs = Blog.objects.order_by("-published").filter(status="published").first()
+    serialized_data = BlogListSerializer(
+       blogs,
+        context={"request":request}, 
+        many = True
     ).data
-    serialized_data = blogs.values(
-        "title",
-        "headline",
-        "slug",
-        "thumbnail",
-        "category",
-        "tags",
-        "published",
-    )
     return Response(serialized_data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def getPinToTopBlogs(request):
-    blogs = BlogSerializer(
-        Blog.objects.order_by("-published").filter(status="published", pin_to_top=True),
+    blogs = Blog.objects.order_by("-published").filter(status="published", pin_to_top=True)
+    serialized_data = BlogListSerializer(
+       blogs,
         context={"request":request}, 
-        many=True
+        many = True
     ).data
-    serialized_data = blogs.values(
-        "title",
-        "headline",
-        "slug",
-        "thumbnail",
-        "category",
-        "tags",
-        "published",
-    )
     return Response(serialized_data, status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+def getBlogDetails(request, slug):
+    blog = BlogSerializer(
+        Blog.objects.get(status="published", slug=slug),
+        context={"request":request}, 
+    ).data
+    return Response(blog, status=status.HTTP_200_OK)
 
+
+@api_view(['GET'])
+def getRelatedBlogs(request, slug):
+    blog = Blog.objects.get(status="published", slug=slug)
+    serialized_data = BlogSerializer(
+        Blog.objects.order_by("-published").filter(
+            status="published",
+            category__name__icontains= blog.category
+        ).exclude(id=blog.id),
+        context={"request":request},
+        many=True
+    ).data
+    return Response(serialized_data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def getBlogFilter(request):

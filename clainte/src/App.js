@@ -20,6 +20,7 @@ import { refreshAccessToken } from "./features/auth/authApi";
 
 import store from "./app/store";
 import dayjs from "dayjs";
+import BlogDetails from "./site/customers/pages/blog/details";
 
 // import CustomerLayout from "./site/customers/layout";
 // import Home from "./site/customers/pages/home";
@@ -116,9 +117,10 @@ const About = React.lazy(() => import("./site/customers/pages/about"));
 const CustomerFAQ = React.lazy(() => import("./site/customers/pages/faq"));
 
 const AddEditBlog = React.lazy(() => import("./site/admin/pages/blog/addEdit"));
-const AdminBlogDetails = React.lazy(() => import("./site/admin/pages/blog/details"));
+const AdminBlogDetails = React.lazy(() =>
+  import("./site/admin/pages/blog/details")
+);
 const AdminListBlog = React.lazy(() => import("./site/admin/pages/blog/list"));
-
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -189,40 +191,41 @@ function App() {
                   </AdminLayout>
                 }
               />
-              
             </Route>
-            <Route
-              path="blog"
-              element={
-                <AdminLayout>
-                  <AdminListBlog />
-                </AdminLayout>
-              }
-            />
-            <Route
-              path="blog/:blogId"
-              element={
-                <AdminLayout>
-                  <AdminBlogDetails />
-                </AdminLayout>
-              }
-            />
-            <Route
-              path="blog/new"
-              element={
-                <AdminLayout>
-                  <AddEditBlog isEditing={false} />
-                </AdminLayout>
-              }
-            />
-            <Route
-              path="blog/:blogId/edit"
-              element={
-                <AdminLayout>
-                  <AddEditBlog isEditing={true} />
-                </AdminLayout>
-              }
-            />
+            <Route path="blogs">
+              <Route
+                index
+                element={
+                  <AdminLayout>
+                    <AdminListBlog />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path=":blogId"
+                element={
+                  <AdminLayout>
+                    <AdminBlogDetails />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path="new"
+                element={
+                  <AdminLayout>
+                    <AddEditBlog isEditing={false} />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path=":blogId/edit"
+                element={
+                  <AdminLayout>
+                    <AddEditBlog isEditing={true} />
+                  </AdminLayout>
+                }
+              />
+            </Route>
             <Route path="data">
               <Route
                 path="contacts"
@@ -348,14 +351,24 @@ function App() {
                 </CustomerLayout>
               }
             />
-            <Route
-              path="blog"
-              element={
-                <CustomerLayout>
-                  <Blog />
-                </CustomerLayout>
-              }
-            />
+            <Route path="blogs">
+              <Route
+                index
+                element={
+                  <CustomerLayout>
+                    <Blog />
+                  </CustomerLayout>
+                }
+              />
+              <Route
+                path=":blogSlug"
+                element={
+                  <CustomerLayout>
+                    <BlogDetails />
+                  </CustomerLayout>
+                }
+              />
+            </Route>
             <Route
               path="contact"
               element={

@@ -62,11 +62,11 @@ class Blog(models.Model):
         
     #----------------------------------------------------------------------------------
 
-    def natural_key(self):
-        return {
-            "author":self.author.get_full_name(),
-            "title":self.title,
-        }
+    # def natural_key(self):
+    #     return {
+    #         "author":self.author.get_full_name(),
+    #         "title":self.title,
+    #     }
 
     def __str__(self):
         return f"{self.title}"
