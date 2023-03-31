@@ -17,7 +17,6 @@ import {
   Divider,
   List,
   TextField,
-  ButtonGroup,
 } from "@mui/material";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -47,7 +46,6 @@ const Shopping = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
-  const searchRef = useRef();
   const [price, setPrice] = useState([0, 100]);
 
   const [searchAndFilter, setSearchAndFilter] = useState("");
