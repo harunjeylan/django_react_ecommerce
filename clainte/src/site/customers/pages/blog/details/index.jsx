@@ -12,7 +12,7 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useGetBlogDetailsQuery,
-  useAddBlogReviewMutation,
+  useAddBlogCommentMutation,
 } from "../../../../../features/services/blogApiSlice";
 import { tokens } from "../../../../../theme";
 import Header2 from "../../../../../components/Header2";
@@ -28,9 +28,9 @@ const BlogDetails = () => {
   const { data: blog, isFetching: isFetchingBlog } = useGetBlogDetailsQuery({
     blogSlug,
   });
-  const [addBlogReview] = useAddBlogReviewMutation();
+  const [addBlogComment] = useAddBlogCommentMutation();
   const handleCommentFormSubmit = (values, { resetForm }) => {
-    addBlogReview({ post: values, blogSlug }).then(() => resetForm());
+    addBlogComment({ post: values, blogSlug }).then(() => resetForm());
   };
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
@@ -83,8 +83,8 @@ const BlogDetails = () => {
       {!isFetchingBlog && (
         <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
           <Box className={`flex flex-col gap-4 w-full`}>
-            {blog?.comment?.map((review, index) => (
-              <Comments key={`comment-${index}`} review={review} />
+            {blog?.comments?.map((comment, index) => (
+              <Comments key={`comment-${index}`} comment={comment} />
             ))}
             <CommentForm handleCommentFormSubmit={handleCommentFormSubmit} />
           </Box>

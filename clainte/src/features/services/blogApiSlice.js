@@ -13,6 +13,7 @@ export const blogApi = authApi.injectEndpoints({
     "blogs-tags",
     "blog-collections",
     "blog-filter",
+    "related-blogs",
   ],
   endpoints: (builder) => ({
     addBlog: builder.mutation({
@@ -35,9 +36,9 @@ export const blogApi = authApi.injectEndpoints({
     }),
     getRelatedBlogs: builder.query({
       query: ({ blogSlug }) => `blogs/${blogSlug}/related/`,
-      providesTags: ["blogs-details"],
+      providesTags: ["related-blogs"],
     }),
-    uploadImage: builder.mutation({
+    uploadBlogImage: builder.mutation({
       query: ({ post }) => ({
         url: `blogs/images/upload/`,
         method: "POST",
@@ -45,12 +46,12 @@ export const blogApi = authApi.injectEndpoints({
         invalidatesTags: ["blogs"],
       }),
     }),
-    addBlogReview: builder.mutation({
+    addBlogComment: builder.mutation({
       query: ({ post, blogSlug }) => ({
-        url: `blogs/${blogSlug}/review/add/`,
+        url: `blogs/${blogSlug}/comment/add/`,
         method: "POST",
         body: post,
-        invalidatesTags: ["blogs", "blogs-details"],
+        invalidatesTags: ["blogs-details"],
       }),
     }),
     getRatings: builder.query({
@@ -136,8 +137,8 @@ export const {
   useAddBlogMutation,
   useUpdateBlogMutation,
   useDeleteBlogMutation,
-  useUploadImageMutation,
-  useAddBlogReviewMutation,
+  useUploadBlogImageMutation,
+  useAddBlogCommentMutation,
   useGetRatingsQuery,
   useGetBlogDetailsQuery,
   useGetBlogForAdminQuery,

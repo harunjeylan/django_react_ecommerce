@@ -13,7 +13,6 @@ from api.models import (
 )
 
 class Blog(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
     
     title = models.CharField(max_length=255)
     headline = models.CharField(max_length=255)
@@ -78,7 +77,7 @@ class Comment(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100)
-    body = models.TextField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
   
     class Meta:
@@ -92,3 +91,4 @@ class BlogSubscriber(models.Model):
     email = models.EmailField(unique=True)
     def __str__(self):
         return f'{self.email}'
+    

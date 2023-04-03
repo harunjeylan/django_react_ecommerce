@@ -10,11 +10,11 @@ const Reviews = ({ review }) => {
     <>
       <Box className="flex gap-8 mb-4 w-full">
         <Box className={`w-[160px]`}>
-          <img
+          {/* <img
             alt={review?.first_name}
             src={review?.first_name}
             className={`h-[100px] w-[100px] rounded-[50%]`}
-          />
+          /> */}
           <Typography
             variant="h4"
             color={colors.greenAccent[500]}

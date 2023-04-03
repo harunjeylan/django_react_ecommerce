@@ -20,13 +20,101 @@ import pytz
 # from api.utils import getAverage
 # import itertools
 
-from blog.models import Blog
-from blog.serializer import BlogSerializer,BlogListSerializer
+from blog.models import Blog,Comment
+from blog.serializer import BlogSerializer,BlogListSerializer,BlogCommentSerializer
 from api.serializer import CategorySerializer,TagSerializer
-from api.models import (
-    Category,
-    Tag,
-    )
+from api.models import  Category,Organize, Tag
+    
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def newBlog(request):
+    
+    category, created_category = Category.objects.get_or_create(name=request.data.get("category"))
+    blog_felids = {
+        "title":request.data.get("title"),
+        "headline":request.data.get("headline"),
+        "slug":request.data.get("slug"),
+        "body":request.data.get("body"),
+        "status":request.data.get("status"),
+        "category":category.id,
+    }
+    blog_serializer_form = BlogSerializer(data=blog_felids)
+    if blog_serializer_form.is_valid():
+        blog = blog_serializer_form.save()
+        # tags = []
+        # for tag_name in request.data.get("tags"):
+        #     tag, created_tag = Tag.objects.get_or_create(name=tag_name)
+        #     blog.tags.add(tag)
+        #     tags.append(TagSerializer(tag).data)
+        serialized_data = BlogSerializer(blog).data
+        return Response(serialized_data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(blog_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
+     
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateBlog(request, pk):
+    blog = Blog.objects.get(pk=pk)
+    category, created_category = Category.objects.get_or_create(name=request.data.get("category"))
+    blog_felids = {
+        "title":request.data.get("title"),
+        "headline":request.data.get("headline"),
+        "slug":request.data.get("slug"),
+        "body":request.data.get("body"),
+        "status":request.data.get("status"),
+        "category":category.id,
+        "tags":tags
+    }
+    blog_serializer_form = BlogSerializer(data=blog_felids, instance=blog)
+    if blog_serializer_form.is_valid():
+        blog = blog_serializer_form.save()
+        tags = []
+        blog.tags.clear()
+        for tag_name in request.data.get("tags"):
+            tag, created_tag = Tag.objects.get_or_create(name=tag_name)
+            blog.tags.add(tag)
+            tags.append(TagSerializer(tag).data)
+        serialized_data = {
+            **blog,
+            "tags":tags
+        }
+        return Response(serialized_data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(blog_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def deleteBlog(request):
+    blog = Blog.objects.get(id=request.data.get("id"))
+    blog.delete()
+    return Response({"success":"blog is deleted"}, status=status.HTTP_202_ACCEPTED)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def uploadImage(request):
+    print(">>>>>>>>>>>>>>")
+    blog = Blog.objects.get(id=request.data.get("blogId"))
+    thumbnail = request.FILES.get("thumbnail")
+    if  thumbnail:
+        blog.thumbnail = thumbnail
+        blog.save()
+    return Response({"success":"image is uploaded"}, status=status.HTTP_201_CREATED)
+
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def removeThumbnail(request):
+    blog = Blog.objects.get(id=request.data.get("id"))
+    blog.thumbnail = None
+    blog.save()
+    return Response({"success":"thumbnail is deleted"}, status=status.HTTP_202_ACCEPTED)
+
+
 
 @api_view(['GET'])
 def getAllBlogs(request):
@@ -139,11 +227,17 @@ def getPinToTopBlogs(request):
 
 @api_view(['GET'])
 def getBlogDetails(request, slug):
-    blog = BlogSerializer(
-        Blog.objects.get(status="published", slug=slug),
+    blog = Blog.objects.get(status="published", slug=slug)
+    comments = BlogCommentSerializer(Comment.objects.filter(blog=blog), many=True).data
+    blog_data = BlogSerializer(
+        blog,
         context={"request":request}, 
     ).data
-    return Response(blog, status=status.HTTP_200_OK)
+    serialized_data = {
+        **blog_data, 
+        "comments":comments
+    }
+    return Response(serialized_data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -186,3 +280,12 @@ def getAllCategory(request):
 def getAllTags(request):
     tags = TagSerializer(Tag.objects.filter(blog__status="published"), many=True).data
     return Response(tags, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def addBlogComment(request, slug):
+    blog = Blog.objects.get(slug=slug)
+    comment_serializer_form = BlogCommentSerializer(data={**request.data,"blog":blog.id})
+    if comment_serializer_form.is_valid():
+        comment = comment_serializer_form.save()
+        return Response(BlogCommentSerializer(comment).data, status=status.HTTP_201_CREATED)
+    return Response(comment_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)

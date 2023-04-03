@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Box,
   Divider,
@@ -12,7 +12,11 @@ import {
   Chip,
   Avatar,
   IconButton,
+  Collapse,
+  useMediaQuery,
 } from "@mui/material";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import { Breadcrumbs, Button } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { useNavigate, useParams } from "react-router-dom";
@@ -28,25 +32,87 @@ import {
   blogApi,
   useAddBlogMutation,
   useUpdateBlogMutation,
-  useUploadImageMutation,
+  useUploadBlogImageMutation,
 } from "../../../../../features/services/blogApiSlice";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UnpublishedIcon from "@mui/icons-material/Unpublished";
+import Model from "../../../../../components/ui/Model";
+import {
+  useAddOrganizeMutation,
+  useDeleteOrganizeMutation,
+  useGetAllOrganizeQuery,
+  useUpdateOrganizeMutation,
+} from "../../../../../features/services/organizeApiSlice";
+import CloseIcon from "@mui/icons-material/Close";
+import SaveAsIcon from "@mui/icons-material/SaveAs";
+const Item = ({ item, itemName, handleUpdate, handleDelete }) => {
+  const InputRef = useRef();
+
+  useEffect(() => {
+    InputRef.current.value = item.name;
+  }, [item.name]);
+
+  return (
+    <Box className="flex justify-between items-center gap-2">
+      <TextField
+        size="small"
+        color="secondary"
+        fullWidth
+        type="text"
+        // value={item.value}
+        defaultValue={item.name}
+        label={itemName}
+        inputRef={InputRef}
+      />
+      <IconButton
+        onClick={() =>
+          handleUpdate({
+            name: itemName,
+            id: item.id,
+            value: InputRef.current.value,
+          })
+        }
+      >
+        <SaveAsIcon />
+      </IconButton>
+      <IconButton onClick={() => handleDelete({ name: itemName, id: item.id })}>
+        <CloseIcon />
+      </IconButton>
+    </Box>
+  );
+};
+
 const AddEditBlog = ({ isEditing }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // const [openModel, setOpenModel] = useState(false);
+  const isNoneMobile = useMediaQuery("(min-width:1024px)");
+  const [openInfo, setOpenInfo] = useState(false);
+  const [openAction, setOpenAction] = useState(false);
+  const [openRevision, setOpenRevision] = useState(false);
+
+  const [openModel, setOpenModel] = useState(false);
+  const [modelTitle, setModelTitle] = useState("");
+  const [modelInputLabel, setModelInputLabel] = useState("");
+  const [addOrganize] = useAddOrganizeMutation();
+  const [updateOrganize] = useUpdateOrganizeMutation();
+  const [deleteOrganize] = useDeleteOrganizeMutation();
+
   const [imageSrc, setImageSrc] = useState(undefined);
+
   const [blogThumbnail, setBlogThumbnail] = useState([]);
   const [initialValues, setInitialValues] = useState({});
   const { blogId } = useParams();
 
   const [addBlog] = useAddBlogMutation();
   const [updateBlog] = useUpdateBlogMutation();
-  const [uploadImage] = useUploadImageMutation();
-  // const [blogValue, setBlogValue] = useState("");
+  const [uploadImage] = useUploadBlogImageMutation();
+
+  const modelInputRef = useRef();
+  const { data: organize, isFetching: organizeIsFetching } =
+    useGetAllOrganizeQuery();
+
   useEffect(() => {
     if (blogId && isEditing) {
       dispatch(
@@ -61,6 +127,38 @@ const AddEditBlog = ({ isEditing }) => {
       });
     }
   }, [blogId, isEditing, dispatch]);
+  const handleOpenModel = ({ inputLabel, modelTitle }) => {
+    setModelInputLabel(inputLabel);
+    setModelTitle(modelTitle);
+    setOpenModel(true);
+  };
+  const handleAdd = () => {
+    const data = {
+      name: modelInputLabel,
+      label: modelInputRef.current.value,
+    };
+    addOrganize({ post: data });
+    console.log(data);
+    modelInputRef.current.value = "";
+    // setOpenModel(false);
+  };
+  const handleUpdate = ({ id, name, value }) => {
+    const data = {
+      id,
+      name,
+      label: value,
+    };
+    updateOrganize({ post: data });
+    console.log(data);
+  };
+  const handleDelete = ({ id, name }) => {
+    const data = {
+      id,
+      name,
+    };
+    console.log(data);
+    deleteOrganize({ post: data }).then((res) => console.log(res));
+  };
   const handleClean = (image) => {
     console.log("list cleaned", image);
   };
@@ -92,8 +190,46 @@ const AddEditBlog = ({ isEditing }) => {
       });
     }
   };
+
   return (
     <>
+      <Model
+        openModel={openModel}
+        setOpenModel={setOpenModel}
+        modelTitle={modelTitle}
+      >
+        <Box className="w-full">
+          <Box className="flex justify-between items-center gap-2 mb-2">
+            <TextField
+              size="small"
+              color="secondary"
+              fullWidth
+              variant="filled"
+              type="text"
+              name={modelInputLabel}
+              label={modelInputLabel}
+              inputRef={modelInputRef}
+            />
+            <IconButton onClick={handleAdd}>
+              <SaveAsIcon />
+            </IconButton>
+          </Box>
+          <Divider />
+          <Box className="flex flex-col gap-4 mt-4">
+            {!organizeIsFetching &&
+              organize &&
+              organize[modelInputLabel]?.map((item) => (
+                <Item
+                  key={item.id}
+                  item={item}
+                  itemName={modelInputLabel}
+                  handleUpdate={handleUpdate}
+                  handleDelete={handleDelete}
+                />
+              ))}
+          </Box>
+        </Box>
+      </Model>
       <FullScreenPreview
         imgSource={imageSrc}
         openImage={imageSrc}
@@ -118,7 +254,9 @@ const AddEditBlog = ({ isEditing }) => {
             subtitle="Frequently Asked Questions Page"
           />
         </Box>
-        <Box className={`md:container px-2 md:mx-auto md:px-auto flex gap-4`}>
+        <Box
+          className={`md:container px-2 md:mx-auto md:px-auto flex flex-col-reverse md:flex-row gap-4`}
+        >
           <Box
             backgroundColor={colors.primary[400]}
             className="w-full md:w-3/4 rounded-md py-4"
@@ -250,9 +388,29 @@ const AddEditBlog = ({ isEditing }) => {
                     />
                   </Box>
                   <Box className="w-full">
-                    <Typography variant="h6" fontWeight="bold" className="my-2">
-                      Category
-                    </Typography>
+                    <Box className="w-full flex justify-between px-1 gap-2">
+                      <Typography
+                        variant="h6"
+                        fontWeight="bold"
+                        className="my-2"
+                      >
+                        Category
+                      </Typography>
+                      <Typography
+                        onClick={() =>
+                          handleOpenModel({
+                            inputLabel: "categories",
+                            modelTitle: "Add Category",
+                          })
+                        }
+                        variant="h6"
+                        fontWeight="bold"
+                        className={`my-2 cursor-pointer hover:text-green-400`}
+                        color={colors.blueAccent[400]}
+                      >
+                        More
+                      </Typography>
+                    </Box>
                     <FormControl variant="filled" className="w-full">
                       <InputLabel id="category-select-label">
                         Category
@@ -261,41 +419,58 @@ const AddEditBlog = ({ isEditing }) => {
                         fullWidth
                         color="secondary"
                         labelId="category-select-label"
-                        id="category-select"
+                        id="categories-select"
                         variant="filled"
                         name="category"
-                        defaultValue=""
-                        onChange={handleChange}
-                        value={values.category}
+                        value={values?.category}
                         onBlur={handleBlur}
-                        error={!!touched.category && !!errors.category}
+                        onChange={handleChange}
+                        error={!!touched?.category && !!errors?.category}
                       >
-                        <MenuItem value={"category 1"}>{"category 1"}</MenuItem>
-                        <MenuItem value={"category 2"}>{"category 2"}</MenuItem>
-                        <MenuItem value={"category 3"}>{"category 3"}</MenuItem>
-                        <MenuItem value={"category 4"}>{"category 4"}</MenuItem>
+                        {!organizeIsFetching &&
+                          organize.categories?.map((category) => (
+                            <MenuItem key={category.id} value={category.name}>
+                              {category.name}
+                            </MenuItem>
+                          ))}
                       </Select>
                     </FormControl>
                   </Box>
                   <Box className="w-full">
-                    <Typography variant="h6" fontWeight="bold" className="my-2">
-                      Tags
-                    </Typography>
+                    <Box className="w-full flex justify-between px-1 gap-2 items-center">
+                      <Typography
+                        variant="h6"
+                        fontWeight="bold"
+                        className="my-2"
+                      >
+                        Tags
+                      </Typography>
+
+                      <Typography
+                        onClick={() =>
+                          handleOpenModel({
+                            inputLabel: "tags",
+                            modelTitle: "Add Tags",
+                          })
+                        }
+                        variant="subtitle"
+                        fontWeight="bold"
+                        className={`my-2 cursor-pointer hover:text-green-400`}
+                        color={colors.blueAccent[400]}
+                      >
+                        More
+                      </Typography>
+                    </Box>
                     <FormControl variant="filled" className="w-full">
-                      <InputLabel id="tags-select-label">Tag</InputLabel>
+                      <InputLabel id="tags-select-label">Tags</InputLabel>
                       <Select
                         fullWidth
+                        multiple
                         color="secondary"
                         labelId="tags-select-label"
                         id="tags-select"
                         variant="filled"
-                        name="tags"
-                        multiple
-                        defaultValue={[]}
-                        onChange={handleChange}
-                        value={values.tags}
-                        onBlur={handleBlur}
-                        error={!!touched.tags && !!errors.tags}
+                        value={values?.tags}
                         input={
                           <OutlinedInput
                             id="select-multiple-chip"
@@ -315,11 +490,17 @@ const AddEditBlog = ({ isEditing }) => {
                             ))}
                           </Box>
                         )}
+                        name="tags"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        error={!!touched?.tags && !!errors?.tags}
                       >
-                        <MenuItem value={"tag 1"}>{"tag 1"}</MenuItem>
-                        <MenuItem value={"tag 2"}>{"tag 2"}</MenuItem>
-                        <MenuItem value={"tag 3"}>{"tag 3"}</MenuItem>
-                        <MenuItem value={"tag 4"}>{"tag 4"}</MenuItem>
+                        {!organizeIsFetching &&
+                          organize.tags?.map((tag) => (
+                            <MenuItem key={tag.id} value={tag.name}>
+                              {tag.name}
+                            </MenuItem>
+                          ))}
                       </Select>
                     </FormControl>
                   </Box>
@@ -363,10 +544,10 @@ const AddEditBlog = ({ isEditing }) => {
                         onBlur={handleBlur}
                         error={!!touched.status && !!errors.status}
                       >
-                        <MenuItem value={"status 1"}>{"status 1"}</MenuItem>
-                        <MenuItem value={"status 2"}>{"status 2"}</MenuItem>
-                        <MenuItem value={"status 3"}>{"status 3"}</MenuItem>
-                        <MenuItem value={"status 4"}>{"status 4"}</MenuItem>
+                        <MenuItem value={"published"}>{"Published"}</MenuItem>
+                        <MenuItem value={"scheduled"}>{"Scheduled"}</MenuItem>
+                        <MenuItem value={"draft"}>{"Draft"}</MenuItem>
+                        <MenuItem value={"deleted"}>{"Deleted"}</MenuItem>
                       </Select>
                     </FormControl>
                   </Box>
@@ -384,10 +565,62 @@ const AddEditBlog = ({ isEditing }) => {
               )}
             </Formik>
           </Box>
+
           <Box className="w-full md:w-1/4 flex flex-col gap-4">
-            <Box
-              backgroundColor={colors.primary[400]}
+            {!isNoneMobile && (
+              <Box className="w-full flex gap-4">
+                <Button
+                  variant="text"
+                  sx={{ color: colors.grey[100] }}
+                  endIcon={
+                    openInfo ? (
+                      <ExpandLess color={colors.grey[100]} />
+                    ) : (
+                      <ExpandMore color={colors.grey[100]} />
+                    )
+                  }
+                  onClick={() => setOpenInfo(!openInfo)}
+                >
+                  Post Info
+                </Button>
+                <Button
+                  variant="text"
+                  sx={{ color: colors.grey[100] }}
+                  endIcon={
+                    openAction ? (
+                      <ExpandLess color={colors.grey[100]} />
+                    ) : (
+                      <ExpandMore color={colors.grey[100]} />
+                    )
+                  }
+                  onClick={() => setOpenAction(!openAction)}
+                >
+                  Actions
+                </Button>
+                <Button
+                  variant="text"
+                  sx={{ color: colors.grey[100] }}
+                  endIcon={
+                    openRevision ? (
+                      <ExpandLess color={colors.grey[100]} />
+                    ) : (
+                      <ExpandMore color={colors.grey[100]} />
+                    )
+                  }
+                  onClick={() => setOpenRevision(!openRevision)}
+                >
+                  Revision History
+                </Button>
+              </Box>
+            )}
+            <Collapse
+              in={isNoneMobile || openInfo}
+              timeout="auto"
+              unmountOnExit
               className="w-full rounded-md py-4 flex flex-col gap-4"
+              sx={{
+                backgroundColor: colors.primary[400],
+              }}
             >
               <Box className="w-full flex-col">
                 <Typography
@@ -503,10 +736,16 @@ const AddEditBlog = ({ isEditing }) => {
                   Jul 30, 2:21 PM
                 </Typography>
               </Box>
-            </Box>
-            <Box
-              backgroundColor={colors.primary[400]}
+            </Collapse>
+
+            <Collapse
+              in={isNoneMobile || openAction}
+              timeout="auto"
+              unmountOnExit
               className="w-full rounded-md py-4 flex flex-col gap-4"
+              sx={{
+                backgroundColor: colors.primary[400],
+              }}
             >
               <Box className="w-full flex-col">
                 <Typography
@@ -547,10 +786,16 @@ const AddEditBlog = ({ isEditing }) => {
                 </IconButton>
               </Box>
               <Divider />
-            </Box>
-            <Box
-              backgroundColor={colors.primary[400]}
+            </Collapse>
+
+            <Collapse
+              in={isNoneMobile || openRevision}
+              timeout="auto"
+              unmountOnExit
               className="w-full rounded-md py-4 flex flex-col gap-4"
+              sx={{
+                backgroundColor: colors.primary[400],
+              }}
             >
               <Box className="w-full flex-col">
                 <Typography
@@ -577,7 +822,7 @@ const AddEditBlog = ({ isEditing }) => {
                 </Typography>
               </Box>
               <Divider />
-            </Box>
+            </Collapse>
           </Box>
         </Box>
       </Box>

@@ -11,8 +11,8 @@ import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import PostAddOutlinedIcon from '@mui/icons-material/PostAddOutlined';
-import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined';
+import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
+import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
@@ -248,19 +248,19 @@ const MyProSidebar = () => {
             </Typography>
             <Item
               title="Add Blog"
-              to="/admin/blog/new"
+              to="/admin/blogs/new"
               icon={<PostAddOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Blogs"
-              to="/admin/blog"
+              to="/admin/blogs"
               icon={<ListAltOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-            
+
             <Typography
               variant="h6"
               color={colors.grey[300]}
