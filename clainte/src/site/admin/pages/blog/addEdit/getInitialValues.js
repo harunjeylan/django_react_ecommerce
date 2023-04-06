@@ -10,12 +10,12 @@ export const getInitialValues = (initialValues) => {
     title: getValue(initialValues?.title, ""),
     headline: getValue(initialValues?.headline, ""),
     slug: getValue(initialValues?.slug, ""),
-    category: getValue(initialValues?.organize?.category?.name, ""),
+    category: getValue(initialValues?.category?.name, ""),
     tags: getValue(
-      initialValues?.organize?.tags?.map((tag) => tag.name),
+      initialValues?.tags?.map((tag) => tag.name),
       []
     ),
-    body: getValue(initialValues?.description, ""),
+    body: getValue(initialValues?.body, ""),
     status: getValue(initialValues?.status, ""),
   };
 };

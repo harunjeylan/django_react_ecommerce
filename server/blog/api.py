@@ -239,6 +239,23 @@ def getBlogDetails(request, slug):
     }
     return Response(serialized_data, status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+def getAdminBlogDetails(request, slug):
+    blog = Blog.objects.get(slug=slug)
+    comments = BlogCommentSerializer(Comment.objects.filter(blog=blog), many=True).data
+    tags = TagSerializer(blog.tags.all(), many=True).data
+    category = CategorySerializer(blog.category).data
+    blog_data = BlogSerializer(
+        blog,
+        context={"request":request}, 
+    ).data
+    serialized_data = {
+        **blog_data, 
+        "comments":comments,
+        "tags":tags,
+        "category":category
+    }
+    return Response(serialized_data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def getRelatedBlogs(request, slug):

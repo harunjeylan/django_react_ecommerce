@@ -12,6 +12,8 @@ urlpatterns = [
     path("thumbnail/remove/", api.removeThumbnail , name="remove_image"),
     path("search-and-filter/", api.searchAndFilterBlog , name="search_and_filter_blogs"),
     path("<slug>", api.getBlogDetails, name="blog-details"),
+    path("<slug>/admin", api.getAdminBlogDetails, name="blog-details-admin"),
+    
     path("<slug>/related/", api.getRelatedBlogs, name="blog-related"),
     path("<slug>/comment/add/", api.addBlogComment, name="add-blog-comment"),
 

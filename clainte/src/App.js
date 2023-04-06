@@ -202,7 +202,7 @@ function App() {
                 }
               />
               <Route
-                path=":blogId"
+                path=":blogSlug"
                 element={
                   <AdminLayout>
                     <AdminBlogDetails />
@@ -218,7 +218,7 @@ function App() {
                 }
               />
               <Route
-                path=":blogId/edit"
+                path=":blogSlug/edit"
                 element={
                   <AdminLayout>
                     <AddEditBlog isEditing={true} />

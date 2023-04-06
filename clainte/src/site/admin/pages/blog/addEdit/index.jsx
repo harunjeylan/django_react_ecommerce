@@ -103,7 +103,7 @@ const AddEditBlog = ({ isEditing }) => {
 
   const [blogThumbnail, setBlogThumbnail] = useState([]);
   const [initialValues, setInitialValues] = useState({});
-  const { blogId } = useParams();
+  const { blogSlug } = useParams();
 
   const [addBlog] = useAddBlogMutation();
   const [updateBlog] = useUpdateBlogMutation();
@@ -114,10 +114,10 @@ const AddEditBlog = ({ isEditing }) => {
     useGetAllOrganizeQuery();
 
   useEffect(() => {
-    if (blogId && isEditing) {
+    if (blogSlug && isEditing) {
       dispatch(
-        blogApi.endpoints.getBlogData.initiate({
-          blogId,
+        blogApi.endpoints.getAdminBlogDetails.initiate({
+          blogSlug,
         })
       ).then((response) => {
         if (response.isSuccess) {
@@ -126,7 +126,7 @@ const AddEditBlog = ({ isEditing }) => {
         }
       });
     }
-  }, [blogId, isEditing, dispatch]);
+  }, [blogSlug, isEditing, dispatch]);
   const handleOpenModel = ({ inputLabel, modelTitle }) => {
     setModelInputLabel(inputLabel);
     setModelTitle(modelTitle);
@@ -165,8 +165,8 @@ const AddEditBlog = ({ isEditing }) => {
   const handleFormSubmit = (values) => {
     console.log(values);
 
-    if (blogId) {
-      updateBlog({ post: values, blogId }).then((res) => {
+    if (blogSlug) {
+      updateBlog({ post: values, blogSlug }).then((res) => {
         let postForm = new FormData();
         postForm.append("thumbnail", blogThumbnail[0]?.file);
         postForm.append("blogId", res.data.id);
@@ -174,7 +174,7 @@ const AddEditBlog = ({ isEditing }) => {
           post: postForm,
         }).then((response) => {
           console.log(response);
-          navigate(`/admin/blogs/${blogId}`);
+          navigate(`/admin/blogs/${blogSlug}`);
         });
       });
     } else {
@@ -185,7 +185,7 @@ const AddEditBlog = ({ isEditing }) => {
         uploadImage({
           post: postForm,
         }).then((response) => {
-          navigate(`/admin/blogs/${res.data.id}`);
+          navigate(`/admin/blogs/${res.data.slug}`);
         });
       });
     }
@@ -558,272 +558,260 @@ const AddEditBlog = ({ isEditing }) => {
                       variant="outlined"
                       className={`px-8 py-3 `}
                     >
-                      {blogId && isEditing ? "Save Blog" : "Create Blog"}
+                      {blogSlug && isEditing ? "Save Blog" : "Create Blog"}
                     </Button>
                   </Box>
                 </form>
               )}
             </Formik>
           </Box>
-
-          <Box className="w-full md:w-1/4 flex flex-col gap-4">
-            {!isNoneMobile && (
-              <Box className="w-full flex gap-4">
-                <Button
-                  variant="text"
-                  sx={{ color: colors.grey[100] }}
-                  endIcon={
-                    openInfo ? (
-                      <ExpandLess color={colors.grey[100]} />
-                    ) : (
-                      <ExpandMore color={colors.grey[100]} />
-                    )
-                  }
-                  onClick={() => setOpenInfo(!openInfo)}
-                >
-                  Post Info
-                </Button>
-                <Button
-                  variant="text"
-                  sx={{ color: colors.grey[100] }}
-                  endIcon={
-                    openAction ? (
-                      <ExpandLess color={colors.grey[100]} />
-                    ) : (
-                      <ExpandMore color={colors.grey[100]} />
-                    )
-                  }
-                  onClick={() => setOpenAction(!openAction)}
-                >
-                  Actions
-                </Button>
-                <Button
-                  variant="text"
-                  sx={{ color: colors.grey[100] }}
-                  endIcon={
-                    openRevision ? (
-                      <ExpandLess color={colors.grey[100]} />
-                    ) : (
-                      <ExpandMore color={colors.grey[100]} />
-                    )
-                  }
-                  onClick={() => setOpenRevision(!openRevision)}
-                >
-                  Revision History
-                </Button>
-              </Box>
-            )}
-            <Collapse
-              in={isNoneMobile || openInfo}
-              timeout="auto"
-              unmountOnExit
-              className="w-full rounded-md py-4 flex flex-col gap-4"
-              sx={{
-                backgroundColor: colors.primary[400],
-              }}
-            >
-              <Box className="w-full flex-col">
-                <Typography
-                  variant="h1"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  className={`text-xl md:text-2xl p-4 text-left`}
-                >
-                  Post Info
-                </Typography>
-                <Divider />
-              </Box>
-              <Box className="w-full px-4 flex flex-col gap-2">
-                <Typography
-                  fontWeight={"bold"}
-                  variant="h5"
-                  sx={{ color: colors.grey[200] }}
-                  className=""
-                >
-                  Post ID
-                </Typography>
-                <Typography fontWeight={"bold"} variant="h5">
-                  8693637308
-                </Typography>
-              </Box>
-              <Divider />
-              <Box className="w-full px-4 flex flex-col gap-2">
-                <Typography
-                  fontWeight={"bold"}
-                  variant="h5"
-                  sx={{ color: colors.grey[200] }}
-                  className=""
-                >
-                  Status
-                </Typography>
-                <Typography fontWeight={"bold"} variant="h5">
-                  Published (unsaved changes)
-                </Typography>
-              </Box>
-              <Divider />
-              <Box className="w-full px-4 flex flex-col gap-2">
-                <Typography
-                  fontWeight={"bold"}
-                  variant="h5"
-                  sx={{ color: colors.grey[200] }}
-                  className=""
-                >
-                  Created by
-                </Typography>
-                <Box className="flex justify-start items-center gap-4">
-                  <Avatar>A</Avatar>
-
+          {isEditing && (
+            <Box className="w-full md:w-1/4 flex flex-col gap-4">
+              {!isNoneMobile && (
+                <Box className="w-full flex gap-4">
+                  <Button
+                    variant="text"
+                    sx={{ color: colors.grey[100] }}
+                    endIcon={
+                      openInfo ? (
+                        <ExpandLess color={colors.grey[100]} />
+                      ) : (
+                        <ExpandMore color={colors.grey[100]} />
+                      )
+                    }
+                    onClick={() => setOpenInfo(!openInfo)}
+                  >
+                    Post Info
+                  </Button>
+                  <Button
+                    variant="text"
+                    sx={{ color: colors.grey[100] }}
+                    endIcon={
+                      openAction ? (
+                        <ExpandLess color={colors.grey[100]} />
+                      ) : (
+                        <ExpandMore color={colors.grey[100]} />
+                      )
+                    }
+                    onClick={() => setOpenAction(!openAction)}
+                  >
+                    Actions
+                  </Button>
+                  <Button
+                    variant="text"
+                    sx={{ color: colors.grey[100] }}
+                    endIcon={
+                      openRevision ? (
+                        <ExpandLess color={colors.grey[100]} />
+                      ) : (
+                        <ExpandMore color={colors.grey[100]} />
+                      )
+                    }
+                    onClick={() => setOpenRevision(!openRevision)}
+                  >
+                    Revision History
+                  </Button>
+                </Box>
+              )}
+              <Collapse
+                in={isNoneMobile || openInfo}
+                timeout="auto"
+                unmountOnExit
+                className="w-full rounded-md py-4 flex flex-col gap-4"
+                sx={{
+                  backgroundColor: colors.primary[400],
+                }}
+              >
+                <Box className="w-full flex-col">
+                  <Typography
+                    variant="h1"
+                    color={colors.grey[100]}
+                    fontWeight="bold"
+                    className={`text-xl md:text-2xl p-4 text-left`}
+                  >
+                    Post Info
+                  </Typography>
+                  <Divider />
+                </Box>
+                <Box className="w-full px-4 flex flex-col gap-2 py-2">
+                  <Typography
+                    fontWeight={"bold"}
+                    variant="h5"
+                    sx={{ color: colors.grey[200] }}
+                    className=""
+                  >
+                    Post ID
+                  </Typography>
                   <Typography fontWeight={"bold"} variant="h5">
-                    Admin
+                    {initialValues.id}
                   </Typography>
                 </Box>
-              </Box>
-              <Divider />
-              <Box className="w-full px-4 flex flex-col gap-2">
-                <Typography
-                  fontWeight={"bold"}
-                  variant="h5"
-                  sx={{ color: colors.grey[200] }}
-                  className=""
-                >
-                  Created at
-                </Typography>
-                <Typography fontWeight={"bold"} variant="h5">
-                  Jul 30, 2:21 PM
-                </Typography>
-              </Box>
-              <Divider />
-              <Box className="w-full px-4 flex flex-col gap-2">
-                <Typography
-                  fontWeight={"bold"}
-                  variant="h5"
-                  sx={{ color: colors.grey[200] }}
-                  className=""
-                >
-                  First published at
-                </Typography>
-                <Typography fontWeight={"bold"} variant="h5">
-                  Jul 30, 2:21 PM
-                </Typography>
-              </Box>
-              <Divider />
-
-              <Box className="w-full px-4 flex flex-col gap-2">
-                <Typography
-                  fontWeight={"bold"}
-                  variant="h5"
-                  sx={{ color: colors.grey[200] }}
-                  className=""
-                >
-                  Last update
-                </Typography>
-                <Typography fontWeight={"bold"} variant="h5">
-                  Jul 30, 2:21 PM
-                </Typography>
-              </Box>
-              <Divider />
-
-              <Box className="w-full px-4 flex flex-col gap-2">
-                <Typography
-                  fontWeight={"bold"}
-                  variant="h5"
-                  sx={{ color: colors.grey[200] }}
-                  className=""
-                >
-                  Last Published
-                </Typography>
-                <Typography fontWeight={"bold"} variant="h5">
-                  Jul 30, 2:21 PM
-                </Typography>
-              </Box>
-            </Collapse>
-
-            <Collapse
-              in={isNoneMobile || openAction}
-              timeout="auto"
-              unmountOnExit
-              className="w-full rounded-md py-4 flex flex-col gap-4"
-              sx={{
-                backgroundColor: colors.primary[400],
-              }}
-            >
-              <Box className="w-full flex-col">
-                <Typography
-                  variant="h1"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  className={`text-xl md:text-2xl p-4 text-left`}
-                >
-                  Actions
-                </Typography>
                 <Divider />
-              </Box>
-              <Box className="w-full px-4 flex justify-between items-center gap-2">
-                <Typography
-                  fontWeight={"bold"}
-                  variant="h5"
-                  sx={{ color: colors.grey[200] }}
-                  className=""
-                >
-                  Unpublished
-                </Typography>
-                <IconButton>
-                  <UnpublishedIcon color="warning" />
-                </IconButton>
-              </Box>
-              <Divider />
-              <Box className="w-full px-4 flex justify-between items-center gap-2">
-                <Typography
-                  fontWeight={"bold"}
-                  variant="h5"
-                  sx={{ color: colors.grey[200] }}
-                  className=""
-                >
-                  Delete
-                </Typography>
-                <IconButton>
-                  <DeleteIcon color="error" />
-                </IconButton>
-              </Box>
-              <Divider />
-            </Collapse>
-
-            <Collapse
-              in={isNoneMobile || openRevision}
-              timeout="auto"
-              unmountOnExit
-              className="w-full rounded-md py-4 flex flex-col gap-4"
-              sx={{
-                backgroundColor: colors.primary[400],
-              }}
-            >
-              <Box className="w-full flex-col">
-                <Typography
-                  variant="h1"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  className={`text-xl md:text-2xl p-4 text-left`}
-                >
-                  Revision History
-                </Typography>
+                <Box className="w-full px-4 flex flex-col gap-2 py-2">
+                  <Typography
+                    fontWeight={"bold"}
+                    variant="h5"
+                    sx={{ color: colors.grey[200] }}
+                    className=""
+                  >
+                    Status
+                  </Typography>
+                  <Typography fontWeight={"bold"} variant="h5">
+                    {initialValues.status}
+                  </Typography>
+                </Box>
                 <Divider />
-              </Box>
-              <Box className="w-full px-4 flex justify-between items-center gap-2">
-                <Typography
-                  fontWeight={"bold"}
-                  variant="h5"
-                  sx={{ color: colors.grey[200] }}
-                  className=""
-                >
-                  Aug 31, 12:21 PM
-                </Typography>
-                <Typography fontWeight={"bold"} variant="h5">
-                  Published
-                </Typography>
-              </Box>
-              <Divider />
-            </Collapse>
-          </Box>
+                <Box className="w-full px-4 flex flex-col gap-2 py-2">
+                  <Typography
+                    fontWeight={"bold"}
+                    variant="h5"
+                    sx={{ color: colors.grey[200] }}
+                    className=""
+                  >
+                    Created by
+                  </Typography>
+                  <Box className="flex justify-start items-center gap-4">
+                    <Avatar>A</Avatar>
+
+                    <Typography fontWeight={"bold"} variant="h5">
+                      Admin
+                    </Typography>
+                  </Box>
+                </Box>
+                <Divider />
+                <Box className="w-full px-4 flex flex-col gap-2 py-2">
+                  <Typography
+                    fontWeight={"bold"}
+                    variant="h5"
+                    sx={{ color: colors.grey[200] }}
+                    className=""
+                  >
+                    Created at
+                  </Typography>
+                  <Typography fontWeight={"bold"} variant="h5">
+                    {initialValues.created}
+                  </Typography>
+                </Box>
+                <Divider />
+                <Divider />
+
+                <Box className="w-full px-4 flex flex-col gap-2 py-2">
+                  <Typography
+                    fontWeight={"bold"}
+                    variant="h5"
+                    sx={{ color: colors.grey[200] }}
+                    className=""
+                  >
+                    Last update
+                  </Typography>
+                  <Typography fontWeight={"bold"} variant="h5">
+                    {initialValues.updated}
+                  </Typography>
+                </Box>
+                <Divider />
+
+                <Box className="w-full px-4 flex flex-col gap-2 py-2">
+                  <Typography
+                    fontWeight={"bold"}
+                    variant="h5"
+                    sx={{ color: colors.grey[200] }}
+                    className=""
+                  >
+                    Last Published
+                  </Typography>
+                  <Typography fontWeight={"bold"} variant="h5">
+                    {initialValues.published}
+                  </Typography>
+                </Box>
+              </Collapse>
+
+              <Collapse
+                in={isNoneMobile || openAction}
+                timeout="auto"
+                unmountOnExit
+                className="w-full rounded-md py-4 flex flex-col gap-4"
+                sx={{
+                  backgroundColor: colors.primary[400],
+                }}
+              >
+                <Box className="w-full flex-col">
+                  <Typography
+                    variant="h1"
+                    color={colors.grey[100]}
+                    fontWeight="bold"
+                    className={`text-xl md:text-2xl p-4 text-left`}
+                  >
+                    Actions
+                  </Typography>
+                  <Divider />
+                </Box>
+                <Box className="w-full px-4 flex justify-between items-center gap-2 py-2">
+                  <Typography
+                    fontWeight={"bold"}
+                    variant="h5"
+                    sx={{ color: colors.grey[200] }}
+                    className=""
+                  >
+                    Unpublished
+                  </Typography>
+                  <IconButton>
+                    <UnpublishedIcon color="warning" />
+                  </IconButton>
+                </Box>
+                <Divider />
+                <Box className="w-full px-4 flex justify-between items-center gap-2 py-2">
+                  <Typography
+                    fontWeight={"bold"}
+                    variant="h5"
+                    sx={{ color: colors.grey[200] }}
+                    className=""
+                  >
+                    Delete
+                  </Typography>
+                  <IconButton>
+                    <DeleteIcon color="error" />
+                  </IconButton>
+                </Box>
+                <Divider />
+              </Collapse>
+
+              <Collapse
+                in={isNoneMobile || openRevision}
+                timeout="auto"
+                unmountOnExit
+                className="w-full rounded-md py-4 flex flex-col gap-4"
+                sx={{
+                  backgroundColor: colors.primary[400],
+                }}
+              >
+                <Box className="w-full flex-col">
+                  <Typography
+                    variant="h1"
+                    color={colors.grey[100]}
+                    fontWeight="bold"
+                    className={`text-xl md:text-2xl p-4 text-left`}
+                  >
+                    Revision History
+                  </Typography>
+                  <Divider />
+                </Box>
+                <Box className="w-full px-4 flex justify-between items-center gap-2 py-2">
+                  <Typography
+                    fontWeight={"bold"}
+                    variant="h5"
+                    sx={{ color: colors.grey[200] }}
+                    className=""
+                  >
+                    {initialValues.published}
+                  </Typography>
+                  <Typography fontWeight={"bold"} variant="h5">
+                    Published
+                  </Typography>
+                </Box>
+                <Divider />
+              </Collapse>
+            </Box>
+          )}
         </Box>
       </Box>
     </>
