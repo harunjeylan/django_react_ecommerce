@@ -173,7 +173,7 @@ def getBlogCollections(request):
         "-published"
     ).filter(
         status="published"
-    )[:5],
+    ).distinct()[:5],
         context={"request":request}, 
         many = True
     ).data
@@ -184,7 +184,7 @@ def getBlogCollections(request):
         ).filter(
             status="published", 
             pin_to_top=True
-        ),
+        ).distinct(),
         context={"request":request}, 
         many = True
     ).data
@@ -273,8 +273,8 @@ def getRelatedBlogs(request, slug):
 @api_view(['GET'])
 def getBlogFilter(request):
     archives = Blog.objects.dates('published', 'month')
-    categories = CategorySerializer(Category.objects.filter(blog__status="published"), many=True).data
-    tags = TagSerializer(Tag.objects.filter(blog__status="published"), many=True).data
+    categories = CategorySerializer(Category.objects.filter(blog__status="published").distinct(), many=True).data
+    tags = TagSerializer(Tag.objects.filter(blog__status="published").distinct(), many=True).data
     serialized_data = {
         "archives":archives,
         "categories":categories,
