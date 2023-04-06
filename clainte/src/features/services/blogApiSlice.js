@@ -34,6 +34,10 @@ export const blogApi = authApi.injectEndpoints({
       query: ({ blogSlug }) => `blogs/${blogSlug}`,
       providesTags: ["blogs-details"],
     }),
+    getAdminBlogDetails: builder.query({
+      query: ({ blogSlug }) => `blogs/${blogSlug}/admin`,
+      providesTags: ["blogs-details"],
+    }),
     getRelatedBlogs: builder.query({
       query: ({ blogSlug }) => `blogs/${blogSlug}/related/`,
       providesTags: ["related-blogs"],
@@ -142,5 +146,6 @@ export const {
   useGetRatingsQuery,
   useGetBlogDetailsQuery,
   useGetBlogForAdminQuery,
+  useGetAdminBlogDetailsQuery,
   useGetRelatedBlogsQuery,
 } = blogApi;
