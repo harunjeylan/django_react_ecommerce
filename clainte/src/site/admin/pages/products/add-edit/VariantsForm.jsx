@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useTheme } from "@emotion/react";
 import {
   Box,
@@ -53,18 +53,20 @@ const VariantsForm = ({
     }
   }, [initialValues?.variants, variants]);
 
-  const getOptions = (variantLabel) => {
-    let variantOptions = values.variants.find(
-      (variant) => variant.variantLabel === variantLabel
-    );
+  const getOptions = useMemo(() => {
+    return (variantLabel) => {
+      let variantOptions = values.variants.find(
+        (variant) => variant.variantLabel === variantLabel
+      );
 
-    if (variantOptions?.options) {
-      return variantOptions?.options;
-    } else {
-      return [];
-    }
-    // return variantOptions?.options ? variantOptions?.options : [];
-  };
+      if (variantOptions?.options) {
+        return variantOptions?.options;
+      } else {
+        return [];
+      }
+      // return variantOptions?.options ? variantOptions?.options : [];
+    };
+  }, []);
 
   const handleOpenModel = () => {
     setModelTitle("Add Variants");
@@ -82,46 +84,52 @@ const VariantsForm = ({
     }
   };
 
-  const handleRemove = (variantId) => {
-    let selected_variant = variants?.find(
-      (variant) => variant.id === variantId
-    );
-    setSelected((prev) => prev.filter((variant) => variant.id !== variantId));
-    setFieldValue(
-      "variants",
-      values.variants.filter(
-        (variant) => variant.variantLabel !== selected_variant.label
-      )
-    );
-  };
-
-  const handleChangeOption = (variantLabel, options) => {
-    if (
-      values.variants?.find((variant) => variant.variantLabel === variantLabel)
-    ) {
+  const handleRemove = useCallback(() => {
+    return (variantId) => {
+      let selected_variant = variants?.find(
+        (variant) => variant.id === variantId
+      );
+      setSelected((prev) => prev.filter((variant) => variant.id !== variantId));
       setFieldValue(
         "variants",
-        values.variants.map((variant) => {
-          if (variant?.variantLabel === variantLabel) {
-            return {
-              variantLabel,
-              options,
-            };
-          } else {
-            return variant;
-          }
-        })
+        values.variants.filter(
+          (variant) => variant.variantLabel !== selected_variant.label
+        )
       );
-    } else {
-      setFieldValue("variants", [
-        ...values.variants,
-        {
-          variantLabel,
-          options,
-        },
-      ]);
-    }
-  };
+    };
+  }, []);
+
+  const handleChangeOption = useCallback(() => {
+    return (variantLabel, options) => {
+      if (
+        values.variants?.find(
+          (variant) => variant.variantLabel === variantLabel
+        )
+      ) {
+        setFieldValue(
+          "variants",
+          values.variants.map((variant) => {
+            if (variant?.variantLabel === variantLabel) {
+              return {
+                variantLabel,
+                options,
+              };
+            } else {
+              return variant;
+            }
+          })
+        );
+      } else {
+        setFieldValue("variants", [
+          ...values.variants,
+          {
+            variantLabel,
+            options,
+          },
+        ]);
+      }
+    };
+  }, []);
   const handleAddValiant = () => {
     setCreatingVariant({
       label: "",
@@ -236,8 +244,8 @@ const VariantsForm = ({
                               gap: 0.5,
                             }}
                           >
-                            {selected?.map((value) => (
-                              <Chip key={value} label={value} />
+                            {selected?.map((value, index) => (
+                              <Chip key={`${value}-${index}`} label={value} />
                             ))}
                           </Box>
                         )}

@@ -66,7 +66,10 @@ export const blogApi = authApi.injectEndpoints({
       query: () => `blogs/`,
       providesTags: ["blogs"],
     }),
-
+    getAllAdminBlogs: builder.query({
+      query: () => `blogs/admin`,
+      providesTags: ["blogs"],
+    }),
     searchAndFilterBlogs: builder.query({
       query: ({ searchAndFilter }) =>
         `blogs/search-and-filter/?${searchAndFilter}`,
@@ -107,12 +110,25 @@ export const blogApi = authApi.injectEndpoints({
     }),
 
     updateBlog: builder.mutation({
-      query: ({ post }) => ({
-        url: `blogs/update/`,
+      query: ({ post, blogSlug }) => ({
+        url: `blogs/${blogSlug}/update/`,
         method: "PUT",
         body: post,
       }),
-      invalidatesTags: ["blogs"],
+      invalidatesTags: [
+        "blogs",
+        "blogs-details",
+        "blogs-data",
+        "blogs-by-searchAndFilter",
+        "pin-to-top-blogs",
+        "recent-blogs",
+        "blogs-archives",
+        "blogs-categories",
+        "blogs-tags",
+        "blog-collections",
+        "blog-filter",
+        "related-blogs",
+      ],
     }),
     deleteBlog: builder.mutation({
       query: ({ post }) => ({
@@ -120,13 +136,48 @@ export const blogApi = authApi.injectEndpoints({
         method: "DELETE",
         body: post,
       }),
-      invalidatesTags: ["blogs"],
+      invalidatesTags: [
+        "blogs",
+        "blogs-details",
+        "blogs-data",
+        "blogs-by-searchAndFilter",
+        "pin-to-top-blogs",
+        "recent-blogs",
+        "blogs-archives",
+        "blogs-categories",
+        "blogs-tags",
+        "blog-collections",
+        "blog-filter",
+        "related-blogs",
+      ],
+    }),
+    changeBlogStatus: builder.mutation({
+      query: ({ post }) => ({
+        url: `blogs/status/`,
+        method: "PUT",
+        body: post,
+      }),
+      invalidatesTags: [
+        "blogs",
+        "blogs-details",
+        "blogs-data",
+        "blogs-by-searchAndFilter",
+        "pin-to-top-blogs",
+        "recent-blogs",
+        "blogs-archives",
+        "blogs-categories",
+        "blogs-tags",
+        "blog-collections",
+        "blog-filter",
+        "related-blogs",
+      ],
     }),
   }),
 });
 
 export const {
   useGetAllBlogsQuery,
+  useGetAllAdminBlogsQuery,
 
   useSearchAndFilterBlogsQuery,
   useGetPinToTopBlogsQuery,
@@ -141,6 +192,8 @@ export const {
   useAddBlogMutation,
   useUpdateBlogMutation,
   useDeleteBlogMutation,
+  useChangeBlogStatusMutation,
+
   useUploadBlogImageMutation,
   useAddBlogCommentMutation,
   useGetRatingsQuery,

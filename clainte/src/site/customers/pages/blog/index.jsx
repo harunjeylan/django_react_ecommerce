@@ -256,6 +256,7 @@ const Blog = () => {
               </List>
             </AccordionDetails>
           </Accordion>
+
           <Accordion
             sx={{ backgroundColor: colors.primary[400] }}
             className="w-full"

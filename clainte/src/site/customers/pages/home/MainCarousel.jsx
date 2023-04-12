@@ -74,13 +74,14 @@ const MainCarousel = () => {
     </Swiper>
   );
 };
-const importAll = (r) =>
-  r.keys().reduce((acc, item) => {
-    acc[item.replace("./", "")] = r(item);
-    return acc;
-  }, {});
+// const importAll = (r) =>
+//   r.keys().reduce((acc, item) => {
+//     acc[item.replace("./", "")] = r(item);
+//     return acc;
+//   }, {});
 
-export const heroTexture = importAll(
-  require.context("../../../../assets", false, /\.(png|jpe?g|svg)$/)
-);
+const heroTexture = {};
+// export const heroTexture = importAll(
+//   require.context("../../../../assets", false, /\.(png|jpe?g|svg)$/)
+// );
 export default MainCarousel;

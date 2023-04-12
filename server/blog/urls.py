@@ -5,9 +5,12 @@ from blog import api
 
 urlpatterns = [
     path("", api.getAllBlogs, name="blogs"),
+    path("admin", api.getAllAdminBlogs, name="blogs"),
     path("add/", api.newBlog , name="new_blog"),
-    path("<pk>/edit/", api.updateBlog , name="edit"),
+    path("<slug>/update/", api.updateBlog , name="edit"),
     path("delete/", api.deleteBlog , name="delete"),
+    path("status/", api.changeBlogStatus , name="change-blog-status"),
+    
     path("images/upload/", api.uploadImage , name="upload_image"),
     path("thumbnail/remove/", api.removeThumbnail , name="remove_image"),
     path("search-and-filter/", api.searchAndFilterBlog , name="search_and_filter_blogs"),

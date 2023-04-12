@@ -27,7 +27,6 @@ const ProductsForAdmin = () => {
     useGetProductsForAdminQuery();
   const [deleteProduct] = useDeleteProductMutation();
   const handelDelete = (id) => {
-    console.log(id);
     deleteProduct({ post: { id } }).then((response) => console.log(response));
   };
   const columns = [

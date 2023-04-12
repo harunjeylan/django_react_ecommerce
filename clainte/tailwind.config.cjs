@@ -13,7 +13,7 @@ module.exports = {
     screens: {
       xs: "475px",
       xxs: "0px",
-     
+
       ...defaultTheme.screens,
     },
     container: {
@@ -23,5 +23,5 @@ module.exports = {
       ...defaultTheme.container,
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/typography")],
 };
