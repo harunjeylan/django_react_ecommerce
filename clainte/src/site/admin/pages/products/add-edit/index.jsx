@@ -37,7 +37,7 @@ const AddEditProduct = ({ isEditing }) => {
   useEffect(() => {
     if (productId && isEditing) {
       dispatch(
-        productApi.endpoints.getProductsData.initiate({
+        productApi.endpoints.getProductsDetails.initiate({
           productId,
         })
       ).then((response) => {

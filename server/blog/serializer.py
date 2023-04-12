@@ -11,6 +11,7 @@ class BlogListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Blog
         fields = (
+        "id",
         "title",
         "headline",
         "slug",
@@ -18,6 +19,7 @@ class BlogListSerializer(serializers.ModelSerializer):
         "category",
         "tags",
         "published",
+        "status"
     )
         
 class BlogCommentSerializer(serializers.ModelSerializer):

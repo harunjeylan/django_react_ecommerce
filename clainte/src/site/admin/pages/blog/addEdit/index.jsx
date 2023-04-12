@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import {
   Box,
   Divider,
@@ -24,7 +24,7 @@ import { tokens } from "../../../../../theme";
 import Header from "../../../../../components/Header";
 import { Dropzone, FullScreenPreview } from "@dropzone-ui/react";
 import { FileItem } from "@dropzone-ui/react";
-import { Formik } from "formik";
+import { Formik, Field } from "formik";
 import { useDispatch } from "react-redux";
 import { getInitialValues } from "./getInitialValues";
 import { blogSchema } from "./blogSchema";
@@ -45,6 +45,24 @@ import {
 } from "../../../../../features/services/organizeApiSlice";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+
+const modules = {
+  toolbar: [
+    [{ font: [] }],
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+    ["bold", "italic", "underline", "strike"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    [{ indent: "-1" }, { indent: "+1" }, { align: [] }],
+    [{ color: [] }, { background: [] }],
+    [{ script: "sub" }, { script: "super" }],
+    ["blockquote", "code-block"],
+    ["clean"],
+    ["link", "image", "video"],
+  ],
+};
+
 const Item = ({ item, itemName, handleUpdate, handleDelete }) => {
   const InputRef = useRef();
 
@@ -110,6 +128,7 @@ const AddEditBlog = ({ isEditing }) => {
   const [uploadImage] = useUploadBlogImageMutation();
 
   const modelInputRef = useRef();
+
   const { data: organize, isFetching: organizeIsFetching } =
     useGetAllOrganizeQuery();
 
@@ -162,7 +181,7 @@ const AddEditBlog = ({ isEditing }) => {
   const handleClean = (image) => {
     console.log("list cleaned", image);
   };
-  const handleFormSubmit = (values) => {
+  const handleFormSubmit = useCallback((values) => {
     console.log(values);
 
     if (blogSlug) {
@@ -189,7 +208,7 @@ const AddEditBlog = ({ isEditing }) => {
         });
       });
     }
-  };
+  });
 
   return (
     <>
@@ -504,26 +523,26 @@ const AddEditBlog = ({ isEditing }) => {
                       </Select>
                     </FormControl>
                   </Box>
-                  <Box className="w-full">
+                  <Box className="w-full h-fit">
                     <Typography variant="h6" fontWeight="bold" className="my-2">
                       Body
                     </Typography>
-                    <TextField
-                      variant="filled"
-                      color="secondary"
-                      fullWidth
-                      placeholder="headline"
-                      multiline
-                      minRows={5}
-                      type="text"
-                      label="Blog Body"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.body}
-                      name="body"
-                      error={!!touched.body && !!errors.body}
-                      helperText={touched.body && errors.body}
-                    />
+                    <Field name="body">
+                      {({ meta }) => (
+                        <Box>
+                          <ReactQuill
+                            theme="snow"
+                            value={values.body}
+                            modules={modules}
+                            onBlur={handleBlur}
+                            onChange={(newVal) => setFieldValue("body", newVal)}
+                          />
+                          {meta.touched && meta.error && (
+                            <div className="error">{meta.error}</div>
+                          )}
+                        </Box>
+                      )}
+                    </Field>
                   </Box>
                   <Box className="w-full">
                     <Typography variant="h6" fontWeight="bold" className="my-2">

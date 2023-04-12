@@ -21,6 +21,7 @@ import { refreshAccessToken } from "./features/auth/authApi";
 import store from "./app/store";
 import dayjs from "dayjs";
 import BlogDetails from "./site/customers/pages/blog/details";
+// import AddEditBlog from "./site/admin/pages/blog/addEdit";
 
 // import CustomerLayout from "./site/customers/layout";
 // import Home from "./site/customers/pages/home";
@@ -117,6 +118,7 @@ const About = React.lazy(() => import("./site/customers/pages/about"));
 const CustomerFAQ = React.lazy(() => import("./site/customers/pages/faq"));
 
 const AddEditBlog = React.lazy(() => import("./site/admin/pages/blog/addEdit"));
+
 const AdminBlogDetails = React.lazy(() =>
   import("./site/admin/pages/blog/details")
 );

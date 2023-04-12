@@ -27,6 +27,16 @@ import Header2 from "../../../../../components/Header2";
 import Comments from "../../../../../components/Comments";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UnpublishedIcon from "@mui/icons-material/Unpublished";
+import PublishOutlinedIcon from "@mui/icons-material/PublishOutlined";
+// import ReactHtmlParser, { attributesToProps } from "react-html-parser";
+// const reactHtmlParserOptions = {
+//   replace: (domNode) => {
+//     if (domNode.attribs) {
+//       const props = attributesToProps(domNode.attribs);
+//       return <div {...props} />;
+//     }
+//   },
+// };
 const AdminBlogDetails = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -85,16 +95,12 @@ const AdminBlogDetails = () => {
         className={`md:container px-2 md:mx-auto md:px-auto flex flex-col-reverse md:flex-row gap-4`}
       >
         <Box className={`w-full md:w-3/4 flex flex-col gap-4 md:gap-8`}>
-          <Box
-            className={`md:container px-2 md:mx-auto md:px-auto md:max-w-4xl`}
-          >
+          <Box className={`px-2  md:px-auto md:max-w-4xl`}>
             {!isFetchingBlog && blog && (
               <Header2 title={blog.title} subtitle={blog.headline} />
             )}
           </Box>
-          <Box
-            className={`md:container px-2 md:mx-auto md:px-auto md:max-w-4xl`}
-          >
+          <Box className={`w-full px-2 md:px-auto md:max-w-4xl`}>
             {!isFetchingBlog && blog && blog.thumbnail ? (
               <CardMedia
                 sx={{ height: 360, width: "100%" }}
@@ -116,26 +122,21 @@ const AdminBlogDetails = () => {
           </Box>
 
           <Box
-            className={`md:container px-2 md:mx-auto md:px-auto md:max-w-4xl my-4`}
+            className={`w-full px-2 md:px-auto md:max-w-4xl my-4 overflow-x-clip`}
           >
             {!isFetchingBlog ? (
               blog && (
-                <Box className={`flex flex-col gap-4 w-full`}>
-                  <Typography
-                    variant="p"
-                    color={colors.grey[100]}
-                    className={` p-4 text-left`}
-                  >
-                    {blog.body}
-                  </Typography>
-                  <Divider />
-                </Box>
+                <div
+                  className={`flex flex-col gap-4 w-full prose lg:prose-xl `}
+                  dangerouslySetInnerHTML={{ __html: blog.body }}
+                />
               )
             ) : (
               <Box className="w-full flex mt-[20%] justify-center h-full min-h-40">
                 <CircularProgress color="secondary" />
               </Box>
             )}
+            <Divider />
           </Box>
           {!isFetchingBlog && blog && (
             <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
@@ -340,17 +341,35 @@ const AdminBlogDetails = () => {
               <Divider />
             </Box>
             <Box className="w-full px-4 flex justify-between items-center gap-2">
-              <Typography
-                fontWeight={"bold"}
-                variant="h5"
-                sx={{ color: colors.grey[200] }}
-                className=""
-              >
-                Unpublished
-              </Typography>
-              <IconButton>
-                <UnpublishedIcon color="warning" />
-              </IconButton>
+              {blog?.status === "published" ? (
+                <>
+                  <Typography
+                    fontWeight={"bold"}
+                    variant="h5"
+                    sx={{ color: colors.grey[200] }}
+                    className=""
+                  >
+                    Unpublished
+                  </Typography>
+                  <IconButton>
+                    <UnpublishedIcon color="warning" />
+                  </IconButton>
+                </>
+              ) : (
+                <>
+                  <Typography
+                    fontWeight={"bold"}
+                    variant="h5"
+                    sx={{ color: colors.grey[200] }}
+                    className=""
+                  >
+                    Published
+                  </Typography>
+                  <IconButton>
+                    <PublishOutlinedIcon color="warning" />
+                  </IconButton>
+                </>
+              )}
             </Box>
             <Divider />
             <Box className="w-full px-4 flex justify-between items-center gap-2">

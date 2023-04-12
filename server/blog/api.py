@@ -42,11 +42,15 @@ def newBlog(request):
     blog_serializer_form = BlogSerializer(data=blog_felids)
     if blog_serializer_form.is_valid():
         blog = blog_serializer_form.save()
-        # tags = []
-        # for tag_name in request.data.get("tags"):
-        #     tag, created_tag = Tag.objects.get_or_create(name=tag_name)
-        #     blog.tags.add(tag)
-        #     tags.append(TagSerializer(tag).data)
+        tags = []
+        for tag_name in request.data.get("tags"):
+            tag, created_tag = Tag.objects.get_or_create(name=tag_name)
+            blog.tags.add(tag)
+            tags.append(TagSerializer(tag).data)
+
+        if blog.status == "published" and blog.published == None:
+            blog.publish_blog()
+
         serialized_data = BlogSerializer(blog).data
         return Response(serialized_data, status=status.HTTP_201_CREATED)
     else:
@@ -55,8 +59,8 @@ def newBlog(request):
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
-def updateBlog(request, pk):
-    blog = Blog.objects.get(pk=pk)
+def updateBlog(request, slug):
+    blog = Blog.objects.get(slug=slug)
     category, created_category = Category.objects.get_or_create(name=request.data.get("category"))
     blog_felids = {
         "title":request.data.get("title"),
@@ -65,7 +69,6 @@ def updateBlog(request, pk):
         "body":request.data.get("body"),
         "status":request.data.get("status"),
         "category":category.id,
-        "tags":tags
     }
     blog_serializer_form = BlogSerializer(data=blog_felids, instance=blog)
     if blog_serializer_form.is_valid():
@@ -76,8 +79,11 @@ def updateBlog(request, pk):
             tag, created_tag = Tag.objects.get_or_create(name=tag_name)
             blog.tags.add(tag)
             tags.append(TagSerializer(tag).data)
+        if blog.status == "published" and blog.published == None:
+            blog.publish_blog()
+
         serialized_data = {
-            **blog,
+            **BlogSerializer(blog).data,
             "tags":tags
         }
         return Response(serialized_data, status=status.HTTP_201_CREATED)
@@ -91,6 +97,20 @@ def deleteBlog(request):
     blog = Blog.objects.get(id=request.data.get("id"))
     blog.delete()
     return Response({"success":"blog is deleted"}, status=status.HTTP_202_ACCEPTED)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def changeBlogStatus(request):
+    blog = Blog.objects.get(id=request.data.get("id"))
+    if request.data.get("status") in ["published","scheduled","draft","deleted"]:
+        blog.status = request.data.get("status")
+
+        if request.data.get("status") == "published":
+            print(">>>>>>>>>>>>>>>>>>>")
+            blog.publish_blog()
+        blog.save()
+    return Response({"success":"blog is saved"}, status=status.HTTP_202_ACCEPTED)
 
 
 @api_view(['POST'])
@@ -122,6 +142,19 @@ def getAllBlogs(request):
         "-published"
     ).filter(
         status="published"
+    )
+    serialized_data = BlogListSerializer(
+        blogs,
+        context={"request":request}, 
+        many = True
+    ).data
+    
+    return Response(serialized_data, status=status.HTTP_200_OK) 
+
+@api_view(['GET'])
+def getAllAdminBlogs(request):
+    blogs = Blog.objects.order_by(
+        "-created"
     )
     serialized_data = BlogListSerializer(
         blogs,

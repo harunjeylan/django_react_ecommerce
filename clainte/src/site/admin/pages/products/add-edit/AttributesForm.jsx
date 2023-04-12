@@ -68,8 +68,6 @@ const AttributesForm = ({
                 onChange={handleChange}
                 checked={values?.biodegradable}
                 name="biodegradable"
-                error={!!touched.biodegradable && !!errors.biodegradable}
-                helperText={touched.biodegradable && errors.biodegradable}
               />
             }
             label="Biodegradable"
@@ -98,7 +96,7 @@ const AttributesForm = ({
               }
               label="Expiry Date of Product"
             />
-            <Box className="ml-[25px]">
+            {/* <Box className="ml-[25px]">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Stack spacing={3}>
                   {isNonMobile ? (
@@ -156,7 +154,7 @@ const AttributesForm = ({
                   )}
                 </Stack>
               </LocalizationProvider>
-            </Box>
+            </Box> */}
           </Box>
         </FormGroup>
       </FormControl>
