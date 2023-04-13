@@ -11,61 +11,85 @@ import ProductCarouse from "../../components/ProductCarouse";
 
 import Banner from "../../../../components/Banner";
 import { tokens } from "../../../../theme";
-import { useGetAllProductsQuery } from "../../../../features/services/productApiSlice";
+import {
+  useGetTopRatedProductsQuery,
+  useGetMostSealedProductsQuery,
+} from "../../../../features/services/productApiSlice";
+import NowsRoom from "./NowsRoom";
+import Header2 from "../../../../components/Header2";
 
 function Home() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
-  const {
-    data: recommendedProducts,
-    isFetching: isFetchingRecommendedProducts,
-  } = useGetAllProductsQuery();
+  const { data: topRatedProducts, isFetching: isFetchingTopRatedProducts } =
+    useGetTopRatedProductsQuery();
+  const { data: mostSealedProducts, isFetching: isFetchingMostSealedProducts } =
+    useGetMostSealedProductsQuery();
 
-  console.log(recommendedProducts);
   return (
-    <Box className="flex flex-col gap-4 md:gap-8">
+    <Box className="flex flex-col gap-4 md:gap-12">
       <Box backgroundColor={colors.primary[400]} className="">
         <MainCarousel />
         {/* <CategoryBanner /> */}
       </Box>
+      <Box className="md:container px-2 md:mx-auto md:px-auto">
+        <Service />
+      </Box>
       <Box backgroundColor={colors.primary[400]} className={`px-auto`}>
         <Banner />
       </Box>
-      {/* {!isFetchingRecommendedProducts &&
-        recommendedProducts?.map((recommendedProduct) => (
-          <Box
-            key={recommendedProduct.id}
-            className="md:container px-2 md:mx-auto md:px-auto"
-          >
-            <Box className="flex justify-between items-center">
-              <Header
-                title={recommendedProduct?.title}
-                subtitle={recommendedProduct?.subtitle}
-                bodyText={``}
-              />
-              <Button
-                onClick={() => navigate(`/shopping`)}
-                variant="outlined"
-                color="secondary"
-                className={`px-8 py-3 `}
-              >
-                More
-              </Button>
-            </Box>
-          </Box>
-        ))} */}
-      {!isFetchingRecommendedProducts && (
-        <Box className="">
-          <ProductCarouse products={recommendedProducts} />
+      {!isFetchingTopRatedProducts && (
+        <Box
+          className={`w-full flex flex-col gap-4 px-2 md:mx-auto md:px-auto mt-8`}
+        >
+          <Header2
+            title="Top Rated Product"
+            subtitle="Alif Newsroom  Newsroom"
+          />
+          <ProductCarouse products={topRatedProducts} />
         </Box>
       )}
-
+      {!isFetchingMostSealedProducts && (
+        <Box
+          className={`w-full flex flex-col gap-4 px-2 md:mx-auto md:px-auto mt-8`}
+        >
+          <ProductCarouse
+            header={
+              <Header2
+                title="Most Sealed Product"
+                subtitle="Alif Newsroom  Newsroom"
+              />
+            }
+            products={mostSealedProducts}
+          />
+        </Box>
+      )}
       <Box backgroundColor={colors.primary[400]} className={`px-1 md:px-auto`}>
         <Banner />
       </Box>
+
       <Box className="md:container px-2 md:mx-auto md:px-auto">
-        <Service />
+        <NowsRoom
+          header={
+            <Header2
+              title="Get Alif Newsroom"
+              subtitle="Alif Newsroom Alif Newsroom"
+            />
+          }
+          footer={
+            <Box className="w-fit mx-auto">
+              <Button
+                onClick={() => navigate(`/blogs`)}
+                variant="outlined"
+                color="secondary"
+                className={`bg-opacity-0 hover:bg-opacity-100 px-[40px] py-4`}
+              >
+                Browse More
+              </Button>
+            </Box>
+          }
+        />
       </Box>
       <Box className="">
         <Subscribe />

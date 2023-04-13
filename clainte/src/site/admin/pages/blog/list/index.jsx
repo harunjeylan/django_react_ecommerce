@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import {
   Box,
+  Checkbox,
   Chip,
   CircularProgress,
   FormControl,
+  FormControlLabel,
   InputLabel,
   MenuItem,
   Select,
@@ -22,12 +24,12 @@ import {
   useChangeBlogStatusMutation,
   useDeleteBlogMutation,
   useGetAllAdminBlogsQuery,
+  useToggleBlogPinMutation,
 } from "../../../../../features/services/blogApiSlice";
 import dateFormatter from "../../../../../helpers/dateFormatter";
 const Status = ({ row: { id, status, published } }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const navigate = useNavigate();
   const [inputStatus, setInputStatus] = useState(status);
   const [changeBlogStatus] = useChangeBlogStatusMutation();
 
@@ -59,6 +61,29 @@ const Status = ({ row: { id, status, published } }) => {
           <MenuItem value={"deleted"}>{"Deleted"}</MenuItem>
         </Select>
       </FormControl>
+    </Box>
+  );
+};
+const PinToTop = ({ row: { id, pin_to_top } }) => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const [toggleBlogPin] = useToggleBlogPinMutation();
+  const handleCheck = () => {
+    toggleBlogPin({ post: { id } });
+  };
+  return (
+    <Box className="flex flex-col gap-1 items-center py-2 w-full h-full">
+      <FormControlLabel
+        control={
+          <Checkbox
+            color="secondary"
+            onChange={handleCheck}
+            checked={pin_to_top}
+            name="fragileProduct"
+          />
+        }
+        label="Fragile Product"
+      />
     </Box>
   );
 };
@@ -139,6 +164,12 @@ const AdminListBlog = () => {
       headerName: "Status",
       width: 150,
       renderCell: (props) => <Status {...props} />,
+    },
+    {
+      field: "pin_to_top",
+      headerName: "Pin To Top",
+      width: 150,
+      renderCell: (props) => <PinToTop {...props} />,
     },
     {
       field: "action",

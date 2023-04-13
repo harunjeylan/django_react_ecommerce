@@ -6,6 +6,10 @@ const getValue = (value, option) => {
   }
 };
 export const getInitialValues = (initialValues) => {
+  const variants = getValue(initialValues.variants, []).map((variant) => ({
+    variantLabel: variant.variantLabel,
+    options: variant.options.map((option) => option.label),
+  }));
   return {
     title: getValue(initialValues?.title, ""),
     brand: getValue(initialValues?.brand?.name, ""),
@@ -15,7 +19,7 @@ export const getInitialValues = (initialValues) => {
     restockQuantity: getValue(initialValues?.stock, 0),
     thumbnail: [],
     images: [],
-    variants: getValue(initialValues.variants, []),
+    variants: variants,
     shoppingType: getValue(initialValues?.shipping_type, ""),
     category: getValue(initialValues?.organize?.category?.name, ""),
     collection: getValue(initialValues?.organize?.collection?.name, ""),

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useTransition } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Formik } from "formik";
+import { Form, Formik } from "formik";
 
 import {
   Box,
@@ -144,9 +144,11 @@ const AddEditProduct = ({ isEditing }) => {
             handleChange,
             handleSubmit,
             setFieldValue,
+            setErrors,
+            setTouched,
           }) => (
             <>
-              <form onSubmit={handleSubmit} encType="multipart/form-data">
+              <Form onSubmit={handleSubmit} encType="multipart/form-data">
                 <Box className="flex flex-col gap-8 lg:gap-4 lg:flex-row">
                   <Box className="w-full lg:w-[60%]">
                     <Box className="w-full flex flex-col gap-8">
@@ -160,6 +162,8 @@ const AddEditProduct = ({ isEditing }) => {
                         setFieldValue={setFieldValue}
                         initialValues={initialValues}
                         setInitialValues={setInitialValues}
+                        setErrors={setErrors}
+                        setTouched={setTouched}
                       />
                       <InventoryForm
                         values={values}
@@ -207,7 +211,7 @@ const AddEditProduct = ({ isEditing }) => {
                     {productId && isEditing ? "Save Product" : "Create Product"}
                   </Button>
                 </Box>
-              </form>
+              </Form>
             </>
           )}
         </Formik>
