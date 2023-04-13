@@ -87,16 +87,18 @@ Anyone is able to perform search, view results, all details about selected produ
 - function preventing access restricted page(checkout) without registration/login
 - gallery image on product details page
 - create categories (category model has been created and relation to product exist, but there is no views implemented for categories)
+- blog post
 - customers reviews
+- add filters to search option (currently only search by any keyword is available)
+- search bar - allows user to search product by keyword. Return all products where search keywords appears
 
 #### Features Left to Implement
 
-- Chapa payment integration
-- search bar - allows user to search product by keyword. Return all products where search keywords appears
+- payment integration
 - create pagination
 - create contact page
 - add confirmation email after purchase (currently only flash message appears)
-- add filters to search option (currently only search by any keyword is available)
+
 
 ## Main Technologies used
 
@@ -112,7 +114,7 @@ Anyone is able to perform search, view results, all details about selected produ
 - **[JWT](https://jwt.io/)** - JSON Web Tokens are an open, industry standard RFC 7519 method for representing claims securely between two parties.
 - **[Nivo](https://nivo.rocks/)** - nivo provides a rich set of dataviz components, built on top of D3 and React.
 
-
+- **[Vite](https://vitejs.dev/)** - A build tool that aims to provide a faster and leaner development experience for modern web projects.
 
 - **[GitHub](https://github.com/)** - provides hosting for software development version control using Git.
 - **[Git](https://git-scm.com/)** - version-control system for tracking changes in source code during software development.
