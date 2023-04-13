@@ -113,6 +113,42 @@ def getRecommendedProducts(request):
         })
     return Response(serialized_data, status=status.HTTP_200_OK) 
 
+@api_view(['GET'])
+def getMostSealedProducts(request):
+    most_sealed_products = Product.objects.annotate(
+        sealed_count = Sum("orderdproduct__count")
+    ).order_by("-sealed_count")[:10]
+
+    serialized_data = []
+    for product in most_sealed_products:
+        inventory = Inventory.objects.get(product=product)
+        serialized_data.append({
+            **InventorySerializer(inventory).data, 
+            **ProductSerializer(product, context={"request":request}).data,
+            "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
+            "rating":product.review_set.all().aggregate(Avg('rating'))["rating__avg"],
+        })
+
+    return Response(serialized_data, status=status.HTTP_200_OK) 
+
+@api_view(['GET'])
+def getTopRatedProducts(request):
+    top_rated_products = Product.objects.annotate(
+        rating_count = Sum("review__rating")
+    ).order_by("-rating_count")[:10]
+
+    serialized_data = []
+    for product in top_rated_products:
+        inventory = Inventory.objects.get(product=product)
+        serialized_data.append({
+            **InventorySerializer(inventory).data, 
+            **ProductSerializer(product, context={"request":request}).data,
+            "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
+            "rating":product.review_set.all().aggregate(Avg('rating'))["rating__avg"],
+        })
+
+    return Response(serialized_data, status=status.HTTP_200_OK) 
+
 
 @api_view(['GET'])
 def getRelatedProducts(request, pk):

@@ -19,7 +19,8 @@ class BlogListSerializer(serializers.ModelSerializer):
         "category",
         "tags",
         "published",
-        "status"
+        "status",
+        "pin_to_top"
     )
         
 class BlogCommentSerializer(serializers.ModelSerializer):

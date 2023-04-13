@@ -112,6 +112,13 @@ def changeBlogStatus(request):
         blog.save()
     return Response({"success":"blog is saved"}, status=status.HTTP_202_ACCEPTED)
 
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def toggleBlogPin(request):
+    blog = Blog.objects.get(id=request.data.get("id"))
+    blog.pin_to_top = not blog.pin_to_top
+    blog.save()
+    return Response({"success":"blog is saved"}, status=status.HTTP_202_ACCEPTED)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

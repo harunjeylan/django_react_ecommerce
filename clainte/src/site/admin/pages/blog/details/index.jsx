@@ -127,7 +127,8 @@ const AdminBlogDetails = () => {
             {!isFetchingBlog ? (
               blog && (
                 <div
-                  className={`flex flex-col gap-4 w-full prose lg:prose-xl `}
+                  style={{ color: colors.neutral[400] }}
+                  className={`w-full prose lg:prose-xl `}
                   dangerouslySetInnerHTML={{ __html: blog.body }}
                 />
               )

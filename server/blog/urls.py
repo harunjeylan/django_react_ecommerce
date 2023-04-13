@@ -23,6 +23,8 @@ urlpatterns = [
 
     path("collections/", api.getBlogCollections , name="collections"),
     path("pin/", api.getPinToTopBlogs , name="pin-to-top"),
+    path("pin/toggle/", api.toggleBlogPin , name="pin-to-top"),
+    
     path("last/", api.getLastBlogs, name="last"),
     path("recent/", api.getRecentBlogs, name="recent"),
 

@@ -9,6 +9,8 @@ export const productApi = authApi.injectEndpoints({
     "brands",
     "admin_products",
     "products_data",
+    "most-sealed-products",
+    "top-rated-products",
   ],
   endpoints: (builder) => ({
     addProduct: builder.mutation({
@@ -24,7 +26,17 @@ export const productApi = authApi.injectEndpoints({
         url: `api/products/${productId}/edit/`,
         method: "PUT",
         body: post,
-        invalidatesTags: ["products", "products_details", "products_data"],
+        invalidatesTags: [
+          "products",
+          "recommended-products",
+          "products-by-category",
+          "products_details",
+          "brands",
+          "admin_products",
+          "products_data",
+          "most-sealed-products",
+          "top-rated-products",
+        ],
       }),
     }),
     getAllProducts: builder.query({
@@ -57,6 +69,16 @@ export const productApi = authApi.injectEndpoints({
       query: ({ productId }) => `api/products/${productId}/related/`,
       providesTags: ["products-by-category"],
     }),
+
+    getMostSealedProducts: builder.query({
+      query: () => `api/products/most-sealed/`,
+      providesTags: ["most-sealed-products"],
+    }),
+    getTopRatedProducts: builder.query({
+      query: () => `api/products/top-rated/`,
+      providesTags: ["top-rated-products"],
+    }),
+
     uploadImage: builder.mutation({
       query: ({ post }) => ({
         url: `api/products/images/upload/`,
@@ -138,4 +160,6 @@ export const {
   useRemoveThumbnailMutation,
   useSearchProductsQuery,
   useGetProductsForAdminQuery,
+  useGetTopRatedProductsQuery,
+  useGetMostSealedProductsQuery,
 } = productApi;

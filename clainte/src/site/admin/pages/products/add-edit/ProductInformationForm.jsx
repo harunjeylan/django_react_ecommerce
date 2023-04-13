@@ -30,6 +30,9 @@ import {
   useRemoveImageMutation,
   useRemoveThumbnailMutation,
 } from "../../../../../features/services/productApiSlice";
+import { Field } from "formik";
+import "react-quill/dist/quill.snow.css";
+import ReactQuill from "react-quill";
 
 const Brand = ({ brand, handleUpdate, handleDelete }) => {
   const InputRef = useRef();
@@ -75,7 +78,9 @@ const ProductInformationForm = ({
   handleChange,
   setFieldValue,
   initialValues,
-  setInitialValues
+  setInitialValues,
+  setTouched,
+  setErrors,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -122,16 +127,18 @@ const ProductInformationForm = ({
     }
   };
   const handelRemoveThumbnail = () => {
-    removeThumbnail({ post: { id: initialValues?.id } }).then((response) =>{
-        console.log(response)
-        setInitialValues(prev=>({...prev,thumbnail:undefined}))
-      }
-    );
+    removeThumbnail({ post: { id: initialValues?.id } }).then((response) => {
+      console.log(response);
+      setInitialValues((prev) => ({ ...prev, thumbnail: undefined }));
+    });
   };
   const handelRemoveImage = (imageId) => {
     removeImage({ post: { id: imageId } }).then((response) => {
       console.log(response);
-      setInitialValues((prev) => ({ ...prev, images: prev.images.filter(image=>image.id!==imageId) }));
+      setInitialValues((prev) => ({
+        ...prev,
+        images: prev.images.filter((image) => image.id !== imageId),
+      }));
     });
   };
 
@@ -213,7 +220,38 @@ const ProductInformationForm = ({
             <Typography variant="h6" fontWeight="bold" className="my-2">
               Product Description
             </Typography>
-            <TextField
+            <Field name="description">
+              {({ meta }) => (
+                <Box>
+                  <ReactQuill
+                    theme="snow"
+                    value={values.description}
+                    modules={{
+                      toolbar: [
+                        [{ font: [] }],
+                        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                        ["bold", "italic", "underline", "strike"],
+                        [{ list: "ordered" }, { list: "bullet" }],
+                        [{ indent: "-1" }, { indent: "+1" }, { align: [] }],
+                        [{ color: [] }, { background: [] }],
+                        [{ script: "sub" }, { script: "super" }],
+                        ["blockquote", "code-block"],
+                        ["clean"],
+                      ],
+                    }}
+                    onBlur={handleBlur}
+                    onChange={(newVal) => {
+                      setFieldValue("description", newVal);
+                    }}
+                  />
+                  {console.log(errors)}
+                  {!!touched.description && !!errors.description && (
+                    <div className="error">{errors.description}</div>
+                  )}
+                </Box>
+              )}
+            </Field>
+            {/* <TextField
               color="secondary"
               fullWidth
               variant="filled"
@@ -228,7 +266,7 @@ const ProductInformationForm = ({
               error={!!touched.description && !!errors.description}
               helperText={touched.description && errors.description}
               sx={{ gridColumn: "span 4" }}
-            />
+            /> */}
           </Box>
           {initialValues?.thumbnail && (
             <Box className="w-full ">
@@ -305,12 +343,11 @@ const ProductInformationForm = ({
                 className="grid grid-cols-4 gap-4 p-4"
               >
                 {initialValues?.images?.map((imageUrl, index) => (
-                  <Box key={`product_image ${index}`} className="w-full flex flex-col gap-2 outline outline-1 p-1 rounded-sm">
-                    <img
-                      
-                      alt={`product_image ${index}`}
-                      src={imageUrl.image}
-                    />
+                  <Box
+                    key={`product_image ${index}`}
+                    className="w-full flex flex-col gap-2 outline outline-1 p-1 rounded-sm"
+                  >
+                    <img alt={`product_image ${index}`} src={imageUrl.image} />
                     <Box>
                       <Button
                         onClick={() => handelRemoveImage(imageUrl.id)}

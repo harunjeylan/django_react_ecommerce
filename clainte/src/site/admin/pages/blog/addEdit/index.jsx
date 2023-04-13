@@ -47,21 +47,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-
-const modules = {
-  toolbar: [
-    [{ font: [] }],
-    [{ header: [1, 2, 3, 4, 5, 6, false] }],
-    ["bold", "italic", "underline", "strike"],
-    [{ list: "ordered" }, { list: "bullet" }],
-    [{ indent: "-1" }, { indent: "+1" }, { align: [] }],
-    [{ color: [] }, { background: [] }],
-    [{ script: "sub" }, { script: "super" }],
-    ["blockquote", "code-block"],
-    ["clean"],
-    ["link", "image", "video"],
-  ],
-};
+import quillModules from "../../../../../helpers/quillModules";
 
 const Item = ({ item, itemName, handleUpdate, handleDelete }) => {
   const InputRef = useRef();
@@ -533,7 +519,7 @@ const AddEditBlog = ({ isEditing }) => {
                           <ReactQuill
                             theme="snow"
                             value={values.body}
-                            modules={modules}
+                            modules={quillModules}
                             onBlur={handleBlur}
                             onChange={(newVal) => setFieldValue("body", newVal)}
                           />

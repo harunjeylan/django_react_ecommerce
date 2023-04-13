@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Header2 from "../../../../components/Header2.jsx";
 import {
   Box,
@@ -30,6 +30,7 @@ import {
 import { SERVER_HOST } from "../../../../features/auth/authApi.js";
 import BlogCard from "../../components/BlogCard.jsx";
 import LargeBlogCard from "../../components/LargeBlogCard";
+
 const Blog = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -47,7 +48,7 @@ const Blog = () => {
     useGetBlogCollectionsQuery();
   const { data: filters, isFetching: isFetchingFilters } =
     useGetBlogFilterQuery();
-  console.log(blogs);
+
   useEffect(() => {
     let timeOut = setTimeout(() => {
       if (search !== "") {
@@ -56,38 +57,48 @@ const Blog = () => {
     }, 1000);
     return () => clearTimeout(timeOut);
   }, [search]);
-  const handleCheckFilter = (e, setValue) => {
-    setValue((prevValues) => {
-      if (e.target.checked) {
-        return [...prevValues, e.target.value];
-      } else {
-        return prevValues.filter((prevValue) => prevValue !== e.target.value);
+
+  const handleCheckFilter = useCallback(() => {
+    return (e, setValue) => {
+      setValue((prevValues) => {
+        if (e.target.checked) {
+          return [...prevValues, e.target.value];
+        } else {
+          return prevValues.filter((prevValue) => prevValue !== e.target.value);
+        }
+      });
+    };
+  }, []);
+
+  const handleSearch = useCallback(() => {
+    return () => {
+      let searchAndFilterValue = "";
+      if (searchValue !== "") {
+        searchAndFilterValue = searchAndFilterValue + `search=${searchValue}&`;
       }
-    });
-  };
+
+      categoryValue.forEach((category) => {
+        if (category !== "") {
+          searchAndFilterValue = searchAndFilterValue + `category=${category}&`;
+        }
+      });
+      archiveValue.forEach((archive) => {
+        if (archive !== "") {
+          searchAndFilterValue = searchAndFilterValue + `archive=${archive}&`;
+        }
+      });
+      tagValue.forEach((tag) => {
+        if (tag !== "") {
+          searchAndFilterValue = searchAndFilterValue + `tag=${tag}&`;
+        }
+      });
+
+      setSearchAndFilter(searchAndFilterValue);
+    };
+  }, []);
+
   useEffect(() => {
-    let searchAndFilterValue = "";
-    if (searchValue !== "") {
-      searchAndFilterValue = searchAndFilterValue + `search=${searchValue}&`;
-    }
-
-    categoryValue.forEach((category) => {
-      if (category !== "") {
-        searchAndFilterValue = searchAndFilterValue + `category=${category}&`;
-      }
-    });
-    archiveValue.forEach((archive) => {
-      if (archive !== "") {
-        searchAndFilterValue = searchAndFilterValue + `archive=${archive}&`;
-      }
-    });
-    tagValue.forEach((tag) => {
-      if (tag !== "") {
-        searchAndFilterValue = searchAndFilterValue + `tag=${tag}&`;
-      }
-    });
-
-    setSearchAndFilter(searchAndFilterValue);
+    handleSearch();
   }, [archiveValue, categoryValue, searchValue, tagValue]);
 
   return (
@@ -96,7 +107,6 @@ const Blog = () => {
         <Header2
           title="Alif Newsroom"
           subtitle="Geeks Newsroom Geeks Newsroom"
-          bodyText="Stories, tips, and tools to inspire you to find your most creative self. Subscribe to get curated content delivered directly to your inbox."
         />
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>

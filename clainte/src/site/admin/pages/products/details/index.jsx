@@ -334,7 +334,13 @@ const ProductDetails = () => {
             <Tab label="Reviews" value="reviews" />
           </Tabs>
           <Box className="flex flex-wrap gap-4  mt-8">
-            {value === "description" && <Box>{product?.description}</Box>}
+            {value === "description" && (
+              <div
+                style={{ color: colors.neutral[400] }}
+                className={`w-full prose lg:prose-xl `}
+                dangerouslySetInnerHTML={{ __html: product?.description }}
+              />
+            )}
             {value === "reviews" && (
               <Box className={`flex flex-col gap-4 w-full`}>
                 {product?.reviews?.map((review, index) => (

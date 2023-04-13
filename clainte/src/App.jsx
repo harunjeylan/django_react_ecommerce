@@ -108,9 +108,6 @@ const ViewCart = React.lazy(() =>
 const Confirmation = React.lazy(() =>
   import("./site/customers/pages/checkout/confirmation/index")
 );
-const HomeAppearance = React.lazy(() =>
-  import("./site/admin/pages/appearance/HomeAppearance")
-);
 
 const Blog = React.lazy(() => import("./site/customers/pages/blog"));
 const Contact = React.lazy(() => import("./site/customers/pages/contact"));
@@ -320,16 +317,6 @@ function App() {
                 element={
                   <AdminLayout>
                     <CustomerDetails />
-                  </AdminLayout>
-                }
-              />
-            </Route>
-            <Route path="appearance">
-              <Route
-                path="home"
-                element={
-                  <AdminLayout>
-                    <HomeAppearance />
                   </AdminLayout>
                 }
               />

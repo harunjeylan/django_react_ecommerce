@@ -64,12 +64,11 @@ function AppBar() {
     }, 1000);
     return () => clearTimeout(timeOut);
   }, [searchValue]);
-
   return (
     <>
       <Box
         className={`sticky top-0 items-center w-full left-0 z-[200] drop-shadow-md ease-in-out duration-500 py-2`}
-        backgroundColor={colors.primary[500]}
+        backgroundColor={colors.primary[400]}
         // background
       >
         <Box className="w-[80%] m-auto flex justify-between items-center">

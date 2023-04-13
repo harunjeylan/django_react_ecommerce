@@ -5,7 +5,7 @@ import { tokens } from "../../../theme";
 import { useTheme } from "@emotion/react";
 import { Box } from "@mui/material";
 
-const BlogCard = ({ blog }) => {
+const BlogCard = ({ blog, imageHight = 260 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
@@ -18,13 +18,17 @@ const BlogCard = ({ blog }) => {
     >
       {blog.thumbnail ? (
         <CardMedia
-          sx={{ height: 360, width: "100%" }}
+          sx={{ height: imageHight, width: "100%" }}
           title={`${blog.title + blog.thumbnail}`}
           image={blog.thumbnail}
         />
       ) : (
         <Box
-          sx={{ height: 360, width: "100%", backgroundColor: colors.grey[200] }}
+          sx={{
+            height: imageHight,
+            width: "100%",
+            backgroundColor: colors.grey[200],
+          }}
           className="flex justify-center items-center"
         >
           No Image

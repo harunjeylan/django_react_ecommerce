@@ -172,6 +172,27 @@ export const blogApi = authApi.injectEndpoints({
         "related-blogs",
       ],
     }),
+    toggleBlogPin: builder.mutation({
+      query: ({ post }) => ({
+        url: `blogs/pin/toggle/`,
+        method: "PUT",
+        body: post,
+      }),
+      invalidatesTags: [
+        "blogs",
+        "blogs-details",
+        "blogs-data",
+        "blogs-by-searchAndFilter",
+        "pin-to-top-blogs",
+        "recent-blogs",
+        "blogs-archives",
+        "blogs-categories",
+        "blogs-tags",
+        "blog-collections",
+        "blog-filter",
+        "related-blogs",
+      ],
+    }),
   }),
 });
 
@@ -193,7 +214,7 @@ export const {
   useUpdateBlogMutation,
   useDeleteBlogMutation,
   useChangeBlogStatusMutation,
-
+  useToggleBlogPinMutation,
   useUploadBlogImageMutation,
   useAddBlogCommentMutation,
   useGetRatingsQuery,
