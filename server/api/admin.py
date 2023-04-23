@@ -10,6 +10,7 @@ from .models import (
     Collection, 
     Tag, 
     Option, 
+    Discount,
     Variant, 
     VariantOption, 
     Image, 
@@ -54,6 +55,10 @@ class OptionAdmin(admin.ModelAdmin):
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
     list_display = ( 'name',)
+
+@admin.register(Discount)
+class DiscountAdmin(admin.ModelAdmin):
+    list_display = ( 'name','start_date','end_date','amount')
 
 @admin.register(Variant)
 class VariantAdmin(admin.ModelAdmin):

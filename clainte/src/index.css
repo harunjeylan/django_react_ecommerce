@@ -47,3 +47,7 @@ body {
 #side-bar--disabled-anchor:hover {
   color: none !important;
 }
+
+.MuiPickersPopper-root {
+  z-index: 100000;
+}

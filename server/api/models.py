@@ -68,7 +68,13 @@ class Organize(models.Model):
     collection = models.ForeignKey(Collection,null=True, blank=True, on_delete=models.SET_NULL)
     vendor = models.ForeignKey(Vendor,null=True, blank=True, on_delete=models.SET_NULL)
     tags = models.ManyToManyField(Tag)
-
+class Discount(models.Model):
+    name = models.CharField(max_length=100)
+    start_date =  models.DateField()
+    end_date =  models.DateField()
+    amount = models.FloatField()
+    def __str__(self):
+        return f"{self.name} -> {self.amount}%"
 class Product(models.Model):
     title = models.CharField(max_length=100)
     brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, null=True, blank=True)
@@ -91,6 +97,7 @@ class Country(models.Model):
 class Inventory(models.Model):
     regular_pricing = models.FloatField()
     sale_pricing = models.FloatField()
+    discount = models.ForeignKey(Discount, null=True, blank=True, on_delete=models.SET_NULL)
     stock = models.FloatField()
     SHOPPING_TYPES = [
         ("fulfilled_by_seller","Fulfilled by Seller" ),

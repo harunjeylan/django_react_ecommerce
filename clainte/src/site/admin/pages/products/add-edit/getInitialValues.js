@@ -16,6 +16,7 @@ export const getInitialValues = (initialValues) => {
     description: getValue(initialValues?.description, ""),
     salePrice: getValue(initialValues?.sale_pricing, 0),
     regularPrice: getValue(initialValues?.regular_pricing, 0),
+    discount: getValue(initialValues?.discount, null),
     restockQuantity: getValue(initialValues?.stock, 0),
     thumbnail: [],
     images: [],

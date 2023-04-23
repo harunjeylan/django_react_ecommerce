@@ -106,6 +106,7 @@ const InventoryForm = ({
         <Box className="w-[70%]">
           {inventoryValue === "pricing" && (
             <PricingForm
+              setFieldValue={setFieldValue}
               handleBlur={handleBlur}
               handleChange={handleChange}
               values={values}
