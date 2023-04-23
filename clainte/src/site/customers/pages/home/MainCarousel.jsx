@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-
+import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -15,6 +15,7 @@ import Header2 from "../../../../components/Header2";
 const MainCarousel = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
   return (
     <Box>
       <Swiper

@@ -43,6 +43,11 @@ urlpatterns = [
   path("brands/update/", api.updateBrand , name="update_brand"),
   path("brands/delete/", api.deleteBrand , name="delete_brand"),
 
+  path("discounts/", api.getAllDiscounts , name="discounts"),
+  path("discounts/add/", api.addDiscount , name="new_discount"),
+  path("discounts/update/", api.updateDiscount , name="update_discount"),
+  path("discounts/delete/", api.deleteDiscount , name="delete_discount"),
+
   path("variants/", api.getAllVariants , name="variants"),
   path("variants/add/", api.addVariant , name="new_variant"),
   path("variants/update/", api.updateVariant , name="update_variant"),

@@ -92,7 +92,7 @@ const ProductInformationForm = ({
   const [deleteBrand, { isLoading: isDeleting }] = useDeleteBrandMutation();
   const [removeImage] = useRemoveImageMutation();
   const [removeThumbnail] = useRemoveThumbnailMutation();
-
+  console.log(errors);
   const handleClean = (image) => {
     console.log("list cleaned", image);
   };
@@ -246,7 +246,12 @@ const ProductInformationForm = ({
                   />
                   {console.log(errors)}
                   {!!touched.description && !!errors.description && (
-                    <div className="error">{errors.description}</div>
+                    <>
+                      <Divider color="error" className="h-[2px] mt-[-1px]" />
+                      <Typography className="text-red-500">
+                        {errors.description}
+                      </Typography>
+                    </>
                   )}
                 </Box>
               )}

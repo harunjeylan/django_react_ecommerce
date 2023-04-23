@@ -16,6 +16,7 @@ from api.models import (
     VariantOption,
     Image,
     Organize,
+    Discount,
     Country,
     Inventory,
     WishList,
@@ -24,6 +25,7 @@ from api.models import (
     OrderAddress,
     OrderdProduct,
     OrderdVariantOption,
+
 )
 
 
@@ -64,6 +66,12 @@ class CollectionSerializer(serializers.ModelSerializer):
 class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
+        fields = "__all__"
+class DiscountSerializer(serializers.ModelSerializer):
+    start_date =  serializers.DateField(format="%d-%m-%Y", input_formats=['%d-%m-%Y', 'iso-8601'])
+    end_date =  serializers.DateField(format="%d-%m-%Y", input_formats=['%d-%m-%Y', 'iso-8601'])
+    class Meta:
+        model = Discount
         fields = "__all__"
 class TagSerializer(serializers.ModelSerializer):
     class Meta:

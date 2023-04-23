@@ -26,7 +26,7 @@ const Model = ({ children, openModel, setOpenModel, modelTitle, width }) => {
       className={`${openModel ? "fixed " : "hidden"} bg-black/20
       w-full h-full left-0 top-0 justify-between items-center
       overflow-y-auto
-      pt-[60px] ease-in-out z-[10000000]`}
+      pt-[60px] ease-in-out z-[100]`}
     >
       <Box
         width={getWidth()}

@@ -37,6 +37,7 @@ from api.models import (
     VariantOption,
     Image,
     Organize,
+    Discount,
     Country,
     Inventory,
     WishList,
@@ -58,6 +59,7 @@ from api.serializer import (
     VariantOptionSerializer,
     ImageSerializer,
     OrganizeSerializer,
+    DiscountSerializer,
     CountrySerializer,
     InventorySerializer,
     WishListSerializer,
@@ -474,6 +476,7 @@ def newProduct(request):
         "frozen_product":frozen_product,
         "max_allowed_temperature":max_allowed_temperature,
         "product":product.id,
+        "discount":request.data.get("discount"),
     }
     if request.data.get("shoppingType") == "fulfilled_by_seller" or request.data.get("shoppingType") == "fulfilled_by_phoenix":
         inventory_felids["shipping_type"] = request.data.get("shoppingType")
@@ -558,6 +561,9 @@ def updateProduct(request, pk):
         })
     # print(product.variants)
     product.save()
+    if "discount" in request.data:
+        discount = Discount.objects.get(id=request.data.get("discount"))
+        product.inventory.discount = discount
 
     product.inventory.regular_pricing=request.data.get("regularPrice")
     product.inventory.sale_pricing=request.data.get("salePrice")
@@ -816,6 +822,41 @@ def updateBrand(request):
 def deleteBrand(request):
     brand = Brand.objects.get(id=request.data.get("id"))
     brand.delete()
+    return Response({"success":"deleted"}, status=status.HTTP_202_ACCEPTED)
+
+# =================================================================================
+@api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+def getAllDiscounts(request):
+    discounts = DiscountSerializer(Discount.objects.order_by("-end_date"), many=True).data
+    return Response(discounts, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def addDiscount(request):
+    discount_serializer_form = DiscountSerializer(data=request.data)
+    if discount_serializer_form.is_valid():
+        discount = discount_serializer_form.save()
+        return Response(DiscountSerializer(discount).data, status=status.HTTP_201_CREATED)
+    return Response(discount_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST','PUT'])
+@permission_classes([IsAuthenticated])
+def updateDiscount(request):
+    discount = Discount.objects.get(id=request.data.get("id"))
+    discount_serializer_form = DiscountSerializer(data=request.data, instance=discount)
+    if discount_serializer_form.is_valid():
+        discount = discount_serializer_form.save()
+        return Response(DiscountSerializer(discount).data, status=status.HTTP_202_ACCEPTED)
+    return Response(discount_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def deleteDiscount(request):
+    discount = Discount.objects.get(id=request.data.get("id"))
+    discount.delete()
     return Response({"success":"deleted"}, status=status.HTTP_202_ACCEPTED)
 
 # =================================================================================
