@@ -47,16 +47,16 @@ export const blogApi = authApi.injectEndpoints({
         url: `blogs/images/upload/`,
         method: "POST",
         body: post,
-        invalidatesTags: ["blogs"],
       }),
+      invalidatesTags: ["blogs"],
     }),
     addBlogComment: builder.mutation({
       query: ({ post, blogSlug }) => ({
         url: `blogs/${blogSlug}/comment/add/`,
         method: "POST",
         body: post,
-        invalidatesTags: ["blogs-details"],
       }),
+      invalidatesTags: ["blogs-details"],
     }),
     getRatings: builder.query({
       query: () => "blogs/ratings/",

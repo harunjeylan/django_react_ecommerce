@@ -1,8 +1,19 @@
+import dayjs from "dayjs";
+
 const getValue = (value, option) => {
   if (value) {
     return value;
   } else {
     return option;
+  }
+};
+const getDate = (stringDate) => {
+  if (stringDate) {
+    const [day, month, year] = stringDate.split("-");
+    console.log(day, month, year);
+    return new Date(year, month - 1, day);
+  } else {
+    return new Date();
   }
 };
 export const getInitialValues = (initialValues) => {
@@ -48,7 +59,10 @@ export const getInitialValues = (initialValues) => {
     },
     expiryDate: {
       selected: getValue(initialValues?.expiryDate?.salePrice, false),
-      date: getValue(initialValues?.expiry_date, new Date()),
+      date: getValue(
+        dayjs(getDate(initialValues?.expiry_date)),
+        dayjs(new Date())
+      ),
     },
 
     productIDType: getValue(initialValues?.productIDType, ""),
