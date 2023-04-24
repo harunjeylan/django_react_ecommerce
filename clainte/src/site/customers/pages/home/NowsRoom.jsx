@@ -16,7 +16,7 @@ const NowsRoom = ({ header, footer }) => {
         blogs.length ? (
           <Box>
             {header}
-            <Box className="w-full flex flex-col md:flex-row my-8 gap-8 my-8">
+            <Box className="w-full flex flex-col md:flex-row my-8 gap-8">
               <Box className="w-full grid grid-cols-4 flex-col gap-8 ">
                 {blogs.map((blog, index) => (
                   <BlogCard

@@ -24,6 +24,7 @@ export const refreshAccessToken = async (store) => {
     }
     return response;
   }
+  return { error: "Unauthorize!" };
 };
 
 const baseQuery = fetchBaseQuery({
@@ -36,16 +37,22 @@ const baseQuery = fetchBaseQuery({
     return headers;
   },
 });
-const baseQueryWithReauth = async (args, api, extraOptions) => {
+const baseQueryWithReOauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
   if (result.error && result.error.status === 401) {
     let response = await refreshAccessToken(api);
-    console.log(response);
     console.log("refreshing token ...");
-    if (response && response?.status !== 401) {
+    if (
+      response &&
+      !response.error &&
+      response?.status >= 200 &&
+      response?.status <= 399
+    ) {
+      console.log(response);
       return await baseQuery(args, api, extraOptions);
     } else {
-      throw Error([{ error: "Unauthorize!" }]);
+      // throw Error([{ error: "Unauthorize!" }]);
+      return response;
     }
   } else {
     return result;
@@ -53,6 +60,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 };
 
 export const authApi = createApi({
-  baseQuery: baseQueryWithReauth,
+  baseQuery: baseQueryWithReOauth,
   endpoints: (builder) => ({}),
 });

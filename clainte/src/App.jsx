@@ -21,6 +21,7 @@ import { refreshAccessToken } from "./features/auth/authApi";
 import store from "./app/store";
 import dayjs from "dayjs";
 import BlogDetails from "./site/customers/pages/blog/details";
+import ProductsListCustomer from "./site/customers/pages/products/list";
 // import AddEditBlog from "./site/admin/pages/blog/addEdit";
 
 // import CustomerLayout from "./site/customers/layout";
@@ -329,6 +330,14 @@ function App() {
               element={
                 <CustomerLayout>
                   <Home />
+                </CustomerLayout>
+              }
+            />
+            <Route
+              path="products/:productFilter"
+              element={
+                <CustomerLayout>
+                  <ProductsListCustomer />
                 </CustomerLayout>
               }
             />
