@@ -92,7 +92,6 @@ const ProductInformationForm = ({
   const [deleteBrand, { isLoading: isDeleting }] = useDeleteBrandMutation();
   const [removeImage] = useRemoveImageMutation();
   const [removeThumbnail] = useRemoveThumbnailMutation();
-  console.log(errors);
   const handleClean = (image) => {
     console.log("list cleaned", image);
   };
@@ -128,13 +127,11 @@ const ProductInformationForm = ({
   };
   const handelRemoveThumbnail = () => {
     removeThumbnail({ post: { id: initialValues?.id } }).then((response) => {
-      console.log(response);
       setInitialValues((prev) => ({ ...prev, thumbnail: undefined }));
     });
   };
   const handelRemoveImage = (imageId) => {
     removeImage({ post: { id: imageId } }).then((response) => {
-      console.log(response);
       setInitialValues((prev) => ({
         ...prev,
         images: prev.images.filter((image) => image.id !== imageId),
@@ -244,12 +241,11 @@ const ProductInformationForm = ({
                       setFieldValue("description", newVal);
                     }}
                   />
-                  {console.log(errors)}
                   {!!touched.description && !!errors.description && (
                     <>
                       <Divider color="error" className="h-[2px] mt-[-1px]" />
                       <Typography className="text-red-500">
-                        {errors.description}
+                        {touched.description && errors.description}
                       </Typography>
                     </>
                   )}

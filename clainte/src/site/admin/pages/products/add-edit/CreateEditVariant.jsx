@@ -10,24 +10,29 @@ import {
 import {
   useAddVariantMutation,
   useUpdateVariantMutation,
-  useDeleteVariantMutation,
   useDeleteOptionMutation,
 } from "../../../../../features/services/variantApiSlice";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import Option from "./Option";
+import { useTheme } from "@emotion/react";
+import { tokens } from "../../../../../theme";
 
 const CreateEditVariant = ({
   creatingVariant,
   editingVariant,
   setCreatingVariant,
   setEditingVariant,
-  handleAddValiant,
+  handleAddVariant,
 }) => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   const variantInputRef = useRef();
   const [addVariant] = useAddVariantMutation();
   const [updateVariant] = useUpdateVariantMutation();
-  const [deleteVariant] = useDeleteVariantMutation();
+
   const [deleteOption] = useDeleteOptionMutation();
   useEffect(() => {
     if (creatingVariant) {
@@ -136,7 +141,7 @@ const CreateEditVariant = ({
       });
     }
   };
-  const handleSaveValiant = () => {
+  const handleSaveVariant = () => {
     if (creatingVariant) {
       addVariant({ post: creatingVariant });
     } else if (editingVariant) {
@@ -146,38 +151,20 @@ const CreateEditVariant = ({
     setCreatingVariant(undefined);
     setEditingVariant(undefined);
   };
-  const handleDeleteValiant = () => {
-    deleteVariant({ post: { id: editingVariant.id } });
-    setEditingVariant(undefined);
-  };
-  const handleCancle = () => {
+
+  const handleCancel = () => {
     setCreatingVariant(undefined);
     setEditingVariant(undefined);
   };
   return (
-    <Box className="w-full">
+    <Box
+      borderColor={colors.grey[500]}
+      className="flex flex-col gap-4 border p-4 rounded-md"
+    >
       <Box>
         <Typography variant="h5" fontWeight="bold" className="py-2">
           Name
         </Typography>
-        <Box className="flex gap-4 mb-4">
-          <Button
-            onClick={handleAddValiant}
-            type="button"
-            variant="outlined"
-            color="secondary"
-          >
-            New Variant
-          </Button>
-          <Button
-            onClick={handleDeleteValiant}
-            type="button"
-            variant="outlined"
-            color="secondary"
-          >
-            delete Variant
-          </Button>
-        </Box>
         <Divider />
         <Box className="flex justify-between items-center gap-2 mb-4">
           <TextField
@@ -197,7 +184,7 @@ const CreateEditVariant = ({
         <Typography variant="h5" fontWeight="bold" className="py-2">
           Options
         </Typography>
-        <Box className="flex flex-col gap-4 mt-4">
+        <Box className="flex flex-col gap-4 mb-4">
           {editingVariant &&
             editingVariant?.options?.map((option, index) => (
               <Option
@@ -233,24 +220,26 @@ const CreateEditVariant = ({
             </Button>
           </Box>
         </Box>
-        <Box className="flex flex-row gap-4 mt-4">
+        <Divider />
+
+        <Box className="flex gap-2 mt-4 ">
           <Button
             type="button"
             color="secondary"
             variant="outlined"
-            className={` mt-4`}
-            onClick={handleSaveValiant}
+            startIcon={<SaveAsIcon />}
+            onClick={handleSaveVariant}
           >
-            Save Variant
+            Save
           </Button>
           <Button
-            onClick={handleCancle}
             type="button"
-            color="secondary"
+            color="warning"
             variant="outlined"
-            className={` mt-4`}
+            startIcon={<CloseIcon />}
+            onClick={handleCancel}
           >
-            cancle
+            cancel
           </Button>
         </Box>
       </Box>

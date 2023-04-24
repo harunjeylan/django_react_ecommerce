@@ -23,7 +23,6 @@ import {
 
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import StarIcon from "@mui/icons-material/Star";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
@@ -55,6 +54,7 @@ import { selectCurrentUser } from "../../../../../features/auth/authSlice";
 import Header from "../../../../../components/Header";
 import Reviews from "../../../../../components/Reviews";
 import ReviewForm from "../../../../../components/ReviewForm";
+import ProductRating from "../../../../../components/ProductRating";
 
 const ProductDetails = () => {
   const theme = useTheme();
@@ -260,7 +260,7 @@ const ProductDetails = () => {
               picture that he had recently cut out of an illustrated magazine
               and housed in a nice, gilded frame.
             </Typography>
-            <Box className=" w-full mt-4 rounded-md flex justify-between p-4 m-4 gap-8">
+            <Box className=" w-full mt-4  flex justify-between p-4 gap-8">
               <Box className=" w-full">
                 <Box className=" w-full">
                   <Typography
@@ -313,67 +313,6 @@ const ProductDetails = () => {
                   >
                     Brand : {product?.brand?.name}
                   </Typography>
-                </Box>
-                <Box className=" w-full">
-                  <Typography
-                    variant="h1"
-                    color={colors.grey[100]}
-                    fontWeight="bold"
-                    className={`text-xl md:text-2xl  text-left my-4`}
-                  >
-                    Rating
-                  </Typography>
-                  <Box className="flex flex-col gap-4 justify-start w-full">
-                    {!isFetchingProduct ? (
-                      <Box className=" w-full flex gap-4 items-center">
-                        <Box className="w-32">
-                          <StarIcon
-                            fontSize="large"
-                            className="text-yellow-500 text-6xl"
-                          />
-                          <Typography
-                            variant="h1"
-                            color={colors.greenAccent[400]}
-                          >
-                            {product?.rating.average}
-                          </Typography>
-                          <Typography
-                            variant="h5"
-                            color={colors.greenAccent[400]}
-                          >
-                            {product?.rating.total} Reviews
-                          </Typography>
-                        </Box>
-
-                        <Box className=" w-full flex flex-col gap-2">
-                          {product?.rating?.values?.map((rating) => (
-                            <Box
-                              key={rating.rating}
-                              className={`flex gap-2 w-full items-center`}
-                            >
-                              <Typography>
-                                <strong>{rating.rating}</strong>
-                              </Typography>
-                              <Box
-                                backgroundColor={colors.primary[300]}
-                                className="w-full h-4 outline-1 flex justify-start items-center rounded-md"
-                              >
-                                <span
-                                  style={{ width: `${rating?.average}%` }}
-                                  className={`py1 bg-yellow-500 h-full rounded-md`}
-                                />
-                              </Box>
-                              <strong>{rating?.total}</strong>
-                            </Box>
-                          ))}
-                        </Box>
-                      </Box>
-                    ) : (
-                      <Box className="w-full flex items-center justify-center h-full min-h-40">
-                        <CircularProgress color="secondary" />
-                      </Box>
-                    )}
-                  </Box>
                 </Box>
               </Box>
               <Box className="flex flex-col gap-4 justify-start w-fit">
@@ -444,6 +383,29 @@ const ProductDetails = () => {
                     </Box>
                   </Box>
                 </Box>
+              </Box>
+            </Box>
+            <Box className=" w-full gap-8">
+              <Box className=" w-full">
+                <Typography
+                  variant="h1"
+                  color={colors.grey[100]}
+                  fontWeight="bold"
+                  className={`text-xl md:text-2xl  text-left my-4`}
+                >
+                  Rating
+                </Typography>
+                <Box className="flex flex-col gap-4 justify-start w-full">
+                  {!isFetchingProduct ? (
+                    <ProductRating product={product} />
+                  ) : (
+                    <Box className="w-full flex items-center justify-center h-full min-h-40">
+                      <CircularProgress color="secondary" />
+                    </Box>
+                  )}
+                </Box>
+              </Box>
+              <Box className=" w-full flex flex-col gap-4">
                 <Typography
                   variant="h1"
                   color={colors.grey[100]}
@@ -454,6 +416,7 @@ const ProductDetails = () => {
                 </Typography>
 
                 <Button
+                  fullWidth
                   variant="outlined"
                   color="secondary"
                   size="large"
@@ -470,6 +433,7 @@ const ProductDetails = () => {
                 </Button>
                 {user && (
                   <Button
+                    fullWidth
                     variant="outlined"
                     color="secondary"
                     size="large"

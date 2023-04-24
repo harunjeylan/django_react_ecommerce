@@ -3,77 +3,52 @@ import { useTheme } from "@emotion/react";
 import {
   Box,
   Typography,
+  Button,
   IconButton,
   List,
   ListItem,
   Checkbox,
   CardActionArea,
 } from "@mui/material";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import { tokens } from "../../../../../theme";
+import Variant from "./Variant";
 const VariantList = ({
+  selected,
   variants,
   setEditingVariant,
-  selected,
-  handelChecked,
-  handleAddValiant,
+  handleSetVariant,
+  handleAddVariant,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
     <Box className="w-full">
-      <Box className="w-full h-full grid grid-cols-4 gap-4">
+      <Box className="w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {variants?.map((variant, index) => (
-          <Box
+          <Variant
             key={`variant-${variant.name}-variants-${variant.id}-${index}`}
-            backgroundColor={colors.primary[500]}
-            className="w-full h-full flex flex-col gap-2 p-4 rounded-md"
-          >
-            <Box className="w-full flex  items-center">
-              <Checkbox
-                checked={Boolean(
-                  selected.find(
-                    (selectedVariant) => selectedVariant.id === variant.id
-                  )
-                )}
-                onChange={() => handelChecked(variant.id)}
-                color="secondary"
-                className=""
-              />
-              <Box className="">
-                <Typography variant="h5" fontWeight="bold">
-                  {variant.label}
-                </Typography>
-              </Box>
-            </Box>
-            <CardActionArea
-              onClick={() => setEditingVariant(variant)}
-              className="relative h-full w-full p-2"
-            >
-              <List>
-                {variant?.options?.map((option, index2) => (
-                  <ListItem
-                    key={`variant-${option.label}-options-${option.id}-${index2}`}
-                  >
-                    {option.label}
-                  </ListItem>
-                ))}
-              </List>
-            </CardActionArea>
-          </Box>
+            variant={variant}
+            handleSetVariant={handleSetVariant}
+            setEditingVariant={setEditingVariant}
+            highlightVariantId={
+              selected.find(
+                (selectedVariant) => selectedVariant.id === variant.id
+              )?.id
+            }
+          />
         ))}
-        <Box
-          backgroundColor={colors.primary[500]}
-          className="w-full h-full flex flex-col items-center justify-center p-4 rounded-md"
-        >
-          <IconButton
-            onClick={handleAddValiant}
-            size="large"
-            className="w-20 h-20"
-          >
-            +
-          </IconButton>
-        </Box>
       </Box>
+      <Button
+        onClick={handleAddVariant}
+        type="button"
+        color="secondary"
+        variant="outlined"
+        className={`w-full mt-4`}
+      >
+        Add New
+      </Button>
     </Box>
   );
 };

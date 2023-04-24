@@ -70,7 +70,7 @@ const VariantsForm = ({
     setOpenModel(true);
   };
 
-  const handelChecked = (variantId) => {
+  const handleSetVariant = (variantId) => {
     let selected_variant = variants?.find(
       (variant) => variant.id === variantId
     );
@@ -122,7 +122,7 @@ const VariantsForm = ({
     }
   };
 
-  const handleAddValiant = () => {
+  const handleAddVariant = () => {
     setCreatingVariant({
       label: "",
       options: [],
@@ -146,15 +146,15 @@ const VariantsForm = ({
                 setCreatingVariant={setCreatingVariant}
                 editingVariant={editingVariant}
                 setEditingVariant={setEditingVariant}
-                handleAddValiant={handleAddValiant}
+                handleAddVariant={handleAddVariant}
               />
             ) : !variantsIsFetching ? (
               <VariantList
                 variants={variants}
                 selected={selected}
                 setEditingVariant={setEditingVariant}
-                handelChecked={handelChecked}
-                handleAddValiant={handleAddValiant}
+                handleSetVariant={handleSetVariant}
+                handleAddVariant={handleAddVariant}
               />
             ) : (
               <Box className="h-full w-full flex justify-center items-center">
@@ -276,7 +276,7 @@ const VariantsForm = ({
           variant="outlined"
           className={`w-full mt-4`}
         >
-          Add another Varient
+          Add another Variant
         </Button>
       </Box>
     </>

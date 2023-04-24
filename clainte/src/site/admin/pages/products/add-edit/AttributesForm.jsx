@@ -1,10 +1,10 @@
 import React from "react";
 import { useTheme } from "@emotion/react";
 
+import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import {
   Box,
@@ -96,65 +96,28 @@ const AttributesForm = ({
               }
               label="Expiry Date of Product"
             />
-            {/* <Box className="ml-[25px]">
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <Stack spacing={3}>
-                  {isNonMobile ? (
-                    <DesktopDatePicker
-                      label="Date desktop"
-                      inputFormat="MM/DD/YYYY"
-                      value={values?.expiryDate?.date}
-                      onChange={(newValue) =>
-                        setFieldValue("expiryDate.date", newValue)
-                      }
-                      renderInput={(params) => (
-                        <TextField
-                          color="secondary"
-                          fullWidth
-                          variant="filled"
-                          onBlur={handleBlur}
-                          name="expiryDate.date"
-                          error={
-                            !!touched.expiryDate?.date &&
-                            !!errors.expiryDate?.date
-                          }
-                          helperText={
-                            touched.expiryDate?.date && errors.expiryDate?.date
-                          }
-                          {...params}
-                        />
-                      )}
-                    />
-                  ) : (
-                    <MobileDatePicker
-                      label="Date mobile"
-                      inputFormat="MM/DD/YYYY"
-                      value={values?.expiryDate?.date}
-                      onChange={(newValue) =>
-                        setFieldValue("expiryDate.date", newValue)
-                      }
-                      renderInput={(params) => (
-                        <TextField
-                          color="secondary"
-                          fullWidth
-                          variant="filled"
-                          onChange={handleChange}
-                          name="expiryDate.date"
-                          error={
-                            !!touched.expiryDate?.date &&
-                            !!errors.expiryDate?.date
-                          }
-                          helperText={
-                            touched.expiryDate?.date && errors.expiryDat?.date
-                          }
-                          {...params}
-                        />
-                      )}
-                    />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker"]}>
+                <DemoItem className="w-full" label="Start Date">
+                  <DatePicker
+                    fullWidth
+                    format="DD/MM/YYYY"
+                    openTo="year"
+                    views={["year", "month", "day"]}
+                    defaultValue={values?.expiryDate?.date}
+                    onChange={(newVal) => setFieldValue("start_date", newVal)}
+                  />
+                  {!!touched.expiryDate?.date && !!errors.expiryDate?.date && (
+                    <>
+                      <Divider color="error" className="h-[2px] mt-[-1px]" />
+                      <Typography className="text-red-500">
+                        {touched.expiryDate?.date && errors.expiryDate?.date}
+                      </Typography>
+                    </>
                   )}
-                </Stack>
-              </LocalizationProvider>
-            </Box> */}
+                </DemoItem>
+              </DemoContainer>
+            </LocalizationProvider>
           </Box>
         </FormGroup>
       </FormControl>
