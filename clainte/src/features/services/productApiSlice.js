@@ -71,11 +71,19 @@ export const productApi = authApi.injectEndpoints({
     }),
 
     getMostSealedProducts: builder.query({
-      query: () => `api/products/most-sealed/`,
+      query: ({ limit }) => {
+        let queryKey = "";
+        queryKey = limit ? queryKey + `limit=${limit}&` : queryKey;
+        return `api/products/most-sealed/?${queryKey}`;
+      },
       providesTags: ["most-sealed-products"],
     }),
     getTopRatedProducts: builder.query({
-      query: () => `api/products/top-rated/`,
+      query: ({ limit }) => {
+        let queryKey = "";
+        queryKey = limit ? queryKey + `limit=${limit}&` : queryKey;
+        return `api/products/top-rated/?${queryKey}`;
+      },
       providesTags: ["top-rated-products"],
     }),
 

@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 import { Box, Button } from "@mui/material";
 
@@ -23,9 +23,9 @@ function Home() {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const { data: topRatedProducts, isFetching: isFetchingTopRatedProducts } =
-    useGetTopRatedProductsQuery();
+    useGetTopRatedProductsQuery({ limit: 10 });
   const { data: mostSealedProducts, isFetching: isFetchingMostSealedProducts } =
-    useGetMostSealedProductsQuery();
+    useGetMostSealedProductsQuery({ limit: 10 });
 
   return (
     <Box className="flex flex-col gap-4 md:gap-12">
@@ -48,6 +48,16 @@ function Home() {
             subtitle="Alif Newsroom  Newsroom"
           />
           <ProductCarouse products={topRatedProducts} />
+          <Box className="w-fit mx-auto">
+            <Button
+              onClick={() => navigate(`/products/top-rated`)}
+              variant="outlined"
+              color="secondary"
+              className={`bg-opacity-0 hover:bg-opacity-100 px-[40px] py-4`}
+            >
+              Browse More
+            </Button>
+          </Box>
         </Box>
       )}
       {!isFetchingMostSealedProducts && (
@@ -63,6 +73,17 @@ function Home() {
             }
             products={mostSealedProducts}
           />
+          <Box className="w-fit mx-auto">
+            <Button
+              onClick={() => navigate(`/products/most-sealed`)}
+              // LinkComponent={<Navigate to="/products/most-sealed" />}
+              variant="outlined"
+              color="secondary"
+              className={`bg-opacity-0 hover:bg-opacity-100 px-[40px] py-4`}
+            >
+              Browse More
+            </Button>
+          </Box>
         </Box>
       )}
       <Box backgroundColor={colors.primary[400]} className={`px-1 md:px-auto`}>

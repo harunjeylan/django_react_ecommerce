@@ -220,7 +220,12 @@ function AppBar() {
                       </Typography>
                     </Box>
                     <Typography className="mr-4">
-                      {product?.description?.slice(0, 60)}
+                      {product?.description
+                        .replaceAll(/<[^>]*>/g, "")
+                        .slice(0, 150)}
+                      {product?.description?.length > 150 && (
+                        <strong> . . .</strong>
+                      )}
                     </Typography>
                     <Box className="flex justify-between w-full">
                       <Box>
