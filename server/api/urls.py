@@ -9,11 +9,14 @@ urlpatterns = [
   path("products/", api.getProducts , name="products"),
   path("products/add/", api.newProduct , name="new_products"),
   path("products/delete/", api.deleteProduct , name="delete_products"),
+  path("products/multi-delete/", api.deleteMultiProducts , name="multi-delete_products"),
+
 
   path("products/recommended/", api.getRecommendedProducts , name="recommended_products"),
   path("products/ratings/", api.getRatings , name="products_ratings"),
   path("products/images/upload/", api.uploadImage , name="upload_image"),
   
+  path("products/discount/multi-change/", api.changeMultiProductsDiscount , name="discount-multi-change"),
   path("products/thumbnail/remove/", api.removeThumbnail , name="remove_image"),
   path("products/images/remove/", api.removeImage , name="remove_image"),
 

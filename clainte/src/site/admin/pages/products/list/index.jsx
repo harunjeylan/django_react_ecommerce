@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { useNavigate } from "react-router-dom";
@@ -10,24 +10,77 @@ import {
   Breadcrumbs,
   useTheme,
   CircularProgress,
+  Select,
+  InputLabel,
+  FormControl,
+  MenuItem,
+  ButtonGroup,
 } from "@mui/material";
 
 import {
+  useChangeMultiProductsDiscountMutation,
+  useDeleteMultiProductsMutation,
   useDeleteProductMutation,
   useGetProductsForAdminQuery,
 } from "../../../../../features/services/productApiSlice";
 import Header from "../../../../../components/Header";
 import { tokens } from "../../../../../theme";
-
+import Model from "../../../../../components/ui/Model";
+import DiscountList from "../components/DiscountList";
+import { useGetAllDiscountsQuery } from "../../../../../features/services/discountApiSlice";
+import CreateEditDiscount from "../components/CreateEditDiscount";
 const ProductsForAdmin = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
+  const [openModel, setOpenModel] = useState(false);
+  const [rowSelectionModel, setRowSelectionModel] = useState([]);
+  const [selectedAction, setSelectedAction] = useState("");
+  const [editingDiscount, setEditingDiscount] = useState(undefined);
+  const [creatingDiscount, setCreatingDiscount] = useState(undefined);
+  const [selectedDiscountId, setSelectedDiscountId] = useState(null);
   const { data: productsData, isFetching: isFetchingProductsData } =
     useGetProductsForAdminQuery();
+  const { data: discounts = [], isFetching: discountsIsFetching } =
+    useGetAllDiscountsQuery();
   const [deleteProduct] = useDeleteProductMutation();
+  const [deleteMultiProducts] = useDeleteMultiProductsMutation();
+  const [changeMultiProductsDiscount] =
+    useChangeMultiProductsDiscountMutation();
+  const handleAction = () => {
+    if (rowSelectionModel.length) {
+      if (selectedAction === "delete") {
+        deleteMultiProducts({ post: { productIds: rowSelectionModel } }).then(
+          (response) => console.log(response)
+        );
+      } else if (selectedAction === "change discount") {
+        setOpenModel(true);
+      }
+    }
+  };
+  const handleAddDiscount = () => {
+    setCreatingDiscount({
+      name: "",
+      amount: 0,
+      start_date: null,
+      end_date: null,
+    });
+    setEditingDiscount(undefined);
+  };
   const handelDelete = (id) => {
     deleteProduct({ post: { id } }).then((response) => console.log(response));
+  };
+  const handleChangeMultiProductsDiscount = () => {
+    changeMultiProductsDiscount({
+      post: { productIds: rowSelectionModel, discountId: selectedDiscountId },
+    }).then((response) => console.log(response));
+    setOpenModel(false);
+    setEditingDiscount(undefined);
+    setCreatingDiscount(undefined);
+    setSelectedDiscountId(null);
+  };
+  const handleSetDiscount = (discountId) => {
+    setSelectedDiscountId(discountId);
   };
   const columns = [
     {
@@ -50,6 +103,7 @@ const ProductsForAdmin = () => {
     {
       field: "title",
       headerName: "Product Name",
+      editable: true,
       width: 300,
       renderCell: ({ row: { id, title, thumbnail } }) => {
         return (
@@ -72,6 +126,7 @@ const ProductsForAdmin = () => {
     {
       field: "sale_pricing",
       headerName: "Pricing",
+      editable: true,
       renderCell: ({ row: { sale_pricing } }) => {
         return <Typography>{sale_pricing}</Typography>;
       },
@@ -81,6 +136,30 @@ const ProductsForAdmin = () => {
     { field: "vendor", headerName: "Vendor", width: 150 },
     { field: "brand", headerName: "Brand", width: 150 },
     { field: "date", headerName: "Date", width: 200 },
+    {
+      field: "discount",
+      headerName: "Discount",
+      width: 300,
+      renderCell: ({ row: { discount } }) => {
+        return (
+          <Box className="flex flex-col">
+            <Typography variant="p">
+              <strong>Name: {discount.name}</strong>
+            </Typography>
+            <Typography variant="p">
+              <strong>Discount: </strong>
+              {discount?.amount}%
+            </Typography>
+            <Typography variant="p">
+              <strong>Date: from </strong>
+              {discount?.start_date}
+              <strong> to </strong>
+              {discount?.end_date}
+            </Typography>
+          </Box>
+        );
+      },
+    },
     {
       field: "is",
       headerName: "Action",
@@ -107,6 +186,57 @@ const ProductsForAdmin = () => {
   ];
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20 mb-10`}>
+      <Model
+        width="md"
+        openModel={openModel}
+        setOpenModel={setOpenModel}
+        modelTitle={"Discount"}
+      >
+        {openModel && (
+          <>
+            <>
+              {creatingDiscount || editingDiscount ? (
+                <CreateEditDiscount
+                  creatingDiscount={creatingDiscount}
+                  setCreatingDiscount={setCreatingDiscount}
+                  editingDiscount={editingDiscount}
+                  setEditingDiscount={setEditingDiscount}
+                />
+              ) : !discountsIsFetching ? (
+                <DiscountList
+                  discounts={[
+                    {
+                      name: "None",
+                      id: null,
+                      amount: 0,
+                      start_date: "null",
+                      end_date: "null",
+                    },
+                    ...discounts,
+                  ]}
+                  setEditingDiscount={setEditingDiscount}
+                  handleAddDiscount={handleAddDiscount}
+                  handleSetDiscount={handleSetDiscount}
+                  highlightDiscountId={selectedDiscountId}
+                />
+              ) : (
+                <Box className="h-full w-full flex justify-center items-center">
+                  <CircularProgress />
+                </Box>
+              )}
+              <Button
+                onClick={handleChangeMultiProductsDiscount}
+                type="button"
+                color="secondary"
+                variant="outlined"
+                className={`w-full mt-4`}
+              >
+                Change Products Discount
+              </Button>
+            </>
+          </>
+        )}
+      </Model>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Breadcrumbs aria-label="breadcrumb">
           <Button
@@ -123,24 +253,6 @@ const ProductsForAdmin = () => {
         <Header title="Products" subtitle="welcome to you Products" />
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
-        <Box className="flex gap-4">
-          <Box className="flex gap-1">
-            <Typography>All</Typography>
-            <Typography color={colors.greenAccent[500]}>(10000)</Typography>
-          </Box>
-          <Box className="flex gap-1">
-            <Typography>Published</Typography>
-            <Typography color={colors.greenAccent[500]}>(5600)</Typography>
-          </Box>
-          <Box className="flex gap-1">
-            <Typography>All</Typography>
-            <Typography color={colors.greenAccent[500]}>(540)</Typography>
-          </Box>
-          <Box className="flex gap-1">
-            <Typography>On Discount</Typography>
-            <Typography color={colors.greenAccent[500]}>(800)</Typography>
-          </Box>
-        </Box>
         <Box
           backgroundColor={colors.primary[400]}
           className="h-[80vh] rounded-lg p-4"
@@ -165,6 +277,33 @@ const ProductsForAdmin = () => {
             },
           }}
         >
+          <Box className="flex gap-4 w-fit mb-4 items-center">
+            <Typography>Action: </Typography>
+            <FormControl size="small" className="w-60" fullWidth>
+              <InputLabel id="demo-simple-select-label">option</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Age"
+                color="secondary"
+                variant="outlined"
+                value={selectedAction}
+                onChange={(e) => setSelectedAction(e.target.value)}
+              >
+                <MenuItem value={""}>-------</MenuItem>
+                <MenuItem value={"delete"}>delete</MenuItem>
+                <MenuItem value={"change discount"}>change discount</MenuItem>
+              </Select>
+            </FormControl>
+            <Button
+              variant="outlined"
+              size="medium"
+              color="secondary"
+              onClick={handleAction}
+            >
+              Go
+            </Button>
+          </Box>
           {!isFetchingProductsData ? (
             productsData?.length ? (
               <DataGrid
@@ -174,6 +313,10 @@ const ProductsForAdmin = () => {
                 autoPageSize
                 checkboxSelection
                 components={{ Toolbar: GridToolbar }}
+                onRowSelectionModelChange={(newRowSelectionModel) => {
+                  setRowSelectionModel(newRowSelectionModel);
+                }}
+                rowSelectionModel={rowSelectionModel}
               />
             ) : (
               <Box className="w-full flex items-center justify-center h-full min-h-40">

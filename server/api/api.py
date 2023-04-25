@@ -373,7 +373,8 @@ def getProductsDataForAdmin(request,pk):
     if inventory.exists():
         serialized_data = {
             **InventorySerializer(inventory.first()).data, 
-            **serialized_data
+            **serialized_data,
+            "discount":DiscountSerializer(inventory.distinct).data
         }
     variants = []
     for variant_option in product.variants.all():
@@ -643,6 +644,35 @@ def deleteProduct(request):
     product.inventory.delete()
     product.delete()
     return Response({"success":"product is deleted"}, status=status.HTTP_202_ACCEPTED)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def deleteMultiProducts(request):
+    # print(type(request.data.get("productIds")))
+    products = Product.objects.filter(id__in=request.data.get("productIds"))
+    for product in products:
+        product.organize.delete()
+        for image in product.images.all():
+            image.delete()
+        for variant in product.variants.all():
+            variant.delete()
+        product.inventory.delete()
+        product.delete()
+    return Response({"success":"product is deleted"}, status=status.HTTP_202_ACCEPTED)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def changeMultiProductsDiscount(request):
+    print(request.data.get("productIds"))
+    print(request.data.get("discountId"))
+    products = Product.objects.filter(id__in=request.data.get("productIds"))
+    discount = Discount.objects.get(id=request.data.get("discountId"))
+    for product in products:
+        product.inventory.discount = discount
+        product.inventory.save()
+        product.save()
+    return Response({"success":"products changed discount"}, status=status.HTTP_202_ACCEPTED)
 
 
 @api_view(['DELETE'])
@@ -1279,6 +1309,10 @@ def getProductsForAdmin(request):
     products_data = []
     for product in products:
         product_serializer = ProductSerializer(product, context={"request":request}).data,
+        discount = None
+        discounts = Discount.objects.filter(inventory = product.inventory)
+        if discounts.exists():
+            discount =  DiscountSerializer(discounts.first()).data
         products_data.append({
             "id":product.id,
             "title":product.title,
@@ -1289,5 +1323,6 @@ def getProductsForAdmin(request):
             "category":product.organize.category.name,
             "collection":product.organize.collection.name,
             "vendor":product.organize.vendor.name,
+            "discount":discount
         })
     return Response(products_data, status=status.HTTP_200_OK)

@@ -47,7 +47,7 @@ const VariantList = ({
         variant="outlined"
         className={`w-full mt-4`}
       >
-        Add New
+        Add New Discount
       </Button>
     </Box>
   );

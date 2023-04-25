@@ -16,8 +16,8 @@ import {
 } from "@mui/material";
 
 import { useGetAllVariantsQuery } from "../../../../../features/services/variantApiSlice";
-import VariantList from "./VariantList";
-import CreateEditVariant from "./CreateEditVariant";
+import VariantList from "../components/VariantList";
+import CreateEditVariant from "../components/CreateEditVariant";
 import { tokens } from "../../../../../theme";
 import Model from "../../../../../components/ui/Model";
 const VariantsForm = ({
