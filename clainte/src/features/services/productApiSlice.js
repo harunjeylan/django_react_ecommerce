@@ -131,6 +131,38 @@ export const productApi = authApi.injectEndpoints({
         "products_data",
       ],
     }),
+    deleteMultiProducts: builder.mutation({
+      query: ({ post }) => ({
+        url: `api/products/multi-delete/`,
+        method: "DELETE",
+        body: post,
+      }),
+      invalidatesTags: [
+        "products",
+        "recommended-products",
+        "products-by-category",
+        "products_details",
+        "brands",
+        "admin_products",
+        "products_data",
+      ],
+    }),
+    changeMultiProductsDiscount: builder.mutation({
+      query: ({ post }) => ({
+        url: `api/products/discount/multi-change/`,
+        method: "POST",
+        body: post,
+      }),
+      invalidatesTags: [
+        "products",
+        "recommended-products",
+        "products-by-category",
+        "products_details",
+        "brands",
+        "admin_products",
+        "products_data",
+      ],
+    }),
     removeThumbnail: builder.mutation({
       query: ({ post }) => ({
         url: `api/products/thumbnail/remove/`,
@@ -164,6 +196,9 @@ export const {
   useSearchAndFilterProductsQuery,
   useUpdateProductMutation,
   useDeleteProductMutation,
+  useDeleteMultiProductsMutation,
+  useChangeMultiProductsDiscountMutation,
+
   useRemoveImageMutation,
   useRemoveThumbnailMutation,
   useSearchProductsQuery,

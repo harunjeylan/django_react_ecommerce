@@ -219,7 +219,10 @@ const ProductInformationForm = ({
             </Typography>
             <Field name="description">
               {({ meta }) => (
-                <Box>
+                <Box
+                  backgroundColor={colors.primary[400]}
+                  color={colors.grey[100]}
+                >
                   <ReactQuill
                     theme="snow"
                     value={values.description}
@@ -252,22 +255,6 @@ const ProductInformationForm = ({
                 </Box>
               )}
             </Field>
-            {/* <TextField
-              color="secondary"
-              fullWidth
-              variant="filled"
-              type="text"
-              label="Product Description"
-              multiline
-              rows={4}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              value={values.description}
-              name="description"
-              error={!!touched.description && !!errors.description}
-              helperText={touched.description && errors.description}
-              sx={{ gridColumn: "span 4" }}
-            /> */}
           </Box>
           {initialValues?.thumbnail && (
             <Box className="w-full ">

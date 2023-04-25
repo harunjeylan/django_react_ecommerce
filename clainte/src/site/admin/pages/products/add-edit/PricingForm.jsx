@@ -18,9 +18,9 @@ import { tokens } from "../../../../../theme";
 import { useGetAllDiscountsQuery } from "../../../../../features/services/discountApiSlice";
 
 import Model from "../../../../../components/ui/Model";
-import CreateEditDiscount from "./CreateEditDiscount";
-import DiscountList from "./DiscountList";
-import Discount from "./Discount";
+import CreateEditDiscount from "../components/CreateEditDiscount";
+import DiscountList from "../components/DiscountList";
+import Discount from "../components/Discount";
 
 const PricingForm = ({
   setFieldValue,

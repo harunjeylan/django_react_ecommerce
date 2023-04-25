@@ -16,7 +16,7 @@ import {
   useUpdateProductMutation,
 } from "../../../../../features/services/productApiSlice";
 import { newProductSchema } from "./newProductSchema";
-import { getInitialValues } from "./getInitialValues";
+import { useInitialValues } from "./useInitialValues";
 
 import ProductInformationForm from "./ProductInformationForm";
 import InventoryForm from "./Inventory";
@@ -31,9 +31,10 @@ const AddEditProduct = ({ isEditing }) => {
   const [addProduct] = useAddProductMutation();
   const [updateProduct] = useUpdateProductMutation();
   const [uploadImage] = useUploadImageMutation();
-  const [initialValues, setInitialValues] = useState({});
+  const [initialValues, setInitialValues] = useState(null);
   const { productId } = useParams();
 
+  const getInitialValues = useInitialValues(initialValues);
   useEffect(() => {
     if (productId && isEditing) {
       dispatch(
@@ -129,10 +130,9 @@ const AddEditProduct = ({ isEditing }) => {
             },
           }}
         ></Box>
-
         <Formik
           onSubmit={handleFormSubmit}
-          initialValues={getInitialValues(initialValues)}
+          initialValues={getInitialValues}
           validationSchema={newProductSchema}
           enableReinitialize={true}
         >
