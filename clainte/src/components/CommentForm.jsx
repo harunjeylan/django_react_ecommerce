@@ -1,18 +1,12 @@
 import React from "react";
-import {
-  Box,
-  Button,
-  TextField,
-  useTheme,
-  Rating,
-  Typography,
-} from "@mui/material";
+import { Box, Button, TextField, useTheme, Typography } from "@mui/material";
 import Header from "./Header";
 import { tokens } from "../theme";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../features/auth/authSlice";
+
 const CommentForm = ({ handleCommentFormSubmit }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);

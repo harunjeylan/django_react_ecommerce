@@ -7,6 +7,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useNavigate } from "react-router-dom";
 import { tokens } from "../../../../theme";
 import Header from "../../../../components/Header";
+import Header2 from "../../../../components/Header2";
 
 const CustomerFAQ = () => {
   const theme = useTheme();
@@ -21,15 +22,15 @@ const CustomerFAQ = () => {
             variant="text"
             color="secondary"
           >
-            Admin Dashboard
+            home
           </Button>
-          <Typography color="text.primary">New Product</Typography>
+          <Typography color="text.primary">FQA</Typography>
         </Breadcrumbs>
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
-        <Header
-          title="CustomerFAQ"
-          subtitle="Frequently Asked Questions Page"
+        <Header2
+          title="Frequently Asked Question"
+          subtitle="Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ea, numquam! Minima, voluptatum."
         />
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
