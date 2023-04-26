@@ -316,28 +316,28 @@ def addOrganize(request):
             category = category_serializer.save()
             serialized_data = CategorySerializer(category).data
             return Response(serialized_data, status=status.HTTP_201_CREATED)
-        return Response(category_serializer.errers, status=status.HTTP_400_BAD_REQUEST)
+        return Response(category_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif name=="collections" and value != "":
         collection_serializer = CollectionSerializer(data=value)
         if collection_serializer.is_valid():
             collection = collection_serializer.save()
             serialized_data = CollectionSerializer(collection).data
             return Response(serialized_data, status=status.HTTP_201_CREATED)
-        return Response(collection_serializer.errers, status=status.HTTP_400_BAD_REQUEST)
+        return Response(collection_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif name=="vendors" and value != "":
         vendor_serializer = VendorSerializer(data=value)
         if vendor_serializer.is_valid():
             vendor = vendor_serializer.save()
             serialized_data = VendorSerializer(vendor).data
             return Response(serialized_data, status=status.HTTP_201_CREATED)
-        return Response(vendor_serializer.errers, status=status.HTTP_400_BAD_REQUEST)
+        return Response(vendor_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif name=="tags" and value != "":
         tag_serializer = TagSerializer(data=value)
         if tag_serializer.is_valid():
             tag = tag_serializer.save()
             serialized_data = TagSerializer(tag).data
             return Response(serialized_data, status=status.HTTP_201_CREATED)
-        return Response(tag_serializer.errers, status=status.HTTP_400_BAD_REQUEST)
+        return Response(tag_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return Response({"error":"you have to spasify the name"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST','PUT'])
@@ -352,7 +352,7 @@ def updateOrganize(request):
             category = category_serializer.save()
             serialized_data = CategorySerializer(category).data
             return Response(serialized_data, status=status.HTTP_202_ACCEPTED)
-        return Response(category_serializer.errers, status=status.HTTP_400_BAD_REQUEST)
+        return Response(category_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif name=="collections" and value != "":
         collection = Collection.objects.get(id=request.data.get("id"))
         collection_serializer = CollectionSerializer(data=value,instance=collection)
@@ -360,7 +360,7 @@ def updateOrganize(request):
             collection = collection_serializer.save()
             serialized_data = CollectionSerializer(collection).data
             return Response(serialized_data, status=status.HTTP_202_ACCEPTED)
-        return Response(collection_serializer.errers, status=status.HTTP_400_BAD_REQUEST)
+        return Response(collection_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif name=="vendors" and value != "":
         vendor = Vendor.objects.get(id=request.data.get("id"))
         vendor_serializer = VendorSerializer(data=value, instance=vendor)
@@ -368,7 +368,7 @@ def updateOrganize(request):
             vendor = vendor_serializer.save()
             serialized_data = VendorSerializer(vendor).data
             return Response(serialized_data, status=status.HTTP_202_ACCEPTED)
-        return Response(vendor_serializer.errers, status=status.HTTP_400_BAD_REQUEST)
+        return Response(vendor_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif name=="tags" and value != "":
         tag = Tag.objects.get(id=request.data.get("id"))
         tag_serializer = TagSerializer(data=value,instance=tag)
@@ -376,7 +376,7 @@ def updateOrganize(request):
             tag = tag_serializer.save()
             serialized_data = TagSerializer(tag).data
             return Response(serialized_data, status=status.HTTP_202_ACCEPTED)
-        return Response(tag_serializer.errers, status=status.HTTP_400_BAD_REQUEST)
+        return Response(tag_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return Response({"error":"you have to specify the name"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])

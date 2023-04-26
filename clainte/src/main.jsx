@@ -19,7 +19,7 @@ root.render(
   <React.StrictMode>
     <StyledEngineProvider injectFirst>
       <Provider store={store}>
-        <SnackbarProvider maxSnack={3}>
+        <SnackbarProvider maxSnack={5}>
           <ErrorBoundary
             fallback={
               <Box className="w-full h-screen flex justify-center items-center">

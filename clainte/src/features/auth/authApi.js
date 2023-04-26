@@ -41,14 +41,12 @@ const baseQueryWithReOauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
   if (result.error && result.error.status === 401) {
     let response = await refreshAccessToken(api);
-    console.log("refreshing token ...");
     if (
       response &&
       !response.error &&
       response?.status >= 200 &&
       response?.status <= 399
     ) {
-      console.log(response);
       return await baseQuery(args, api, extraOptions);
     } else {
       // throw Error([{ error: "Unauthorize!" }]);

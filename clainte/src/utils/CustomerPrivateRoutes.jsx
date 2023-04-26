@@ -6,7 +6,6 @@ import {
 } from "../features/auth/authSlice";
 
 function CustomerPrivateRoutes({ children, ...rest }) {
-  console.log("private route is working");
   const token = useSelector(selectCurrentToken);
   const user = useSelector(selectCurrentUser);
   const location = useLocation();

@@ -96,14 +96,19 @@ const OrganizeForm = ({
       name: modelInputLabel,
       label: modelInputRef.current.value,
     };
-    addOrganize({ post: postData }).then((data) => {
-      enqueueSnackbar(
-        `${postData.name} -> ${postData.label} is created successfully!`,
-        {
-          variant: "success",
+    addOrganize({ post: postData })
+      .then((data) => {
+        if (data?.error?.status === 400) {
         }
-      );
-    });
+        enqueueSnackbar(
+          `${postData.name} -> ${postData.label} is created successfully!`,
+          {
+            variant: "success",
+          }
+        );
+      })
+      .catch((error) => console.log(error));
+
     modelInputRef.current.value = "";
     // setOpenModel(false);
   };
