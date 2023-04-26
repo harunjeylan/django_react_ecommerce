@@ -48,7 +48,7 @@ class Option(models.Model):
 
 class Variant(models.Model):
     label = models.CharField(max_length=100)
-    options = models.ManyToManyField(Option)
+    options = models.ManyToManyField(Option, blank=True)
     def __str__(self):
         return f"{self.label}" 
 

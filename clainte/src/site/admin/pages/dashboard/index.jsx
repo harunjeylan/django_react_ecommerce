@@ -17,7 +17,7 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import LineChart from "../../components/LineChart";
 import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
-import { useGetDashboardDataQuery } from "../../../../features/main/dashboardApiSlice";
+import { useGetDashboardDataQuery } from "../../../../features/services/dashboardApiSlice";
 import { tokens } from "../../../../theme";
 import Header from "../../../../components/Header";
 

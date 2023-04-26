@@ -4,7 +4,7 @@ export const dashboardApi = authApi.injectEndpoints({
   tagTypes: ["dashboard_data"],
   endpoints: (builder) => ({
     getDashboardData: builder.query({
-      query: () => `main/`,
+      query: () => `service/admin/dashboard/`,
       providesTags: ["dashboard_data"],
     }),
   }),

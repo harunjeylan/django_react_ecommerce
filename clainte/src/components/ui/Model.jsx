@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-import { Box, useTheme, Typography, IconButton } from "@mui/material";
+import { Box, useTheme, Typography, IconButton, Alert } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { tokens } from "../../theme";
 
-const Model = ({ children, openModel, setOpenModel, modelTitle, width }) => {
+const Model = ({
+  children,
+  openModel,
+  setOpenModel,
+  modelTitle,
+  width,
+  messages = [],
+  setMessages = () => {},
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const getWidth = () => {
@@ -21,6 +29,21 @@ const Model = ({ children, openModel, setOpenModel, modelTitle, width }) => {
         return 640;
     }
   };
+
+  useEffect(() => {
+    let messageTimeouts = [];
+    messages.forEach((message) => {
+      messageTimeouts.push(
+        setTimeout(() => {
+          setMessages((prev) => prev.filter((mess) => mess.id !== message.id));
+        }, 5000)
+      );
+    });
+    return () => {
+      messageTimeouts.forEach((timeout) => clearTimeout(timeout));
+    };
+  }, [messages]);
+
   return (
     <Box
       className={`${openModel ? "fixed " : "hidden"} bg-black/20
@@ -47,6 +70,22 @@ const Model = ({ children, openModel, setOpenModel, modelTitle, width }) => {
               <CloseIcon />
             </IconButton>
           </Box>
+        </Box>
+        <Box className="w-full px-4 mb-4  flex flex-col gap-2 ease-in-out">
+          {messages.map((message, index) => (
+            <Box key={index} className="w-full ">
+              <Alert
+                severity={message?.variant}
+                onClose={() =>
+                  setMessages((prev) =>
+                    prev.filter((mess) => mess.id !== message.id)
+                  )
+                }
+              >
+                {message?.id} =&gt; {message?.description}
+              </Alert>
+            </Box>
+          ))}
         </Box>
         <Box className="px-4 pb-8">{children}</Box>
       </Box>

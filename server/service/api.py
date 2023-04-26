@@ -253,19 +253,21 @@ def getDashboardData(request):
     new_customers = User.objects.order_by("-date_joined")[:100]
     for user in new_customers:
         profile = ProfileSerializer(user.profile,context={"request":request}).data
-        orders = Order.objects.filter(customer=user).order_by("-date")
-        total_spent = 0
-        for order in orders:
-            total_spent += order.total_price
-        new_customers_data.append({
+        customer_data = {
             "id":user.id,
             "full_name":user.get_full_name(),
             "email":user.email,
             "avatar":profile["image"],
-            "total_spent":total_spent,
-            "last_order":orders.first().date,
-            "orders":orders.count(),
-        })
+        }
+        orders = Order.objects.filter(customer=user).order_by("-date")
+        if orders.exists():
+            total_spent = 0
+            for order in orders:
+                total_spent += order.total_price
+            customer_data["total_spent"]=total_spent
+            customer_data["last_order"]=orders.first().date
+            customer_data["orders"]=orders.count()
+        new_customers_data.append(customer_data)
     
     # =====================================================================================
     response_data = {
@@ -412,27 +414,24 @@ def getAllBrands(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addBrand(request):
-    if request.data.get("name") != "":
-        brand,created = Brand.objects.get_or_create(name=request.data.get("name"))
-        return Response(BrandSerializer(brand).data, status=status.HTTP_200_OK)
-    else:
-        brands = Brand.objects.filter(name=request.data.get("name"))
-        for brand in brands:
-            brand.delete()
-    return Response({}, status=status.HTTP_200_OK)
+    brand_serializer_form = BrandSerializer(data=request.data)
+    if brand_serializer_form.is_valid():
+        vendor = brand_serializer_form.save()
+        serialized_data = BrandSerializer(vendor).data
+        return Response(serialized_data, status=status.HTTP_202_ACCEPTED)
+    return Response(brand_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['POST','PUT'])
 @permission_classes([IsAuthenticated])
 def updateBrand(request):
     brand = Brand.objects.get(id=request.data.get("id"))
-    if request.data.get("name") != "":
-        brand.name = request.data.get("name")
-        brand.save()
-    else:
-        brands = Brand.objects.filter(name=request.data.get("name"))
-        for brand in brands:
-            brand.delete()
-    return Response(BrandSerializer(brand).data, status=status.HTTP_202_ACCEPTED)
+    brand_serializer = BrandSerializer(data=request.data, instance=brand)
+    if brand_serializer.is_valid():
+        brand = brand_serializer.save()
+        serialized_data = BrandSerializer(brand).data
+        return Response(serialized_data, status=status.HTTP_202_ACCEPTED)
+    return Response(brand_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
@@ -453,6 +452,7 @@ def getAllDiscounts(request):
 @permission_classes([IsAuthenticated])
 def addDiscount(request):
     discount_serializer_form = DiscountSerializer(data=request.data)
+
     if discount_serializer_form.is_valid():
         discount = discount_serializer_form.save()
         return Response(DiscountSerializer(discount).data, status=status.HTTP_201_CREATED)
@@ -497,50 +497,56 @@ def getAllVariants(request):
 @api_view(['POST','PUT'])
 @permission_classes([IsAuthenticated])
 def addVariant(request):
-    variant,created = Variant.objects.get_or_create(label=request.data.get("label"))
-    options = []
-    for option_obj in request.data.get("options"):
-        option,created = Option.objects.get_or_create(label=option_obj["label"])
-        variant.options.add(option)
-        options.append(OptionSerializer(option).data)
+    variant_serializer_form = VariantSerializer(data={"label":request.data.get("label")})
+    if variant_serializer_form.is_valid():
+        variant = variant_serializer_form.save()
+        options = []
+        for option_obj in request.data.get("options"):
+            option,created = Option.objects.get_or_create(label=option_obj["label"])
+            variant.options.add(option)
+            options.append(OptionSerializer(option).data)
+
+        return Response({**VariantSerializer(variant).data,"options":options}, status=status.HTTP_201_CREATED)
+    return Response(variant_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
   
-    return Response({**VariantSerializer(variant).data,"options":options}, status=status.HTTP_200_OK)
 
 @api_view(['POST','PUT'])
 @permission_classes([IsAuthenticated])
 def updateVariant(request):
     variant = Variant.objects.get(id=request.data.get("id"))
-    variant.label = request.data.get("label")
-    variant.save()
-    options = []
-    for option_obj in request.data.get("options"):
-        same_option = Option.objects.filter(label=option_obj["label"])
-        if not same_option.exists():
-            if "id" in option_obj:
-                option = Option.objects.get(id=option_obj["id"])
-                option.label = option_obj["label"]
-                option.save()
-                if not variant.options.contains(option):
-                    variant.options.add(option)
-                options.append(OptionSerializer(option).data)
+    variant_serializer_form = VariantSerializer(data={"label":request.data.get("label")}, instance=variant)
+    if variant_serializer_form.is_valid():
+        variant = variant_serializer_form.save()
+        options = []
+        for option_obj in request.data.get("options"):
+            same_option = Option.objects.filter(label=option_obj["label"])
+            if not same_option.exists():
+                if "id" in option_obj:
+                    option = Option.objects.get(id=option_obj["id"])
+                    option.label = option_obj["label"]
+                    option.save()
+                    if not variant.options.contains(option):
+                        variant.options.add(option)
+                    options.append(OptionSerializer(option).data)
+                else:
+                    option,created = Option.objects.get_or_create(label=option_obj["label"])
+                    if not variant.options.contains(option):
+                        variant.options.add(option)
+                    options.append(OptionSerializer(option).data)
+            elif not variant.options.contains(same_option.first()):
+                if "id" in option_obj:
+                    option = Option.objects.get(id=option_obj["id"])
+                    variant.options.remove(option)
+                    if not Variant.objects.filter(options = option).exists():
+                        option.delete()
+                variant.options.add(same_option.first())
+                options.append(OptionSerializer(same_option.first()).data)
             else:
-                option,created = Option.objects.get_or_create(label=option_obj["label"])
-                if not variant.options.contains(option):
-                    variant.options.add(option)
-                options.append(OptionSerializer(option).data)
-        elif not variant.options.contains(same_option.first()):
-            if "id" in option_obj:
-                option = Option.objects.get(id=option_obj["id"])
-                variant.options.remove(option)
-                if not Variant.objects.filter(options = option).exists():
-                    option.delete()
-            variant.options.add(same_option.first())
-            options.append(OptionSerializer(same_option.first()).data)
-        else:
-            options.append(OptionSerializer(same_option.first()).data)
-
-
-    return Response({**VariantSerializer(variant).data,"options":options}, status=status.HTTP_200_OK)
+                options.append(OptionSerializer(same_option.first()).data)
+        return Response({**VariantSerializer(variant).data,"options":options}, status=status.HTTP_201_CREATED)
+    return Response(variant_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['DELETE'])

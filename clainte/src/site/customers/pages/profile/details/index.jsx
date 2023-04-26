@@ -109,11 +109,11 @@ const Profile = () => {
         <Box className="flex flex-col-reverse  gap-8 md:flex-row">
           <Box className="w-full md:max-w-[60%]  lg:max-w-[70%]">
             <Box className="flex flex-col  gap-4">
-              <Box>
-                {errorMessage !== "" && (
+              {errorMessage !== "" && (
+                <Box>
                   <Alert severity="error">{errorMessage}</Alert>
-                )}
-              </Box>
+                </Box>
+              )}
               <Typography variant="h3" fontSize="18px">
                 Personal details
               </Typography>

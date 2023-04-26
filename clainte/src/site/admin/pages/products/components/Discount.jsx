@@ -11,6 +11,7 @@ const Discount = ({
   readOnly,
   setEditingDiscount,
   handleSetDiscount,
+  setModelMessages,
   highlightDiscountId = null,
 }) => {
   const theme = useTheme();
@@ -18,11 +19,24 @@ const Discount = ({
   const { enqueueSnackbar } = useSnackbar();
   const [deleteDiscount, { isLoading: isDeleting }] =
     useDeleteDiscountMutation();
+
   const handleDelete = () => {
     deleteDiscount({ post: { id: discount.id } }).then((data) => {
-      enqueueSnackbar(`Discount -> ${discount.name} is deleted successfully!`, {
-        variant: "success",
-      });
+      if (data?.error?.status === 400) {
+        Object.keys(data.error.data).forEach((key) => {
+          setModelMessages((prev) => [
+            ...prev,
+            { id: key, variant: "error", description: data.error.data[key] },
+          ]);
+        });
+      } else {
+        enqueueSnackbar(
+          `Discount -> ${discount.name} is deleted successfully!`,
+          {
+            variant: "success",
+          }
+        );
+      }
     });
   };
   return (
