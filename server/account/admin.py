@@ -21,3 +21,5 @@ class AddressAdmin(admin.ModelAdmin):
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'image')
     list_filter = ('user',)
+
+

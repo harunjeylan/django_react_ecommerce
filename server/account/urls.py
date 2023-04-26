@@ -21,4 +21,8 @@ urlpatterns = [
     path('profile/update/', api.updatePersonalInfo, name='update_profile'),
     path('profile/password/chenge/', api.updatePassword, name='update_password'),
 
+     
+    path("admin/customers/", api.getCustomers , name="admin_customers"),
+    path("admin/customers/<pk>/", api.getCustomerDetails , name="admin_customer_details"),
+
 ]

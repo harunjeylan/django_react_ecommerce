@@ -5,19 +5,19 @@ export const brandApi = authApi.injectEndpoints({
   endpoints: (builder) => ({
     addBrand: builder.mutation({
       query: ({ post }) => ({
-        url: `api/brands/add/`,
+        url: `service/brands/add/`,
         method: "POST",
         body: post,
       }),
       invalidatesTags: ["brands"],
     }),
     getAllBrands: builder.query({
-      query: () => `api/brands/`,
+      query: () => `service/brands/`,
       providesTags: ["brands"],
     }),
     updateBrand: builder.mutation({
       query: ({ post }) => ({
-        url: `api/brands/update/`,
+        url: `service/brands/update/`,
         method: "PUT",
         body: post,
       }),
@@ -25,7 +25,7 @@ export const brandApi = authApi.injectEndpoints({
     }),
     deleteBrand: builder.mutation({
       query: ({ post }) => ({
-        url: `api/brands/delete/`,
+        url: `service/brands/delete/`,
         method: "DELETE",
         body: post,
       }),

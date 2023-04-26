@@ -31,6 +31,7 @@ const Option = ({
         onClick={() =>
           handleDeleteOption({ variant: editingVariant, option: option })
         }
+        color="error"
       >
         <CloseIcon />
       </IconButton>

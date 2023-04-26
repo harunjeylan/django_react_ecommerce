@@ -2,28 +2,14 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from datetime import datetime #, timedelta, date
-from django.db.models import Q, Count #, F, Subquery, Sum
+from datetime import datetime 
+from django.db.models import Q
 import pytz
 
-# from django.contrib.auth.models import  User
-# from rest_framework import status
-# from django.utils import timezone
-# import random
-# from django.db.models.functions import (
-#    ExtractYear, ExtractMonth, ExtractDay, ExtractWeekDay,
-#    ExtractHour, ExtractMinute, ExtractSecond,
-#    TruncDay,
-# )
-# from api.models import Order, OrderdProduct
-# from account.serializer import ProfileSerializer, UserSerializer
-# from api.utils import getAverage
-# import itertools
-
-from blog.models import Blog,Comment
+from blog.models import Blog
 from blog.serializer import BlogSerializer,BlogListSerializer,BlogCommentSerializer
-from api.serializer import CategorySerializer,TagSerializer
-from api.models import  Category,Organize, Tag
+from service.serializer import CategorySerializer,TagSerializer
+from service.models import  Category,Tag, Comment
     
 
 @api_view(['POST'])

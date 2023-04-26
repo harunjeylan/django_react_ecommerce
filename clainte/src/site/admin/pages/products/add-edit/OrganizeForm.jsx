@@ -15,8 +15,7 @@ import {
   Divider,
   IconButton,
 } from "@mui/material";
-
-
+import { useSnackbar } from "notistack";
 import {
   useAddOrganizeMutation,
   useDeleteOrganizeMutation,
@@ -78,10 +77,12 @@ const OrganizeForm = ({
   const [openModel, setOpenModel] = useState(false);
   const [modelTitle, setModelTitle] = useState("");
   const [modelInputLabel, setModelInputLabel] = useState("");
+  const { enqueueSnackbar } = useSnackbar();
+
   const [addOrganize] = useAddOrganizeMutation();
   const [updateOrganize] = useUpdateOrganizeMutation();
   const [deleteOrganize] = useDeleteOrganizeMutation();
-  const { data: organize, isFetching: organizeIsFetching } =
+  const { data: organize = {}, isFetching: organizeIsFetching } =
     useGetAllOrganizeQuery();
 
   const modelInputRef = useRef();
@@ -91,31 +92,54 @@ const OrganizeForm = ({
     setOpenModel(true);
   };
   const handleAdd = () => {
-    const data = {
+    const postData = {
       name: modelInputLabel,
       label: modelInputRef.current.value,
     };
-    addOrganize({ post: data });
-    console.log(data);
+    addOrganize({ post: postData })
+      .then((data) => {
+        if (data?.error?.status === 400) {
+        }
+        enqueueSnackbar(
+          `${postData.name} -> ${postData.label} is created successfully!`,
+          {
+            variant: "success",
+          }
+        );
+      })
+      .catch((error) => console.log(error));
+
     modelInputRef.current.value = "";
     // setOpenModel(false);
   };
   const handleUpdate = ({ id, name, value }) => {
-    const data = {
+    const postData = {
       id,
       name,
       label: value,
     };
-    updateOrganize({ post: data });
-    console.log(data);
+    updateOrganize({ post: postData }).then((data) => {
+      enqueueSnackbar(
+        `${postData.name} -> ${postData.name} is updated successfully!`,
+        {
+          variant: "success",
+        }
+      );
+    });
   };
   const handleDelete = ({ id, name }) => {
-    const data = {
+    const postData = {
       id,
       name,
     };
-    console.log(data);
-    deleteOrganize({ post: data }).then((res) => console.log(res));
+    deleteOrganize({ post: postData }).then((data) => {
+      enqueueSnackbar(
+        `${postData.name} -> ${postData.name} is deleted successfully!`,
+        {
+          variant: "success",
+        }
+      );
+    });
   };
   return (
     <>
@@ -143,7 +167,6 @@ const OrganizeForm = ({
           <Divider />
           <Box className="flex flex-col gap-4 mt-4">
             {!organizeIsFetching &&
-              organize &&
               organize[modelInputLabel]?.map((item) => (
                 <Item
                   key={item.id}
@@ -211,7 +234,7 @@ const OrganizeForm = ({
                   error={!!touched?.category && !!errors?.category}
                 >
                   {!organizeIsFetching &&
-                    organize.categories?.map((category) => (
+                    organize?.categories?.map((category) => (
                       <MenuItem key={category.id} value={category.name}>
                         {category.name}
                       </MenuItem>
@@ -254,7 +277,7 @@ const OrganizeForm = ({
                   error={!!touched?.vendor && !!errors?.vendor}
                 >
                   {!organizeIsFetching &&
-                    organize.vendors?.map((vendor) => (
+                    organize?.vendors?.map((vendor) => (
                       <MenuItem key={vendor.id} value={vendor.name}>
                         {vendor.name}
                       </MenuItem>
@@ -299,7 +322,7 @@ const OrganizeForm = ({
                   error={!!touched?.collection && !!errors?.collection}
                 >
                   {!organizeIsFetching &&
-                    organize.collections?.map((collection) => (
+                    organize?.collections?.map((collection) => (
                       <MenuItem key={collection.id} value={collection.name}>
                         {collection.name}
                       </MenuItem>
@@ -360,7 +383,7 @@ const OrganizeForm = ({
                   error={!!touched?.tags && !!errors?.tags}
                 >
                   {!organizeIsFetching &&
-                    organize.tags?.map((tag) => (
+                    organize?.tags?.map((tag) => (
                       <MenuItem key={tag.id} value={tag.name}>
                         {tag.name}
                       </MenuItem>

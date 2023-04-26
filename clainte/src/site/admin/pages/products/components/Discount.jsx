@@ -5,6 +5,7 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 import { tokens } from "../../../../../theme";
 import { useTheme } from "@emotion/react";
 import { useDeleteDiscountMutation } from "../../../../../features/services/discountApiSlice";
+import { useSnackbar } from "notistack";
 const Discount = ({
   discount,
   readOnly,
@@ -14,10 +15,15 @@ const Discount = ({
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { enqueueSnackbar } = useSnackbar();
   const [deleteDiscount, { isLoading: isDeleting }] =
     useDeleteDiscountMutation();
   const handleDelete = () => {
-    deleteDiscount({ post: { id: discount.id } });
+    deleteDiscount({ post: { id: discount.id } }).then((data) => {
+      enqueueSnackbar(`Discount -> ${discount.name} is deleted successfully!`, {
+        variant: "success",
+      });
+    });
   };
   return (
     <Box

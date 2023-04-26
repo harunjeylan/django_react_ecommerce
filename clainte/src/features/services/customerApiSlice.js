@@ -4,11 +4,11 @@ export const customerApi = authApi.injectEndpoints({
   tagTypes: ["customers"],
   endpoints: (builder) => ({
     getAllCustomers: builder.query({
-      query: () => `api/admin/customers/`,
+      query: () => `service/admin/customers/`,
       providesTags: ["customers"],
     }),
     getCustomerDetails: builder.query({
-      query: ({ customerId }) => `api/admin/customers/${customerId}/`,
+      query: ({ customerId }) => `service/admin/customers/${customerId}/`,
       providesTags: ["customers"],
     }),
   }),

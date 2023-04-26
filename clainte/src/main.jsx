@@ -11,36 +11,40 @@ import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 import { CircularProgress } from "@mui/material";
 import { ErrorBoundary } from "./utils/ErrorBoundary";
+import { SnackbarProvider } from "notistack";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
     <StyledEngineProvider injectFirst>
       <Provider store={store}>
-        <ErrorBoundary
-          fallback={
-            <Box className="w-full h-screen flex justify-center items-center">
-              <Typography variant="h1" className="text-4xl font-bold">
-                There is error happen!
-              </Typography>
-            </Box>
-          }
-        >
-          <Suspense
+        <SnackbarProvider maxSnack={5}>
+          <ErrorBoundary
             fallback={
               <Box className="w-full h-screen flex justify-center items-center">
-                <CircularProgress />
+                <Typography variant="h1" className="text-4xl font-bold">
+                  There is error happen!
+                </Typography>
               </Box>
             }
           >
-            {" "}
-            <PersistGate loading={null} persistor={persistStore(store)}>
-              <BrowserRouter>
-                <App />
-              </BrowserRouter>
-            </PersistGate>
-          </Suspense>
-        </ErrorBoundary>
+            <Suspense
+              fallback={
+                <Box className="w-full h-screen flex justify-center items-center">
+                  <CircularProgress />
+                </Box>
+              }
+            >
+              {" "}
+              <PersistGate loading={null} persistor={persistStore(store)}>
+                <BrowserRouter>
+                  <App />
+                </BrowserRouter>
+              </PersistGate>
+            </Suspense>
+          </ErrorBoundary>
+        </SnackbarProvider>
       </Provider>
     </StyledEngineProvider>
   </React.StrictMode>

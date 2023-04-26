@@ -1,17 +1,27 @@
 from django.http import JsonResponse
-from api.models import Order, Product
-from api.utils import get_tokens_for_user
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from django.contrib.auth import update_session_auth_hash
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from account.serializer import   AddressSerializer, PassChangeFormSerializer, RegistrationSerializer, UpdateAddressSerializer, UpdateProfileFormSerializer, UserSerializer,ProfileSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import status
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import  User
+from django.db.models import Avg,Q,Count,Sum
+from account.serializer import   (
+    AddressSerializer, 
+    PassChangeFormSerializer, 
+    RegistrationSerializer, 
+    UpdateAddressSerializer, 
+    UpdateProfileFormSerializer, 
+    UserSerializer,ProfileSerializer
+)
+from product.serializer import (ProductSerializer, )
+from product.models import  Product
+from service.models import Order,Review
+from account.utils import get_tokens_for_user
 from account.models import Address, Profile
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -129,3 +139,92 @@ def updatePassword(request):
 
     return Response(serializer_password_form.errors, status=status.HTTP_400_BAD_REQUEST)
 #===========================================================================
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])  
+def getCustomerDetails(request, pk):
+    user = User.objects.get(id=pk)
+    address, is_address_created = Address.objects.get_or_create(user=user)
+    profile, is_profile_created = Profile.objects.get_or_create(user=user)
+    customer_data = {
+        **ProfileSerializer(profile,context={"request":request}).data,
+        **AddressSerializer(address).data,
+        **UserSerializer(user).data,
+    }
+    orders_data = []
+    for order in Order.objects.filter(customer=user):
+        user = User.objects.get(id=order.customer.id)
+        profile = ProfileSerializer(user.profile,context={"request":request}).data
+        orders_data.append({
+            "id":order.id,
+            "user_id":user.id,
+            "avatar":profile["image"],
+            "full_name":user.get_full_name(),
+            "fulfillment_status":order.fulfillment_status,
+            "delivery_method":order.delivery_method,
+            "total_price":order.total_price,
+            "date":order.date,
+        })
+
+    wishlist,create = WishList.objects.get_or_create(customer=user)
+    wishlist_data = []
+    for product in wishlist.products.all():
+        product_serializer = ProductSerializer(product, context={"request":request}).data,
+        wishlist_data.append({
+            "id":product.id,
+            "title":product.title,
+            "thumbnail":product_serializer[0]["thumbnail"],
+            "sale_pricing":product.sale_pricing,
+            "date":product.date,
+            "brand":product.brand.name,
+        })
+ 
+    reviews = Review.objects.filter(Q(email=user.email)|Q(phone_number=user.profile.phone_number))
+    
+    reviews_data = []
+    for review in reviews:
+        product_serializer = ProductSerializer(product, context={"request":request}).data,
+        reviews_data.append({
+            "id":product.id,
+            "title":product.title,
+            "thumbnail":product_serializer[0]["thumbnail"],
+            "description":review.description,
+            "rating":review.rating,
+            "created":review.created
+        })
+    response_data = {
+        "customer":customer_data,
+        "orders":orders_data,
+        "wishlists":wishlist_data,
+        "reviews":reviews_data,
+
+    }
+    return Response(response_data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])  
+def getCustomers(request):
+    customers_data = []
+    new_customers = User.objects.order_by("-date_joined")
+    for user in new_customers:
+        profile = ProfileSerializer(user.profile,context={"request":request}).data
+        orders = Order.objects.filter(customer=user).order_by("-date")
+        total_spent = 0
+        for order in orders:
+            total_spent += order.total_price
+        customers_data.append({
+            "id":user.id,
+            "full_name":user.get_full_name(),
+            "email":user.email,
+            "username":user.username,
+            "avatar":profile["image"],
+            "total_spent":total_spent,
+            "phone_number":user.profile.phone_number,
+            "last_order":orders.first().date,
+            "orders":orders.count(),
+            "date_joined":user.date_joined,
+        })
+   
+    return Response(customers_data, status=status.HTTP_200_OK)

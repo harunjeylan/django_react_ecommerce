@@ -8,7 +8,6 @@ import {
 import { useDispatch } from "react-redux";
 
 function AdminPrivateRoutes({ children, ...rest }) {
-  console.log("admin route is working");
   const dispatch = useDispatch();
   const token = useSelector(selectCurrentToken);
   const user = useSelector(selectCurrentUser);

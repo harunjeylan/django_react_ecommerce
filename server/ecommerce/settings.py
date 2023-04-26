@@ -43,9 +43,9 @@ INSTALLED_APPS = [
     'django_extensions',
     'corsheaders',
 
-    'api.apps.ApiConfig',
-    'main.apps.MainConfig',
     'account.apps.AccountConfig',
+    'product.apps.ProductConfig',
+    'service.apps.ServiceConfig',
     'blog.apps.BlogConfig',
 ]
 REST_FRAMEWORK = {

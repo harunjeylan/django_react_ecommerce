@@ -15,6 +15,7 @@ import {
   useUpdateDiscountMutation,
 } from "../../../../../features/services/discountApiSlice";
 import { Form, Formik } from "formik";
+import { useSnackbar } from "notistack";
 
 const CreateEditDiscount = ({
   creatingDiscount,
@@ -25,6 +26,7 @@ const CreateEditDiscount = ({
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const { enqueueSnackbar } = useSnackbar();
   const [addDiscount] = useAddDiscountMutation();
   const [updateDiscount, { isLoading: isUpdating }] =
     useUpdateDiscountMutation();
@@ -32,7 +34,6 @@ const CreateEditDiscount = ({
   const getDate = (stringDate) => {
     if (stringDate) {
       const [day, month, year] = stringDate.split("-");
-      console.log(day, month, year);
       return new Date(year, month - 1, day);
     } else {
       return new Date();
@@ -44,25 +45,33 @@ const CreateEditDiscount = ({
     start_date: dayjs(getDate(discount.start_date)),
     end_date: dayjs(getDate(discount.end_date)),
   };
-  console.log(initialDiscountValues);
-  //   console.log(dayjs(getDate(discount.start_date)));
   const handleSaveDiscount = (values) => {
-    console.log(values);
+    const postData = {
+      ...values,
+      start_date: values.start_date.format("DD-MM-YYYY"),
+      end_date: values.end_date.format("DD-MM-YYYY"),
+    };
     if (creatingDiscount) {
       addDiscount({
-        post: {
-          ...values,
-          start_date: values.start_date.format("DD-MM-YYYY"),
-          end_date: values.end_date.format("DD-MM-YYYY"),
-        },
+        post: postData,
+      }).then((data) => {
+        enqueueSnackbar(
+          `Discount -> ${postData.name} is created successfully!`,
+          {
+            variant: "success",
+          }
+        );
       });
     } else if (editingDiscount) {
       updateDiscount({
-        post: {
-          ...values,
-          start_date: values.start_date.format("DD-MM-YYYY"),
-          end_date: values.end_date.format("DD-MM-YYYY"),
-        },
+        post: postData,
+      }).then((data) => {
+        enqueueSnackbar(
+          `Discount -> ${postData.name} is updated successfully!`,
+          {
+            variant: "success",
+          }
+        );
       });
     }
     setCreatingDiscount(undefined);
@@ -92,7 +101,6 @@ const CreateEditDiscount = ({
           borderColor={colors.grey[500]}
           className="flex flex-col gap-4 border p-4 rounded-md"
         >
-          {console.log(errors)}
           <TextField
             size="small"
             color="secondary"

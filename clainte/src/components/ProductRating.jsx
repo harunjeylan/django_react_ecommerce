@@ -18,12 +18,12 @@ const ProductRating = ({ product }) => {
             color={colors.greenAccent[400]}
             className=" text-6xl"
           >
-            {product?.rating.average}
+            {product?.rating?.average}
           </Typography>
         </Box>
         <Box>
           <Typography variant="h5" color={colors.greenAccent[400]}>
-            {product?.rating.total} Reviews
+            {product?.rating?.total} Reviews
           </Typography>
         </Box>
       </Box>

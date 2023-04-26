@@ -4,16 +4,16 @@ export const organizeApi = authApi.injectEndpoints({
   tagTypes: ["organize", "categories"],
   endpoints: (builder) => ({
     getAllOrganize: builder.query({
-      query: () => "api/organize/",
+      query: () => "service/organize/",
       providesTags: ["organize"],
     }),
     getAllCategory: builder.query({
-      query: () => `api/organize/categories/`,
+      query: () => `service/organize/categories/`,
       providesTags: ["categories"],
     }),
     addOrganize: builder.mutation({
       query: ({ post }) => ({
-        url: `api/organize/add/`,
+        url: `service/organize/add/`,
         method: "POST",
         body: post,
       }),
@@ -21,7 +21,7 @@ export const organizeApi = authApi.injectEndpoints({
     }),
     updateOrganize: builder.mutation({
       query: ({ post }) => ({
-        url: `api/organize/update/`,
+        url: `service/organize/update/`,
         method: "PUT",
         body: post,
       }),
@@ -29,7 +29,7 @@ export const organizeApi = authApi.injectEndpoints({
     }),
     deleteOrganize: builder.mutation({
       query: ({ post }) => ({
-        url: `api/organize/delete/`,
+        url: `service/organize/delete/`,
         method: "DELETE",
         body: post,
       }),

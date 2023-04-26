@@ -13,6 +13,7 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 import { tokens } from "../../../../../theme";
 import { useTheme } from "@emotion/react";
 import { useDeleteVariantMutation } from "../../../../../features/services/variantApiSlice";
+import { useSnackbar } from "notistack";
 
 const Variant = ({
   variant,
@@ -22,9 +23,15 @@ const Variant = ({
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { enqueueSnackbar } = useSnackbar();
+
   const [deleteVariant] = useDeleteVariantMutation();
   const handleDelete = () => {
-    deleteVariant({ post: { id: variant.id } });
+    deleteVariant({ post: { id: variant.id } }).then((data) => {
+      enqueueSnackbar(`Variant -> ${variant.label} is deleted successfully!`, {
+        variant: "success",
+      });
+    });
   };
   return (
     <Box className="flex flex-col  w-full  bg-slate-400/10 rounded-lg">
