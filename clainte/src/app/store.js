@@ -33,7 +33,7 @@ import wishlistReducer from "../features/services/wishlistReducer";
 
 // ===================================================================
 
-import { dashboardApi } from "../features/main/dashboardApiSlice";
+import { dashboardApi } from "../features/services/dashboardApiSlice";
 // ===================================================================
 
 const cartConfig = { key: "cart", storage, version: 1 };

@@ -26,7 +26,7 @@ const CreateEditVariant = ({
   editingVariant,
   setCreatingVariant,
   setEditingVariant,
-  handleAddVariant,
+  setModelMessages,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -133,12 +133,25 @@ const CreateEditVariant = ({
         deleteOption({
           post: { variantId: editingVariant.id, optionId: option.id },
         }).then((data) => {
-          enqueueSnackbar(
-            `Variant Option -> ${option.label} is deleted successfully!`,
-            {
-              variant: "success",
-            }
-          );
+          if (data?.error?.status === 400) {
+            Object.keys(data.error.data).forEach((key) => {
+              setModelMessages((prev) => [
+                ...prev,
+                {
+                  id: key,
+                  variant: "error",
+                  description: data.error.data[key],
+                },
+              ]);
+            });
+          } else {
+            enqueueSnackbar(
+              `Variant Option -> ${option.label} is deleted successfully!`,
+              {
+                variant: "success",
+              }
+            );
+          }
         });
       }
       setEditingVariant((prev) => {
@@ -153,25 +166,45 @@ const CreateEditVariant = ({
   const handleSaveVariant = () => {
     if (creatingVariant) {
       addVariant({ post: creatingVariant }).then((data) => {
-        enqueueSnackbar(
-          `Variant -> ${creatingVariant.label} is created successfully!`,
-          {
-            variant: "success",
-          }
-        );
+        if (data?.error?.status === 400) {
+          Object.keys(data.error.data).forEach((key) => {
+            setModelMessages((prev) => [
+              ...prev,
+              { id: key, variant: "error", description: data.error.data[key] },
+            ]);
+          });
+        } else {
+          setCreatingVariant(undefined);
+          setEditingVariant(undefined);
+          enqueueSnackbar(
+            `Variant -> ${creatingVariant.label} is created successfully!`,
+            {
+              variant: "success",
+            }
+          );
+        }
       });
     } else if (editingVariant) {
       updateVariant({ post: editingVariant }).then((data) => {
-        enqueueSnackbar(
-          `Variant -> ${editingVariant.label} is updated successfully!`,
-          {
-            variant: "success",
-          }
-        );
+        if (data?.error?.status === 400) {
+          Object.keys(data.error.data).forEach((key) => {
+            setModelMessages((prev) => [
+              ...prev,
+              { id: key, variant: "error", description: data.error.data[key] },
+            ]);
+          });
+        } else {
+          setCreatingVariant(undefined);
+          setEditingVariant(undefined);
+          enqueueSnackbar(
+            `Variant -> ${editingVariant.label} is updated successfully!`,
+            {
+              variant: "success",
+            }
+          );
+        }
       });
     }
-    setCreatingVariant(undefined);
-    setEditingVariant(undefined);
   };
 
   const handleCancel = () => {

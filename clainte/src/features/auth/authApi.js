@@ -53,7 +53,15 @@ const baseQueryWithReOauth = async (args, api, extraOptions) => {
       return response;
     }
   } else {
-    return result;
+    if (result?.error) {
+      if (result?.error?.status === 400) {
+        return result;
+      } else {
+        console.log(result);
+      }
+    } else {
+      return result;
+    }
   }
 };
 

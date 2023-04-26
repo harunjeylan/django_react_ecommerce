@@ -76,6 +76,7 @@ const OrganizeForm = ({
   const colors = tokens(theme.palette.mode);
   const [openModel, setOpenModel] = useState(false);
   const [modelTitle, setModelTitle] = useState("");
+  const [modelMessages, setModelMessages] = useState([]);
   const [modelInputLabel, setModelInputLabel] = useState("");
   const { enqueueSnackbar } = useSnackbar();
 
@@ -96,18 +97,23 @@ const OrganizeForm = ({
       name: modelInputLabel,
       label: modelInputRef.current.value,
     };
-    addOrganize({ post: postData })
-      .then((data) => {
-        if (data?.error?.status === 400) {
-        }
+    addOrganize({ post: postData }).then((data) => {
+      if (data?.error?.status === 400) {
+        Object.keys(data.error.data).forEach((key) => {
+          setModelMessages((prev) => [
+            ...prev,
+            { id: key, variant: "error", description: data.error.data[key] },
+          ]);
+        });
+      } else {
         enqueueSnackbar(
           `${postData.name} -> ${postData.label} is created successfully!`,
           {
             variant: "success",
           }
         );
-      })
-      .catch((error) => console.log(error));
+      }
+    });
 
     modelInputRef.current.value = "";
     // setOpenModel(false);
@@ -119,12 +125,21 @@ const OrganizeForm = ({
       label: value,
     };
     updateOrganize({ post: postData }).then((data) => {
-      enqueueSnackbar(
-        `${postData.name} -> ${postData.name} is updated successfully!`,
-        {
-          variant: "success",
-        }
-      );
+      if (data?.error?.status === 400) {
+        Object.keys(data.error.data).forEach((key) => {
+          setModelMessages((prev) => [
+            ...prev,
+            { id: key, variant: "error", description: data.error.data[key] },
+          ]);
+        });
+      } else {
+        enqueueSnackbar(
+          `${postData.name} -> ${postData.name} is updated successfully!`,
+          {
+            variant: "success",
+          }
+        );
+      }
     });
   };
   const handleDelete = ({ id, name }) => {
@@ -133,12 +148,21 @@ const OrganizeForm = ({
       name,
     };
     deleteOrganize({ post: postData }).then((data) => {
-      enqueueSnackbar(
-        `${postData.name} -> ${postData.name} is deleted successfully!`,
-        {
-          variant: "success",
-        }
-      );
+      if (data?.error?.status === 400) {
+        Object.keys(data.error.data).forEach((key) => {
+          setModelMessages((prev) => [
+            ...prev,
+            { id: key, variant: "error", description: data.error.data[key] },
+          ]);
+        });
+      } else {
+        enqueueSnackbar(
+          `${postData.name} -> ${postData.name} is deleted successfully!`,
+          {
+            variant: "success",
+          }
+        );
+      }
     });
   };
   return (
@@ -147,6 +171,8 @@ const OrganizeForm = ({
         openModel={openModel}
         setOpenModel={setOpenModel}
         modelTitle={modelTitle}
+        messages={modelMessages}
+        setMessages={setModelMessages}
       >
         <Box className="w-full">
           <Box className="flex justify-between items-center gap-2 mb-2">

@@ -22,6 +22,7 @@ const CreateEditDiscount = ({
   editingDiscount,
   setCreatingDiscount,
   setEditingDiscount,
+  setModelMessages,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -55,23 +56,41 @@ const CreateEditDiscount = ({
       addDiscount({
         post: postData,
       }).then((data) => {
-        enqueueSnackbar(
-          `Discount -> ${postData.name} is created successfully!`,
-          {
-            variant: "success",
-          }
-        );
+        if (data?.error?.status === 400) {
+          Object.keys(data.error.data).forEach((key) => {
+            setModelMessages((prev) => [
+              ...prev,
+              { id: key, variant: "error", description: data.error.data[key] },
+            ]);
+          });
+        } else {
+          enqueueSnackbar(
+            `Discount -> ${postData.name} is created successfully!`,
+            {
+              variant: "success",
+            }
+          );
+        }
       });
     } else if (editingDiscount) {
       updateDiscount({
         post: postData,
       }).then((data) => {
-        enqueueSnackbar(
-          `Discount -> ${postData.name} is updated successfully!`,
-          {
-            variant: "success",
-          }
-        );
+        if (data?.error?.status === 400) {
+          Object.keys(data.error.data).forEach((key) => {
+            setModelMessages((prev) => [
+              ...prev,
+              { id: key, variant: "error", description: data.error.data[key] },
+            ]);
+          });
+        } else {
+          enqueueSnackbar(
+            `Discount -> ${postData.name} is updated successfully!`,
+            {
+              variant: "success",
+            }
+          );
+        }
       });
     }
     setCreatingDiscount(undefined);

@@ -32,10 +32,10 @@ const PricingForm = ({
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
   const [editingDiscount, setEditingDiscount] = useState(undefined);
   const [creatingDiscount, setCreatingDiscount] = useState(undefined);
 
+  const [modelMessages, setModelMessages] = useState([]);
   const [openModel, setOpenModel] = useState(false);
 
   const { data: discounts = [], isFetching: discountsIsFetching } =
@@ -91,6 +91,8 @@ const PricingForm = ({
         openModel={openModel}
         setOpenModel={setOpenModel}
         modelTitle="Add Discount"
+        messages={modelMessages}
+        setMessages={setModelMessages}
       >
         {openModel && (
           <>
@@ -100,6 +102,7 @@ const PricingForm = ({
                 setCreatingDiscount={setCreatingDiscount}
                 editingDiscount={editingDiscount}
                 setEditingDiscount={setEditingDiscount}
+                setModelMessages={setModelMessages}
               />
             ) : !discountsIsFetching ? (
               <DiscountList
@@ -108,6 +111,7 @@ const PricingForm = ({
                 handleAddDiscount={handleAddDiscount}
                 handleSetDiscount={handleSetDiscount}
                 highlightDiscountId={values.discount}
+                setModelMessages={setModelMessages}
               />
             ) : (
               <Box className="h-full w-full flex justify-center items-center">

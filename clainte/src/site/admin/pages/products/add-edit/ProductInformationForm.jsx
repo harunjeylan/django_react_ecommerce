@@ -87,6 +87,7 @@ const ProductInformationForm = ({
   const colors = tokens(theme.palette.mode);
   const { enqueueSnackbar } = useSnackbar();
   const [imageSrc, setImageSrc] = useState(undefined);
+  const [modelMessages, setModelMessages] = useState([]);
   const [openModel, setOpenModel] = useState(false);
   const modelInputRef = useRef();
   const [addBrand] = useAddBrandMutation();
@@ -104,9 +105,18 @@ const ProductInformationForm = ({
       name: modelInputRef.current.value,
     };
     addBrand({ post: postData }).then((data) => {
-      enqueueSnackbar(`Brand -> ${postData.name} is created successfully!`, {
-        variant: "success",
-      });
+      if (data?.error?.status === 400) {
+        Object.keys(data.error.data).forEach((key) => {
+          setModelMessages((prev) => [
+            ...prev,
+            { id: key, variant: "error", description: data.error.data[key] },
+          ]);
+        });
+      } else {
+        enqueueSnackbar(`Brand -> ${postData.name} is created successfully!`, {
+          variant: "success",
+        });
+      }
     });
     modelInputRef.current.value = "";
   };
@@ -117,9 +127,18 @@ const ProductInformationForm = ({
       name,
     };
     updateBrand({ post: postData }).then((data) => {
-      enqueueSnackbar(`Brand -> ${postData.name} is update successfully!`, {
-        variant: "success",
-      });
+      if (data?.error?.status === 400) {
+        Object.keys(data.error.data).forEach((key) => {
+          setModelMessages((prev) => [
+            ...prev,
+            { id: key, variant: "error", description: data.error.data[key] },
+          ]);
+        });
+      } else {
+        enqueueSnackbar(`Brand -> ${postData.name} is update successfully!`, {
+          variant: "success",
+        });
+      }
     });
     if (values.brand === brand.name) {
       setFieldValue("brand", "");
@@ -131,31 +150,58 @@ const ProductInformationForm = ({
       id,
     };
     deleteBrand({ post: postData }).then((data) => {
-      enqueueSnackbar(`Brand -> ${postData.name} is deleted successfully!`, {
-        variant: "success",
-      });
+      if (data?.error?.status === 400) {
+        Object.keys(data.error.data).forEach((key) => {
+          setModelMessages((prev) => [
+            ...prev,
+            { id: key, variant: "error", description: data.error.data[key] },
+          ]);
+        });
+      } else {
+        enqueueSnackbar(`Brand -> ${postData.name} is deleted successfully!`, {
+          variant: "success",
+        });
+      }
     });
     if (values.brand === brand.name) {
       setFieldValue("brand", "");
     }
   };
   const handelRemoveThumbnail = () => {
-    removeThumbnail({ post: { id: initialValues?.id } }).then((response) => {
+    removeThumbnail({ post: { id: initialValues?.id } }).then((data) => {
       setInitialValues((prev) => ({ ...prev, thumbnail: undefined }));
-      enqueueSnackbar(`Thumbnail is removed successfully!`, {
-        variant: "success",
-      });
+      if (data?.error?.status === 400) {
+        Object.keys(data.error.data).forEach((key) => {
+          setModelMessages((prev) => [
+            ...prev,
+            { id: key, variant: "error", description: data.error.data[key] },
+          ]);
+        });
+      } else {
+        enqueueSnackbar(`Thumbnail is removed successfully!`, {
+          variant: "success",
+        });
+      }
     });
   };
   const handelRemoveImage = (imageId) => {
-    removeImage({ post: { id: imageId } }).then((response) => {
+    removeImage({ post: { id: imageId } }).then((data) => {
       setInitialValues((prev) => ({
         ...prev,
         images: prev.images.filter((image) => image.id !== imageId),
       }));
-      enqueueSnackbar(`Image is removed successfully!`, {
-        variant: "success",
-      });
+      if (data?.error?.status === 400) {
+        Object.keys(data.error.data).forEach((key) => {
+          setModelMessages((prev) => [
+            ...prev,
+            { id: key, variant: "error", description: data.error.data[key] },
+          ]);
+        });
+      } else {
+        enqueueSnackbar(`Image is removed successfully!`, {
+          variant: "success",
+        });
+      }
     });
   };
 
@@ -165,6 +211,8 @@ const ProductInformationForm = ({
         openModel={openModel}
         setOpenModel={setOpenModel}
         modelTitle="Add Brand"
+        messages={modelMessages}
+        setMessages={setModelMessages}
       >
         <Box className="w-full">
           <Box className="flex justify-between items-center gap-2 mb-2">

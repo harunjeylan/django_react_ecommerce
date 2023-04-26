@@ -31,6 +31,7 @@ const VariantsForm = ({
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [modelMessages, setModelMessages] = useState([]);
   const [openModel, setOpenModel] = useState(false);
   const [modelTitle, setModelTitle] = useState("");
   const [selected, setSelected] = useState([]);
@@ -137,6 +138,8 @@ const VariantsForm = ({
         openModel={openModel}
         setOpenModel={setOpenModel}
         modelTitle={modelTitle}
+        messages={modelMessages}
+        setMessages={setModelMessages}
       >
         {openModel && (
           <>
@@ -147,6 +150,7 @@ const VariantsForm = ({
                 editingVariant={editingVariant}
                 setEditingVariant={setEditingVariant}
                 handleAddVariant={handleAddVariant}
+                setModelMessages={setModelMessages}
               />
             ) : !variantsIsFetching ? (
               <VariantList
@@ -155,6 +159,7 @@ const VariantsForm = ({
                 setEditingVariant={setEditingVariant}
                 handleSetVariant={handleSetVariant}
                 handleAddVariant={handleAddVariant}
+                setModelMessages={setModelMessages}
               />
             ) : (
               <Box className="h-full w-full flex justify-center items-center">

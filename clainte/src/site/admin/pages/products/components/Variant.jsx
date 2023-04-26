@@ -28,9 +28,21 @@ const Variant = ({
   const [deleteVariant] = useDeleteVariantMutation();
   const handleDelete = () => {
     deleteVariant({ post: { id: variant.id } }).then((data) => {
-      enqueueSnackbar(`Variant -> ${variant.label} is deleted successfully!`, {
-        variant: "success",
-      });
+      if (data?.error?.status === 400) {
+        Object.keys(data.error.data).forEach((key) => {
+          setModelMessages((prev) => [
+            ...prev,
+            { id: key, variant: "error", description: data.error.data[key] },
+          ]);
+        });
+      } else {
+        enqueueSnackbar(
+          `Variant -> ${variant.label} is deleted successfully!`,
+          {
+            variant: "success",
+          }
+        );
+      }
     });
   };
   return (
