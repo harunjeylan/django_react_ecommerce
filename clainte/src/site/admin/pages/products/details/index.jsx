@@ -19,6 +19,7 @@ import StarIcon from "@mui/icons-material/Star";
 import { tokens } from "../../../../../theme";
 import Header from "../../../../../components/Header";
 import Reviews from "../../../../../components/Reviews";
+import ProductRating from "../../../../../components/ProductRating";
 
 const ProductDetails = () => {
   const theme = useTheme();
@@ -27,7 +28,7 @@ const ProductDetails = () => {
   const { productId } = useParams();
   const [value, setValue] = useState("description");
 
-  const { data: product, isFetching: isFetchingProduct } =
+  const { data: product = {}, isFetching: isFetchingProduct } =
     useGetProductsDetailsQuery({ productId });
 
   const [activeImage, setActiveImage] = useState(product?.thumbnail);
@@ -86,7 +87,7 @@ const ProductDetails = () => {
               fontWeight="bold"
               className={`text-2xl md:text-4xl`}
             >
-              {product?.title}
+              {product.title}
             </Typography>
             <Box className="flex  items-sm-center justify-between mb-4">
               <Typography
@@ -157,67 +158,6 @@ const ProductDetails = () => {
                     Brand : {product?.brand?.name}
                   </Typography>
                 </Box>
-                <Box className=" w-full">
-                  <Typography
-                    variant="h1"
-                    color={colors.grey[100]}
-                    fontWeight="bold"
-                    className={`text-xl md:text-2xl  text-left my-4`}
-                  >
-                    Rating
-                  </Typography>
-                  <Box className="flex flex-col gap-4 justify-start w-full">
-                    {!isFetchingProduct ? (
-                      <Box className=" w-full flex gap-4 items-center">
-                        <Box className="w-32">
-                          <StarIcon
-                            fontSize="large"
-                            className="text-yellow-500 text-6xl"
-                          />
-                          <Typography
-                            variant="h1"
-                            color={colors.greenAccent[400]}
-                          >
-                            {product?.rating.average}
-                          </Typography>
-                          <Typography
-                            variant="h5"
-                            color={colors.greenAccent[400]}
-                          >
-                            {product?.rating.total} Reviews
-                          </Typography>
-                        </Box>
-
-                        <Box className=" w-full flex flex-col gap-2">
-                          {product?.rating?.values?.map((rating) => (
-                            <Box
-                              key={rating.rating}
-                              className={`flex gap-2 w-full items-center`}
-                            >
-                              <Typography>
-                                <strong>{rating.rating}</strong>
-                              </Typography>
-                              <Box
-                                backgroundColor={colors.primary[300]}
-                                className="w-full h-4 outline-1 flex justify-start items-center rounded-md"
-                              >
-                                <span
-                                  style={{ width: `${rating?.average}%` }}
-                                  className={`py1 bg-yellow-500 h-full rounded-md`}
-                                />
-                              </Box>
-                              <strong>{rating?.total}</strong>
-                            </Box>
-                          ))}
-                        </Box>
-                      </Box>
-                    ) : (
-                      <Box className="w-full flex items-center justify-center h-full min-h-40">
-                        <CircularProgress color="secondary" />
-                      </Box>
-                    )}
-                  </Box>
-                </Box>
               </Box>
               <Box className="flex flex-col gap-4 justify-start w-fit">
                 <Box>
@@ -260,6 +200,27 @@ const ProductDetails = () => {
                       </Box>
                     )}
                   </Box>
+                </Box>
+              </Box>
+            </Box>
+            <Box className=" w-full gap-8">
+              <Box className=" w-full">
+                <Typography
+                  variant="h1"
+                  color={colors.grey[100]}
+                  fontWeight="bold"
+                  className={`text-xl md:text-2xl  text-left my-4`}
+                >
+                  Rating
+                </Typography>
+                <Box className="flex flex-col gap-4 justify-start w-full">
+                  {!isFetchingProduct ? (
+                    <ProductRating product={product} />
+                  ) : (
+                    <Box className="w-full flex items-center justify-center h-full min-h-40">
+                      <CircularProgress color="secondary" />
+                    </Box>
+                  )}
                 </Box>
               </Box>
             </Box>

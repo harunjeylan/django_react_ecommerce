@@ -15,7 +15,7 @@ export const productApi = authApi.injectEndpoints({
   endpoints: (builder) => ({
     addProduct: builder.mutation({
       query: ({ post }) => ({
-        url: `api/products/add/`,
+        url: `product/add/`,
         method: "POST",
         body: post,
       }),
@@ -23,7 +23,7 @@ export const productApi = authApi.injectEndpoints({
     }),
     updateProduct: builder.mutation({
       query: ({ post, productId }) => ({
-        url: `api/products/${productId}/edit/`,
+        url: `product/${productId}/edit/`,
         method: "PUT",
         body: post,
       }),
@@ -40,33 +40,33 @@ export const productApi = authApi.injectEndpoints({
       ],
     }),
     getAllProducts: builder.query({
-      query: () => "api/products/",
+      query: () => "product/",
       providesTags: ["products"],
     }),
 
     getRecommendedProducts: builder.query({
-      query: () => "api/products/recommended/",
+      query: () => "product/recommended/",
       providesTags: ["recommended-products"],
     }),
     searchAndFilterProducts: builder.query({
       query: ({ searchAndFilter }) =>
-        `api/products/search-and-filter/${searchAndFilter}`,
+        `product/search-and-filter/${searchAndFilter}`,
       providesTags: ["products-by-searchAndFilter"],
     }),
     searchProducts: builder.query({
-      query: ({ search }) => `api/products/search/?${search}`,
+      query: ({ search }) => `product/search/?${search}`,
       providesTags: ["products-by-search"],
     }),
     getProductsDetails: builder.query({
-      query: ({ productId }) => `api/products/${productId}/`,
+      query: ({ productId }) => `product/${productId}/`,
       providesTags: ["products_details"],
     }),
     getProductsByCategory: builder.query({
-      query: ({ category }) => `api/products/category/${category}/`,
+      query: ({ category }) => `product/category/${category}/`,
       providesTags: ["products-by-category"],
     }),
     getRelatedProducts: builder.query({
-      query: ({ productId }) => `api/products/${productId}/related/`,
+      query: ({ productId }) => `product/${productId}/related/`,
       providesTags: ["products-by-category"],
     }),
 
@@ -74,7 +74,7 @@ export const productApi = authApi.injectEndpoints({
       query: ({ limit }) => {
         let queryKey = "";
         queryKey = limit ? queryKey + `limit=${limit}&` : queryKey;
-        return `api/products/most-sealed/?${queryKey}`;
+        return `product/most-sealed/?${queryKey}`;
       },
       providesTags: ["most-sealed-products"],
     }),
@@ -82,14 +82,14 @@ export const productApi = authApi.injectEndpoints({
       query: ({ limit }) => {
         let queryKey = "";
         queryKey = limit ? queryKey + `limit=${limit}&` : queryKey;
-        return `api/products/top-rated/?${queryKey}`;
+        return `product/top-rated/?${queryKey}`;
       },
       providesTags: ["top-rated-products"],
     }),
 
     uploadImage: builder.mutation({
       query: ({ post }) => ({
-        url: `api/products/images/upload/`,
+        url: `product/images/upload/`,
         method: "POST",
         body: post,
       }),
@@ -97,7 +97,7 @@ export const productApi = authApi.injectEndpoints({
     }),
     addProductReview: builder.mutation({
       query: ({ post, productId }) => ({
-        url: `api/products/${productId}/review/add/`,
+        url: `product/${productId}/review/add/`,
         method: "POST",
         body: post,
       }),
@@ -109,15 +109,15 @@ export const productApi = authApi.injectEndpoints({
       ],
     }),
     getRatings: builder.query({
-      query: () => "api/products/ratings/",
+      query: () => "product/ratings/",
     }),
     getProductsForAdmin: builder.query({
-      query: () => "api/admin/products/",
+      query: () => "product/admin/",
       providesTags: ["admin_products"],
     }),
     deleteProduct: builder.mutation({
       query: ({ post }) => ({
-        url: `api/products/delete/`,
+        url: `product/delete/`,
         method: "DELETE",
         body: post,
       }),
@@ -133,7 +133,7 @@ export const productApi = authApi.injectEndpoints({
     }),
     deleteMultiProducts: builder.mutation({
       query: ({ post }) => ({
-        url: `api/products/multi-delete/`,
+        url: `product/multi-delete/`,
         method: "DELETE",
         body: post,
       }),
@@ -149,7 +149,7 @@ export const productApi = authApi.injectEndpoints({
     }),
     changeMultiProductsDiscount: builder.mutation({
       query: ({ post }) => ({
-        url: `api/products/discount/multi-change/`,
+        url: `product/discount/multi-change/`,
         method: "POST",
         body: post,
       }),
@@ -165,7 +165,7 @@ export const productApi = authApi.injectEndpoints({
     }),
     removeThumbnail: builder.mutation({
       query: ({ post }) => ({
-        url: `api/products/thumbnail/remove/`,
+        url: `product/thumbnail/remove/`,
         method: "DELETE",
         body: post,
         invalidatesTags: ["products_data"],
@@ -173,7 +173,7 @@ export const productApi = authApi.injectEndpoints({
     }),
     removeImage: builder.mutation({
       query: ({ post }) => ({
-        url: `api/products/images/remove/`,
+        url: `service/images/remove/`,
         method: "DELETE",
         body: post,
         invalidatesTags: ["products_data"],

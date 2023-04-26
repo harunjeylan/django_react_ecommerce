@@ -19,6 +19,7 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 import Option from "./Option";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../../../../../theme";
+import { useSnackbar } from "notistack";
 
 const CreateEditVariant = ({
   creatingVariant,
@@ -29,6 +30,8 @@ const CreateEditVariant = ({
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { enqueueSnackbar } = useSnackbar();
+
   const variantInputRef = useRef();
   const [addVariant] = useAddVariantMutation();
   const [updateVariant] = useUpdateVariantMutation();
@@ -76,7 +79,7 @@ const CreateEditVariant = ({
   const handleUpdateOptionLabel = ({ option, newLabel }) => {
     if (creatingVariant) {
       setCreatingVariant((prev) => {
-        let chengedOption = prev.options.find(
+        let changedOption = prev.options.find(
           (opt) => opt.index === option.index
         );
         let otherOptions = prev.options.filter(
@@ -84,13 +87,12 @@ const CreateEditVariant = ({
         );
         return {
           ...prev,
-          options: [...otherOptions, { ...chengedOption, label: newLabel }],
+          options: [...otherOptions, { ...changedOption, label: newLabel }],
         };
       });
     } else if (editingVariant) {
       setEditingVariant((prev) => {
-        console.log(prev, option);
-        let chengedOption = prev.options.find((opt) => {
+        let changedOption = prev.options.find((opt) => {
           if (opt.id && option.id) {
             return opt.id === option.id;
           } else if (opt.index && option.index) {
@@ -110,7 +112,7 @@ const CreateEditVariant = ({
         });
         return {
           ...prev,
-          options: [...otherOptions, { ...chengedOption, label: newLabel }],
+          options: [...otherOptions, { ...changedOption, label: newLabel }],
         };
       });
     }
@@ -130,6 +132,13 @@ const CreateEditVariant = ({
       if (option.id) {
         deleteOption({
           post: { variantId: editingVariant.id, optionId: option.id },
+        }).then((data) => {
+          enqueueSnackbar(
+            `Variant Option -> ${option.label} is deleted successfully!`,
+            {
+              variant: "success",
+            }
+          );
         });
       }
       setEditingVariant((prev) => {
@@ -143,10 +152,23 @@ const CreateEditVariant = ({
   };
   const handleSaveVariant = () => {
     if (creatingVariant) {
-      addVariant({ post: creatingVariant });
+      addVariant({ post: creatingVariant }).then((data) => {
+        enqueueSnackbar(
+          `Variant -> ${creatingVariant.label} is created successfully!`,
+          {
+            variant: "success",
+          }
+        );
+      });
     } else if (editingVariant) {
-      console.log(editingVariant);
-      updateVariant({ post: editingVariant });
+      updateVariant({ post: editingVariant }).then((data) => {
+        enqueueSnackbar(
+          `Variant -> ${editingVariant.label} is updated successfully!`,
+          {
+            variant: "success",
+          }
+        );
+      });
     }
     setCreatingVariant(undefined);
     setEditingVariant(undefined);
@@ -173,7 +195,7 @@ const CreateEditVariant = ({
             fullWidth
             variant="filled"
             type="text"
-            label="Valriant"
+            label="Variant"
             name="variant"
             inputRef={variantInputRef}
             onChange={handleSaveVariantLabel}

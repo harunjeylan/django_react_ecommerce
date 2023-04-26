@@ -24,8 +24,10 @@ import OrganizeForm from "./OrganizeForm";
 import VariantsForm from "./VariantsForm";
 import Header from "../../../../../components/Header";
 import { useDispatch } from "react-redux";
+import { useSnackbar } from "notistack";
 
 const AddEditProduct = ({ isEditing }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [addProduct] = useAddProductMutation();
@@ -67,10 +69,11 @@ const AddEditProduct = ({ isEditing }) => {
       },
     };
 
-    console.log(post);
-
     if (productId) {
       updateProduct({ post, productId }).then((res) => {
+        enqueueSnackbar(`Product -> ${post.title} is updated successfully!`, {
+          variant: "success",
+        });
         let postForm = new FormData();
         postForm.append("thumbnail", values.thumbnail[0]?.file);
         values.images.forEach((image) => {
@@ -85,19 +88,31 @@ const AddEditProduct = ({ isEditing }) => {
         });
       });
     } else {
-      addProduct({ post }).then((res) => {
-        let postForm = new FormData();
-        postForm.append("thumbnail", values.thumbnail[0]?.file);
-        values.images.forEach((image) => {
-          postForm.append("images", image.file);
+      addProduct({ post })
+        .then((res) => {
+          enqueueSnackbar(`Product -> ${post.title} is created successfully!`, {
+            variant: "success",
+          });
+          let postForm = new FormData();
+          postForm.append("thumbnail", values.thumbnail[0]?.file);
+          values.images.forEach((image) => {
+            postForm.append("images", image.file);
+          });
+          postForm.append("productId", res.data.id);
+          uploadImage({
+            post: postForm,
+          }).then((response) => {
+            navigate(`/admin/products/${res.data.id}`);
+          });
+        })
+        .then((data) => {
+          enqueueSnackbar(
+            `Product -> ${creatingVariant.label} is created successfully!`,
+            {
+              variant: "success",
+            }
+          );
         });
-        postForm.append("productId", res.data.id);
-        uploadImage({
-          post: postForm,
-        }).then((response) => {
-          navigate(`/admin/products/${res.data.id}`);
-        });
-      });
     }
   };
 

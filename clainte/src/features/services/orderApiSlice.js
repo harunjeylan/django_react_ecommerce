@@ -4,28 +4,28 @@ export const orderApi = authApi.injectEndpoints({
   tagTypes: ["orders", "orders_details", "orders_for_admin"],
   endpoints: (builder) => ({
     getAllOrders: builder.query({
-      query: () => `api/orders/`,
+      query: () => `service/orders/`,
       providesTags: ["orders"],
     }),
 
     getAllOrdersForAdmin: builder.query({
-      query: () => `api/admin/orders/`,
+      query: () => `service/admin/orders/`,
       providesTags: ["orders_for_admin"],
     }),
 
     getOrderDetailes: builder.query({
-      query: ({ orderId }) => `api/orders/${orderId}/`,
+      query: ({ orderId }) => `service/orders/${orderId}/`,
       providesTags: ["orders_details"],
     }),
 
     getOrderDetailsForAdmin: builder.query({
-      query: ({ orderId }) => `api/admin/orders/${orderId}/`,
+      query: ({ orderId }) => `service/admin/orders/${orderId}/`,
       providesTags: ["orders_details"],
     }),
 
     addOrder: builder.mutation({
       query: ({ post }) => ({
-        url: `api/orders/add/`,
+        url: `service/orders/add/`,
         method: "POST",
         body: post,
       }),
@@ -33,7 +33,7 @@ export const orderApi = authApi.injectEndpoints({
     }),
     updateOrder: builder.mutation({
       query: ({ post }) => ({
-        url: `api/orders/update/`,
+        url: `service/orders/update/`,
         method: "PUT",
         body: post,
       }),
@@ -41,7 +41,7 @@ export const orderApi = authApi.injectEndpoints({
     }),
     deleteOrder: builder.mutation({
       query: ({ post }) => ({
-        url: `api/orders/delete/`,
+        url: `service/orders/delete/`,
         method: "DELETE",
         body: post,
       }),

@@ -33,6 +33,7 @@ import {
 import { Field } from "formik";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
+import { useSnackbar } from "notistack";
 
 const Brand = ({ brand, handleUpdate, handleDelete }) => {
   const InputRef = useRef();
@@ -84,6 +85,7 @@ const ProductInformationForm = ({
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { enqueueSnackbar } = useSnackbar();
   const [imageSrc, setImageSrc] = useState(undefined);
   const [openModel, setOpenModel] = useState(false);
   const modelInputRef = useRef();
@@ -98,29 +100,41 @@ const ProductInformationForm = ({
   const { data: brands, isFetching: brandsIsFetching } = useGetAllBrandsQuery();
 
   const handleAdd = () => {
-    const data = {
+    const postData = {
       name: modelInputRef.current.value,
     };
-    addBrand({ post: data });
+    addBrand({ post: postData }).then((data) => {
+      enqueueSnackbar(`Brand -> ${postData.name} is created successfully!`, {
+        variant: "success",
+      });
+    });
     modelInputRef.current.value = "";
   };
   const handleUpdate = ({ id, name }) => {
     let brand = brands.find((brand) => brand.id === id);
-    const data = {
+    const postData = {
       id,
       name,
     };
-    updateBrand({ post: data });
+    updateBrand({ post: postData }).then((data) => {
+      enqueueSnackbar(`Brand -> ${postData.name} is update successfully!`, {
+        variant: "success",
+      });
+    });
     if (values.brand === brand.name) {
       setFieldValue("brand", "");
     }
   };
   const handleDelete = ({ id }) => {
     let brand = brands.find((brand) => brand.id === id);
-    const data = {
+    const postData = {
       id,
     };
-    deleteBrand({ post: data });
+    deleteBrand({ post: postData }).then((data) => {
+      enqueueSnackbar(`Brand -> ${postData.name} is deleted successfully!`, {
+        variant: "success",
+      });
+    });
     if (values.brand === brand.name) {
       setFieldValue("brand", "");
     }
@@ -128,6 +142,9 @@ const ProductInformationForm = ({
   const handelRemoveThumbnail = () => {
     removeThumbnail({ post: { id: initialValues?.id } }).then((response) => {
       setInitialValues((prev) => ({ ...prev, thumbnail: undefined }));
+      enqueueSnackbar(`Thumbnail is removed successfully!`, {
+        variant: "success",
+      });
     });
   };
   const handelRemoveImage = (imageId) => {
@@ -136,6 +153,9 @@ const ProductInformationForm = ({
         ...prev,
         images: prev.images.filter((image) => image.id !== imageId),
       }));
+      enqueueSnackbar(`Image is removed successfully!`, {
+        variant: "success",
+      });
     });
   };
 
@@ -218,14 +238,15 @@ const ProductInformationForm = ({
               Product Description
             </Typography>
             <Field name="description">
-              {({ meta }) => (
+              {({ meta, field }) => (
                 <Box
                   backgroundColor={colors.primary[400]}
                   color={colors.grey[100]}
                 >
                   <ReactQuill
+                    name="description"
                     theme="snow"
-                    value={values.description}
+                    value={field.value}
                     modules={{
                       toolbar: [
                         [{ font: [] }],
@@ -239,10 +260,7 @@ const ProductInformationForm = ({
                         ["clean"],
                       ],
                     }}
-                    onBlur={handleBlur}
-                    onChange={(newVal) => {
-                      setFieldValue("description", newVal);
-                    }}
+                    onChange={field.onChange(field.name)}
                   />
                   {!!touched.description && !!errors.description && (
                     <>

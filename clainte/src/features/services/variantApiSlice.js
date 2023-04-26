@@ -4,13 +4,13 @@ export const variantApi = authApi.injectEndpoints({
   tagTypes: ["variants", "options"],
   endpoints: (builder) => ({
     getAllVariants: builder.query({
-      query: () => `api/variants/`,
+      query: () => `service/variants/`,
       providesTags: ["variants", "options"],
     }),
 
     addVariant: builder.mutation({
       query: ({ post }) => ({
-        url: `api/variants/add/`,
+        url: `service/variants/add/`,
         method: "POST",
         body: post,
       }),
@@ -18,7 +18,7 @@ export const variantApi = authApi.injectEndpoints({
     }),
     updateVariant: builder.mutation({
       query: ({ post }) => ({
-        url: `api/variants/update/`,
+        url: `service/variants/update/`,
         method: "PUT",
         body: post,
       }),
@@ -26,7 +26,7 @@ export const variantApi = authApi.injectEndpoints({
     }),
     deleteVariant: builder.mutation({
       query: ({ post }) => ({
-        url: `api/variants/delete/`,
+        url: `service/variants/delete/`,
         method: "DELETE",
         body: post,
       }),
@@ -34,7 +34,7 @@ export const variantApi = authApi.injectEndpoints({
     }),
     deleteOption: builder.mutation({
       query: ({ post }) => ({
-        url: `api/variants/options/delete/`,
+        url: `service/variants/options/delete/`,
         method: "DELETE",
         body: post,
       }),

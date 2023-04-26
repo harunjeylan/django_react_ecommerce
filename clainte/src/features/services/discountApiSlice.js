@@ -5,19 +5,19 @@ export const discountApi = authApi.injectEndpoints({
   endpoints: (builder) => ({
     addDiscount: builder.mutation({
       query: ({ post }) => ({
-        url: `api/discounts/add/`,
+        url: `service/discounts/add/`,
         method: "POST",
         body: post,
       }),
       invalidatesTags: ["discounts"],
     }),
     getAllDiscounts: builder.query({
-      query: () => `api/discounts/`,
+      query: () => `service/discounts/`,
       providesTags: ["discounts"],
     }),
     updateDiscount: builder.mutation({
       query: ({ post }) => ({
-        url: `api/discounts/update/`,
+        url: `service/discounts/update/`,
         method: "PUT",
         body: post,
       }),
@@ -25,7 +25,7 @@ export const discountApi = authApi.injectEndpoints({
     }),
     deleteDiscount: builder.mutation({
       query: ({ post }) => ({
-        url: `api/discounts/delete/`,
+        url: `service/discounts/delete/`,
         method: "DELETE",
         body: post,
       }),

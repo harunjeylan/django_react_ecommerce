@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from blog.models import Blog,Comment
+
+from blog.models import Blog
+from service.models import Comment
 
 class BlogSerializer(serializers.ModelSerializer):
     thumbnail = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
