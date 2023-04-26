@@ -1,6 +1,8 @@
 
 # Alif - E-commerce ReactJs and Django App Project
 
+<img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=harunjeylan&repo=alif_django_react_ecommerce&theme=radical" />
+
 [![Build Status](https://travis-ci.org/adrian80z/e-commerce.svg?branch=master)](https://github.com/harunjeylan/alif_django_react_ecommerce.git)
 
 **Link to live version - [Alif](https://f93k2n-5173.csb.app/)**
