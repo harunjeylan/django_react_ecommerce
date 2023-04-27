@@ -36,11 +36,10 @@ from service.serializer import (
     VariantOptionSerializer,
     DiscountSerializer,
     CountrySerializer,
+    ReviewSerializer,
 )
 from product.serializer import (
     ProductSerializer,
-    ReviewSerializer,
-    ReviewAllSerializer,
 )
 
 @api_view(['GET'])
@@ -66,7 +65,7 @@ def getMostSealedProducts(request):
         limit = int(request.GET.get("limit"))
 
     most_sealed_products = Product.objects.annotate(
-        sealed_count = Sum("orderdproduct__count")
+        sealed_count = Sum("orderd__count")
     ).order_by("-sealed_count")[:limit]
 
     serialized_data = []
@@ -85,7 +84,7 @@ def getTopRatedProducts(request):
     if request.GET.get("limit"):
         limit = int(request.GET.get("limit"))
     top_rated_products = Product.objects.annotate(
-        rating_count = Sum("review__rating")
+        rating_count = Sum("reviews__rating")
     ).order_by("-rating_count")[:limit]
 
     serialized_data = []
@@ -169,7 +168,7 @@ def searchAndFilterProducts(request):
     
     if "rating" in request.GET:
         ratings = request.GET.getlist("rating")
-        products = products.annotate(average_rating=Round(Avg("review__rating"))).filter(average_rating__in = ratings).distinct()
+        products = products.annotate(average_rating=Round(Avg("reviews__rating"))).filter(average_rating__in = ratings).distinct()
 
     if "organize" in request.GET:
         organize_products = []
@@ -555,13 +554,13 @@ def removeThumbnail(request):
 
 @api_view(['GET'])
 def getRatings(request):
-    rating_5 = Product.objects.annotate(average_rating=Round(Avg("review__rating"))).filter(average_rating=5).count()
-    rating_4 = Product.objects.annotate(average_rating=Round(Avg("review__rating"))).filter(average_rating=4).count()
-    rating_3 = Product.objects.annotate(average_rating=Round(Avg("review__rating"))).filter(average_rating=3).count()
-    rating_2 = Product.objects.annotate(average_rating=Round(Avg("review__rating"))).filter(average_rating=2).count()
-    rating_1 = Product.objects.annotate(average_rating=Round(Avg("review__rating"))).filter(average_rating=1).count()
-    rating_0 = Product.objects.annotate(average_rating=Round(Avg("review__rating"))).filter(average_rating=0).count()
-    total_reviews = Product.objects.annotate(average_rating=Count("review")).all().count()
+    rating_5 = Product.objects.annotate(average_rating=Round(Avg("reviews__rating"))).filter(average_rating=5).count()
+    rating_4 = Product.objects.annotate(average_rating=Round(Avg("reviews__rating"))).filter(average_rating=4).count()
+    rating_3 = Product.objects.annotate(average_rating=Round(Avg("reviews__rating"))).filter(average_rating=3).count()
+    rating_2 = Product.objects.annotate(average_rating=Round(Avg("reviews__rating"))).filter(average_rating=2).count()
+    rating_1 = Product.objects.annotate(average_rating=Round(Avg("reviews__rating"))).filter(average_rating=1).count()
+    rating_0 = Product.objects.annotate(average_rating=Round(Avg("reviews__rating"))).filter(average_rating=0).count()
+    total_reviews = Product.objects.annotate(average_rating=Count("reviews")).all().count()
     data = [
         {"rating":5,"average":getAverage(rating_5, total_reviews),"total":rating_5},
         {"rating":4,"average":getAverage(rating_4, total_reviews),"total":rating_4},
@@ -575,9 +574,11 @@ def getRatings(request):
 @api_view(['POST'])
 def addProductReview(request, pk):
     product = Product.objects.get(id=pk)
-    review_serializer_form = ReviewAllSerializer(data={**request.data,"product":product.id})
+    review_serializer_form = ReviewSerializer(data={**request.data})
     if review_serializer_form.is_valid():
         review = review_serializer_form.save()
+        product.reviews.add(review)
+        product.save()
         return Response(ReviewSerializer(review).data, status=status.HTTP_201_CREATED)
     return Response(review_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
 

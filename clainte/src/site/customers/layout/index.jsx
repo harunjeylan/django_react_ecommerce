@@ -31,14 +31,14 @@ function CustomerLayout({ children }) {
   return (
     <main>
       <LayoutProvider>
-        <AccountDialog />
-        <AccountMenu />
-        <AppBar />
-        <NavBar />
+        <AccountDialog isAuthenticated={!!user} />
+        <AccountMenu isAuthenticated={!!user} />
+        <AppBar isAuthenticated={!!user} />
+        <NavBar isAuthenticated={!!user} />
       </LayoutProvider>
       {children}
-      <CartMenu />
-      <Footer />
+      <CartMenu isAuthenticated={!!user} />
+      <Footer isAuthenticated={!!user} />
     </main>
   );
 }

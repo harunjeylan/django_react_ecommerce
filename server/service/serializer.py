@@ -5,6 +5,7 @@ import django.contrib.auth.password_validation as validators
 
 from service.models import (
     Image,
+    Review,
     Vendor,
     Category,
     Collection,
@@ -98,3 +99,12 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = "__all__"
+
+
+      
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = "__all__"
+
+

@@ -16,6 +16,8 @@ import GoogleIcon from "@mui/icons-material/Google";
 import { setCredentials, setUserData } from "../features/auth/authSlice";
 import { useLoginMutation } from "../features/auth/authApiSlice";
 import { endpoints as authEndpoints } from "../features/auth/authApiSlice";
+import { useSnackbar } from "notistack";
+import useAlert from "./ui/useAlert";
 
 const UserLoginForm = ({
   handleCloseAccountDialog = undefined,
@@ -25,8 +27,9 @@ const UserLoginForm = ({
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const { enqueueSnackbar } = useSnackbar();
+  const [CustomAlert, setMessages] = useAlert();
   const from = location.state?.from?.pathname || "/";
-  const [errorMessage, setErrorMessage] = useState("");
   useEffect(() => {
     userRef.current.focus();
   }, []);
@@ -44,28 +47,36 @@ const UserLoginForm = ({
   const [login] = useLoginMutation();
 
   const handleFormSubmit = (values, { resetForm }) => {
-    login({ ...values })
-      .unwrap()
-      .then((userData) => {
-        dispatch(setCredentials(userData));
-        setErrorMessage("");
+    login({ ...values }).then((data) => {
+      if (data?.error?.data) {
+        Object.keys(data.error.data).forEach((key) => {
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: key,
+              variant: "error",
+              description: data.error.data[key],
+            },
+          ]);
+        });
+      } else {
+        dispatch(setCredentials(data.data));
         dispatch(authEndpoints.getUseData.initiate()).then((response) => {
           if (response.isSuccess) {
             dispatch(setUserData(response.data));
+            enqueueSnackbar(`You have logged in successfully!`, {
+              variant: "success",
+            });
             navigate(from, { replace: true });
             if (handleCloseAccountDialog !== undefined) {
               handleCloseAccountDialog();
             }
           }
+          resetForm();
         });
-        resetForm();
-      })
-      .catch((err) => {
-        console.log(err);
-        setErrorMessage(err?.data?.detail);
-      });
+      }
+    });
   };
-
   return (
     <Box>
       <Formik
@@ -86,11 +97,7 @@ const UserLoginForm = ({
           <form onSubmit={(newValues) => handleSubmit(newValues, resetForm)}>
             <Box className="flex flex-col gap-4 drop-shadow-lg  rounded-lg">
               <Box className="flex flex-col gap-4 px-4 py-2 ">
-                <Box>
-                  {errorMessage !== "" && (
-                    <Alert severity="error">{errorMessage}</Alert>
-                  )}
-                </Box>
+                <CustomAlert />
                 <TextField
                   fullWidth
                   ref={userRef}
@@ -111,7 +118,7 @@ const UserLoginForm = ({
                   label="Password"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.newPassword}
+                  value={values.password}
                   name={"password"}
                   error={!!touched.password && !!errors.password}
                   helperText={touched.password && errors.password}

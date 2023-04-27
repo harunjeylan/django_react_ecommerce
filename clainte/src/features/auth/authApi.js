@@ -50,15 +50,15 @@ const baseQueryWithReOauth = async (args, api, extraOptions) => {
       return await baseQuery(args, api, extraOptions);
     } else {
       // throw Error([{ error: "Unauthorize!" }]);
-      return response;
+      return result;
     }
   } else {
     if (result?.error) {
       if (result?.error?.status === 400) {
         return result;
-      } else {
-        console.log(result);
       }
+      console.log(result);
+      return result;
     } else {
       return result;
     }

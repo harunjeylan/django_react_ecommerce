@@ -34,7 +34,7 @@ import logo from "../../../data/logo.png";
 import Model from "../../../components/ui/Model";
 import { useSearchProductsQuery } from "../../../features/services/productApiSlice";
 
-function AppBar() {
+function AppBar({ isAuthenticated }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(selectCurrentUser);
@@ -204,7 +204,7 @@ function AppBar() {
                       theme.palette.mode === "dark"
                         ? "bg-white/5"
                         : "bg-black/5"
-                    } bg-opacity-90 p-1 w-[100px] h-[120px] rounded-md flex
+                    } bg-opacity-90 p-1 w-fit h-[120px] rounded-md flex
                         products-center ease-in-out duration-300`}
                   >
                     <img
