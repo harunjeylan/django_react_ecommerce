@@ -1,4 +1,4 @@
-import { Box, useTheme } from "@mui/material";
+import { Box, CircularProgress, useTheme } from "@mui/material";
 import { Accordion, Breadcrumbs, Button } from "@mui/material";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -8,11 +8,13 @@ import { useNavigate } from "react-router-dom";
 import { tokens } from "../../../../theme";
 import Header from "../../../../components/Header";
 import Header2 from "../../../../components/Header2";
+import { useGetAllFqaQuery } from "../../../../features/services/fqaApiSlice";
 
 const CustomerFAQ = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
+  const { data: FqAs = [], isFetching: isFetchingFqa } = useGetAllFqaQuery();
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20 mb-10`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
@@ -34,91 +36,34 @@ const CustomerFAQ = () => {
         />
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
-        <Accordion
-          defaultExpanded
-          sx={{ backgroundColor: colors.primary[400] }}
-        >
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography color={colors.greenAccent[500]} variant="h5">
-              An Important Question
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-              eget.
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion
-          defaultExpanded
-          sx={{ backgroundColor: colors.primary[400] }}
-        >
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography color={colors.greenAccent[500]} variant="h5">
-              Another Important Question
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-              eget.
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion
-          defaultExpanded
-          sx={{ backgroundColor: colors.primary[400] }}
-        >
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography color={colors.greenAccent[500]} variant="h5">
-              Your Favorite Question
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-              eget.
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion
-          defaultExpanded
-          sx={{ backgroundColor: colors.primary[400] }}
-        >
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography color={colors.greenAccent[500]} variant="h5">
-              Some Random Question
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-              eget.
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion
-          defaultExpanded
-          sx={{ backgroundColor: colors.primary[400] }}
-        >
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography color={colors.greenAccent[500]} variant="h5">
-              The Final Question
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-              eget.
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
+        {!isFetchingFqa ? (
+          FqAs.length ? (
+            FqAs.map((fqa) => (
+              <Accordion
+                key={fqa.id}
+                defaultExpanded
+                sx={{ backgroundColor: colors.primary[400] }}
+              >
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography color={colors.greenAccent[500]} variant="h5">
+                    {fqa.question}
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography>{fqa.answer}</Typography>
+                </AccordionDetails>
+              </Accordion>
+            ))
+          ) : (
+            <Box className="w-full flex items-center justify-center h-full min-h-40">
+              <Typography>No data</Typography>
+            </Box>
+          )
+        ) : (
+          <Box className="h-full w-full flex justify-center items-center">
+            <CircularProgress />
+          </Box>
+        )}
       </Box>
     </Box>
   );

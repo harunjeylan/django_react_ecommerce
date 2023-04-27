@@ -38,7 +38,6 @@ const Wishlist = () => {
     toggleWishlist({ post: { productId } })
       .unwrap()
       .then((wishlistProducts) => {
-        console.log(wishlistProducts);
         dispatch(setWishlist({ products: wishlistProducts }));
       });
   };

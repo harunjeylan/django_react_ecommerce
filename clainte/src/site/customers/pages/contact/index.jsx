@@ -18,12 +18,38 @@ import { Formik } from "formik";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../../../features/auth/authSlice";
 import * as yup from "yup";
+import { useSnackbar } from "notistack";
+import useAlert from "../../../../components/ui/useAlert";
+import { useAddContactMutation } from "../../../../features/services/contactApiSlice";
 
 const Contact = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const user = useSelector(selectCurrentUser);
-
+  const { enqueueSnackbar } = useSnackbar();
+  const [CustomAlert, setMessages] = useAlert();
+  const [addContact] = useAddContactMutation();
+  const handleContactFormSubmit = (values, { resetForm }) => {
+    addContact({ post: values }).then((data) => {
+      if (data?.error?.data) {
+        Object.keys(data.error.data).forEach((key) => {
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: key,
+              variant: "error",
+              description: data.error.data[key],
+            },
+          ]);
+        });
+      } else {
+        resetForm();
+        enqueueSnackbar(`You have Subscribed in successfully!`, {
+          variant: "success",
+        });
+      }
+    });
+  };
   const phoneRegExp = /^\+?1?\d{9,15}$/;
   const initialValues = {
     first_name: user?.first_name ? user?.first_name : "",
@@ -41,9 +67,7 @@ const Contact = () => {
       .matches(phoneRegExp, "phone number is not valid!"),
     description: yup.string().required("Required"),
   });
-  const handleContactFormSubmit = (values) => {
-    console.log(values);
-  };
+
   return (
     <Box className="">
       <Box className={`flex flex-col gap-4 md:gap-8 mt-10 md:mt-20`}>
@@ -127,6 +151,7 @@ const Contact = () => {
                   className="md:absolute w-full md:w-[600px] rounded-md p-4"
                   backgroundColor={colors.primary[400]}
                 >
+                  <CustomAlert />
                   <Formik
                     onSubmit={handleContactFormSubmit}
                     initialValues={initialValues}

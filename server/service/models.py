@@ -112,8 +112,7 @@ class OrderdVariantOption(models.Model):
 class OrderdItem(models.Model):
     variants = models.ManyToManyField(OrderdVariantOption, blank=True)
     count = models.IntegerField(default=1)
-    def __str__(self):
-        return f"{self.product}" 
+    
     
 class Order(models.Model):
     items = models.ManyToManyField(OrderdItem, blank=True)
@@ -157,7 +156,7 @@ class Review(models.Model):
     rating = models.SmallIntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     def __str__(self):
-        return f"{self.first_name} {self.last_name}-> {self.rating}: {self.product}"
+        return f"{self.first_name} {self.last_name}-> {self.rating}"
 
 
 class Comment(models.Model):
@@ -170,11 +169,32 @@ class Comment(models.Model):
         ordering = ["-created"]
     
     def __str__(self):
-        return f'{self.first_name} {self.last_name} -> {self.blog.title}'
+        return f'{self.first_name} {self.last_name} -> {self.description}'
 
+class Contact(models.Model):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering = ["-created"]
+    
+    def __str__(self):
+        return f'{self.first_name} {self.last_name} -> {self.description}'
+
+class Fqa(models.Model):
+    question = models.CharField(max_length=100)
+    answer = models.TextField(null=True, blank=True)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.email}'
+    
 
 class Subscriber(models.Model):
     email = models.EmailField(unique=True)
+    date = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f'{self.email}'
     

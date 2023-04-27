@@ -4,6 +4,13 @@ from service import api
 
 urlpatterns = [
 
+  path("subscriber/add/", api.addSubscriber , name="add-subscriber"),
+  path("contact/add/", api.addContact , name="add-contact"),
+
+
+  path("fqa/", api.getFqa , name="fqa"),
+  path("fqa/add/", api.addFqa , name="add-fqa"),
+
   path("images/remove/", api.removeImage , name="remove_image"),
 
   path("categories/", api.getAllCategory , name="categories"),
@@ -31,9 +38,6 @@ urlpatterns = [
   path("organize/categories/", api.getAllCategory , name="delete_organize"),
 
   # ===================================================================
-  path("wishlists/", api.getWishlist , name="wishlists"),
-  path("wishlists/toggle/", api.toggleWishlist , name="toggle_wishlists"),
-
 
   path("orders/", api.getOrders , name="order"),
   path("orders/add/", api.addOrder , name="new_order"),

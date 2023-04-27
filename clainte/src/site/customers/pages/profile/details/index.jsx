@@ -40,12 +40,14 @@ const Profile = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [updatePersonalInfo] = useUpdatePersonalInfoMutation();
   const [updatePassword] = useUpdatePasswordMutation();
+  const [updating, setUpdating] = useState("");
   const getValue = (value) => {
     return value ? value : "";
   };
   const handlePersonalInfoFormSubmit = (values, actions) => {
     updatePersonalInfo(values).then((data) => {
       if (data?.error?.data) {
+        setUpdating("PersonalInfo");
         Object.keys(data.error.data).forEach((key) => {
           setMessages((prev) => [
             ...prev,
@@ -62,12 +64,14 @@ const Profile = () => {
           variant: "success",
         });
         actions.setTouched({});
+        setUpdating("");
       }
     });
   };
   const handlePasswordSubmit = (values, actions) => {
     updatePassword(values).then((data) => {
       if (data?.error?.data) {
+        setUpdating("Password");
         Object.keys(data.error.data).forEach((key) => {
           setMessages((prev) => [
             ...prev,
@@ -84,6 +88,7 @@ const Profile = () => {
         });
         actions.setTouched({});
         actions.resetForm();
+        setUpdating("");
       }
     });
   };
@@ -128,7 +133,7 @@ const Profile = () => {
         <Box className="flex flex-col-reverse  gap-8 md:flex-row">
           <Box className="w-full md:max-w-[60%]  lg:max-w-[70%]">
             <Box className="flex flex-col  gap-4">
-              <CustomAlert />
+              {updating === "PersonalInfo" && <CustomAlert />}
               <Typography variant="h3" fontSize="18px">
                 Personal details
               </Typography>
@@ -170,7 +175,7 @@ const Profile = () => {
                   </form>
                 )}
               </Formik>
-
+              {updating === "Password" && <CustomAlert />}
               <Typography variant="h3" fontSize="18px">
                 Change your password
               </Typography>

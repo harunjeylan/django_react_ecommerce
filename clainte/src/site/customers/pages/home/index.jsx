@@ -112,8 +112,10 @@ function Home() {
           }
         />
       </Box>
-      <Box className="">
-        <Subscribe />
+      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
+        <Box className="max-w-lg mx-auto flex justify-between items-center gap-4">
+          <Subscribe />
+        </Box>
       </Box>
     </Box>
   );

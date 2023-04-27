@@ -22,6 +22,9 @@ from service.models import (
     Order, 
     OrderdItem,
     OrderdVariantOption,
+    Contact,
+    Subscriber,
+    Fqa,
 )
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -108,3 +111,16 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
+        fields = "__all__"
+class SubscriberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subscriber
+        fields = "__all__"
+
+class FqaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Fqa
+        fields = "__all__"

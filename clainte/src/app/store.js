@@ -20,6 +20,9 @@ import { productApi } from "../features/services/productApiSlice";
 import { organizeApi } from "../features/services/organizeApiSlice";
 import { variantApi } from "../features/services/variantApiSlice";
 import { brandApi } from "../features/services/brandApiSlice";
+import { subscriberApi } from "../features/services/subscriberApiSlice";
+import { contactApi } from "../features/services/contactApiSlice";
+import { fqaApi } from "../features/services/fqaApiSlice";
 import { discountApi } from "../features/services/discountApiSlice";
 import { orderApi } from "../features/services/orderApiSlice";
 import { wishlistApi } from "../features/services/wishlistApiSlice";
@@ -63,6 +66,9 @@ const store = configureStore({
     [organizeApi.reducerPath]: organizeApi.reducer,
     [variantApi.reducerPath]: variantApi.reducer,
     [brandApi.reducerPath]: brandApi.reducer,
+    [subscriberApi.reducerPath]: subscriberApi.reducer,
+    [contactApi.reducerPath]: contactApi.reducer,
+    [fqaApi.reducerPath]: fqaApi.reducer,
     [discountApi.reducerPath]: discountApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
@@ -84,6 +90,9 @@ const store = configureStore({
       .concat(variantApi.middleware)
       .concat(productApi.middleware)
       .concat(brandApi.middleware)
+      .concat(subscriberApi.middleware)
+      .concat(contactApi.middleware)
+      .concat(fqaApi.middleware)
       .concat(discountApi.middleware)
       .concat(authApi.middleware)
       .concat(orderApi.middleware)

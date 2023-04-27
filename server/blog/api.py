@@ -327,8 +327,10 @@ def getAllTags(request):
 @api_view(['POST'])
 def addBlogComment(request, slug):
     blog = Blog.objects.get(slug=slug)
-    comment_serializer_form = BlogCommentSerializer(data={**request.data,"blog":blog.id})
+    comment_serializer_form = BlogCommentSerializer(data={**request.data})
     if comment_serializer_form.is_valid():
         comment = comment_serializer_form.save()
+        blog.comments.add(comment)
+        blog.save()
         return Response(BlogCommentSerializer(comment).data, status=status.HTTP_201_CREATED)
     return Response(comment_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)

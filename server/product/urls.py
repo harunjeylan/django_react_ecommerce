@@ -12,7 +12,8 @@ urlpatterns = [
   path("add/", api.newProduct , name="new_products"),
   path("delete/", api.deleteProduct , name="delete_products"),
   path("multi-delete/", api.deleteMultiProducts , name="multi-delete_products"),
-  
+  path("wishlists/", api.getWishlist , name="wishlists"),
+  path("wishlists/toggle/", api.toggleWishlist , name="toggle_wishlists"),
   path("ratings/", api.getRatings , name="products_ratings"),
   path("images/upload/", api.uploadImage , name="upload_image"),
   

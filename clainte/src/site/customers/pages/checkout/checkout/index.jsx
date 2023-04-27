@@ -78,7 +78,7 @@ const Checkout = () => {
       } else {
         dispatch(clearCart());
         navigate(`/checkout/success`, { replace: true });
-        enqueueSnackbar(`You have logged in successfully!`, {
+        enqueueSnackbar(`made an Order Successfully!`, {
           variant: "success",
         });
       }

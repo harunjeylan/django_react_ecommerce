@@ -111,6 +111,39 @@ def getRelatedProducts(request, pk):
         })
     return Response(serialized_data, status=status.HTTP_200_OK) 
 
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getWishlist(request):
+    wishlist = Product.objects.filter(wishes = request.user)
+    serialized_data = []
+    for product in wishlist:
+        serialized_data.append({
+            **ProductSerializer(product, context={"request":request}).data,
+            "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
+            "rating":product.reviews.all().aggregate(Avg('rating'))["rating__avg"],
+        })
+    return Response(serialized_data, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])  
+def toggleWishlist(request):
+    product = Product.objects.get(id=request.data.get("productId"))
+    if product.wishes.contains(request.user):
+        product.wishes.remove(request.user)
+    else:
+        product.wishes.add(request.user)
+
+    wishlist = Product.objects.filter(wishes = request.user)
+    serialized_data = []
+    for product in wishlist:
+        serialized_data.append({
+            **ProductSerializer(product, context={"request":request}).data,
+            "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
+            "rating":product.reviews.all().aggregate(Avg('rating'))["rating__avg"],
+        })
+    return Response(serialized_data, status=status.HTTP_200_OK)
 # =================================================================================
 
 @api_view(['GET'])

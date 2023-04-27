@@ -4,13 +4,13 @@ export const wishlistApi = authApi.injectEndpoints({
   tagTypes: ["wishlists"],
   endpoints: (builder) => ({
     getWishlist: builder.query({
-      query: () => `service/wishlists/`,
+      query: () => `product/wishlists/`,
       providesTags: ["wishlists"],
     }),
 
     toggleWishlist: builder.mutation({
       query: ({ post }) => ({
-        url: `service/wishlists/toggle/`,
+        url: `product/wishlists/toggle/`,
         method: "POST",
         body: post,
       }),
