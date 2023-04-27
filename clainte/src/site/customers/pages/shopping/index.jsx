@@ -63,7 +63,6 @@ const Shopping = () => {
   } = useSearchAndFilterProductsQuery({
     searchAndFilter,
   });
-
   const { data: brands, isFetching: isFetchingBrands } = useGetAllBrandsQuery();
   const { data: ratings, isFetching: isFetchingRatings } = useGetRatingsQuery();
   const { data: organize, isFetching: isFetchingOrganize } =
@@ -137,7 +136,6 @@ const Shopping = () => {
         }
       });
     });
-    console.log(variantsValue);
     Object.keys(variantsValue).forEach((key) => {
       variantsValue[key].forEach((variant) => {
         if (variant !== "") {
@@ -146,6 +144,7 @@ const Shopping = () => {
         }
       });
     });
+
     setSearchAndFilter(searchAndFilterValue);
   }, [
     brandValue,

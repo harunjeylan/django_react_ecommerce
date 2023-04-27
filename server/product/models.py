@@ -33,8 +33,8 @@ class Product(models.Model):
     organize = models.ForeignKey("service.Organize", null=True, blank=True, on_delete=models.SET_NULL)
     countries = models.ManyToManyField("service.Country",blank=True)
     images = models.ManyToManyField("service.Image", blank=True)
+    orderd = models.ManyToManyField("service.OrderdItem",blank=True)
     variants = models.ManyToManyField("service.VariantOption", blank=True)
-    orderd = models.ManyToManyField("service.OrderdItem", blank=True)
     reviews = models.ManyToManyField("service.Review", blank=True)
     wishes = models.ManyToManyField(User, blank=True)
 

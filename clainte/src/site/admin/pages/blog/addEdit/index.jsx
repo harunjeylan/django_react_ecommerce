@@ -514,17 +514,25 @@ const AddEditBlog = ({ isEditing }) => {
                       Body
                     </Typography>
                     <Field name="body">
-                      {({ meta }) => (
+                      {({ meta, field }) => (
                         <Box>
                           <ReactQuill
                             theme="snow"
-                            value={values.body}
                             modules={quillModules}
-                            onBlur={handleBlur}
-                            onChange={(newVal) => setFieldValue("body", newVal)}
+                            // onBlur={handleBlur}
+                            value={field.value}
+                            onChange={field.onChange(field.name)}
                           />
-                          {meta.touched && meta.error && (
-                            <div className="error">{meta.error}</div>
+                          {!!meta.touched && !!meta.errors && (
+                            <>
+                              <Divider
+                                color="error"
+                                className="h-[2px] mt-[-1px]"
+                              />
+                              <Typography className="text-red-500">
+                                {meta.touched && meta.errors}
+                              </Typography>
+                            </>
                           )}
                         </Box>
                       )}

@@ -54,7 +54,7 @@ def userRegister(request):
     print(request.data)
     users = User.objects.filter(username = username)
     if users.exists():
-        return Response({"detail":"user is already exist with this username"}, status.HTTP_208_ALREADY_REPORTED)
+        return Response({"detail":"user is already exist with this username"}, status.HTTP_400_BAD_REQUEST)
     serializer_register_form = RegistrationSerializer(data=request.data)
     if serializer_register_form.is_valid():
         user = serializer_register_form.save()
@@ -75,6 +75,7 @@ def userRegister(request):
 def getUserData(request):
     address, is_address_created = Address.objects.get_or_create(user=request.user)
     profile, is_profile_created = Profile.objects.get_or_create(user=request.user)
+    print(request.user)
     data = {
         "user":{
             **ProfileSerializer(profile,context={"request":request}).data,

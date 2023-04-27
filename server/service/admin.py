@@ -19,6 +19,9 @@ from .models import (
     Brand,
     OrderAddress,
     Comment,
+    Contact,
+    Subscriber,
+    Fqa,
 )
 
 # Register your models here.
@@ -93,6 +96,10 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ( 'first_name','last_name','email', 'description', 'created')
 
 
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
+    list_display = ( 'first_name','last_name','email', 'description', 'created')
+
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
     list_display = (
@@ -148,3 +155,12 @@ class OrderAdmin(admin.ModelAdmin):
     )
     list_filter = ('date', 'customer')
 
+
+@admin.register(Subscriber)
+class SubscriberAdmin(admin.ModelAdmin):
+    list_display = ( 'email',"date")
+
+
+@admin.register(Fqa)
+class FqaAdmin(admin.ModelAdmin):
+    list_display = ( 'question','answer',"date")

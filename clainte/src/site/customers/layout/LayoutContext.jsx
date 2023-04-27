@@ -10,11 +10,9 @@ const LayoutProvider = ({ children }) => {
     mode: "login",
   });
   const handleClickAccountMenu = (event) => {
-    console.log("clicked");
     setAnchorEl(event.currentTarget);
   };
   const handleCloseAccountMenu = () => {
-    console.log("closed");
     setAnchorEl(null);
   };
   const handleClickOpenAccountDialog = (mode) => {

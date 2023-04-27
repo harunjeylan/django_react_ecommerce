@@ -28,45 +28,69 @@ import {
 } from "../../../../../features/auth/authApiSlice";
 import Header from "../../../../../components/Header";
 import { tokens } from "../../../../../theme";
+import useAlert from "../../../../../components/ui/useAlert";
+import { useSnackbar } from "notistack";
 const Profile = () => {
   const userData = useSelector(selectCurrentUser);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [CustomAlert, setMessages] = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
   const [updatePersonalInfo] = useUpdatePersonalInfoMutation();
   const [updatePassword] = useUpdatePasswordMutation();
+  const [updating, setUpdating] = useState("");
   const getValue = (value) => {
     return value ? value : "";
   };
   const handlePersonalInfoFormSubmit = (values, actions) => {
-    updatePersonalInfo(values)
-      .unwrap()
-      .then((response) => {
-        console.log(response);
-        dispatch(setUserData(response));
+    updatePersonalInfo(values).then((data) => {
+      if (data?.error?.data) {
+        setUpdating("PersonalInfo");
+        Object.keys(data.error.data).forEach((key) => {
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: key,
+              variant: "error",
+              description: data.error.data[key],
+            },
+          ]);
+        });
+      } else {
+        dispatch(setUserData(data));
+        enqueueSnackbar(`You have changed Personal Info successfully!`, {
+          variant: "success",
+        });
         actions.setTouched({});
-        setErrorMessage("");
-      })
-      .catch((err) => {
-        console.log(err);
-        setErrorMessage(err?.data?.detail);
-      });
+        setUpdating("");
+      }
+    });
   };
   const handlePasswordSubmit = (values, actions) => {
-    updatePassword(values)
-      .unwrap()
-      .then((response) => {
+    updatePassword(values).then((data) => {
+      if (data?.error?.data) {
+        setUpdating("Password");
+        Object.keys(data.error.data).forEach((key) => {
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: key,
+              variant: "error",
+              description: data.error.data[key],
+            },
+          ]);
+        });
+      } else {
+        enqueueSnackbar(`You have changed Password successfully!`, {
+          variant: "success",
+        });
         actions.setTouched({});
         actions.resetForm();
-        setErrorMessage("");
-      })
-      .catch((err) => {
-        console.log(err);
-        setErrorMessage(err?.data?.detail);
-      });
+        setUpdating("");
+      }
+    });
   };
   const PersonalDetailsInitialValues = {
     email: getValue(userData?.email),
@@ -109,11 +133,7 @@ const Profile = () => {
         <Box className="flex flex-col-reverse  gap-8 md:flex-row">
           <Box className="w-full md:max-w-[60%]  lg:max-w-[70%]">
             <Box className="flex flex-col  gap-4">
-              {errorMessage !== "" && (
-                <Box>
-                  <Alert severity="error">{errorMessage}</Alert>
-                </Box>
-              )}
+              {updating === "PersonalInfo" && <CustomAlert />}
               <Typography variant="h3" fontSize="18px">
                 Personal details
               </Typography>
@@ -155,7 +175,7 @@ const Profile = () => {
                   </form>
                 )}
               </Formik>
-
+              {updating === "Password" && <CustomAlert />}
               <Typography variant="h3" fontSize="18px">
                 Change your password
               </Typography>

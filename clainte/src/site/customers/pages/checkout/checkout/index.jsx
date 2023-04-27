@@ -26,9 +26,13 @@ import { clearCart } from "../../../../../features/services/cartReducer";
 import { selectCurrentUser } from "../../../../../features/auth/authSlice";
 import { tokens } from "../../../../../theme";
 import Header from "../../../../../components/Header";
+import { useSnackbar } from "notistack";
+import useAlert from "../../../../../components/ui/useAlert";
 
 const Checkout = () => {
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+  const [CustomAlert, setMessages] = useAlert();
   const userData = useSelector(selectCurrentUser);
   const [activeStep, setActiveStep] = useState(0);
   const cart = useSelector((state) => state.cart.cart);
@@ -39,7 +43,6 @@ const Checkout = () => {
   const navigate = useNavigate();
   const [addOrder] = useAddOrderMutation();
   const handleFormSubmit = async (values, actions) => {
-    console.log(values);
     !isLastStep && setActiveStep(activeStep + 1);
     if (isFirstStep && values.shippingAddress.isSameAddress) {
       actions.setFieldValue("shippingAddress", {
@@ -50,16 +53,7 @@ const Checkout = () => {
     isLastStep && makePayment(values);
     actions.setTouched({});
   };
-  console.log(cart);
   async function makePayment(values) {
-    console.log({
-      ...values,
-      products: cart?.map((product) => ({
-        id: product.id,
-        variants: product.selectedVariants,
-        count: product.count,
-      })),
-    });
     addOrder({
       post: {
         ...values,
@@ -69,17 +63,26 @@ const Checkout = () => {
           count: product.count,
         })),
       },
-    })
-      .then((response) => {
-        if (!response.error) {
-          console.log(response);
-          dispatch(clearCart());
-          navigate(`/checkout/success`, { replace: true });
-        } else {
-          console.log(response.error);
-        }
-      })
-      .catch((error) => console.log(error));
+    }).then((data) => {
+      if (data?.error?.data) {
+        Object.keys(data.error.data).forEach((key) => {
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: key,
+              variant: "error",
+              description: data.error.data[key],
+            },
+          ]);
+        });
+      } else {
+        dispatch(clearCart());
+        navigate(`/checkout/success`, { replace: true });
+        enqueueSnackbar(`made an Order Successfully!`, {
+          variant: "success",
+        });
+      }
+    });
   }
   const totalPrice = cart.reduce((total, item) => {
     return total + item.count * item.sale_pricing;
@@ -179,6 +182,7 @@ const Checkout = () => {
                   setFieldValue,
                 }) => (
                   <form onSubmit={handleSubmit}>
+                    <CustomAlert />
                     {isFirstStep && (
                       <Shipping
                         values={values}

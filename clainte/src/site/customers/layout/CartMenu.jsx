@@ -24,7 +24,7 @@ import {
   setIsCartOpen,
 } from "../../../features/services/cartReducer";
 
-const CartMenu = () => {
+const CartMenu = ({ isAuthenticated }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -71,7 +71,7 @@ const CartMenu = () => {
                         theme.palette.mode === "dark"
                           ? "bg-white/5"
                           : "bg-black/5"
-                      } bg-opacity-90 p-1 w-[120px] h-[140px] rounded-md flex
+                      } bg-opacity-90 p-1 w-fit h-[140px] rounded-md flex
                         items-center ease-in-out duration-300`}
                     >
                       <img
@@ -92,7 +92,12 @@ const CartMenu = () => {
                         </IconButton>
                       </Box>
                       <Typography className="mr-4">
-                        {item?.description?.slice(0, 60)}
+                        {item?.description
+                          .replaceAll(/<[^>]*>/g, "")
+                          .slice(0, 150)}
+                        {item?.description?.length > 150 && (
+                          <strong> . . .</strong>
+                        )}
                       </Typography>
                       <Divider />
                       <Box className="flex justify-between w-full">
@@ -181,17 +186,19 @@ const CartMenu = () => {
                   >
                     VIEW CART
                   </Button>
-                  <Button
-                    variant="outlined"
-                    className={`w-full py-2`}
-                    color="secondary"
-                    onClick={() => {
-                      navigate("/checkout/");
-                      dispatch(setIsCartOpen({}));
-                    }}
-                  >
-                    CHECKOUT
-                  </Button>
+                  {isAuthenticated && (
+                    <Button
+                      variant="outlined"
+                      className={`w-full py-2`}
+                      color="secondary"
+                      onClick={() => {
+                        navigate("/checkout/");
+                        dispatch(setIsCartOpen({}));
+                      }}
+                    >
+                      CHECKOUT
+                    </Button>
+                  )}
                 </Box>
               </Box>
             </>

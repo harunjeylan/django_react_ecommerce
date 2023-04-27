@@ -30,6 +30,7 @@ import {
 import { SERVER_HOST } from "../../../../features/auth/authApi.js";
 import BlogCard from "../../components/BlogCard.jsx";
 import LargeBlogCard from "../../components/LargeBlogCard";
+import Subscribe from "../../components/Subscribe.jsx";
 
 const Blog = () => {
   const theme = useTheme();
@@ -111,21 +112,7 @@ const Blog = () => {
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Box className="max-w-lg mx-auto flex justify-between items-center gap-4">
-          <TextField
-            fullWidth
-            placeholder="Email Address"
-            variant="outlined"
-            size="medium"
-            color="secondary"
-          />
-          <Button
-            color="secondary"
-            variant="outlined"
-            size="large"
-            className="py-3"
-          >
-            Submit
-          </Button>
+          <Subscribe />
         </Box>
       </Box>
       <Box

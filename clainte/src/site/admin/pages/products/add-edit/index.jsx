@@ -71,25 +71,49 @@ const AddEditProduct = ({ isEditing }) => {
 
     if (productId) {
       updateProduct({ post, productId }).then((res) => {
-        enqueueSnackbar(`Product -> ${post.title} is updated successfully!`, {
-          variant: "success",
-        });
-        let postForm = new FormData();
-        postForm.append("thumbnail", values.thumbnail[0]?.file);
-        values.images.forEach((image) => {
-          postForm.append("images", image.file);
-        });
-        postForm.append("productId", res.data.id);
-        uploadImage({
-          post: postForm,
-        }).then((response) => {
-          console.log(response);
-          navigate(`/admin/products/${productId}`);
-        });
+        if (data?.error?.status === 400) {
+          Object.keys(data.error.data).forEach((key) => {
+            setModelMessages((prev) => [
+              ...prev,
+              {
+                id: key,
+                variant: "error",
+                description: data.error.data[key],
+              },
+            ]);
+          });
+        } else {
+          enqueueSnackbar(`Product -> ${post.title} is updated successfully!`, {
+            variant: "success",
+          });
+          let postForm = new FormData();
+          postForm.append("thumbnail", values.thumbnail[0]?.file);
+          values.images.forEach((image) => {
+            postForm.append("images", image.file);
+          });
+          postForm.append("productId", res.data.id);
+          uploadImage({
+            post: postForm,
+          }).then((response) => {
+            console.log(response);
+            navigate(`/admin/products/${productId}`);
+          });
+        }
       });
     } else {
-      addProduct({ post })
-        .then((res) => {
+      addProduct({ post }).then((res) => {
+        if (data?.error?.status === 400) {
+          Object.keys(data.error.data).forEach((key) => {
+            setModelMessages((prev) => [
+              ...prev,
+              {
+                id: key,
+                variant: "error",
+                description: data.error.data[key],
+              },
+            ]);
+          });
+        } else {
           enqueueSnackbar(`Product -> ${post.title} is created successfully!`, {
             variant: "success",
           });
@@ -104,15 +128,8 @@ const AddEditProduct = ({ isEditing }) => {
           }).then((response) => {
             navigate(`/admin/products/${res.data.id}`);
           });
-        })
-        .then((data) => {
-          enqueueSnackbar(
-            `Product -> ${creatingVariant.label} is created successfully!`,
-            {
-              variant: "success",
-            }
-          );
-        });
+        }
+      });
     }
   };
 

@@ -9,13 +9,14 @@ import { ColorModeContext, useMode } from "./theme";
 import {
   selectCurrentToken,
   selectCurrentRefresh,
+  selectCurrentUser,
   // selectCurrentUser,
 } from "./features/auth/authSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Box } from "@mui/material";
 // import {  useDispatch } from "react-redux";
-// import { useGetUseDataQuery } from "./features/auth/authApiSlice";
-// import { setUserData } from "./features/auth/authSlice";
+import { useGetUseDataQuery } from "./features/auth/authApiSlice";
+import { setUserData } from "./features/auth/authSlice";
 import { refreshAccessToken } from "./features/auth/authApi";
 
 import store from "./app/store";
@@ -127,13 +128,14 @@ function App() {
   const accessToken = useSelector(selectCurrentToken);
   const refreshToken = useSelector(selectCurrentRefresh);
 
-  // const userData = useSelector(selectCurrentUser);
-  // const dispatch = useDispatch();
-  // const { data: newUserData } = useGetUseDataQuery();
-  // useEffect(() => {
-  //   if (userData && newUserData) dispatch(setUserData(newUserData));
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [accessToken]);
+  const userData = useSelector(selectCurrentUser);
+  const dispatch = useDispatch();
+  const { data: newUserData } = useGetUseDataQuery();
+
+  useEffect(() => {
+    if (userData && newUserData) dispatch(setUserData(newUserData));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessToken]);
 
   const timeOutRef = useRef(1000 * 60 * 4);
   useEffect(() => {

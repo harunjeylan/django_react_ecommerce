@@ -5,6 +5,7 @@ import django.contrib.auth.password_validation as validators
 
 from service.models import (
     Image,
+    Review,
     Vendor,
     Category,
     Collection,
@@ -21,6 +22,9 @@ from service.models import (
     Order, 
     OrderdItem,
     OrderdVariantOption,
+    Contact,
+    Subscriber,
+    Fqa,
 )
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -97,4 +101,26 @@ class OrderdItemSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
+        fields = "__all__"
+
+
+      
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = "__all__"
+
+
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
+        fields = "__all__"
+class SubscriberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subscriber
+        fields = "__all__"
+
+class FqaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Fqa
         fields = "__all__"

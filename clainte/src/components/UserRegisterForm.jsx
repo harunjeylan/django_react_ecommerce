@@ -14,6 +14,8 @@ import {
 import GoogleIcon from "@mui/icons-material/Google";
 import { setUser } from "../features/auth/authSlice";
 import { useRegisterMutation } from "../features/auth/authApiSlice";
+import useAlert from "./ui/useAlert";
+import { useSnackbar } from "notistack";
 
 const UserRegisterForm = ({
   handleCloseAccountDialog = undefined,
@@ -23,7 +25,8 @@ const UserRegisterForm = ({
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
-  const [errorMessage, setErrorMessage] = useState("");
+  const [CustomAlert, setMessages] = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
 
   const initialValues = {
     username: "",
@@ -35,21 +38,30 @@ const UserRegisterForm = ({
 
   const [register] = useRegisterMutation();
   const handleFormSubmit = (values, { resetForm }) => {
-    register({ ...values })
-      .unwrap()
-      .then((data) => {
-        dispatch(setUser(data));
-        setErrorMessage("");
+    register({ ...values }).then((data) => {
+      if (data?.error?.data) {
+        Object.keys(data.error.data).forEach((key) => {
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: key,
+              variant: "error",
+              description: data.error.data[key],
+            },
+          ]);
+        });
+      } else {
+        dispatch(setUser(data.data));
+        enqueueSnackbar(`You have registered in successfully!`, {
+          variant: "success",
+        });
         if (handleCloseAccountDialog !== undefined) {
           handleCloseAccountDialog();
         }
         resetForm();
         navigate(from, { replace: true });
-      })
-      .catch((err) => {
-        console.log(err.data);
-        setErrorMessage(err?.data?.detail);
-      });
+      }
+    });
   };
   return (
     <Box>
@@ -69,11 +81,7 @@ const UserRegisterForm = ({
           <form onSubmit={handleSubmit}>
             <Box className="flex flex-col gap-4 drop-shadow-lg  rounded-lg">
               <Box className="flex flex-col gap-4 px-4 py-2 ">
-                <Box>
-                  {errorMessage !== "" && (
-                    <Alert severity="error">{errorMessage}</Alert>
-                  )}
-                </Box>
+                <CustomAlert />
                 <TextField
                   fullWidth
                   variant="filled"
