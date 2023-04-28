@@ -6,7 +6,6 @@ import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { LayoutContext } from "./LayoutContext";
 import {
@@ -31,8 +30,7 @@ import { selectCurrentUser } from "../../../features/auth/authSlice";
 import { ColorModeContext, tokens } from "../../../theme";
 import { setIsCartOpen } from "../../../features/services/cartReducer";
 import logo from "../../../data/logo.png";
-import Model from "../../../components/ui/Model";
-import { useSearchProductsQuery } from "../../../features/services/productApiSlice";
+import useSearch from "../../../components/ui/useSearch";
 
 function AppBar({ isAuthenticated }) {
   const navigate = useNavigate();
@@ -47,23 +45,8 @@ function AppBar({ isAuthenticated }) {
   const { openAccountMenu } = useContext(LayoutContext);
   const { handleClickAccountMenu } = useContext(LayoutContext);
   const { handleClickOpenAccountDialog } = useContext(LayoutContext);
-  const [openModel, setOpenModel] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
-  const [search, setSearch] = useState("");
 
-  const { data: searchProducts = [], isFetching: isFetchingSearchProducts } =
-    useSearchProductsQuery({
-      search,
-    });
-
-  useEffect(() => {
-    let timeOut = setTimeout(() => {
-      if (searchValue !== "") {
-        setSearch(`search=${searchValue}`);
-      }
-    }, 1000);
-    return () => clearTimeout(timeOut);
-  }, [searchValue]);
+  const [SearchButton, SearchResult] = useSearch();
   return (
     <>
       <Box
@@ -87,9 +70,7 @@ function AppBar({ isAuthenticated }) {
           </Box>
 
           <Box className="justify-center flex gap-2">
-            <IconButton onClick={() => setOpenModel(true)}>
-              <SearchOutlinedIcon />
-            </IconButton>
+            <SearchButton />
             <IconButton onClick={colorMode.toggleColorMode}>
               {theme.palette.mode === "dark" ? (
                 <LightModeOutlinedIcon />
@@ -173,73 +154,7 @@ function AppBar({ isAuthenticated }) {
           </Box>
         </Box>
       </Box>
-      <Model
-        openModel={openModel}
-        setOpenModel={setOpenModel}
-        modelTitle="Search"
-        width="md"
-      >
-        <Box className="w-full flex flex-col gap-8">
-          <Box className="w-full">
-            <TextField
-              variant="outlined"
-              color="secondary"
-              fullWidth
-              placeholder="search.."
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-            />
-          </Box>
-          <Box className="w-full">
-            {!isFetchingSearchProducts &&
-              searchProducts.map((product, ind) => (
-                <Box
-                  key={`${product?.title}-${product?.id}-${ind}`}
-                  className="flex flex-col md:flex-row gap-2 
-                  items-center justify-center pb-4 drop-shadow-md"
-                >
-                  <CardActionArea
-                    onClick={() => navigate(`/product/${product?.id}`)}
-                    className={`${
-                      theme.palette.mode === "dark"
-                        ? "bg-white/5"
-                        : "bg-black/5"
-                    } bg-opacity-90 p-1 w-fit h-[120px] rounded-md flex
-                        products-center ease-in-out duration-300`}
-                  >
-                    <img
-                      alt={product?.title}
-                      className="w-full h-full rounded-md"
-                      src={`${product?.thumbnail}`}
-                    />
-                  </CardActionArea>
-                  <Box className="flex flex-col px-2 w-full">
-                    <Box className="flex justify-between products-center">
-                      <Typography fontWeight="bold">
-                        {product?.title}
-                      </Typography>
-                    </Box>
-                    <Typography className="mr-4">
-                      {product?.description
-                        .replaceAll(/<[^>]*>/g, "")
-                        .slice(0, 150)}
-                      {product?.description?.length > 150 && (
-                        <strong> . . .</strong>
-                      )}
-                    </Typography>
-                    <Box className="flex justify-between w-full">
-                      <Box>
-                        <Typography fontWeight="bold">
-                          <strong>Price</strong> : ${product?.sale_pricing}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Box>
-              ))}
-          </Box>
-        </Box>
-      </Model>
+      <SearchResult />
     </>
   );
 }
