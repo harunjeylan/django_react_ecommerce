@@ -27,6 +27,7 @@ import { discountApi } from "../features/services/discountApiSlice";
 import { orderApi } from "../features/services/orderApiSlice";
 import { wishlistApi } from "../features/services/wishlistApiSlice";
 import { customerApi } from "../features/services/customerApiSlice";
+import { searchApi } from "../features/services/searchApiSlice";
 
 import { blogApi } from "../features/services/blogApiSlice";
 
@@ -72,6 +73,7 @@ const store = configureStore({
     [discountApi.reducerPath]: discountApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
+    [searchApi.reducerPath]: searchApi.reducer,
 
     [blogApi.reducerPath]: blogApi.reducer,
 
@@ -99,6 +101,7 @@ const store = configureStore({
       .concat(dashboardApi.middleware)
       .concat(customerApi.middleware)
       .concat(wishlistApi.middleware)
+      .concat(searchApi.middleware)
 
       .concat(blogApi.middleware);
   },

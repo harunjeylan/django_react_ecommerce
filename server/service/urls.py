@@ -6,6 +6,7 @@ urlpatterns = [
 
   path("subscriber/add/", api.addSubscriber , name="add-subscriber"),
   path("contact/add/", api.addContact , name="add-contact"),
+  path("search/", api.searchItems , name="search"),
 
 
   path("fqa/", api.getFqa , name="fqa"),

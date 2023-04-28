@@ -14,10 +14,13 @@ from django.db.models.functions import (
 
 import itertools
 
-from account.serializer import ProfileSerializer
-from service.utils import getAverage
+from account.models import (Address,Profile)
+from account.serializer import (AddressSerializer,UserSerializer, ProfileSerializer)
+from blog.serializer import BlogListSerializer
+from blog.models import Blog
+from service.utils import Round, getAverage
   
-from account.serializer import ProfileSerializer
+
 from service.models import (
     Brand,
     Fqa,
@@ -283,6 +286,68 @@ def getDashboardData(request):
         "new_customers":new_customers_data,
     }
     return Response(response_data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def searchItems(request):
+    if not "search" in request.GET:
+        return Response({}, status=status.HTTP_200_OK) 
+    
+    search = request.GET["search"]
+    serialized_data = {}
+    
+    products = Product.objects.filter(
+        Q(title__icontains=search)|
+        Q(brand__name__icontains=search)|
+        Q(description__icontains=search)|
+        Q(organize__category__name__icontains=search)|
+        Q(organize__collection__name__icontains=search)|
+        Q(organize__vendor__name__icontains=search)|
+        Q(organize__tags__name__icontains=search)
+    ).distinct()
+    products_data = [] 
+    for product in products:
+        products_data.append({
+            **ProductSerializer(product,context={"request":request}).data,
+            "images":ImageSerializer(product.images.all(), many=True, context={"request":request}).data,
+            "rating":product.reviews.all().aggregate(average_rating = Round(Avg("rating")))["average_rating"],
+        })
+    serialized_data["products"] = products_data
+
+    blogs = Blog.objects.order_by("-published").filter(
+            Q(category__name__icontains= search) |
+            Q(title__icontains = search) | 
+            Q(headline__icontains = search) |
+            Q(body__icontains = search),
+        )
+    blogs_data = BlogListSerializer(
+        blogs,
+        context={"request":request}, 
+        many = True
+    ).data
+
+    serialized_data["blogs"] = blogs_data
+
+    if request.user.is_superuser:
+        users = User.objects.filter(
+            Q(first_name__icontains= search) |
+            Q(last_name__icontains = search) | 
+            Q(username__icontains = search)
+        )
+        users_data = []
+        for user in users:
+            address, is_address_created = Address.objects.get_or_create(user=user)
+            profile, is_profile_created = Profile.objects.get_or_create(user=user)
+            users_data.append({
+                **ProfileSerializer(profile,context={"request":request}).data,
+                **AddressSerializer(address).data,
+                **UserSerializer(user).data,
+            })
+        serialized_data["users"] = users_data
+    
+    return Response(serialized_data, status=status.HTTP_200_OK) 
+
+
 
 # =================================================================================
 @api_view(['GET'])
