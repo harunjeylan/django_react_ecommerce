@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from product.utils import Round,  getAverage
+from product.utils import Round, get_product_list_data,  getAverage
 from django.db.models import Avg, Q, Count, Sum
 from rest_framework import status
 from datetime import datetime, timedelta
@@ -111,26 +111,7 @@ def getRelatedProducts(request, pk):
 @permission_classes([IsAuthenticated])
 def getWishlist(request):
     products = Product.objects.filter(wishes=request.user)
-    products_data = []
-    for product in products:
-        product_serializer = ProductSerializer(product, context={"request": request}).data
-        discount = None
-        discounts = Discount.objects.filter(product=product)
-        if discounts.exists():
-            discount = DiscountSerializer(discounts.first()).data
-        products_data.append({
-            "id": product.id,
-            "title": product.title,
-            "description": product.description,
-            "thumbnail": product_serializer["thumbnail"],
-            "sale_pricing": product.sale_pricing,
-            "date": product.date,
-            "brand": product.brand.name,
-            "category": product.organize.category.name,
-            "collection": product.organize.collection.name,
-            "vendor": product.organize.vendor.name,
-            "discount": discount
-        })
+    products_data = get_product_list_data(request,products)
     return Response(products_data, status=status.HTTP_200_OK)
 
 
@@ -252,62 +233,7 @@ def getProductsByCategory(request, category_name):
 @api_view(['GET'])
 def getProductsDetails(request, pk):
     product = Product.objects.get(id=pk)
-    variants = []
-    for variant_option in product.variants.all():
-        variants.append({
-            "options": OptionSerializer(variant_option.options.all(), many=True).data,
-            "variantLabel": variant_option.variant.label,
-        })
-    product_data = get_product_data(request, product)
-    serialized_data = {
-        **product_data,
-        "rating": get_rating(product.reviews),
-        "variants": variants,
-        "brand": BrandSerializer(product.brand).data,
-        "reviews":ReviewSerializer(product.reviews.all(), many=True).data,
-    }
-    organize = Organize.objects.filter(product=product)
-    if organize.exists():
-        serialized_data["organize"] = {
-            "category": CategorySerializer(organize.first().category).data,
-            "collection": CollectionSerializer(organize.first().collection).data,
-            "vendor": VendorSerializer(organize.first().vendor).data,
-            "tags": TagSerializer(organize.first().tags, many=True).data,
-        }
-
-    return Response(serialized_data, status=status.HTTP_200_OK)
-
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def getProductsDataForAdmin(request, pk):
-    product = Product.objects.get(id=pk)
-    variants = []
-    for variant_option in product.variants.all():
-        options = []
-        for option in variant_option.options.all():
-            options.append(option.label)
-        variants.append({
-            "options": options,
-            "variantLabel": variant_option.variant.label,
-        })
-
-    product_data = get_product_data(request, product)
-    serialized_data = {
-        **product_data,
-        "rating": get_rating(product.reviews),
-        "variants": variants,
-        "brand": BrandSerializer(product.brand).data,
-        "reviews":ReviewSerializer(product.reviews.all(), many=True).data,
-    }
-    organize = Organize.objects.filter(product=product)
-    if organize.exists():
-        serialized_data["organize"] = {
-            "category": CategorySerializer(organize.first().category).data,
-            "collection": CollectionSerializer(organize.first().collection).data,
-            "vendor": VendorSerializer(organize.first().vendor).data,
-            "tags": TagSerializer(organize.first().tags, many=True).data,
-        }
+    serialized_data = get_product_data(request, product)
     return Response(serialized_data, status=status.HTTP_200_OK)
 
 
@@ -575,23 +501,5 @@ def addProductReview(request, pk):
 @permission_classes([IsAuthenticated])
 def getProductsForAdmin(request):
     products = Product.objects.all()
-    products_data = []
-    for product in products:
-        product_serializer = ProductSerializer(product, context={"request": request}).data
-        discount = None
-        discounts = Discount.objects.filter(product=product)
-        if discounts.exists():
-            discount = DiscountSerializer(discounts.first()).data
-        products_data.append({
-            "id": product.id,
-            "title": product.title,
-            "thumbnail": product_serializer["thumbnail"],
-            "sale_pricing": product.sale_pricing,
-            "date": product.date,
-            "brand": product.brand.name,
-            "category": product.organize.category.name,
-            "collection": product.organize.collection.name,
-            "vendor": product.organize.vendor.name,
-            "discount": discount
-        })
+    products_data = get_product_list_data(request, products)
     return Response(products_data, status=status.HTTP_200_OK)

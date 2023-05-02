@@ -1,11 +1,11 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { useParams } from "react-router-dom";
-import * as yup from "yup";
-import { Formik } from "formik";
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
+import * as yup from 'yup'
+import { Formik } from 'formik'
 
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 import {
   Box,
   Button,
@@ -23,42 +23,44 @@ import {
   ListItemText,
   ListItemIcon,
   CircularProgress,
-} from "@mui/material";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import CardGiftcardOutlinedIcon from "@mui/icons-material/CardGiftcardOutlined";
-import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
+} from '@mui/material'
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined'
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
+import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined'
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
+import CardGiftcardOutlinedIcon from '@mui/icons-material/CardGiftcardOutlined'
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined'
 
 import {
-  useGetOrderDetailsForAdminQuery,
+  useGetOrderDetailsQuery,
   useUpdateOrderMutation,
-} from "../../../../../features/services/orderApiSlice";
-import { tokens } from "../../../../../theme";
-import Header from "../../../../../components/Header";
-import OrderSummery from "../../../../../components/OrderSummery";
-import useAlert from "../../../../../components/ui/useAlert";
-import { useSnackbar } from "notistack";
+} from '../../../../../features/services/orderApiSlice'
+import { tokens } from '../../../../../theme'
+import Header from '../../../../../components/Header'
+import OrderSummery from '../../../../../components/OrderSummery'
+import useAlert from '../../../../../components/ui/useAlert'
+import { useSnackbar } from 'notistack'
 
 const OrderDetailsForAdmin = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const navigate = useNavigate();
-  const { orderId } = useParams();
-  const [CustomAlert, setMessages] = useAlert();
-  const { enqueueSnackbar } = useSnackbar();
-  const [updateOrder] = useUpdateOrderMutation();
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const navigate = useNavigate()
+  const { orderId } = useParams()
+  const [CustomAlert, setMessages] = useAlert()
+  const { enqueueSnackbar } = useSnackbar()
+  const [updateOrder] = useUpdateOrderMutation()
   const { data: orderData, isFetching: isFetchingOrder } =
-    useGetOrderDetailsForAdminQuery({ orderId: orderId });
+    useGetOrderDetailsQuery({
+      orderId: orderId,
+    })
   const orderStateInitialValues = {
-    payment_status: orderData?.payment_status || "",
-    fulfillment_status: orderData?.fulfillment_status || "",
-  };
+    payment_status: orderData?.payment_status || '',
+    fulfillment_status: orderData?.fulfillment_status || '',
+  }
   const orderStateSchema = yup.object().shape({
-    payment_status: yup.string().required("Required"),
-    fulfillment_status: yup.string().required("Required"),
-  });
+    payment_status: yup.string().required('Required'),
+    fulfillment_status: yup.string().required('Required'),
+  })
   const handleFormSubmit = (values, { resetForm }) => {
     updateOrder({ post: { id: orderId, ...values } }).then((data) => {
       if (data?.error?.data) {
@@ -67,23 +69,23 @@ const OrderDetailsForAdmin = () => {
             ...prev,
             {
               id: key,
-              variant: "error",
+              variant: 'error',
               description: data.error.data[key],
             },
-          ]);
-        });
+          ])
+        })
       } else {
         enqueueSnackbar(`Order is updated successfully!`, {
-          variant: "success",
-        });
+          variant: 'success',
+        })
       }
-    });
-  };
+    })
+  }
 
   const columns = [
     {
-      field: "title",
-      headerName: "Product Name",
+      field: 'title',
+      headerName: 'Product Name',
       width: 200,
       height: 200,
       renderCell: ({ row: { id, title, thumbnail } }) => {
@@ -101,22 +103,22 @@ const OrderDetailsForAdmin = () => {
               <Typography color={colors.greenAccent[500]}>{title}</Typography>
             </Link>
           </Box>
-        );
+        )
       },
     },
-    { field: "category", headerName: "Category", width: 100 },
-    { field: "collection", headerName: "Collection", width: 100 },
-    { field: "date", headerName: "Date", width: 150 },
+    { field: 'category', headerName: 'Category', width: 100 },
+    { field: 'collection', headerName: 'Collection', width: 100 },
+    { field: 'date', headerName: 'Date', width: 150 },
     {
-      field: "sale_pricing",
-      headerName: "sale_pricing",
+      field: 'sale_pricing',
+      headerName: 'sale_pricing',
       renderCell: ({ row: { sale_pricing } }) => {
-        return <Typography>{sale_pricing}</Typography>;
+        return <Typography>{sale_pricing}</Typography>
       },
     },
     {
-      field: "variant",
-      headerName: "Variants",
+      field: 'variant',
+      headerName: 'Variants',
       width: 200,
       renderCell: ({ row: { variants } }) => {
         return variants.length ? (
@@ -133,12 +135,12 @@ const OrderDetailsForAdmin = () => {
           <Typography variant="p">
             <strong>No Variants</strong>
           </Typography>
-        );
+        )
       },
     },
     {
-      field: "discount",
-      headerName: "Discount",
+      field: 'discount',
+      headerName: 'Discount',
       width: 200,
       renderCell: ({ row: { discount } }) => {
         return discount ? (
@@ -161,12 +163,12 @@ const OrderDetailsForAdmin = () => {
           <Typography variant="p">
             <strong>No Discount</strong>
           </Typography>
-        );
+        )
       },
     },
 
-    { field: "brand", headerName: "Brand", width: 100 },
-  ];
+    { field: 'brand', headerName: 'Brand', width: 100 },
+  ]
 
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20 mb-10`}>
@@ -194,22 +196,22 @@ const OrderDetailsForAdmin = () => {
                 backgroundColor={colors.primary[400]}
                 className="h-[80vh] rounded-lg p-4"
                 sx={{
-                  "& .MuiDataGrid-root": {
-                    border: "none",
+                  '& .MuiDataGrid-root': {
+                    border: 'none',
                   },
-                  "& .MuiDataGrid-cell": {
-                    borderBottom: "none",
+                  '& .MuiDataGrid-cell': {
+                    borderBottom: 'none',
                   },
-                  "& .MuiCheckbox-root": {
+                  '& .MuiCheckbox-root': {
                     color: `${colors.greenAccent[200]} !important`,
                   },
-                  "& .MuiChackbox-root": {
+                  '& .MuiChackbox-root': {
                     color: `${colors.greenAccent[200]} !important`,
                   },
-                  "& .MuiDataGrid-columnHeaders": {
-                    borderBottom: "none",
+                  '& .MuiDataGrid-columnHeaders': {
+                    borderBottom: 'none',
                   },
-                  "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+                  '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
                     color: `${colors.grey[100]} !important`,
                   },
                 }}
@@ -257,7 +259,7 @@ const OrderDetailsForAdmin = () => {
                             <Link
                               to={`/admin/customers/${orderData?.customer}`}
                             >
-                              {orderData?.billing_address?.first_name}{" "}
+                              {orderData?.billing_address?.first_name}{' '}
                               {orderData?.billing_address?.last_name}
                             </Link>
                           </Typography>
@@ -307,13 +309,13 @@ const OrderDetailsForAdmin = () => {
                         secondary={
                           <Typography>
                             {orderData?.billing_address?.street1}
-                            {", "}
+                            {', '}
                             {orderData?.billing_address?.country}
-                            {", "}
+                            {', '}
                             {orderData?.billing_address?.city}
-                            {", "}
+                            {', '}
                             {orderData?.billing_address?.state}
-                            {", "}
+                            {', '}
                             {orderData?.billing_address?.zipcode}
                           </Typography>
                         }
@@ -342,7 +344,7 @@ const OrderDetailsForAdmin = () => {
                             <Link
                               to={`/admin/customers/${orderData?.customer}`}
                             >
-                              {orderData?.shipping_address?.first_name}{" "}
+                              {orderData?.shipping_address?.first_name}{' '}
                               {orderData?.shipping_address?.last_name}
                             </Link>
                           </Typography>
@@ -392,13 +394,13 @@ const OrderDetailsForAdmin = () => {
                         secondary={
                           <Typography>
                             {orderData?.shipping_address?.street1}
-                            {", "}
+                            {', '}
                             {orderData?.shipping_address?.country}
-                            {", "}
+                            {', '}
                             {orderData?.shipping_address?.city}
-                            {", "}
+                            {', '}
                             {orderData?.shipping_address?.state}
-                            {", "}
+                            {', '}
                             {orderData?.shipping_address?.zipcode}
                           </Typography>
                         }
@@ -584,7 +586,7 @@ const OrderDetailsForAdmin = () => {
         </Box>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default OrderDetailsForAdmin;
+export default OrderDetailsForAdmin

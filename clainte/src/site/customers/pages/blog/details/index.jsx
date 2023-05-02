@@ -1,48 +1,68 @@
-import { useTheme } from "@emotion/react";
+import { useTheme } from '@emotion/react'
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Box,
-  Button,
   List,
   CardMedia,
   CircularProgress,
   Divider,
-  TextField,
   Typography,
   useMediaQuery,
-} from "@mui/material";
-import React from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+} from '@mui/material'
+import React from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   useGetBlogDetailsQuery,
   useAddBlogCommentMutation,
   useGetBlogCollectionsQuery,
-} from "../../../../../features/services/blogApiSlice";
-import { tokens } from "../../../../../theme";
-import Header2 from "../../../../../components/Header2";
-import RelatedBlogs from "./RelatedBlogs";
-import CommentForm from "../../../../../components/CommentForm";
-import Comments from "../../../../../components/Comments";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
-import Subscribe from '../../../components/Subscribe';
+} from '../../../../../features/services/blogApiSlice'
+import { tokens } from '../../../../../theme'
+import Header2 from '../../../../../components/Header2'
+import RelatedBlogs from './RelatedBlogs'
+import CommentForm from '../../../../../components/CommentForm'
+import Comments from '../../../../../components/Comments'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
+import Subscribe from '../../../components/Subscribe'
+import { useSnackbar } from 'notistack'
+import useAlert from '../../../../../components/ui/useAlert'
 const BlogDetails = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const isNoneMobile = useMediaQuery("(min-width:1024px)");
-  const navigate = useNavigate();
-  const { blogSlug } = useParams();
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const isNoneMobile = useMediaQuery('(min-width:1024px)')
+  const navigate = useNavigate()
+  const { blogSlug } = useParams()
+  const { enqueueSnackbar } = useSnackbar()
+  const [CustomAlert, setMessages] = useAlert()
   const { data: blog, isFetching: isFetchingBlog } = useGetBlogDetailsQuery({
     blogSlug,
-  });
+  })
   const { data: collection, isFetching: isFetchingCollection } =
-    useGetBlogCollectionsQuery();
-  const [addBlogComment] = useAddBlogCommentMutation();
+    useGetBlogCollectionsQuery()
+  const [addBlogComment] = useAddBlogCommentMutation()
   const handleCommentFormSubmit = (values, { resetForm }) => {
-    addBlogComment({ post: values, blogSlug }).then(() => resetForm());
-  };
+    addBlogComment({ post: values, blogSlug }).then((data) => {
+      if (data?.error?.data) {
+        Object.keys(data.error.data).forEach((key) => {
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: key,
+              variant: 'error',
+              description: data.error.data[key],
+            },
+          ])
+        })
+      } else {
+        resetForm()
+        enqueueSnackbar(`You have added comment in successfully!`, {
+          variant: 'success',
+        })
+      }
+    })
+  }
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
       <Box
@@ -93,6 +113,7 @@ const BlogDetails = () => {
                 {blog?.comments?.map((comment, index) => (
                   <Comments key={`comment-${index}`} comment={comment} />
                 ))}
+                <CustomAlert />
                 <CommentForm
                   handleCommentFormSubmit={handleCommentFormSubmit}
                 />
@@ -189,6 +210,6 @@ const BlogDetails = () => {
       </Box>
     </Box>
   )
-};
+}
 
-export default BlogDetails;
+export default BlogDetails

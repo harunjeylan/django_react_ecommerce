@@ -50,10 +50,4 @@ urlpatterns = [
     path("orders/<pk>/", api.getOrderDetails, name="order_details"),
 
     path("admin/dashboard/", api.getDashboardData, name="get_dashboard_data"),
-    path("admin/orders/", api.getOrdersForAdmin, name="order_for_admin"),
-    path("admin/orders/<pk>/", api.getOrderDetailsForAdmin,
-         name="order_details_for_admin"),
-    # path("admin/orders/delete/", api.deleteOrderForAdmin , name="delete_orders_for_admin"),
-
-
 ]

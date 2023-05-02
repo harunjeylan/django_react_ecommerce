@@ -39,7 +39,6 @@ const CustomerLayout = React.lazy(() => import('./site/customers/layout'))
 //IMPORTING ADMIN PAGE COMPONENTS
 
 const Dashboard = React.lazy(() => import('./site/admin/pages/dashboard'))
-const Team = React.lazy(() => import('./site/admin/pages/team'))
 const Contacts = React.lazy(() => import('./site/admin/pages/contacts'))
 const AdminFAQ = React.lazy(() => import('./site/admin/pages/faq'))
 
@@ -231,15 +230,6 @@ function App() {
                 element={
                   <AdminLayout>
                     <Contacts />
-                  </AdminLayout>
-                }
-              />
-
-              <Route
-                path="team"
-                element={
-                  <AdminLayout>
-                    <Team />
                   </AdminLayout>
                 }
               />

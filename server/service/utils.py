@@ -1,6 +1,8 @@
 from django.db.models import Func
 from django.db.models import Avg, Q, Count, Sum
-
+from django.contrib.auth.models import User
+from account.serializer import (
+    AddressSerializer, ProfileImageSerializer, ProfileSerializer)
 
 class Round(Func):
     function = 'ROUND'
@@ -10,6 +12,28 @@ class Round(Func):
 def getAverage(value, total):
     return 0 if total == 0 else value / total * 100
 
+def get_order_list_data(request, orders):
+    orders_data = []
+    for order in orders:
+        user = User.objects.get(id=order.customer.id)
+        total_products = 0
+        for item in order.items.all():
+            total_products += item.count
+
+        profile = ProfileImageSerializer(user.profile, context={"request": request}).data
+        orders_data.append({
+            "id": order.id,
+            "user_id": user.id,
+            "avatar": profile["image"],
+            "full_name": user.get_full_name(),
+            "fulfillment_status": order.fulfillment_status,
+            "delivery_method": order.delivery_method,
+            "total_products":total_products,
+            "products":order.items.count(),
+            "total_price": round(order.total_price, 2),
+            "date": order.date,
+        })
+    return orders_data
 
 def get_rating(reviews):
     rating_5 = reviews.filter(rating=5).count()

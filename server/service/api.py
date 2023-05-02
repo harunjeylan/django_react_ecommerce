@@ -22,7 +22,9 @@ from account.serializer import (
 from blog.serializer import BlogListSerializer
 from blog.models import Blog
 from product.utils import get_product_data
-from service.utils import Round, getAverage
+from blog.utils import get_blog_list_data
+from account.utils import get_user_list_data
+from service.utils import Round, get_order_list_data, getAverage
 
 
 from service.models import (
@@ -242,29 +244,7 @@ def getDashboardData(request):
     #     total=F("total_price")
     # ).values("id", "fulfillment_status", "customer", "total", "date", "delivery_method")
 
-    new_orders_data = []
-    for new_order in new_orders:
-        user = User.objects.get(id=new_order.customer.id)
-        total_products = 0
-        for item in new_order.items.all():
-            total_products += item.count
-
-        profile = ProfileSerializer(user.profile, context={
-                                    "request": request}).data
-        new_orders_data.append({
-            "id": new_order.id,
-            "user_id": user.id,
-            "avatar": profile["image"],
-            "full_name": user.get_full_name(),
-            "fulfillment_status": new_order.fulfillment_status,
-            "delivery_method": new_order.delivery_method,
-            "total_products":total_products,
-            "products":new_order.items.count(),
-            "total_price":round(new_order.total_price, 2),
-            "date": new_order.date,
-        })
-
-    # =====================================================================================
+    new_orders_data = get_order_list_data(request, new_orders)
     # =====================================================================================
 
     new_customers_data = []
@@ -320,14 +300,7 @@ def searchItems(request):
         Q(organize__vendor__name__icontains=search) |
         Q(organize__tags__name__icontains=search)
     ).distinct()
-    products_data = []
-    for product in products:
-        products_data.append({
-            **ProductSerializer(product, context={"request": request}).data,
-            "images": ImageSerializer(product.images.all(), many=True, context={"request": request}).data,
-            "rating": product.reviews.all().aggregate(average_rating=Round(Avg("rating")))["average_rating"],
-        })
-    serialized_data["products"] = products_data
+    serialized_data["products"] = get_order_list_data(request, products)
 
     blogs = Blog.objects.order_by("-published").filter(
         Q(category__name__icontains=search) |
@@ -335,13 +308,7 @@ def searchItems(request):
         Q(headline__icontains=search) |
         Q(body__icontains=search),
     )
-    blogs_data = BlogListSerializer(
-        blogs,
-        context={"request": request},
-        many=True
-    ).data
-
-    serialized_data["blogs"] = blogs_data
+    serialized_data["blogs"] = get_blog_list_data(request, blogs)
 
     if request.user.is_superuser:
         users = User.objects.filter(
@@ -349,18 +316,7 @@ def searchItems(request):
             Q(last_name__icontains=search) |
             Q(username__icontains=search)
         )
-        users_data = []
-        for user in users:
-            address, is_address_created = Address.objects.get_or_create(
-                user=user)
-            profile, is_profile_created = Profile.objects.get_or_create(
-                user=user)
-            users_data.append({
-                **ProfileSerializer(profile, context={"request": request}).data,
-                **AddressSerializer(address).data,
-                **UserSerializer(user).data,
-            })
-        serialized_data["users"] = users_data
+        serialized_data["users"] = get_user_list_data(request, users)
 
     return Response(serialized_data, status=status.HTTP_200_OK)
 
@@ -736,7 +692,7 @@ def addOrder(request):
         product = products.first()
         prices = product.sale_pricing
         today = datetime.date.today()
-        if product.discount.end_date >= today:
+        if product.discount and product.discount.end_date >= today:
             prices = prices - (product.discount.amount / prices)
         count = product_data["count"]
         # ============================================
@@ -777,29 +733,10 @@ def addOrder(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getOrders(request):
-
-    orders = Order.objects.order_by("-date").filter(customer=request.user)
-    orders_data = []
-    for order in orders:
-        user = User.objects.get(id=order.customer.id)
-        total_products = 0
-        for item in order.items.all():
-            total_products += item.count
-
-        profile = ProfileSerializer(user.profile, context={
-                                    "request": request}).data
-        orders_data.append({
-            "id": order.id,
-            "user_id": user.id,
-            "avatar": profile["image"],
-            "full_name": user.get_full_name(),
-            "fulfillment_status": order.fulfillment_status,
-            "delivery_method": order.delivery_method,
-            "total_products":total_products,
-            "products":order.items.count(),
-            "total_price": round(order.total_price, 2),
-            "date": order.date,
-        })
+    orders = Order.objects.order_by("-date")
+    if not request.user.is_superuser:
+        orders = orders.filter(customer=request.user)
+    orders_data = get_order_list_data(request, orders)
     return Response(orders_data, status=status.HTTP_200_OK)
 
 
@@ -813,34 +750,8 @@ def getOrderDetails(request, pk):
         products = Product.objects.filter(ordered=ordered_item)
         if products.exists():
             product = products.first()
-            product_serializer = ProductSerializer(product, context={"request": request}).data
-            discount = None
-            discounts = Discount.objects.filter(product=product)
-            if discounts.exists():
-                discount = DiscountSerializer(discounts.first()).data
+            ordered_items_data.append(get_product_data(request,product))
 
-            variants = []
-            for variantOption in ordered_item.variants.all():
-                variants.append({
-                    "variantLabel": variantOption.variant.label,
-                    "optionLabel": variantOption.option.label,
-                })
-            product_serializer = ProductSerializer(product, context={"request": request}).data
-            ordered_items_data.append({
-                "id": product.id,
-                "title": product.title,
-                "description": product.description,
-                "thumbnail": product_serializer["thumbnail"],
-                "sale_pricing": ordered_item.sale_pricing,
-                "date": product.date,
-                "brand": product.brand.name,
-                "category": product.organize.category.name,
-                "collection": product.organize.collection.name,
-                "vendor": product.organize.vendor.name,
-                "discount": discount,
-                "count": ordered_item.count,
-                "variants": variants,
-            })
     order_data = {
         **OrderSerializer(order).data,
         "products": ordered_items_data,
@@ -867,76 +778,6 @@ def updateOrder(request):
 def deleteOrder(request):
     return Response({})
 
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def getOrdersForAdmin(request):
-    orders = Order.objects.all()
-    orders_data = []
-    for order in orders:
-        user = User.objects.get(id=order.customer.id)
-        total_products = 0
-        for item in order.items.all():
-            total_products += item.count
-
-        profile = ProfileSerializer(user.profile, context={
-                                    "request": request}).data
-        orders_data.append({
-            "id": order.id,
-            "user_id": user.id,
-            "avatar": profile["image"],
-            "full_name": user.get_full_name(),
-            "fulfillment_status": order.fulfillment_status,
-            "delivery_method": order.delivery_method,
-            "total_products":total_products,
-            "products":order.items.count(),
-            "total_price":round(order.total_price, 2),
-            "date": order.date,
-        })
-    return Response(orders_data, status=status.HTTP_200_OK)
-
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def getOrderDetailsForAdmin(request, pk):
-    order = Order.objects.get(id=pk)
-    ordered_items = OrderedItem.objects.filter(order=order)
-    ordered_items_data = []
-    for ordered_item in ordered_items:
-        products = Product.objects.filter(ordered=ordered_item)
-        if products.exists():
-            product = products.first()
-            variants = []
-            for variantOption in ordered_item.variants.all():
-                variants.append({
-                    "variantLabel": variantOption.variant.label,
-                    "optionLabel": variantOption.option.label,
-                })
-            product_serializer = ProductSerializer(product, context={"request": request}).data
-            discount = None
-            discounts = Discount.objects.filter(product=product)
-            if discounts.exists():
-                discount = DiscountSerializer(discounts.first()).data
-            ordered_items_data.append({
-                "id": product.id,
-                "title": product.title,
-                "thumbnail": product_serializer["thumbnail"],
-                "sale_pricing": ordered_item.sale_pricing,
-                "date": product.date,
-                "brand": product.brand.name,
-                "category": product.organize.category.name,
-                "collection": product.organize.collection.name,
-                "vendor": product.organize.vendor.name,
-                "discount": discount,
-                "variants":variants,
-            })
-    order_data = {
-        **OrderSerializer(order).data,
-        "products": ordered_items_data,
-        "billing_address": OrderAddressSerializer(order.billing_address).data,
-        "shipping_address": OrderAddressSerializer(order.shipping_address).data,
-    }
-    return Response(order_data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def getAllContacts(request):

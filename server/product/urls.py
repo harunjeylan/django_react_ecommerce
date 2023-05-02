@@ -7,7 +7,7 @@ from product import api
 
 
 urlpatterns = [
-  
+
   path("", api.getProducts , name="products"),
   path("add/", api.newProduct , name="new_products"),
   path("delete/", api.deleteProduct , name="delete_products"),
@@ -16,7 +16,7 @@ urlpatterns = [
   path("wishlists/toggle/", api.toggleWishlist , name="toggle_wishlists"),
   path("ratings/", api.getRatings , name="products_ratings"),
   path("images/upload/", api.uploadImage , name="upload_image"),
-  
+
   path("discount/multi-change/", api.changeMultiProductsDiscount , name="discount-multi-change"),
   path("thumbnail/remove/", api.removeThumbnail , name="remove_image"),
 
@@ -28,14 +28,13 @@ urlpatterns = [
 
   path("category/<category_name>/", api.getProductsByCategory , name="products_by_category"),
   path("admin/", api.getProductsForAdmin , name="admin_products"),
-  
+
   path("<pk>/", api.getProductsDetails , name="products_details"),
   path("<pk>/edit/", api.updateProduct , name="products_edit"),
   path("<pk>/related/", api.getRelatedProducts , name="related_products"),
   path("<pk>/review/add/", api.addProductReview , name="new_products_review"),
-  path("<pk>/admin/", api.getProductsDataForAdmin , name="admin_products_data"),
   # ===================================================================
-  
+
 ]
 # router = routers.DefaultRouter()
 # router.register('api/products', ProductViewSet, 'products')

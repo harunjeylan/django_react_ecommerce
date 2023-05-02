@@ -1,21 +1,20 @@
-import { Box, Button, Typography } from "@mui/material";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { useNavigate } from "react-router-dom";
-import { useTheme } from "@emotion/react";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { Box, Button, Typography } from '@mui/material'
+import 'react-responsive-carousel/lib/styles/carousel.min.css'
+import { useNavigate } from 'react-router-dom'
+import { useTheme } from '@emotion/react'
+import { Swiper, SwiperSlide } from 'swiper/react'
 
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
+import 'swiper/css'
+import 'swiper/css/pagination'
+import 'swiper/css/navigation'
 
-import { Autoplay } from "swiper";
-import { tokens } from "../../../../theme";
-import Header2 from "../../../../components/Header2";
+import { Autoplay } from 'swiper'
+import { tokens } from '../../../../theme'
 
 const MainCarousel = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const navigate = useNavigate();
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const navigate = useNavigate()
   return (
     <Box>
       <Swiper
@@ -38,14 +37,14 @@ const MainCarousel = () => {
                 alt={`carousel-${index}`}
                 className={`w-full h-[600px]`}
                 style={{
-                  objectFit: "cover",
-                  backgroundAttachment: "fixed",
+                  objectFit: 'cover',
+                  backgroundAttachment: 'fixed',
                 }}
               />
 
               <Box
                 className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
-                text-white p-[20px] 
+                text-white p-[20px]
                 rounded-b-lg `}
               >
                 <Box className={`md:container px-2 md:mx-auto md:px-auto mt-8`}>
@@ -83,17 +82,21 @@ const MainCarousel = () => {
         ))}
       </Swiper>
     </Box>
-  );
-};
+  )
+}
 const importAll = (r) =>
   r.keys().reduce((acc, item) => {
-    acc[item.replace("./", "")] = r(item);
-    return acc;
-  }, {});
+    acc[item.replace('./', '')] = r(item)
+    return acc
+  }, {})
 
 //  const img: string = new URL(`../images/${product.sku}.jpg`, import.meta.url)
 //    .href;
 export const heroTexture = importAll(
-  require.context("../../../../assets", false, /\.(png|jpe?g|svg)$/)
-);
-export default MainCarousel;
+  require.context(
+    '../../../../assets/carousel-images/',
+    false,
+    /\.(png|jpe?g|svg)$/
+  )
+)
+export default MainCarousel

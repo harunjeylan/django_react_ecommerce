@@ -22,10 +22,11 @@ from account.serializer import (
 )
 from product.serializer import (ProductListSerializer, ProductSerializer, )
 from product.models import Product
-from product.utils import get_product_data
+from product.utils import get_product_data, get_product_list_data
+from service.utils import get_order_list_data
 from service.serializer import DiscountSerializer
 from service.models import Discount, Order, Review
-from account.utils import get_tokens_for_user
+from account.utils import get_tokens_for_user, get_user_data
 from account.models import Address, Profile, CustomerNote
 
 
@@ -76,38 +77,24 @@ def userRegister(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getUserData(request):
-    address, is_address_created = Address.objects.get_or_create(
-        user=request.user)
-    profile, is_profile_created = Profile.objects.get_or_create(
-        user=request.user)
-    data = {
-        "user": {
-            **ProfileSerializer(profile, context={"request": request}).data,
-            **AddressSerializer(address).data,
-            **UserSerializer(request.user).data,
-        }
-    }
+    data = {"user": get_user_data(request, request.user)}
     return Response(data, status=status.HTTP_200_OK)
 
 
 @api_view(['PUT', 'POST'])
 @permission_classes([IsAuthenticated])
 def updatePersonalInfo(request):
-
     serializer_user_form = UpdateUserFormSerializer( data=request.data, instance=request.user)
     if not serializer_user_form.is_valid():
         return Response(serializer_user_form.errors, status.HTTP_400_BAD_REQUEST)
 
     address, created = Address.objects.get_or_create(user=request.user)
-    serializer_address_form = UpdateAddressSerializer(
-        data=request.data, instance=address)
+    serializer_address_form = UpdateAddressSerializer(data=request.data, instance=address)
     if not serializer_address_form.is_valid():
         return Response(serializer_address_form.errors, status.HTTP_400_BAD_REQUEST)
 
-    profile, is_profile_created = Profile.objects.get_or_create(
-        user=request.user)
-    serializer_profile_form = UpdateProfileFormSerializer(
-        data=request.data, instance=profile)
+    profile, is_profile_created = Profile.objects.get_or_create(user=request.user)
+    serializer_profile_form = UpdateProfileFormSerializer(data=request.data, instance=profile)
     if not serializer_profile_form.is_valid():
         return Response(serializer_profile_form.errors, status.HTTP_400_BAD_REQUEST)
 
@@ -115,11 +102,7 @@ def updatePersonalInfo(request):
     address = serializer_address_form.save()
     profile = serializer_profile_form.save()
     request.user.save()
-    data = {
-        **ProfileSerializer(profile, context={"request": request}).data,
-        **AddressSerializer(address).data,
-        **UserSerializer(user).data,
-    }
+    data = get_user_data(request, user)
     return Response(data, status=status.HTTP_201_CREATED)
 
 
@@ -159,53 +142,10 @@ def updatePassword(request):
 @permission_classes([IsAuthenticated])
 def getCustomerDetails(request, pk):
     user = User.objects.get(id=pk)
-    address, is_address_created = Address.objects.get_or_create(user=user)
-    profile, is_profile_created = Profile.objects.get_or_create(user=user)
-    customer_data = {
-        **ProfileSerializer(profile, context={"request": request}).data,
-        **AddressSerializer(address).data,
-        **UserSerializer(user).data,
-    }
-
-    orders_data = []
-    for order in Order.objects.filter(customer=user):
-        user = User.objects.get(id=order.customer.id)
-        profile = ProfileSerializer(user.profile, context={
-            "request": request}).data
-        orders_data.append({
-            "id": order.id,
-            "user_id": user.id,
-            "avatar": profile["image"],
-            "full_name": user.get_full_name(),
-            "fulfillment_status": order.fulfillment_status,
-            "delivery_method": order.delivery_method,
-            "total_price": order.total_price,
-            "date": order.date,
-        })
-
-    wishlist = Product.objects.filter(wishes=user)
-    wishlist_data = []
-    for product in wishlist:
-        product_serializer = ProductSerializer(product, context={"request": request}).data
-        discount = None
-        discounts = Discount.objects.filter(product=product)
-        if discounts.exists():
-            discount = DiscountSerializer(discounts.first()).data
-        wishlist_data.append({
-            "id": product.id,
-            "title": product.title,
-            "thumbnail": product_serializer["thumbnail"],
-            "sale_pricing": product.sale_pricing,
-            "date": product.date,
-            "brand": product.brand.name,
-            "category": product.organize.category.name,
-            "collection": product.organize.collection.name,
-            "vendor": product.organize.vendor.name,
-            "discount": discount
-        })
-
-    user_note_serializer = CustomerNoteSerializer(
-        CustomerNote.objects.filter(customer=user), many=True).data
+    customer_data =  get_user_data(request, user)
+    orders_data =  get_order_list_data(request, Order.objects.filter(customer=user))
+    wishlist_data = get_product_list_data(request, Product.objects.filter(wishes=user))
+    user_note_serializer = CustomerNoteSerializer(CustomerNote.objects.filter(customer=user), many=True).data
     response_data = {
         "customer": customer_data,
         "orders": orders_data,
@@ -221,17 +161,7 @@ def getCustomers(request):
     customers_data = []
     new_customers = User.objects.order_by("-date_joined")
     for user in new_customers:
-        profile = ProfileSerializer(user.profile, context={
-                                    "request": request}).data
-        data = {
-            "id": user.id,
-            "full_name": user.get_full_name(),
-            "email": user.email,
-            "username": user.username,
-            "avatar": profile["image"],
-            "phone_number": user.profile.phone_number,
-            "date_joined": user.date_joined,
-        }
+        data = get_user_data(request, user)
         orders = Order.objects.filter(customer=user).order_by("-date")
         if orders.exists():
             data["last_order"] = orders.first().date
@@ -240,9 +170,7 @@ def getCustomers(request):
             for order in orders:
                 total_spent += order.total_price
             data["total_spent"] = round(total_spent,2)
-
         customers_data.append(data)
-
     return Response(customers_data, status=status.HTTP_200_OK)
 
 
