@@ -1,0 +1,54 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400&family=Fauna+One&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+  /* overflow-x: hidden; */
+  max-width: calc(var(--vw, 1vw) * 100 - 5px);
+}
+html,
+body {
+  margin: 0px;
+  padding: 0px;
+}
+
+.app * {
+  margin: auto;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #e0e0e0;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+#side-bar--disabled-anchor {
+  text-decoration: none !important;
+  color: inherit !important;
+}
+#side-bar--disabled-anchor:hover {
+  color: none !important;
+}
+
+.MuiPickersPopper-root {
+  z-index: 100000;
+}
+
