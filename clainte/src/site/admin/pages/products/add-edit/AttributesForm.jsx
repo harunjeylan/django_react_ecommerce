@@ -8,7 +8,6 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import {
   Box,
-  TextField,
   Typography,
   FormControlLabel,
   FormControl,
@@ -22,7 +21,6 @@ import { tokens } from "../../../../../theme";
 
 const AttributesForm = ({
   setFieldValue,
-  handleBlur,
   handleChange,
   values,
   touched,

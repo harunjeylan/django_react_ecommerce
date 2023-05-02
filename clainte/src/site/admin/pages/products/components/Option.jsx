@@ -3,7 +3,6 @@ import { Box, TextField, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 const Option = ({
   option,
-  creatingVariant,
   editingVariant,
   handleUpdateOptionLabel,
   handleDeleteOption,

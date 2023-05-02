@@ -6,7 +6,6 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useNavigate } from "react-router-dom";
 import { tokens } from "../../../../theme";
-import Header from "../../../../components/Header";
 import Header2 from "../../../../components/Header2";
 import { useGetAllFqaQuery } from "../../../../features/services/fqaApiSlice";
 

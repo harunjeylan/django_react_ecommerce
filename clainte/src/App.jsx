@@ -23,11 +23,6 @@ import dayjs from 'dayjs'
 import BlogDetails from './site/customers/pages/blog/details'
 import ProductsListCustomer from './site/customers/pages/products/list'
 import AuthRouters from './utils/AuthRouters'
-// import AddEditBlog from "./site/admin/pages/blog/addEdit";
-
-// import CustomerLayout from "./site/customers/layout";
-// import Home from "./site/customers/pages/home";
-
 const CustomerPrivateRoutes = React.lazy(() =>
   import('./utils/CustomerPrivateRoutes')
 )

@@ -1,5 +1,5 @@
-import React from "react";
-import { useTheme } from "@emotion/react";
+import React from 'react'
+import { useTheme } from '@emotion/react'
 
 import {
   Box,
@@ -14,10 +14,10 @@ import {
   Chip,
   OutlinedInput,
   Select,
-} from "@mui/material";
+} from '@mui/material'
 
-import { constants } from "./constants";
-import { tokens } from "../../../../../theme";
+import countries from '../../../../../data/countries'
+import { tokens } from '../../../../../theme'
 
 const GlobalDeliveryForm = ({
   handleBlur,
@@ -26,8 +26,8 @@ const GlobalDeliveryForm = ({
   touched,
   errors,
 }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
 
   return (
     <Box className="flex flex-col justify-between h-full w-full gap-4 p-4">
@@ -111,7 +111,7 @@ const GlobalDeliveryForm = ({
                   <MenuItem value="">
                     <em>None</em>
                   </MenuItem>
-                  {constants.countries?.map((country, index) => (
+                  {countries?.map((country, index) => (
                     <MenuItem
                       key={`country-${country.code}-${index}`}
                       value={country.code}
@@ -140,6 +140,6 @@ const GlobalDeliveryForm = ({
       </Typography>
     </Box>
   )
-};
+}
 
-export default GlobalDeliveryForm;
+export default GlobalDeliveryForm

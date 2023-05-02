@@ -1,16 +1,6 @@
-import React from "react";
-import {
-  Box,
-  Typography,
-  CardActionArea,
-  IconButton,
-  Button,
-} from "@mui/material";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import { tokens } from "../../../../../theme";
-import { useTheme } from "@emotion/react";
-import Discount from "./Discount";
-import dayjs from "dayjs";
+import React from 'react'
+import { Box, Button } from '@mui/material'
+import Discount from './Discount'
 const DiscountList = ({
   discounts,
   readOnly,
@@ -20,12 +10,9 @@ const DiscountList = ({
   highlightDiscountId,
   setMessages,
 }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-
   return (
     <Box className="w-full">
-      <Box className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <Box className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
         {discounts?.map((discount, index) => (
           <Discount
             key={`discount-${discount.name}-discounts-${discount.id}-${index}`}
@@ -50,7 +37,7 @@ const DiscountList = ({
         </Button>
       )}
     </Box>
-  );
-};
+  )
+}
 
-export default DiscountList;
+export default DiscountList

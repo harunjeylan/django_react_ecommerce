@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect} from "react";
 import { useTheme } from "@emotion/react";
 import {
   Box,
@@ -26,7 +26,6 @@ const VariantsForm = ({
   errors,
   touched,
   handleBlur,
-  handleChange,
   setFieldValue,
   initialValues,
 }) => {

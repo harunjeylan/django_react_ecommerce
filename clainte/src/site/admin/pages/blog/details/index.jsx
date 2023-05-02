@@ -1,53 +1,27 @@
-import { useState } from "react";
+import React from "react";
 import {
-  Avatar,
   Box,
   ButtonGroup,
   CardMedia,
   CircularProgress,
-  Collapse,
   Divider,
-  IconButton,
-  TextField,
-  useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { Accordion, Breadcrumbs, Button } from "@mui/material";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
+import {  Breadcrumbs, Button } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import { useNavigate, useParams } from "react-router-dom";
 import { tokens } from "../../../../../theme";
 import Header from "../../../../../components/Header";
 import { useGetAdminBlogDetailsQuery } from "../../../../../features/services/blogApiSlice";
 import Header2 from "../../../../../components/Header2";
 import Comments from "../../../../../components/Comments";
-import DeleteIcon from "@mui/icons-material/Delete";
-import UnpublishedIcon from "@mui/icons-material/Unpublished";
-import PublishOutlinedIcon from "@mui/icons-material/PublishOutlined";
 import BlogInformation from "../components/BlogInformation";
-// import ReactHtmlParser, { attributesToProps } from "react-html-parser";
-// const reactHtmlParserOptions = {
-//   replace: (domNode) => {
-//     if (domNode.attribs) {
-//       const props = attributesToProps(domNode.attribs);
-//       return <div {...props} />;
-//     }
-//   },
-// };
+
 const AdminBlogDetails = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const { blogSlug } = useParams();
-  const isNoneMobile = useMediaQuery("(min-width:1024px)");
-  const [openInfo, setOpenInfo] = useState(false);
-  const [openAction, setOpenAction] = useState(false);
-  const [openRevision, setOpenRevision] = useState(false);
-
   const { data: blog, isFetching: isFetchingBlog } =
     useGetAdminBlogDetailsQuery({
       blogSlug,

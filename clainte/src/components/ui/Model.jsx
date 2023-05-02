@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import { Box, useTheme, Typography, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
