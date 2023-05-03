@@ -1,50 +1,43 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import * as yup from "yup";
-import { Formik } from "formik";
-import { useDispatch } from "react-redux";
-import {
-  TextField,
-  Box,
-  Typography,
-  Divider,
-  Button,
-  Alert,
-} from "@mui/material";
-import GoogleIcon from "@mui/icons-material/Google";
+import React, { useEffect, useRef } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import * as yup from 'yup'
+import { Formik } from 'formik'
+import { useDispatch } from 'react-redux'
+import { TextField, Box, Typography, Divider, Button } from '@mui/material'
+import GoogleIcon from '@mui/icons-material/Google'
 
-import { setCredentials, setUserData } from "../features/auth/authSlice";
-import { useLoginMutation } from "../features/auth/authApiSlice";
-import { endpoints as authEndpoints } from "../features/auth/authApiSlice";
-import { useSnackbar } from "notistack";
-import useAlert from "./ui/useAlert";
+import { setCredentials, setUserData } from '../features/auth/authSlice'
+import { useLoginMutation } from '../features/auth/authApiSlice'
+import { endpoints as authEndpoints } from '../features/auth/authApiSlice'
+import { useSnackbar } from 'notistack'
+import useAlert from './ui/useAlert'
 
 const UserLoginForm = ({
   handleCloseAccountDialog = undefined,
   handleClickOpenAccountDialog = undefined,
 }) => {
-  const userRef = useRef();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { enqueueSnackbar } = useSnackbar();
-  const [CustomAlert, setMessages] = useAlert();
-  const from = location.state?.from?.pathname || "/";
+  const userRef = useRef()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { enqueueSnackbar } = useSnackbar()
+  const [CustomAlert, setMessages] = useAlert()
+  const from = location.state?.from?.pathname || '/'
   useEffect(() => {
-    userRef.current.focus();
-  }, []);
+    userRef.current.focus()
+  }, [])
 
   const initialValues = {
-    username: "",
-    password: "",
-  };
+    username: '',
+    password: '',
+  }
 
   const loginSchema = yup.object().shape({
-    username: yup.string().required("required"),
-    password: yup.string().required("required"),
-  });
+    username: yup.string().required('required'),
+    password: yup.string().required('required'),
+  })
 
-  const [login] = useLoginMutation();
+  const [login] = useLoginMutation()
 
   const handleFormSubmit = (values, { resetForm }) => {
     login({ ...values }).then((data) => {
@@ -54,29 +47,30 @@ const UserLoginForm = ({
             ...prev,
             {
               id: key,
-              variant: "error",
+              variant: 'error',
               description: data.error.data[key],
             },
-          ]);
-        });
+          ])
+        })
       } else {
-        dispatch(setCredentials(data.data));
+        dispatch(setCredentials(data.data))
         dispatch(authEndpoints.getUseData.initiate()).then((response) => {
           if (response.isSuccess) {
-            dispatch(setUserData(response.data));
+            dispatch(setUserData(response.data))
             enqueueSnackbar(`You have logged in successfully!`, {
-              variant: "success",
-            });
-            navigate(from, { replace: true });
+              variant: 'success',
+            })
             if (handleCloseAccountDialog !== undefined) {
-              handleCloseAccountDialog();
+              handleCloseAccountDialog()
+            } else {
+              navigate(from, { replace: true })
             }
           }
-          resetForm();
-        });
+          resetForm()
+        })
       }
-    });
-  };
+    })
+  }
   return (
     <Box>
       <Formik
@@ -107,7 +101,7 @@ const UserLoginForm = ({
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.username}
-                  name={"username"}
+                  name={'username'}
                   error={!!touched.username && !!errors.username}
                   helperText={touched.username && errors.username}
                 />
@@ -119,7 +113,7 @@ const UserLoginForm = ({
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.password}
-                  name={"password"}
+                  name={'password'}
                   error={!!touched.password && !!errors.password}
                   helperText={touched.password && errors.password}
                 />
@@ -155,12 +149,12 @@ const UserLoginForm = ({
         </Box>
         <Box>
           <Box className="flex justify-start items-center gap-4 px-4 pt-2 mb-4">
-            <Typography>I don't have anchorEl account </Typography>{" "}
+            <Typography>I don't have anchorEl account </Typography>{' '}
             <Button
               onClick={() => {
                 handleClickOpenAccountDialog !== undefined
-                  ? handleClickOpenAccountDialog("register")
-                  : navigate("/auth/register");
+                  ? handleClickOpenAccountDialog('register')
+                  : navigate('/auth/register')
               }}
               className=""
               color="secondary"
@@ -172,7 +166,7 @@ const UserLoginForm = ({
         </Box>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default UserLoginForm;
+export default UserLoginForm

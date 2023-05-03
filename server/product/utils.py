@@ -45,17 +45,22 @@ def get_product_list_data(request, products):
         discounts = Discount.objects.filter(product=product)
         if discounts.exists():
             discount = DiscountSerializer(discounts.first()).data
+        rating=0
+        if product.reviews.exists():
+            rating = round(product.reviews.all().aggregate(Avg('rating'))["rating__avg"], 2)
         product_data.append({
             "id": product.id,
             "title": product.title,
             "thumbnail": product_serializer["thumbnail"],
+            "images": ImageSerializer(product.images.all()[:2], many=True,context={"request": request}).data,
             "sale_pricing": product.sale_pricing,
             "date": product.date,
             "brand": product.brand.name,
             "category": product.organize.category.name,
             "collection": product.organize.collection.name,
             "vendor": product.organize.vendor.name,
-            "discount": discount
+            "discount": discount,
+            "rating":rating,
         })
     return product_data
 
@@ -63,11 +68,8 @@ def get_product_list_data(request, products):
 def get_product_data(request, product):
     variants = []
     for variant_option in product.variants.all():
-        options = []
-        for option in variant_option.options.all():
-            options.append(option.label)
         variants.append({
-            "options": options,
+            "options": variant_option.options.all().values("label","id"),
             "variantLabel": variant_option.variant.label,
         })
 
@@ -92,10 +94,10 @@ def get_product_data(request, product):
         regular_pricing = round(product.sale_pricing, 2)
         sale_pricing = round(product.sale_pricing - (product.discount.amount / product.sale_pricing), 2)
 
+
     serialized_data = {
         **ProductSerializer(product, context={"request": request}).data,
         "images": ImageSerializer(product.images.all(), many=True, context={"request": request}).data,
-        "rating": product.reviews.all().aggregate(Avg('rating'))["rating__avg"],
         "reviews":ReviewSerializer(product.reviews.all(), many=True).data,
         "brand": BrandSerializer(product.brand).data,
         "rating": get_rating(product.reviews),

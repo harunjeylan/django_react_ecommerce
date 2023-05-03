@@ -49,12 +49,7 @@ from product.utils import get_product_data
 @api_view(['GET'])
 def getProducts(request):
     products = Product.objects.all()
-    serialized_data = []
-
-    for product in products:
-        data = get_product_data(request, product)
-        serialized_data.append(data)
-
+    serialized_data = get_product_list_data(request, products)
     return Response(serialized_data, status=status.HTTP_200_OK)
 
 
@@ -70,10 +65,7 @@ def getMostSealedProducts(request):
         if limit >= 0 and limit <= most_sealed_products.count():
             most_sealed_products = most_sealed_products[:limit]
 
-    serialized_data = []
-    for product in most_sealed_products:
-        data = get_product_data(request, product)
-        serialized_data.append(data)
+    serialized_data =get_product_list_data(request, most_sealed_products)
 
     return Response(serialized_data, status=status.HTTP_200_OK)
 
@@ -89,21 +81,14 @@ def getTopRatedProducts(request):
         if limit >= 0 and limit <= top_rated_products.count():
             top_rated_products = top_rated_products[:limit]
 
-    serialized_data = []
-    for product in top_rated_products:
-        data = get_product_data(request, product)
-        serialized_data.append(data)
-
+    serialized_data = get_product_list_data(request, top_rated_products)
     return Response(serialized_data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
 def getRelatedProducts(request, pk):
     relatedProducts = Product.objects.all()
-    serialized_data = []
-    for product in relatedProducts:
-        data = get_product_data(request, product)
-        serialized_data.append(data)
+    serialized_data = get_product_list_data(request, relatedProducts)
     return Response(serialized_data, status=status.HTTP_200_OK)
 
 
@@ -125,10 +110,7 @@ def toggleWishlist(request):
         product.wishes.add(request.user)
 
     wishlist = Product.objects.filter(wishes=request.user)
-    serialized_data = []
-    for product in wishlist:
-        data = get_product_data(request, product)
-        serialized_data.append(data)
+    serialized_data = get_product_list_data(request, wishlist)
     return Response(serialized_data, status=status.HTTP_200_OK)
 # =================================================================================
 
@@ -148,10 +130,7 @@ def searchProducts(request):
             Q(organize__tags__name__icontains=search)
         ).distinct()
 
-    serialized_data = []
-    for product in products:
-        data = get_product_data(request, product)
-        serialized_data.append(data)
+    serialized_data = get_product_list_data(request, products)
     return Response(serialized_data, status=status.HTTP_200_OK)
 
 
@@ -207,10 +186,7 @@ def searchAndFilterProducts(request):
             ))
         products = Product.objects.none().union(*variant_products)
 
-    serialized_data = []
-    for product in products:
-        data = get_product_data(request, product)
-        serialized_data.append(data)
+    serialized_data = get_product_list_data(request, products)
     return Response(serialized_data, status=status.HTTP_200_OK)
 
 
@@ -223,10 +199,7 @@ def getProductsByCategory(request, category_name):
         products = Product.objects.filter(category=category)
 
     category = Category.objects.get(name=category_name)
-    serialized_data = []
-    for product in products:
-        data = get_product_data(request, product)
-        serialized_data.append(data)
+    serialized_data = get_product_list_data(request, products)
     return Response(serialized_data, status=status.HTTP_200_OK)
 
 

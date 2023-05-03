@@ -246,7 +246,7 @@ def getRelatedBlogs(request, slug):
         status="published",
         category__name__icontains= blog.category
     ).exclude(id=blog.id)
-    serialized_data = get_blog_list_data(blogs)
+    serialized_data = get_blog_list_data(request,blogs)
     return Response(serialized_data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])

@@ -53,8 +53,9 @@ const UserRegisterForm = ({
           dispatch(setUser(data.data))
           if (handleCloseAccountDialog !== undefined) {
             handleCloseAccountDialog()
+          } else {
+            navigate(from, { replace: true })
           }
-          navigate(from, { replace: true })
         }
       }
     })
