@@ -237,7 +237,7 @@ class Contact(models.Model):
         return f'{self.first_name} {self.last_name} -> {self.description}'
 
 
-class Fqa(models.Model):
+class Faq(models.Model):
     question = models.CharField(max_length=100)
     answer = models.TextField(null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)

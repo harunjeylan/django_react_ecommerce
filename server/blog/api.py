@@ -9,14 +9,15 @@ import pytz
 from blog.models import Blog
 from blog.serializer import BlogSerializer,BlogListSerializer,BlogCommentSerializer
 from blog.utils import get_blog_list_data
+from account.decorators import admin_only
 from service.serializer import CategorySerializer,TagSerializer
 from service.models import  Category,Tag, Comment
 
 
 @api_view(['POST'])
+@admin_only
 @permission_classes([IsAuthenticated])
 def newBlog(request):
-
     category, created_category = Category.objects.get_or_create(name=request.data.get("category"))
     blog_felids = {
         "title":request.data.get("title"),
@@ -46,6 +47,7 @@ def newBlog(request):
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def updateBlog(request, slug):
     blog = Blog.objects.get(slug=slug)
     category, created_category = Category.objects.get_or_create(name=request.data.get("category"))
@@ -80,6 +82,7 @@ def updateBlog(request, slug):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def deleteBlog(request):
     blog = Blog.objects.get(id=request.data.get("id"))
     blog.delete()
@@ -87,6 +90,7 @@ def deleteBlog(request):
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def toggleBlogPublish(request):
     blog = Blog.objects.get(id=request.data.get("id"))
     blog.toggle_publish()
@@ -94,6 +98,7 @@ def toggleBlogPublish(request):
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def changeBlogStatus(request):
     blog = Blog.objects.get(id=request.data.get("id"))
     if request.data.get("status") in ["published","scheduled","draft","deleted"]:
@@ -106,6 +111,7 @@ def changeBlogStatus(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def changeMultiBlogStatus(request):
     blogs = Blog.objects.filter(id__in=request.data.get("blogIds"))
     for blog in blogs:
@@ -118,6 +124,7 @@ def changeMultiBlogStatus(request):
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def toggleBlogPin(request):
     blog = Blog.objects.get(id=request.data.get("id"))
     blog.pin_to_top = not blog.pin_to_top
@@ -126,6 +133,7 @@ def toggleBlogPin(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def uploadImage(request):
     blog = Blog.objects.get(id=request.data.get("blogId"))
     thumbnail = request.FILES.get("thumbnail")
@@ -138,6 +146,7 @@ def uploadImage(request):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def removeThumbnail(request):
     blog = Blog.objects.get(id=request.data.get("id"))
     blog.thumbnail = None

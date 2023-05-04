@@ -23,6 +23,7 @@ from account.serializer import (
 from product.serializer import (ProductListSerializer, ProductSerializer, )
 from product.models import Product
 from product.utils import get_product_data, get_product_list_data
+from account.decorators import admin_only
 from service.utils import get_order_list_data, get_order_total_price
 from service.serializer import DiscountSerializer
 from service.models import Discount, Order, Review
@@ -140,6 +141,7 @@ def updatePassword(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def getCustomerDetails(request, pk):
     user = User.objects.get(id=pk)
     customer_data =  get_user_data(request, user)
@@ -157,6 +159,7 @@ def getCustomerDetails(request, pk):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def getCustomers(request):
     customers_data = []
     new_customers = User.objects.order_by("-date_joined")
@@ -175,6 +178,7 @@ def getCustomers(request):
 
 
 @api_view(['POST'])
+@admin_only
 def addCustomerNote(request):
     user_note_serializer = CustomerNoteSerializer(data=request.data)
     if user_note_serializer.is_valid():

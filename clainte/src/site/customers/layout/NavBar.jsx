@@ -36,7 +36,7 @@ const Navigation = ({ isNoneMobile }) => {
       </Box>
       {!isNoneMobile && <Divider className="w-full" />}
       <Box className={`my-2 cursor-pointer hover:text-green-400`}>
-        <Link to="/faq">FQA</Link>
+        <Link to="/faq">FAQ</Link>
       </Box>
     </>
   )

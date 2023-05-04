@@ -21,7 +21,7 @@ from .models import (
     Comment,
     Contact,
     Subscriber,
-    Fqa,
+    Faq,
 )
 
 # Register your models here.
@@ -161,6 +161,6 @@ class SubscriberAdmin(admin.ModelAdmin):
     list_display = ( 'email',"date")
 
 
-@admin.register(Fqa)
-class FqaAdmin(admin.ModelAdmin):
+@admin.register(Faq)
+class FaqAdmin(admin.ModelAdmin):
     list_display = ( 'question','answer',"date")

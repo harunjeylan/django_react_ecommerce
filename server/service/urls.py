@@ -11,8 +11,10 @@ urlpatterns = [
     path("search/", api.searchItems, name="search"),
 
 
-    path("fqa/", api.getFqa, name="fqa"),
-    path("fqa/add/", api.addFqa, name="add-fqa"),
+    path("faq/", api.getFaq, name="faq"),
+    path("faq/add/", api.addFaq, name="add-faq"),
+    path("faq/update/", api.updateFaq, name="update-faq"),
+    path("faq/delete/", api.deleteFaq, name="delete-faq"),
 
     path("images/remove/", api.removeImage, name="remove_image"),
 

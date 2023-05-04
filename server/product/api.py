@@ -5,6 +5,7 @@ from product.utils import Round, get_product_list_data,  getAverage
 from django.db.models import Avg, Q, Count, Sum
 from rest_framework import status
 from datetime import datetime, timedelta
+from account.decorators import admin_only
 from service.utils import get_rating
 
 from service.models import (
@@ -27,16 +28,6 @@ from product.models import (
 )
 
 from service.serializer import (
-    BrandSerializer,
-    ImageSerializer,
-    VendorSerializer,
-    CategorySerializer,
-    CollectionSerializer,
-    TagSerializer,
-    OptionSerializer,
-    VariantSerializer,
-    VariantOptionSerializer,
-    DiscountSerializer,
     CountrySerializer,
     ReviewSerializer,
 )
@@ -215,6 +206,7 @@ def getProductsDetails(request, pk):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def newProduct(request):
     category, created_category = Category.objects.get_or_create(
         name=request.data.get("category"))
@@ -285,6 +277,7 @@ def newProduct(request):
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def updateProduct(request, pk):
     product = Product.objects.get(id=pk)
     product.description = request.data.get("description")
@@ -356,6 +349,7 @@ def updateProduct(request, pk):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def uploadImage(request):
     product = Product.objects.get(id=request.data.get("productId"))
     if "thumbnail" in request.FILES:
@@ -374,6 +368,7 @@ def uploadImage(request):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def deleteProduct(request):
     product = Product.objects.get(id=request.data.get("id"))
     product.organize.delete()
@@ -387,6 +382,7 @@ def deleteProduct(request):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def deleteMultiProducts(request):
     products = Product.objects.filter(id__in=request.data.get("productIds"))
     for product in products:
@@ -401,6 +397,7 @@ def deleteMultiProducts(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def changeMultiProductsDiscount(request):
     products = Product.objects.filter(id__in=request.data.get("productIds"))
     if not request.data.get("discountId") in [None,"none", "null", ""]:
@@ -418,6 +415,7 @@ def changeMultiProductsDiscount(request):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def removeThumbnail(request):
     product = Product.objects.get(id=request.data.get("id"))
     product.thumbnail = None
@@ -472,6 +470,7 @@ def addProductReview(request, pk):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def getProductsForAdmin(request):
     products = Product.objects.all()
     products_data = get_product_list_data(request, products)

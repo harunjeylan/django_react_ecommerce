@@ -24,12 +24,13 @@ from blog.models import Blog
 from product.utils import get_product_data,get_product_list_data
 from blog.utils import get_blog_list_data
 from account.utils import get_user_list_data
+from account.decorators import admin_only
 from service.utils import Round, get_order_list_data, get_order_total_price, getAverage
 
 
 from service.models import (
     Brand,
-    Fqa,
+    Faq,
     Image,
     Vendor,
     Category,
@@ -49,7 +50,6 @@ from product.models import (
 
 from service.serializer import (
     BrandSerializer,
-    ImageSerializer,
     OrderUpdateSerializer,
     VendorSerializer,
     CategorySerializer,
@@ -65,15 +65,14 @@ from service.serializer import (
     OrderedVariantOption,
     ContactSerializer,
     SubscriberSerializer,
-    FqaSerializer,
+    FaqSerializer,
 )
-from product.serializer import (
-    ProductSerializer,
-)
+
 
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def getDashboardData(request):
     today_time = make_aware(datetime.datetime.today())
     # =====================================================================================
@@ -331,7 +330,6 @@ def getAllCategory(request):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
 def getOrganizes(request):
     serialized_data = {
         "categories": CategorySerializer(Category.objects.all(), many=True).data,
@@ -344,6 +342,7 @@ def getOrganizes(request):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def removeImage(request):
     image = Image.objects.get(id=request.data.get("id"))
     image.delete()
@@ -352,6 +351,7 @@ def removeImage(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def addOrganize(request):
     name = request.data.get("name")
     value = {"name": request.data.get("label")}
@@ -388,6 +388,7 @@ def addOrganize(request):
 
 @api_view(['POST', 'PUT'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def updateOrganize(request):
     name = request.data.get("name")
     value = {"name": request.data.get("label")}
@@ -429,6 +430,7 @@ def updateOrganize(request):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def deleteOrganize(request):
     name = request.data.get("name")
     if name == "categories":
@@ -453,7 +455,6 @@ def deleteOrganize(request):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
 def getAllBrands(request):
     brands = BrandSerializer(Brand.objects.all(), many=True).data
     return Response(brands, status=status.HTTP_200_OK)
@@ -461,6 +462,7 @@ def getAllBrands(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def addBrand(request):
     brand_serializer_form = BrandSerializer(data=request.data)
     if brand_serializer_form.is_valid():
@@ -472,6 +474,7 @@ def addBrand(request):
 
 @api_view(['POST', 'PUT'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def updateBrand(request):
     brand = Brand.objects.get(id=request.data.get("id"))
     brand_serializer = BrandSerializer(data=request.data, instance=brand)
@@ -484,6 +487,7 @@ def updateBrand(request):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def deleteBrand(request):
     brand = Brand.objects.get(id=request.data.get("id"))
     brand.delete()
@@ -493,7 +497,6 @@ def deleteBrand(request):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
 def getAllDiscounts(request):
     discounts = Discount.objects.order_by("-end_date")
     if "limit" in request.GET:
@@ -506,7 +509,6 @@ def getAllDiscounts(request):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
 def getDiscounts(request):
     today = make_aware(datetime.datetime.today())
     discounts = Discount.objects.order_by("-end_date")
@@ -526,6 +528,7 @@ def getDiscounts(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def addDiscount(request):
     discount_serializer_form = DiscountSerializer(data=request.data)
 
@@ -537,6 +540,7 @@ def addDiscount(request):
 
 @api_view(['POST', 'PUT'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def updateDiscount(request):
     discount = Discount.objects.get(id=request.data.get("id"))
     discount_serializer_form = DiscountSerializer(
@@ -549,6 +553,7 @@ def updateDiscount(request):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def deleteDiscount(request):
     discount = Discount.objects.get(id=request.data.get("id"))
     discount.delete()
@@ -558,7 +563,6 @@ def deleteDiscount(request):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
 def getAllVariants(request):
     serialized_data = []
     for variant in Variant.objects.all():
@@ -575,6 +579,7 @@ def getAllVariants(request):
 
 @api_view(['POST', 'PUT'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def addVariant(request):
     variant_serializer_form = VariantSerializer(
         data={"label": request.data.get("label")})
@@ -593,6 +598,7 @@ def addVariant(request):
 
 @api_view(['POST', 'PUT'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def updateVariant(request):
     variant = Variant.objects.get(id=request.data.get("id"))
     variant_serializer_form = VariantSerializer(
@@ -632,6 +638,7 @@ def updateVariant(request):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def deleteVariant(request):
     variant = Variant.objects.get(id=request.data.get("id"))
     options = variant.options.all()
@@ -644,6 +651,7 @@ def deleteVariant(request):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def deleteOption(request):
     variant = Variant.objects.get(id=request.data.get("variantId"))
     option = Option.objects.get(id=request.data.get("optionId"))
@@ -773,6 +781,7 @@ def getOrderDetails(request, pk):
 
 @api_view(['POST', 'PUT'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def updateOrder(request):
     order = Order.objects.get(id=request.data.get("id"))
     order_serializer = OrderUpdateSerializer(data=request.data, instance=order)
@@ -785,11 +794,13 @@ def updateOrder(request):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def deleteOrder(request):
     return Response({})
 
 
 @api_view(['GET'])
+@admin_only
 def getAllContacts(request):
     contacts = ContactSerializer(Contact.objects.all(), many=True).data
     return Response(contacts, status=status.HTTP_200_OK)
@@ -807,19 +818,41 @@ def addContact(request):
 
 
 @api_view(['GET'])
-def getFqa(request):
-    fqa = FqaSerializer(Fqa.objects.all(), many=True).data
-    return Response(fqa, status=status.HTTP_200_OK)
+def getFaq(request):
+    faq = FaqSerializer(Faq.objects.all(), many=True).data
+    return Response(faq, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
-def addFqa(request):
-    fqa_serializer = FqaSerializer(data=request.data)
-    if fqa_serializer.is_valid():
-        fqa = fqa_serializer.save()
-        serialized_data = FqaSerializer(fqa).data
+@admin_only
+def addFaq(request):
+    faq_serializer = FaqSerializer(data=request.data)
+    if faq_serializer.is_valid():
+        faq = faq_serializer.save()
+        serialized_data = FaqSerializer(faq).data
         return Response(serialized_data, status=status.HTTP_202_ACCEPTED)
-    return Response(fqa_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(faq_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT','POST'])
+@admin_only
+def updateFaq(request):
+    faq = Faq.objects.get(id=request.data.get("id"))
+    faq_serializer = FaqSerializer(data=request.data, instance=faq)
+    if faq_serializer.is_valid():
+        faq = faq_serializer.save()
+        serialized_data = FaqSerializer(faq).data
+        return Response(serialized_data, status=status.HTTP_202_ACCEPTED)
+    return Response(faq_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+@admin_only
+def deleteFaq(request):
+    faq = Faq.objects.get(id=request.data.get("id"))
+    faq.delete()
+    return Response({"success": "deleted"}, status=status.HTTP_202_ACCEPTED)
 
 
 @api_view(['POST'])

@@ -24,7 +24,7 @@ from service.models import (
     OrderedVariantOption,
     Contact,
     Subscriber,
-    Fqa,
+    Faq,
 )
 
 
@@ -162,7 +162,7 @@ class SubscriberSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class FqaSerializer(serializers.ModelSerializer):
+class FaqSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Fqa
+        model = Faq
         fields = "__all__"
