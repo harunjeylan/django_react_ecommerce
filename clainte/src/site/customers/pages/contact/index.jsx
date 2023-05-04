@@ -149,7 +149,7 @@ const Contact = () => {
               </Box>
               <Box className="w-full md:w-full relative  h-fit">
                 <Box
-                  className="md:absolute w-full md:w-fit rounded-md p-2"
+                  className="md:absolute w-full rounded-md p-2"
                   backgroundColor={colors.primary[400]}
                 >
                   <CustomAlert />
