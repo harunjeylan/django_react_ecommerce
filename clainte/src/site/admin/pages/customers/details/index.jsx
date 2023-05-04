@@ -285,23 +285,6 @@ const CustomerDetails = () => {
                           {customerData?.wishlists?.length}
                         </Typography>
                       </Box>
-                      <Box>
-                        <Typography
-                          variant="h1"
-                          color={colors.grey[100]}
-                          fontWeight="bold"
-                          className={`text-xl md:text-2xl  text-left my-1`}
-                        >
-                          Ratings & reviews
-                        </Typography>
-                        <Typography
-                          variant="subtitle1"
-                          color={colors.grey[200]}
-                          className={`text-left my-1`}
-                        >
-                          {customerData?.reviews?.length}
-                        </Typography>
-                      </Box>
                     </Box>
                   </Box>
                 </Box>

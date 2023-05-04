@@ -14,6 +14,7 @@ import { tokens } from '../../../../../theme'
 import Header from '../../../../../components/Header'
 import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 import dateFormatter from '../../../../../helpers/dateFormatter'
+import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined'
 const OrdersListCustomer = () => {
   const navigate = useNavigate()
   const theme = useTheme()

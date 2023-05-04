@@ -184,7 +184,6 @@ class Order(models.Model):
     ]
     delivery_method = models.CharField(
         choices=DELIVERY_METHOD, default="none", max_length=25)
-    total_price = models.FloatField()
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

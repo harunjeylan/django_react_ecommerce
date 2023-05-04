@@ -77,7 +77,7 @@ const Wishlist = () => {
     {
       field: 'title',
       headerName: 'Product Name',
-      width: 150,
+      width: 250,
       height: 200,
       renderCell: ({ row: { id, title, thumbnail } }) => {
         return (

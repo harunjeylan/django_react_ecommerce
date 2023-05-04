@@ -130,7 +130,7 @@ class OrderAddressAdmin(admin.ModelAdmin):
     )
 
 @admin.register(OrderedItem)
-class OrderdItemAdmin(admin.ModelAdmin):
+class OrderedItemAdmin(admin.ModelAdmin):
     list_display = (
         'count',
     )
@@ -139,7 +139,7 @@ class OrderdItemAdmin(admin.ModelAdmin):
 
 
 @admin.register(OrderedVariantOption)
-class OrderdVariantOptionAdmin(admin.ModelAdmin):
+class OrderedVariantOptionAdmin(admin.ModelAdmin):
     list_display = ('variant','option')
     list_filter = ('option', 'variant')
 

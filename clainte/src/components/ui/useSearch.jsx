@@ -115,8 +115,8 @@ const useSearch = () => {
                           </Box>
                           <Typography className="mr-4">
                             {product?.description
-                              .replaceAll(/<[^>]*>/g, '')
-                              .slice(0, 150)}
+                              ?.replaceAll(/<[^>]*>/g, '')
+                              ?.slice(0, 150)}
                             {product?.description?.length > 150 && (
                               <strong> . . .</strong>
                             )}

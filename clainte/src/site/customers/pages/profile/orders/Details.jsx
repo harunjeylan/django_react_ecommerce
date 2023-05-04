@@ -2,7 +2,6 @@ import React from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   Typography,
-  Divider,
   Box,
   useTheme,
   Breadcrumbs,
@@ -16,6 +15,7 @@ import { tokens } from '../../../../../theme'
 import Header from '../../../../../components/Header'
 import OrderSummery from '../../../../../components/OrderSummery'
 import { DataGrid, GridToolbar } from '@mui/x-data-grid'
+import OrderAddressInformation from '../../../../../components/OrderAddressInformation'
 const OrderDetailsCustomer = () => {
   const navigate = useNavigate()
   const theme = useTheme()
@@ -52,14 +52,14 @@ const OrderDetailsCustomer = () => {
     { field: 'collection', headerName: 'Collection', width: 100 },
 
     {
-      field: 'variant',
+      field: 'variants',
       headerName: 'Variants',
       width: 150,
       renderCell: ({ row: { variants } }) => {
-        return variants.length ? (
+        return variants?.length ? (
           <Box className="flex flex-col">
-            {variants.map((variant) => (
-              <Typography key={variant.id} variant="p">
+            {variants?.map((variant, index) => (
+              <Typography key={`${variant.id}-${index}`} variant="p">
                 <strong>
                   {variant?.variantLabel}: {variant?.optionLabel}
                 </strong>
@@ -73,6 +73,7 @@ const OrderDetailsCustomer = () => {
         )
       },
     },
+    { field: 'count', headerName: 'Count', width: 100 },
     {
       field: 'sale_pricing',
       headerName: 'pricing',
@@ -182,98 +183,9 @@ const OrderDetailsCustomer = () => {
                     </Box>
                   )}
                 </Box>
-                <Box className="flex flex-col lg:flex-row justify-between gap-4 py-2 mt-4">
-                  <Box className="w-full">
-                    <OrderSummery totalPrice={order?.total_price} />
-                  </Box>
-                  <Box className="w-full">
-                    <Box
-                      backgroundColor={colors.primary[400]}
-                      className="flex flex-col gap-4 drop-shadow-lg  rounded-lg py-2"
-                    >
-                      <Box className="px-4 pt-2 ">
-                        <Typography
-                          variant="h1"
-                          color={colors.grey[100]}
-                          fontWeight="bold"
-                          className={`text-xl md:text-2xl  text-left`}
-                        >
-                          Billing Address
-                        </Typography>
-                      </Box>
-                      <Divider />
-                      <Box className="flex flex-col gap-4 px-4 py-2">
-                        <Typography variant="h5" fontWeight="bold">
-                          {order?.billing_address?.first_name}{' '}
-                          {order?.billing_address?.last_name}
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          {order?.billing_address?.email}
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          {order?.billing_address?.phone_number}
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          {order?.billing_address?.street1}
-                          {order?.billing_address?.street2 &&
-                            ` or ${order?.billing_address?.street2}`}
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          {order?.billing_address?.city}
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          {order?.billing_address?.state}
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          {order?.billing_address?.country}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                  <Box className="w-full">
-                    <Box
-                      backgroundColor={colors.primary[400]}
-                      className="flex flex-col gap-4 drop-shadow-lg  rounded-lg py-2"
-                    >
-                      <Box className="px-4 pt-2 ">
-                        <Typography
-                          variant="h1"
-                          color={colors.grey[100]}
-                          fontWeight="bold"
-                          className={`text-xl md:text-2xl  text-left`}
-                        >
-                          Shipping Address
-                        </Typography>
-                      </Box>
-                      <Divider />
-                      <Box className="flex flex-col gap-4 px-4 py-2">
-                        <Typography variant="h5" fontWeight="bold">
-                          {order?.shipping_address?.first_name}{' '}
-                          {order?.shipping_address?.last_name}
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          {order?.shipping_address?.email}
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          {order?.shipping_address?.phone_number}
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          {order?.shipping_address?.street1}
-                          {order?.billing_address?.street2 &&
-                            ` or ${order?.billing_address?.street2}`}
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          {order?.shipping_address?.city}
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          {order?.shipping_address?.state}
-                        </Typography>
-                        <Typography variant="h5" fontWeight="bold">
-                          {order?.shipping_address?.country}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
+                <Box className="flex flex-col xl:flex-row justify-between gap-4 py-2 mt-4">
+                  <OrderSummery totalPrice={order?.total_price} />
+                  <OrderAddressInformation orderData={order} />
                 </Box>
               </Box>
             ) : (

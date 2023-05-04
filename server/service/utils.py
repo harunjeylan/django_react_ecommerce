@@ -12,6 +12,13 @@ class Round(Func):
 def getAverage(value, total):
     return 0 if total == 0 else value / total * 100
 
+
+def get_order_total_price(order):
+    total_price = 0
+    for item in order.items.all():
+        total_price += item.count *  item.sale_pricing
+    return round(total_price, 2)
+
 def get_order_list_data(request, orders):
     orders_data = []
     for order in orders:
@@ -28,9 +35,9 @@ def get_order_list_data(request, orders):
             "full_name": user.get_full_name(),
             "fulfillment_status": order.fulfillment_status,
             "delivery_method": order.delivery_method,
-            "total_products":total_products,
+            "total_products":round(total_products, 2),
             "products":order.items.count(),
-            "total_price": round(order.total_price, 2),
+            "total_price":  get_order_total_price(order),
             "date": order.date,
         })
     return orders_data

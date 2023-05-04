@@ -18,18 +18,8 @@ import {
   FormLabel,
   FormGroup,
   Select,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
   CircularProgress,
 } from '@mui/material'
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined'
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
-import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined'
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
-import CardGiftcardOutlinedIcon from '@mui/icons-material/CardGiftcardOutlined'
-import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined'
 
 import {
   useGetOrderDetailsQuery,
@@ -40,6 +30,7 @@ import Header from '../../../../../components/Header'
 import OrderSummery from '../../../../../components/OrderSummery'
 import useAlert from '../../../../../components/ui/useAlert'
 import { useSnackbar } from 'notistack'
+import OrderAddressInformation from '../../../../../components/OrderAddressInformation'
 
 const OrderDetailsForAdmin = () => {
   const theme = useTheme()
@@ -108,23 +99,23 @@ const OrderDetailsForAdmin = () => {
     },
     { field: 'category', headerName: 'Category', width: 100 },
     { field: 'collection', headerName: 'Collection', width: 100 },
-    { field: 'date', headerName: 'Date', width: 150 },
+    { field: 'count', headerName: 'Count', width: 100 },
     {
       field: 'sale_pricing',
-      headerName: 'sale_pricing',
+      headerName: 'pricing',
       renderCell: ({ row: { sale_pricing } }) => {
         return <Typography>{sale_pricing}</Typography>
       },
     },
     {
-      field: 'variant',
+      field: 'Variants',
       headerName: 'Variants',
       width: 200,
       renderCell: ({ row: { variants } }) => {
-        return variants.length ? (
+        return variants?.length ? (
           <Box className="flex flex-col">
-            {variants.map((variant) => (
-              <Typography key={variant.id} variant="p">
+            {variants.map((variant, index) => (
+              <Typography key={`${variant.id}-${index}`} variant="p">
                 <strong>
                   {variant?.variantLabel}: {variant?.optionLabel}
                 </strong>
@@ -187,275 +178,59 @@ const OrderDetailsForAdmin = () => {
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Header title={`Order # ${orderId}`} subtitle="Customer ID : 2364847" />
       </Box>
-      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
-        <Box className="flex flex-col lg:flex-row gap-4">
-          <Box className="w-full lg:w-[70%]">
-            <Box className="flex flex-col gap-8">
-              <Box
-                height="80vh"
-                backgroundColor={colors.primary[400]}
-                className="h-[80vh] rounded-lg p-4"
-                sx={{
-                  '& .MuiDataGrid-root': {
-                    border: 'none',
-                  },
-                  '& .MuiDataGrid-cell': {
-                    borderBottom: 'none',
-                  },
-                  '& .MuiCheckbox-root': {
-                    color: `${colors.greenAccent[200]} !important`,
-                  },
-                  '& .MuiChackbox-root': {
-                    color: `${colors.greenAccent[200]} !important`,
-                  },
-                  '& .MuiDataGrid-columnHeaders': {
-                    borderBottom: 'none',
-                  },
-                  '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
-                    color: `${colors.grey[100]} !important`,
-                  },
-                }}
-              >
-                {!isFetchingOrder ? (
-                  orderData?.products?.length ? (
-                    <DataGrid
-                      density="comfortable"
-                      rows={orderData?.products}
-                      columns={columns}
-                      autoPageSize
-                      // checkboxSelection
-                      components={{ Toolbar: GridToolbar }}
-                    />
-                  ) : (
-                    <Box className="w-full flex items-center justify-center h-full min-h-40">
-                      <Typography>No data</Typography>
-                    </Box>
-                  )
+      <Box
+        className={`md:container px-2 md:mx-auto md:px-auto flex flex-col gap-8`}
+      >
+        <Box className="grid  lg:grid-cols-3 gap-4">
+          <Box className="w-full col-span-2">
+            <Box
+              height="80vh"
+              backgroundColor={colors.primary[400]}
+              className="h-[80vh] rounded-lg p-4"
+              sx={{
+                '& .MuiDataGrid-root': {
+                  border: 'none',
+                },
+                '& .MuiDataGrid-cell': {
+                  borderBottom: 'none',
+                },
+                '& .MuiCheckbox-root': {
+                  color: `${colors.greenAccent[200]} !important`,
+                },
+                '& .MuiChackbox-root': {
+                  color: `${colors.greenAccent[200]} !important`,
+                },
+                '& .MuiDataGrid-columnHeaders': {
+                  borderBottom: 'none',
+                },
+                '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
+                  color: `${colors.grey[100]} !important`,
+                },
+              }}
+            >
+              {!isFetchingOrder ? (
+                orderData?.products?.length ? (
+                  <DataGrid
+                    density="comfortable"
+                    rows={orderData?.products}
+                    columns={columns}
+                    autoPageSize
+                    // checkboxSelection
+                    components={{ Toolbar: GridToolbar }}
+                  />
                 ) : (
                   <Box className="w-full flex items-center justify-center h-full min-h-40">
-                    <CircularProgress color="secondary" />
+                    <Typography>No data</Typography>
                   </Box>
-                )}
-              </Box>
-              <Box className="grid  xl:grid-cols-3 gap-4">
-                <Box className="flex flex-col gap-4">
-                  <Typography
-                    variant="h1"
-                    color={colors.grey[100]}
-                    fontWeight="bold"
-                    className={`text-xl md:text-2xl  text-left my-4`}
-                  >
-                    Billing details
-                  </Typography>
-                  <List className="w-full">
-                    <ListItem>
-                      <ListItemIcon>
-                        <PersonOutlineOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Customer"
-                        secondary={
-                          <Typography sx={{ color: colors.greenAccent[500] }}>
-                            <Link
-                              to={`/admin/customers/${orderData?.customer}`}
-                            >
-                              {orderData?.billing_address?.first_name}{' '}
-                              {orderData?.billing_address?.last_name}
-                            </Link>
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemIcon>
-                        <EmailOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Email"
-                        secondary={
-                          <Typography sx={{ color: colors.greenAccent[500] }}>
-                            <Link
-                              to={`/admin/customers/${orderData?.customer}`}
-                            >
-                              {orderData?.billing_address?.email}
-                            </Link>
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemIcon>
-                        <LocalPhoneOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Phone"
-                        secondary={
-                          <Typography sx={{ color: colors.greenAccent[500] }}>
-                            <Link
-                              to={`/admin/customers/${orderData?.customer}`}
-                            >
-                              {orderData?.billing_address?.phone_number}
-                            </Link>
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemIcon>
-                        <HomeOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Address"
-                        secondary={
-                          <Typography>
-                            {orderData?.billing_address?.street1}
-                            {', '}
-                            {orderData?.billing_address?.country}
-                            {', '}
-                            {orderData?.billing_address?.city}
-                            {', '}
-                            {orderData?.billing_address?.state}
-                            {', '}
-                            {orderData?.billing_address?.zipcode}
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                  </List>
+                )
+              ) : (
+                <Box className="w-full flex items-center justify-center h-full min-h-40">
+                  <CircularProgress color="secondary" />
                 </Box>
-                <Box className="flex flex-col gap-4">
-                  <Typography
-                    variant="h1"
-                    color={colors.grey[100]}
-                    fontWeight="bold"
-                    className={`text-xl md:text-2xl  text-left my-4`}
-                  >
-                    Shipping details
-                  </Typography>
-                  <List className="w-full">
-                    <ListItem>
-                      <ListItemIcon>
-                        <PersonOutlineOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Customer"
-                        secondary={
-                          <Typography sx={{ color: colors.greenAccent[500] }}>
-                            <Link
-                              to={`/admin/customers/${orderData?.customer}`}
-                            >
-                              {orderData?.shipping_address?.first_name}{' '}
-                              {orderData?.shipping_address?.last_name}
-                            </Link>
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemIcon>
-                        <EmailOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Email"
-                        secondary={
-                          <Typography sx={{ color: colors.greenAccent[500] }}>
-                            <Link
-                              to={`/admin/customers/${orderData?.customer}`}
-                            >
-                              {orderData?.shipping_address?.email}
-                            </Link>
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemIcon>
-                        <LocalPhoneOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Phone"
-                        secondary={
-                          <Typography sx={{ color: colors.greenAccent[500] }}>
-                            <Link
-                              to={`/admin/customers/${orderData?.customer}`}
-                            >
-                              {orderData?.shipping_address?.phone_number}
-                            </Link>
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemIcon>
-                        <HomeOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Address"
-                        secondary={
-                          <Typography>
-                            {orderData?.shipping_address?.street1}
-                            {', '}
-                            {orderData?.shipping_address?.country}
-                            {', '}
-                            {orderData?.shipping_address?.city}
-                            {', '}
-                            {orderData?.shipping_address?.state}
-                            {', '}
-                            {orderData?.shipping_address?.zipcode}
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                  </List>
-                </Box>
-                <Box className="flex flex-col gap-4">
-                  <Typography
-                    variant="h1"
-                    color={colors.grey[100]}
-                    fontWeight="bold"
-                    className={`text-xl md:text-2xl  text-left my-4`}
-                  >
-                    Other details
-                  </Typography>
-                  <List className="w-full">
-                    <ListItem>
-                      <ListItemIcon>
-                        <CardGiftcardOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Gift order"
-                        secondary={<Typography>Yes</Typography>}
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemIcon>
-                        <ReceiptLongOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Recipient"
-                        secondary={<Typography>Monjito Shiniga</Typography>}
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemIcon>
-                        <EmailOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Gift Meaasge"
-                        secondary={
-                          <Typography>
-                            Happy Birthday Shiniga Lots of Love Buga Buga!!
-                            Yours, Mekalan
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                  </List>
-                </Box>
-              </Box>
+              )}
             </Box>
           </Box>
-          <Box className="w-full lg:w-[30%]">
+          <Box className="w-full col-span-2 lg:col-span-1">
             <Box className="flex flex-col gap-4">
               <OrderSummery totalPrice={orderData?.total_price} />
               <Box
@@ -584,6 +359,7 @@ const OrderDetailsForAdmin = () => {
             </Box>
           </Box>
         </Box>
+        <OrderAddressInformation orderData={orderData} />
       </Box>
     </Box>
   )

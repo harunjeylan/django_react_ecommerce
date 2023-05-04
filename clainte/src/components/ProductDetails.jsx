@@ -203,48 +203,56 @@ const ProductDetails = ({ productId, isAdminPage }) => {
       </Box>
 
       <Box>
-        <Box className={`flex flex-col gap-4 lg:gap-16 lg:flex-row`}>
+        <Box className={`flex flex-col gap-4 lg:gap-10 lg:flex-row`}>
           <Box className=" w-full">
-            <Box className={`w-full flex flex-col-reverse lg:flex-row gap-4 `}>
+            <Box className={`w-full flex flex-col-reverse lg:flex-row gap-8`}>
               <Box
                 // className={`w-full flex flex-row-wrap lg:flex-col gap-4 my-4 justify-center items-center lg:w-[120px] px-auto`}
-                className={`w-full grid grid-cols-5 lg:grid-cols-2 h-fit lg:w-fit  gap-4 lg:gap-6  px-auto`}
+                className={`w-fit grid grid-cols-5 lg:grid-cols-2 h-fit lg:w-fit justify-center gap-4 lg:gap-6  px-auto`}
               >
                 <CardActionArea
                   onClick={() => setActiveImage(product?.thumbnail)}
+                  sx={{
+                    border:
+                      activeImage === product?.thumbnail
+                        ? `1.5px solid ${colors.neutral[500]}`
+                        : 'none',
+                  }}
                   className={`${
                     theme.palette.mode === 'dark' ? 'bg-white/5' : 'bg-black/5'
-                  }  ${
-                    activeImage === product?.thumbnail ? 'border' : ''
                   } h-[60px] w-[60px] bg-opacity-90 p-1  rounded-md  ease-in-out duration-300 `}
                 >
                   <img
                     alt="product"
                     src={product?.thumbnail}
-                    className={` rounded-md h-[100%] w-[100%]`}
+                    className={`rounded-md h-full w-full`}
                   />
                 </CardActionArea>
                 {product?.images?.map((image, index) => (
                   <CardActionArea
                     key={`images-${index}`}
+                    sx={{
+                      border:
+                        activeImage === image?.image
+                          ? `1.5px solid ${colors.neutral[500]}`
+                          : 'none',
+                    }}
                     onClick={() => setActiveImage(image?.image)}
                     className={`${
                       theme.palette.mode === 'dark'
                         ? 'bg-white/5'
                         : 'bg-black/5'
-                    } ${
-                      activeImage === product?.thumbnail ? 'border' : ''
                     } h-[60px] w-[60px] bg-opacity-90 p-1  rounded-md  ease-in-out duration-300 `}
                   >
                     <img
                       alt="product"
                       src={image?.image}
-                      className={` rounded-md h-[100%] w-[100%]`}
+                      className={` rounded-md h-full w-full`}
                     />
                   </CardActionArea>
                 ))}
               </Box>
-              <Box className={`my-4 w-full  overflow-hidden`}>
+              <Box className={`w-full  overflow-hidden`}>
                 <img
                   alt="product thumbnail"
                   style={{
@@ -252,11 +260,11 @@ const ProductDetails = ({ productId, isAdminPage }) => {
                     backgroundAttachment: 'fixed',
                   }}
                   src={activeImage}
-                  className={` max-w-[600px] max-h-[600px] rounded-md mx-auto`}
+                  className={`w-full  max-h-[600px] rounded-md mx-auto`}
                 />
               </Box>
             </Box>
-            <Box>
+            <Box className=" w-full flex flex-col gap-4 my-16">
               <Box className=" w-full flex flex-col gap-4">
                 <Typography
                   variant="h1"
@@ -275,56 +283,65 @@ const ProductDetails = ({ productId, isAdminPage }) => {
                     <Typography>{product?.brand?.name}</Typography>
                   </Box>
                   <Divider className="w-full" />
-
                   {product?.organize?.category?.name && (
-                    <Box className="w-full flex justify-between ">
-                      <Typography>
-                        <strong>category</strong>
-                      </Typography>
-                      <Typography>
-                        {product?.organize?.category?.name}
-                      </Typography>
-                    </Box>
-                  )}
-                  <Divider className="w-full" />
-                  {product?.organize?.collection?.name && (
-                    <Box className="w-full flex justify-between ">
-                      <Typography>
-                        <strong>collection</strong>
-                      </Typography>
-                      <Typography>
-                        {product?.organize?.collection?.name}
-                      </Typography>
-                    </Box>
-                  )}
-                  <Divider className="w-full" />
-                  {product?.organize?.vendor?.name && (
-                    <Box className="w-full flex justify-between ">
-                      <Typography>
-                        <strong>vendor</strong>
-                      </Typography>
-                      <Typography>{product?.organize?.vendor?.name}</Typography>
-                    </Box>
-                  )}
-                  <Divider className="w-full" />
-                  {product?.organize?.tags?.length ? (
-                    <Box className="w-full flex justify-between ">
-                      <Typography>
-                        <strong>tags</strong>
-                      </Typography>
-                      <Box className="grid grid-cols-4 gap-2">
-                        {product?.organize?.tags?.map((tag, index) => (
-                          <Chip
-                            size="small"
-                            key={`tag-${tag.id}-${index}`}
-                            label={tag?.name}
-                          />
-                        ))}
+                    <>
+                      <Box className="w-full flex justify-between ">
+                        <Typography>
+                          <strong>category</strong>
+                        </Typography>
+                        <Typography>
+                          {product?.organize?.category?.name}
+                        </Typography>
                       </Box>
-                    </Box>
+                      <Divider className="w-full" />
+                    </>
+                  )}
+                  {product?.organize?.collection?.name && (
+                    <>
+                      <Box className="w-full flex justify-between ">
+                        <Typography>
+                          <strong>collection</strong>
+                        </Typography>
+                        <Typography>
+                          {product?.organize?.collection?.name}
+                        </Typography>
+                      </Box>
+                      <Divider className="w-full" />
+                    </>
+                  )}
+                  {product?.organize?.vendor?.name && (
+                    <>
+                      <Box className="w-full flex justify-between ">
+                        <Typography>
+                          <strong>vendor</strong>
+                        </Typography>
+                        <Typography>
+                          {product?.organize?.vendor?.name}
+                        </Typography>
+                      </Box>
+                      <Divider className="w-full" />
+                    </>
+                  )}
+                  {product?.organize?.tags?.length ? (
+                    <>
+                      <Box className="w-full flex justify-between">
+                        <Typography>
+                          <strong>tags</strong>
+                        </Typography>
+                        <Box className="flex gap-2 flex-wrap justify-end">
+                          {product?.organize?.tags?.map((tag, index) => (
+                            <Chip
+                              size="small"
+                              key={`tag-${tag.id}-${index}`}
+                              label={tag?.name}
+                            />
+                          ))}
+                        </Box>
+                      </Box>
+                      <Divider className="w-full" />
+                    </>
                   ) : undefined}
                 </Box>
-                <Divider className="w-full" />
               </Box>
 
               <Box className=" w-full">
@@ -380,10 +397,7 @@ const ProductDetails = ({ productId, isAdminPage }) => {
                 </Box>
               )}
             </Box>
-            <Typography
-              variant="body2"
-              className={`w-full px-auto  h-fit`}
-            >
+            <Typography variant="body2" className={`w-full px-auto  h-fit`}>
               Samsa was a travelling salesman - and above it there hung a
               picture that he had recently cut out of an illustrated magazine
               and housed in a nice, gilded frame.
@@ -476,7 +490,7 @@ const ProductDetails = ({ productId, isAdminPage }) => {
                     <Box
                       display="flex"
                       alignItems="center"
-                      className="my-2"
+                      className="w-fit my-2"
                       border={`1.5px solid ${colors.neutral[500]}`}
                     >
                       <IconButton size="large" onClick={handleDecreaseCount}>

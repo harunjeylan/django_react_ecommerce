@@ -21,10 +21,10 @@ from account.serializer import (
     AddressSerializer, UserSerializer, ProfileSerializer)
 from blog.serializer import BlogListSerializer
 from blog.models import Blog
-from product.utils import get_product_data
+from product.utils import get_product_data,get_product_list_data
 from blog.utils import get_blog_list_data
 from account.utils import get_user_list_data
-from service.utils import Round, get_order_list_data, getAverage
+from service.utils import Round, get_order_list_data, get_order_total_price, getAverage
 
 
 from service.models import (
@@ -267,7 +267,7 @@ def getDashboardData(request):
             data["orders"] = orders.count()
             total_spent = 0
             for order in orders:
-                total_spent += order.total_price
+                total_spent += get_order_total_price(order)
             data["total_spent"] = round(total_spent,2)
         new_customers_data.append(customer_data)
 
@@ -300,7 +300,7 @@ def searchItems(request):
         Q(organize__vendor__name__icontains=search) |
         Q(organize__tags__name__icontains=search)
     ).distinct()
-    serialized_data["products"] = get_order_list_data(request, products)
+    serialized_data["products"] = get_product_list_data(request, products)
 
     blogs = Blog.objects.order_by("-published").filter(
         Q(category__name__icontains=search) |
@@ -683,23 +683,24 @@ def addOrder(request):
         return Response(shipping_address_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
 
     ordered_items = []
-    total_price = 0
     for product_data in request.data.get("products"):
         variants_data = product_data["variants"]
         products = Product.objects.filter(id=product_data["id"])
         if not products.exists():
             return Response([{"product": "product is not exist"}], status=status.HTTP_400_BAD_REQUEST)
         product = products.first()
+
+        #================================================================
         prices = product.sale_pricing
         today = datetime.date.today()
         if product.discount and product.discount.end_date >= today:
             prices = prices - (product.discount.amount / prices)
+        #================================================================
+
         count = product_data["count"]
-        # ============================================
-        total_price += prices * count
-        # ============================================
         ordered_item_serializer_form = OrderedItemSerializer(
             data={"count": count,"sale_pricing": prices })
+
         if ordered_item_serializer_form.is_valid():
             ordered_item = ordered_item_serializer_form.save()
             for variant_data in variants_data:
@@ -722,7 +723,6 @@ def addOrder(request):
         "billing_address": billing_address.id,
         "shipping_address": shipping_address.id,
         "delivery_method": delivery_method_data,
-        "total_price": total_price,
     })
     if order_serializer_form.is_valid():
         order = order_serializer_form.save()
@@ -749,11 +749,21 @@ def getOrderDetails(request, pk):
     for ordered_item in ordered_items:
         products = Product.objects.filter(ordered=ordered_item)
         if products.exists():
-            product = products.first()
-            ordered_items_data.append(get_product_data(request,product))
+            variants = []
+            for variant_option in ordered_item.variants.all():
+                variants.append({
+                    "variantLabel": variant_option.variant.label,
+                    "optionLabel": variant_option.option.label,
+                })
+            ordered_items_data.append({
+                **get_product_list_data(request, products, ordered_item.sale_pricing)[0],
+                "variants":variants,
+                "count":ordered_item.count,
+            })
 
     order_data = {
         **OrderSerializer(order).data,
+        "total_price":get_order_total_price(order),
         "products": ordered_items_data,
         "billing_address": OrderAddressSerializer(order.billing_address).data,
         "shipping_address": OrderAddressSerializer(order.shipping_address).data,

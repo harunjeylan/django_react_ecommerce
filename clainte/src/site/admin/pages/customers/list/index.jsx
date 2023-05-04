@@ -27,13 +27,13 @@ const CustomersList = () => {
       headerName: 'Customer',
       width: 200,
       height: 200,
-      renderCell: ({ row: { id, full_name, avatar } }) => {
+      renderCell: ({ row: { id, full_name, image } }) => {
         return (
           <Box className="flex gap-4 items-center py-2 w-full h-full">
             <Link to={`/admin/customers/${id}`}>
               <img
                 className="h-[60px] w-[60px] pointer rounded-full  border bg-slate-300 "
-                src={avatar || userAvatar}
+                src={image || userAvatar}
                 alt={`${full_name}`}
               />
             </Link>

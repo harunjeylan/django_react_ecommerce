@@ -5,7 +5,6 @@ import {
   AccordionSummary,
   Box,
   List,
-  CardMedia,
   CircularProgress,
   Divider,
   Typography,
@@ -74,18 +73,24 @@ const BlogDetails = () => {
               <Header2 title={blog.title} subtitle={blog.headline} />
             )}
           </Box>
-          <Box className={`w-full px-2 md:mx-auto md:px-auto`}>
+          <Box
+            className={`w-full flex justify-center items-center  px-2 md:mx-auto md:px-auto`}
+          >
             {!isFetchingBlog && blog.thumbnail ? (
-              <CardMedia
-                sx={{ height: 360, width: '100%' }}
-                title={'the-blog' + blog.thumbnail}
-                image={blog.thumbnail}
+              <img
+                style={{
+                  height: 360,
+                  backgroundColor: colors.grey[200],
+                }}
+                alt={'the-blog' + blog.thumbnail}
+                src={blog.thumbnail}
+                className="w-fit"
               />
             ) : (
               <Box
                 sx={{
                   height: 360,
-                  width: '100%',
+                  width: 800,
                   backgroundColor: colors.grey[200],
                 }}
                 className="flex justify-center items-center"
@@ -97,7 +102,7 @@ const BlogDetails = () => {
 
           {!isFetchingBlog ? (
             <div
-              style={{ color: colors.neutral[400] }}
+              style={{ color: colors.grey[100] }}
               className={`w-full prose lg:prose-xl `}
               dangerouslySetInnerHTML={{ __html: blog.body }}
             />

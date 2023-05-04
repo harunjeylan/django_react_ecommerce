@@ -23,7 +23,7 @@ from account.serializer import (
 from product.serializer import (ProductListSerializer, ProductSerializer, )
 from product.models import Product
 from product.utils import get_product_data, get_product_list_data
-from service.utils import get_order_list_data
+from service.utils import get_order_list_data, get_order_total_price
 from service.serializer import DiscountSerializer
 from service.models import Discount, Order, Review
 from account.utils import get_tokens_for_user, get_user_data
@@ -168,7 +168,7 @@ def getCustomers(request):
             data["orders"] = orders.count()
             total_spent = 0
             for order in orders:
-                total_spent += order.total_price
+                total_spent += get_order_total_price(order)
             data["total_spent"] = round(total_spent,2)
         customers_data.append(data)
     return Response(customers_data, status=status.HTTP_200_OK)
