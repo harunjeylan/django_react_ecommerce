@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { useLocation, Outlet, Navigate } from 'react-router-dom'
+import { useLocation, Outlet, useNavigate } from 'react-router-dom'
 import {
   selectCurrentToken,
   selectCurrentUser,
@@ -9,8 +9,11 @@ const AuthRouters = ({ children, ...rest }) => {
   const token = useSelector(selectCurrentToken)
   const user = useSelector(selectCurrentUser)
   const location = useLocation()
+  const from = location.state?.from?.pathname || '/'
+  const navigate = useNavigate()
+
   if (token && user) {
-    return <Navigate to="/" state={{ from: location }} replace />
+    return navigate(from, { replace: true })
   } else {
     return <Outlet />
   }
