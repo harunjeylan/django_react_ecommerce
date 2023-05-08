@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
   Typography,
   Box,
@@ -13,56 +13,14 @@ import { useGetAllOrdersQuery } from '../../../../../features/services/orderApiS
 import { tokens } from '../../../../../theme'
 import Header from '../../../../../components/Header'
 import { DataGrid, GridToolbar } from '@mui/x-data-grid'
-import dateFormatter from '../../../../../helpers/dateFormatter'
 import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined'
+import { useOrderColumns } from '../../../../../components/dataGridColumns/useOrderColumns'
 const OrdersListCustomer = () => {
   const navigate = useNavigate()
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const { data: orders, isFetching: isFetchingOrders } = useGetAllOrdersQuery()
-  const orderColumns = [
-    {
-      field: 'id',
-      headerName: 'ORDER',
-      width: 100,
-      renderCell: ({ row: { id } }) => {
-        return (
-          <Link to={`/profile/orders/${id}`}>
-            <Typography
-              className="cursor-pointer"
-              color={colors.greenAccent[500]}
-            >
-              # {id}
-            </Typography>
-          </Link>
-        )
-      },
-    },
-    {
-      field: 'total_price',
-      headerName: 'Total',
-      width: 100,
-      renderCell: ({ row: { total_price } }) => {
-        return <Typography>${total_price}</Typography>
-      },
-    },
-
-    {
-      field: 'fulfillment_status',
-      headerName: 'Fulfillment status',
-      width: 200,
-    },
-    { field: 'delivery_method', headerName: 'Delivery Method', width: 200 },
-    {
-      field: 'date',
-      headerName: 'Date',
-      width: 200,
-      renderCell: ({ row: { date } }) => {
-        return <Typography>{dateFormatter(new Date(date))}</Typography>
-      },
-    },
-  ]
-
+  const orderColumns = useOrderColumns()
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>

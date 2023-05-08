@@ -58,7 +58,7 @@ function Home() {
           <ProductCarouse products={topRatedProducts} />
           <Box className="w-fit mx-auto">
             <Button
-              onClick={() => navigate(`/products/top-rated`)}
+              onClick={() => navigate(`/products/filter?filter=top-rated`)}
               variant="outlined"
               color="secondary"
               className={`bg-opacity-0 hover:bg-opacity-100 px-[40px] py-4`}
@@ -83,7 +83,7 @@ function Home() {
           />
           <Box className="w-fit mx-auto">
             <Button
-              onClick={() => navigate(`/products/most-sealed`)}
+              onClick={() => navigate(`/products/filter?filter=most-sealed`)}
               // LinkComponent={<Navigate to="/products/most-sealed" />}
               variant="outlined"
               color="secondary"
@@ -131,7 +131,7 @@ function Home() {
         </Box>
       </Box>
     </Box>
-  );
+  )
 }
 
 export default Home;

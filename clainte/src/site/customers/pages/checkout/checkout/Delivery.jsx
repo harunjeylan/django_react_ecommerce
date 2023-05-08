@@ -1,13 +1,14 @@
 import { Box, Typography, CardActionArea, useTheme } from '@mui/material'
 import { tokens } from '../../../../../theme'
-import { useGetAllDeliveryQuery } from '../../../../../features/services/deliveryApiSlice'
 
-const Delivery = ({ values, setFieldValue }) => {
+const Delivery = ({
+  deliveries,
+  isFetchingDelivery,
+  values,
+  setFieldValue,
+}) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-
-  const { data: deliveries = [], isFetching: isFetchingDelivery } =
-    useGetAllDeliveryQuery()
 
   return (
     <Box m="30px 0">

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import {
   Typography,
   Box,
@@ -16,6 +16,7 @@ import Header from '../../../../../components/Header'
 import OrderSummery from '../../../../../components/OrderSummery'
 import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 import OrderAddressInformation from '../../../../../components/OrderAddressInformation'
+import { useProductColumns } from '../../../../../components/dataGridColumns/useProductColumns'
 const OrderDetailsCustomer = () => {
   const navigate = useNavigate()
   const theme = useTheme()
@@ -24,66 +25,7 @@ const OrderDetailsCustomer = () => {
   const { data: order, isFetching: isFetchingOrder } = useGetOrderDetailsQuery({
     orderId: orderId,
   })
-  const productColumns = [
-    {
-      field: 'title',
-      headerName: 'Product Name',
-      width: 150,
-      height: 200,
-      renderCell: ({ row: { id, title, thumbnail } }) => {
-        return (
-          <Box className="flex gap-4 items-center py-2 w-full h-full">
-            <Link to={`/product/${id}`}>
-              <img
-                style={{ backgroundColor: colors.primary[400] }}
-                className="h-[60px] w-[60px] pointer rounded-md border-[1px]"
-                src={thumbnail}
-                alt={`${title}`}
-              />
-            </Link>
-            <Link to={`/product/${id}`}>
-              <Typography color={colors.greenAccent[500]}>{title}</Typography>
-            </Link>
-          </Box>
-        )
-      },
-    },
-    { field: 'category', headerName: 'Category', width: 100 },
-    { field: 'collection', headerName: 'Collection', width: 100 },
-
-    {
-      field: 'variants',
-      headerName: 'Variants',
-      width: 150,
-      renderCell: ({ row: { variants } }) => {
-        return variants?.length ? (
-          <Box className="flex flex-col">
-            {variants?.map((variant, index) => (
-              <Typography key={`${variant.id}-${index}`} variant="p">
-                <strong>
-                  {variant?.variantLabel}: {variant?.optionLabel}
-                </strong>
-              </Typography>
-            ))}
-          </Box>
-        ) : (
-          <Typography variant="p">
-            <strong>No Variants</strong>
-          </Typography>
-        )
-      },
-    },
-    { field: 'count', headerName: 'Count', width: 100 },
-    {
-      field: 'sale_pricing',
-      headerName: 'pricing',
-      renderCell: ({ row: { sale_pricing } }) => {
-        return <Typography>{sale_pricing}</Typography>
-      },
-    },
-
-    { field: 'brand', headerName: 'Brand', width: 100 },
-  ]
+  const productColumns = useProductColumns()
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
@@ -184,8 +126,15 @@ const OrderDetailsCustomer = () => {
                   )}
                 </Box>
                 <Box className="flex flex-col xl:flex-row justify-between gap-4 py-2 mt-4">
-                  <OrderSummery totalPrice={order?.total_price} />
-                  <OrderAddressInformation orderData={order} />
+                  {!isFetchingOrder && (
+                    <>
+                      <OrderSummery
+                        totalPrice={order?.total_price}
+                        deliveryMethod={order?.delivery_method}
+                      />
+                      <OrderAddressInformation orderData={order} />
+                    </>
+                  )}
                 </Box>
               </Box>
             ) : (

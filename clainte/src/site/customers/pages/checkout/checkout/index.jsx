@@ -28,7 +28,7 @@ import Header from '../../../../../components/Header'
 import { useSnackbar } from 'notistack'
 import useAlert from '../../../../../components/ui/useAlert'
 import OrderSummery from '../../../../../components/OrderSummery'
-
+import { useGetAllDeliveryQuery } from '../../../../../features/services/deliveryApiSlice'
 const Checkout = () => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
@@ -42,6 +42,8 @@ const Checkout = () => {
   const colors = tokens(theme.palette.mode)
   const navigate = useNavigate()
   const [addOrder] = useAddOrderMutation()
+  const { data: deliveries = [], isFetching: isFetchingDelivery } =
+    useGetAllDeliveryQuery()
   const handleFormSubmit = async (values, actions) => {
     !isLastStep && setActiveStep(activeStep + 1)
     if (isFirstStep && values.shippingAddress.isSameAddress) {
@@ -144,43 +146,43 @@ const Checkout = () => {
       </Box>
 
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
-        <Box className="flex flex-col gap-8 md:flex-row">
-          <Box className="w-full md:max-w-[60%]">
-            <Box className="overflow-x-auto">
-              <Stepper
-                sx={{ backgroundColor: colors.primary[400] }}
-                activeStep={activeStep}
-                className="p-4 rounded-md"
-              >
-                <Step>
-                  <StepLabel color="secondary">Billing</StepLabel>
-                </Step>
-                <Step>
-                  <StepLabel color="secondary">Delivery Method</StepLabel>
-                </Step>
-                <Step>
-                  <StepLabel color="secondary">Payment Method</StepLabel>
-                </Step>
-                <Step>
-                  <StepLabel color="secondary">Order Review</StepLabel>
-                </Step>
-              </Stepper>
-            </Box>
-            <Box className="mt-8">
-              <Formik
-                onSubmit={handleFormSubmit}
-                initialValues={initialValues}
-                validationSchema={checkoutSchema[activeStep]}
-              >
-                {({
-                  values,
-                  errors,
-                  touched,
-                  handleBlur,
-                  handleChange,
-                  handleSubmit,
-                  setFieldValue,
-                }) => (
+        <Box className="flex flex-col gap-4">
+          <Box className="overflow-x-auto">
+            <Stepper
+              sx={{ backgroundColor: colors.primary[400] }}
+              activeStep={activeStep}
+              className="p-4 rounded-md"
+            >
+              <Step>
+                <StepLabel color="secondary">Billing</StepLabel>
+              </Step>
+              <Step>
+                <StepLabel color="secondary">Delivery Method</StepLabel>
+              </Step>
+              <Step>
+                <StepLabel color="secondary">Payment Method</StepLabel>
+              </Step>
+              <Step>
+                <StepLabel color="secondary">Order Review</StepLabel>
+              </Step>
+            </Stepper>
+          </Box>
+          <Formik
+            onSubmit={handleFormSubmit}
+            initialValues={initialValues}
+            validationSchema={checkoutSchema[activeStep]}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleBlur,
+              handleChange,
+              handleSubmit,
+              setFieldValue,
+            }) => (
+              <Box className="flex flex-col md:flex-row gap-8 ">
+                <Box className="w-full md:max-w-[60%]">
                   <form onSubmit={handleSubmit}>
                     <CustomAlert />
                     {isFirstStep && (
@@ -195,6 +197,8 @@ const Checkout = () => {
                     )}
                     {activeStep === 1 && (
                       <Delivery
+                        deliveries={deliveries}
+                        isFetchingDelivery={isFetchingDelivery}
                         values={values}
                         errors={errors}
                         touched={touched}
@@ -240,13 +244,19 @@ const Checkout = () => {
                       </Button>
                     </Box>
                   </form>
-                )}
-              </Formik>
-            </Box>
-          </Box>
-          <Box className="w-full md:max-w-[40%] ">
-            <OrderSummery totalPrice={totalPrice} />
-          </Box>
+                </Box>
+                <Box className="w-full md:max-w-[40%] ">
+                  <OrderSummery
+                    deliveryMethod={deliveries.find(
+                      (delivery) => delivery.id === values?.deliveryMethod
+                    )}
+                    totalPrice={totalPrice}
+                  />
+                </Box>
+              </Box>
+            )}
+          </Formik>
+          <Box className="mt-8"></Box>
         </Box>
       </Box>
     </Box>

@@ -1,11 +1,20 @@
-import React from "react";
-import { Typography, Box, useTheme, Divider } from "@mui/material";
-import { tokens } from "../theme";
+import React from 'react'
+import { Typography, Box, useTheme, Divider } from '@mui/material'
+import { tokens } from '../theme'
 
-const OrderSummery = ({ totalPrice, tax = 0, shipping = 0 }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-
+const OrderSummery = ({ deliveryMethod, totalPrice, tax }) => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const getTotalPrice = () => {
+    let total_price = totalPrice
+    if (deliveryMethod) {
+      total_price += deliveryMethod.pricing
+    }
+    if (tax) {
+      total_price += tax
+    }
+    return total_price
+  }
   return (
     <Box
       backgroundColor={colors.primary[400]}
@@ -40,21 +49,29 @@ const OrderSummery = ({ totalPrice, tax = 0, shipping = 0 }) => {
         </Box>
       </Box>
       <Divider />
-      <Box className="flex justify-between px-4 pt-2 ">
-        <Typography variant="h5" fontWeight="bold">
-          Shipping and handling
-        </Typography>
-        <Typography variant="h5" fontWeight="bold">
-          ${shipping}
-        </Typography>
-      </Box>
-      <Divider />
+      {deliveryMethod && (
+        <Box className=" px-4 pt-2 flex flex-col gap-2">
+          <Box className="flex justify-between">
+            <Typography variant="h5" fontWeight="bold">
+              Delivery
+            </Typography>
+            <Typography variant="h5" fontWeight="bold">
+              ${deliveryMethod.pricing}
+            </Typography>
+          </Box>
+          <Typography variant="h5" fontWeight="bold">
+            {deliveryMethod.name}
+          </Typography>
+          <Typography className="">{deliveryMethod.description}</Typography>
+          <Divider />
+        </Box>
+      )}
       <Box className="flex justify-between px-4 pt-2 ">
         <Typography variant="h5" fontWeight="bold">
           Tax
         </Typography>
         <Typography variant="h5" fontWeight="bold">
-          ${tax}
+          ${tax || 0}
         </Typography>
       </Box>
       <Divider />
@@ -63,11 +80,11 @@ const OrderSummery = ({ totalPrice, tax = 0, shipping = 0 }) => {
           Total
         </Typography>
         <Typography variant="h5" fontWeight="bold">
-          ${totalPrice + shipping + tax}
+          ${getTotalPrice()}
         </Typography>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default OrderSummery;
+export default OrderSummery

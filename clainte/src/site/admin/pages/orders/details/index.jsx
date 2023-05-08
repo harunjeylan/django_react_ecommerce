@@ -31,6 +31,7 @@ import OrderSummery from '../../../../../components/OrderSummery'
 import useAlert from '../../../../../components/ui/useAlert'
 import { useSnackbar } from 'notistack'
 import OrderAddressInformation from '../../../../../components/OrderAddressInformation'
+import { useProductColumns } from '../../../../../components/dataGridColumns/useProductColumns'
 
 const OrderDetailsForAdmin = () => {
   const theme = useTheme()
@@ -73,93 +74,7 @@ const OrderDetailsForAdmin = () => {
     })
   }
 
-  const columns = [
-    {
-      field: 'title',
-      headerName: 'Product Name',
-      width: 200,
-      height: 200,
-      renderCell: ({ row: { id, title, thumbnail } }) => {
-        return (
-          <Box className="flex gap-4 items-center py-2 w-full h-full">
-            <Link to={`/admin/products/${id}`}>
-              <img
-                style={{ backgroundColor: colors.primary[400] }}
-                className="h-[60px] w-[60px] pointer rounded-md border-[1px]"
-                src={thumbnail}
-                alt={`${title}`}
-              />
-            </Link>
-            <Link to={`/admin/products/${id}`}>
-              <Typography color={colors.greenAccent[500]}>{title}</Typography>
-            </Link>
-          </Box>
-        )
-      },
-    },
-    { field: 'category', headerName: 'Category', width: 100 },
-    { field: 'collection', headerName: 'Collection', width: 100 },
-    { field: 'count', headerName: 'Count', width: 100 },
-    {
-      field: 'sale_pricing',
-      headerName: 'pricing',
-      renderCell: ({ row: { sale_pricing } }) => {
-        return <Typography>{sale_pricing}</Typography>
-      },
-    },
-    {
-      field: 'Variants',
-      headerName: 'Variants',
-      width: 200,
-      renderCell: ({ row: { variants } }) => {
-        return variants?.length ? (
-          <Box className="flex flex-col">
-            {variants.map((variant, index) => (
-              <Typography key={`${variant.id}-${index}`} variant="p">
-                <strong>
-                  {variant?.variantLabel}: {variant?.optionLabel}
-                </strong>
-              </Typography>
-            ))}
-          </Box>
-        ) : (
-          <Typography variant="p">
-            <strong>No Variants</strong>
-          </Typography>
-        )
-      },
-    },
-    {
-      field: 'discount',
-      headerName: 'Discount',
-      width: 200,
-      renderCell: ({ row: { discount } }) => {
-        return discount ? (
-          <Box className="flex flex-col">
-            <Typography variant="p">
-              <strong>Name: {discount?.name}</strong>
-            </Typography>
-            <Typography variant="p">
-              <strong>Discount: </strong>
-              {discount?.amount}%
-            </Typography>
-            <Typography variant="p">
-              <strong>Date: from </strong>
-              {discount?.start_date}
-              <strong> to </strong>
-              {discount?.end_date}
-            </Typography>
-          </Box>
-        ) : (
-          <Typography variant="p">
-            <strong>No Discount</strong>
-          </Typography>
-        )
-      },
-    },
-
-    { field: 'brand', headerName: 'Brand', width: 100 },
-  ]
+  const columns = useProductColumns({isAdmin:true})
 
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20 mb-10`}>
@@ -232,7 +147,12 @@ const OrderDetailsForAdmin = () => {
           </Box>
           <Box className="w-full col-span-2 lg:col-span-1">
             <Box className="flex flex-col gap-4">
-              <OrderSummery totalPrice={orderData?.total_price} />
+              {!isFetchingOrder && (
+                <OrderSummery
+                  totalPrice={orderData?.total_price}
+                  deliveryMethod={orderData?.delivery_method}
+                />
+              )}
               <Box
                 backgroundColor={colors.primary[400]}
                 className="drop-shadow-lg  rounded-lg p-4"

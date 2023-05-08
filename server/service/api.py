@@ -258,7 +258,7 @@ def getDashboardData(request):
             "full_name": user.get_full_name(),
             "email": user.email,
             "username": user.username,
-            "avatar": profile["image"],
+            "image": profile["image"],
             "phone_number": user.profile.phone_number,
             "date_joined": user.date_joined,
         }
@@ -321,6 +321,60 @@ def searchItems(request):
 
     return Response(serialized_data, status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+def filterItems(request):
+    filters = request.GET
+    serialized_data = []
+    if "category" in filters:
+        category = filters["category"][0]
+        category_products = Product.objects.filter(
+            Q(organize__category__name__icontains=category)
+        ).distinct()
+        serialized_data.append(category_products)
+    if "collection" in filters:
+        collection = filters["collection"][0]
+        collection_products = Product.objects.filter(
+            Q(organize__collection__name__icontains=collection)
+        ).distinct()
+        serialized_data.append(collection_products)
+    if "vendor" in filters:
+        vendor = filters["vendor"][0]
+        vendor_products = Product.objects.filter(
+            Q(organize__vendor__name__icontains=vendor)
+        ).distinct()
+        serialized_data.append(vendor_products)
+    if "tags" in filters:
+        tags = filters["tags"][0]
+        tags_products = Product.objects.filter(
+            Q(organize__tags__name__icontains=tags)
+        ).distinct()
+        serialized_data.append(tags_products)
+    if "filter" in filters:
+        filter = filters["filter"]
+        if type(filter) == list:
+            filter = filter[0]
+        if filter == "most-sealed":
+            most_sealed_products = Product.objects.annotate(
+                sealed_count=Sum("ordered__count")
+            ).order_by("-sealed_count")
+            if most_sealed_products.count() >= 100:
+                most_sealed_products = most_sealed_products[:100]
+            serialized_data.append(most_sealed_products)
+        if filter == "top-rated":
+            top_rated_products = Product.objects.annotate(
+                rating_count=Sum("reviews__rating")
+            ).order_by("-rating_count")
+            if top_rated_products.count() >= 100:
+                top_rated_products = top_rated_products[:100]
+            serialized_data.append(top_rated_products)
+    if len(serialized_data):
+        if "filter" not in filters:
+            serialized_data = get_product_list_data(request, serialized_data[0].union(*serialized_data[0:]))
+        else:
+
+            serialized_data = get_product_list_data(request, *serialized_data)
+            pass
+    return Response(serialized_data, status=status.HTTP_200_OK)
 
 # =================================================================================
 @api_view(['GET'])
@@ -385,6 +439,7 @@ def addOrganize(request):
             serialized_data = TagSerializer(tag).data
             return Response(serialized_data, status=status.HTTP_201_CREATED)
         return Response(tag_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     return Response({"error": "you have to spasify the name"}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -819,6 +874,7 @@ def getOrderDetails(request, pk):
         "products": ordered_items_data,
         "billing_address": OrderAddressSerializer(order.billing_address).data,
         "shipping_address": OrderAddressSerializer(order.shipping_address).data,
+        "delivery_method": DeliverySerializer(order.delivery_method).data,
     }
     return Response(order_data, status=status.HTTP_200_OK)
 

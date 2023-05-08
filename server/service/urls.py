@@ -9,6 +9,7 @@ urlpatterns = [
     path("contact/add/", api.addContact, name="add-contact"),
 
     path("search/", api.searchItems, name="search"),
+    path("filter/", api.filterItems, name="filter"),
 
 
     path("faq/", api.getFaq, name="faq"),

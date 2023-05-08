@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useState } from 'react'
 import { tokens } from '../../theme'
 import Model from './Model'
-import { useSearchItemsQuery } from '../../features/services/searchApiSlice'
+import { useFilterItemsQuery } from '../../features/services/searchApiSlice'
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from '../../features/auth/authSlice'
@@ -24,7 +24,7 @@ const useSearch = () => {
   const [openModel, setOpenModel] = useState(false)
 
   const { data: searchItems = {}, isFetching: isFetchingSearchItems } =
-    useSearchItemsQuery({
+    useFilterItemsQuery({
       search,
     })
 
