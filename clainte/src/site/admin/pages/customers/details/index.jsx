@@ -520,9 +520,7 @@ const CustomerDetails = () => {
                     '& .MuiDataGrid-root': {
                       border: 'none',
                     },
-                    '& .MuiDataGrid-cell': {
-                      borderBottom: 'none',
-                    },
+
                     '& .MuiCheckbox-root': {
                       color: `${colors.greenAccent[200]} !important`,
                     },
@@ -580,9 +578,7 @@ const CustomerDetails = () => {
                     '& .MuiDataGrid-root': {
                       border: 'none',
                     },
-                    '& .MuiDataGrid-cell': {
-                      borderBottom: 'none',
-                    },
+
                     '& .MuiCheckbox-root': {
                       color: `${colors.greenAccent[200]} !important`,
                     },
