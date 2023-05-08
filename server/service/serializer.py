@@ -25,6 +25,7 @@ from service.models import (
     Contact,
     Subscriber,
     Faq,
+    Delivery,
 )
 
 
@@ -111,6 +112,12 @@ class OrganizeSerializer(serializers.ModelSerializer):
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
+        fields = "__all__"
+
+
+class DeliverySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Delivery
         fields = "__all__"
 
 

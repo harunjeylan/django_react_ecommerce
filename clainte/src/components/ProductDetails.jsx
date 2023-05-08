@@ -19,7 +19,7 @@ import {
 import Header from './Header'
 import { useTheme } from '@emotion/react'
 import { tokens } from '../theme'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   useAddProductReviewMutation,
   useGetProductsDetailsQuery,
@@ -52,15 +52,15 @@ const ProductDetails = ({ productId, isAdminPage }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [value, setValue] = useState('description')
   const user = useSelector(selectCurrentUser)
-  const dispatch = useDispatch()
+  const wishlist = useSelector(selectWishlists)
+  const carts = useSelector(selectCart)
   const [productCount, setProductCount] = useState(1)
   const [productVariants, setProductVariants] = useState([])
-  const carts = useSelector(selectCart)
-  const wishlist = useSelector(selectWishlists)
-  const [toggleWishlist] = useToggleWishlistMutation()
   const [addProductReview] = useAddProductReviewMutation()
+  const [toggleWishlist] = useToggleWishlistMutation()
 
   const { data: product = {}, isFetching: isFetchingProduct } =
     useGetProductsDetailsQuery({ productId })
@@ -330,11 +330,18 @@ const ProductDetails = ({ productId, isAdminPage }) => {
                         </Typography>
                         <Box className="flex gap-2 flex-wrap justify-end">
                           {product?.organize?.tags?.map((tag, index) => (
-                            <Chip
-                              size="small"
+                            <Box
                               key={`tag-${tag.id}-${index}`}
-                              label={tag?.name}
-                            />
+                              backgroundColor={colors.primary[400]}
+                              sx={{
+                                border: `1.5px solid ${colors.neutral[500]}`,
+                              }}
+                              className="flex justify-center items-center p-1 rounded-sm"
+                            >
+                              <Link to={`/products/filter?tag=${tag.name}`}>
+                                <Typography>{tag?.name}</Typography>
+                              </Link>
+                            </Box>
                           ))}
                         </Box>
                       </Box>

@@ -58,7 +58,7 @@ const NavBar = () => {
   return (
     <>
       <Box
-        backgroundColor={colors.primary[400]}
+        backgroundColor={colors.primary[500]}
         className="flex justify-center items-center w-full h-fit left-0 z-20 drop-shadow-md py-1"
       >
         <Box className="w-full max-w-[90%] m-auto flex flex-col md:flex-row justify-center items-center gap-2 md:gap-6">
@@ -68,6 +68,7 @@ const NavBar = () => {
               color="secondary"
               startIcon={<DashboardOutlinedIcon />}
               onClick={() => setOpenModel(true)}
+              onMouseOver={() => isNoneMobile && setOpenModel(true)}
             >
               Category
             </Button>
@@ -98,10 +99,10 @@ const NavBar = () => {
         openModel={openModel}
         setOpenModel={setOpenModel}
         modelTitle="Category"
-        width="md"
+        width="lg"
       >
-        <Box className="w-full flex-col md:flex-row gap-16">
-          <Box className="flex flex-col gap-4">
+        <Box className="w-full  grid  grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-around gap-8">
+          <Box className="w-full flex flex-col gap-4  items-center">
             <Typography
               variant="h4"
               color={colors.grey[100]}
@@ -110,30 +111,28 @@ const NavBar = () => {
             >
               Category
             </Typography>
-            <List className={`flex flex-col gap-4 mx-1`}>
+            <List className={`w-full grid grid-cols-2 gap-4 `}>
               {!organizeIsFetching &&
-                organize?.categories.map((category, index) => (
-                  <Typography key={index}>{category.name}</Typography>
-                ))}
+                organize?.categories.map(
+                  (category, index) =>
+                    category.name !== '' && (
+                      <Box
+                        key={`${category.name}-${index}`}
+                        backgroundColor={colors.primary[400]}
+                        sx={{
+                          border: `1.5px solid ${colors.neutral[500]}`,
+                        }}
+                        className="flex justify-center items-center p-2 rounded-sm"
+                      >
+                        <Link to={`/products/filter?category=${category.name}`}>
+                          <Typography>{category.name}</Typography>
+                        </Link>
+                      </Box>
+                    )
+                )}
             </List>
           </Box>
-          <Box className="flex flex-col gap-4">
-            <Typography
-              variant="h4"
-              color={colors.grey[100]}
-              fontWeight="bold"
-              className={`text-lg md:text-xl`}
-            >
-              Category
-            </Typography>
-            <List className={`flex flex-col gap-4 mx-1`}>
-              {!organizeIsFetching &&
-                organize?.categories.map((category, index) => (
-                  <Typography key={index}>{category.name}</Typography>
-                ))}
-            </List>
-          </Box>
-          <Box className="flex flex-col gap-4">
+          <Box className="w-full flex flex-col gap-4  items-center">
             <Typography
               variant="h4"
               color={colors.grey[100]}
@@ -142,14 +141,30 @@ const NavBar = () => {
             >
               Collection
             </Typography>
-            <List className={`flex flex-col gap-4 mx-1`}>
+            <List className={`w-full grid grid-cols-2 gap-4 `}>
               {!organizeIsFetching &&
-                organize?.collections.map((collection, index) => (
-                  <Typography key={index}>{collection.name}</Typography>
-                ))}
+                organize?.collections.map(
+                  (collection, index) =>
+                    collection.name !== '' && (
+                      <Box
+                        key={`${collection.name}-${index}`}
+                        backgroundColor={colors.primary[400]}
+                        sx={{
+                          border: `1.5px solid ${colors.neutral[500]}`,
+                        }}
+                        className="flex justify-center items-center p-2 rounded-sm"
+                      >
+                        <Link
+                          to={`/products/filter?collection=${collection.name}`}
+                        >
+                          <Typography>{collection.name}</Typography>
+                        </Link>
+                      </Box>
+                    )
+                )}
             </List>
           </Box>
-          <Box className="flex flex-col gap-4">
+          <Box className="w-full flex flex-col gap-4  items-center">
             <Typography
               variant="h4"
               color={colors.grey[100]}
@@ -158,14 +173,28 @@ const NavBar = () => {
             >
               Vendor
             </Typography>
-            <List className={`flex flex-col gap-4 mx-1`}>
+            <List className={`w-full grid grid-cols-2 gap-4 `}>
               {!organizeIsFetching &&
-                organize?.vendors.map((vendor, index) => (
-                  <Typography key={index}>{vendor.name}</Typography>
-                ))}
+                organize?.vendors.map(
+                  (vendor, index) =>
+                    vendor.name !== '' && (
+                      <Box
+                        key={`${vendor.name}-${index}`}
+                        backgroundColor={colors.primary[400]}
+                        sx={{
+                          border: `1.5px solid ${colors.neutral[500]}`,
+                        }}
+                        className="flex justify-center items-center p-2 rounded-sm"
+                      >
+                        <Link to={`/products/filter?vender=${vendor.name}`}>
+                          <Typography>{vendor.name}</Typography>
+                        </Link>
+                      </Box>
+                    )
+                )}
             </List>
           </Box>
-          <Box className="flex flex-col gap-4">
+          <Box className="w-full flex flex-col gap-4  items-center">
             <Typography
               variant="h4"
               color={colors.grey[100]}
@@ -174,11 +203,25 @@ const NavBar = () => {
             >
               tags
             </Typography>
-            <List className={`flex flex-col gap-4 mx-1`}>
+            <List className={`w-full grid grid-cols-2 gap-4 `}>
               {!organizeIsFetching &&
-                organize?.tags.map((tag, index) => (
-                  <Typography key={index}>{tag.name}</Typography>
-                ))}
+                organize?.tags.map(
+                  (tag, index) =>
+                    tag.name !== '' && (
+                      <Box
+                        key={`${tag.name}-${index}`}
+                        backgroundColor={colors.primary[400]}
+                        sx={{
+                          border: `1.5px solid ${colors.neutral[500]}`,
+                        }}
+                        className="flex justify-center items-center p-2 rounded-sm"
+                      >
+                        <Link to={`/products/filter?tag=${tag.name}`}>
+                          <Typography>{tag.name}</Typography>
+                        </Link>
+                      </Box>
+                    )
+                )}
             </List>
           </Box>
         </Box>

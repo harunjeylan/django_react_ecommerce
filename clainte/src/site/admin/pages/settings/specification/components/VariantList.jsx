@@ -1,8 +1,6 @@
-import React from "react";
-import { useTheme } from "@emotion/react";
-import { Box, Button } from "@mui/material";
-import { tokens } from "../../../../../theme";
-import Variant from "./Variant";
+import React from 'react'
+import { Box, Button } from '@mui/material'
+import Variant from './Variant'
 const VariantList = ({
   selected,
   variants,
@@ -13,7 +11,7 @@ const VariantList = ({
 }) => {
   return (
     <Box className="w-full">
-      <Box className="w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <Box className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
         {variants?.map((variant, index) => (
           <Variant
             key={`variant-${variant.name}-variants-${variant.id}-${index}`}
@@ -21,7 +19,7 @@ const VariantList = ({
             handleSetVariant={handleSetVariant}
             setEditingVariant={setEditingVariant}
             highlightVariantId={
-              selected.find(
+              selected?.find(
                 (selectedVariant) => selectedVariant.id === variant.id
               )?.id
             }
@@ -39,6 +37,6 @@ const VariantList = ({
         Add New Discount
       </Button>
     </Box>
-  );
-};
-export default VariantList;
+  )
+}
+export default VariantList

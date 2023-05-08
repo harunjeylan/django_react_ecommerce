@@ -45,6 +45,10 @@ urlpatterns = [
     path("organize/categories/", api.getAllCategory, name="delete_organize"),
 
     # ===================================================================
+    path("delivery/", api.getDelivery, name="delivery"),
+    path("delivery/add/", api.addDelivery, name="add-delivery"),
+    path("delivery/<pk>/update/", api.updateDelivery, name="update-delivery"),
+    path("delivery/<pk>/delete/", api.deleteDelivery, name="delete-delivery"),
 
     path("orders/", api.getOrders, name="order"),
     path("orders/add/", api.addOrder, name="new_order"),

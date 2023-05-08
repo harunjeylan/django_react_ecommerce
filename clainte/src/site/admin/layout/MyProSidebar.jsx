@@ -274,6 +274,34 @@ const MyProSidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: '15px 20px 5px 20px' }}
+            >
+              Settings
+            </Typography>
+            <Item
+              title="General"
+              to="/admin/setting/general"
+              icon={<PersonOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Specification"
+              to="/admin/setting/specification"
+              icon={<PersonOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Pages"
+              to="/admin/setting/pages"
+              icon={<HelpOutlineOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
           </Box>
         </Menu>
       </Sidebar>

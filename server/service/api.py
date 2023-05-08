@@ -43,6 +43,7 @@ from service.models import (
     OrderedItem,
     Order,
     Contact,
+    Delivery,
 )
 from product.models import (
     Product,
@@ -66,6 +67,7 @@ from service.serializer import (
     ContactSerializer,
     SubscriberSerializer,
     FaqSerializer,
+    DeliverySerializer,
 )
 
 
@@ -663,6 +665,48 @@ def deleteOption(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@admin_only
+def addDelivery(request):
+    delivery_serializer_form = DeliverySerializer(data=request.data)
+
+    if delivery_serializer_form.is_valid():
+        delivery = delivery_serializer_form.save()
+        return Response(DeliverySerializer(delivery).data, status=status.HTTP_201_CREATED)
+    return Response(delivery_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST','PUT'])
+@permission_classes([IsAuthenticated])
+@admin_only
+def updateDelivery(request,pk):
+    delivery = Delivery(id=pk)
+    delivery_serializer_form = DeliverySerializer(data=request.data, instance=delivery)
+
+    if delivery_serializer_form.is_valid():
+        delivery = delivery_serializer_form.save()
+        return Response(DeliverySerializer(delivery).data, status=status.HTTP_201_CREATED)
+    return Response(delivery_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@admin_only
+def getDelivery(request):
+    deliveries = Delivery.objects.all()
+    deliveries_data = DeliverySerializer(deliveries, many=True).data
+    return Response(deliveries_data, status=status.HTTP_200_OK)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+@admin_only
+def deleteDelivery(request, pk):
+    delivery = Delivery.objects.get(id=pk)
+    delivery.delete()
+    return Response({"success": "deleted"}, status=status.HTTP_202_ACCEPTED)
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def addOrder(request):
     billing_address_data = request.data.get("billingAddress")
     shipping_address_data = request.data.get("shippingAddress")
@@ -795,8 +839,10 @@ def updateOrder(request):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 @admin_only
-def deleteOrder(request):
-    return Response({})
+def deleteOrder(request, pk):
+    order = Order.objects.get(id=pk)
+    order.delete()
+    return Response({"success": "deleted"}, status=status.HTTP_202_ACCEPTED)
 
 
 @api_view(['GET'])

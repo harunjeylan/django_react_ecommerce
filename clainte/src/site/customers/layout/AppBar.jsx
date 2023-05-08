@@ -19,6 +19,7 @@ import {
   // Button,
   Avatar,
   Tooltip,
+  useMediaQuery,
 } from '@mui/material'
 
 import { selectWishlists } from '../../../features/services/wishlistReducer'
@@ -37,6 +38,7 @@ function AppBar({ isAuthenticated }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const colorMode = useContext(ColorModeContext)
+  const isNoneMobile = useMediaQuery('(min-width:768px)')
 
   const { openAccountMenu } = useContext(LayoutContext)
   const { handleClickAccountMenu } = useContext(LayoutContext)
@@ -124,14 +126,16 @@ function AppBar({ isAuthenticated }) {
                 >
                   Login
                 </Button>
-                <Button
-                  onClick={() => handleClickOpenAccountDialog('register')}
-                  color="secondary"
-                  variant="outlined"
-                  size="small"
-                >
-                  Register
-                </Button>
+                {isNoneMobile && (
+                  <Button
+                    onClick={() => handleClickOpenAccountDialog('register')}
+                    color="secondary"
+                    variant="outlined"
+                    size="small"
+                  >
+                    Register
+                  </Button>
+                )}
               </Box>
             ) : (
               <Tooltip title="Account settings">

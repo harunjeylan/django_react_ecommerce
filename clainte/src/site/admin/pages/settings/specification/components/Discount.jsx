@@ -1,24 +1,24 @@
-import React from "react";
-import { Box, CardActionArea, IconButton, Typography } from "@mui/material";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import { tokens } from "../../../../../theme";
-import { useTheme } from "@emotion/react";
-import { useDeleteDiscountMutation } from "../../../../../features/services/discountApiSlice";
-import { useSnackbar } from "notistack";
+import React from 'react'
+import { Box, CardActionArea, IconButton, Typography } from '@mui/material'
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
+import { useTheme } from '@emotion/react'
+import { useSnackbar } from 'notistack'
+import { tokens } from '../../../../../../theme'
+import { useDeleteDiscountMutation } from '../../../../../../features/services/discountApiSlice'
 const Discount = ({
   discount,
   readOnly,
   setEditingDiscount,
-  handleSetDiscount,
   setMessages,
   highlightDiscountId = null,
+  handleSetDiscount = (...rest) => {},
 }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const { enqueueSnackbar } = useSnackbar();
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const { enqueueSnackbar } = useSnackbar()
   const [deleteDiscount, { isLoading: isDeleting }] =
-    useDeleteDiscountMutation();
+    useDeleteDiscountMutation()
 
   const handleDelete = () => {
     deleteDiscount({ post: { id: discount.id } }).then((data) => {
@@ -26,19 +26,19 @@ const Discount = ({
         Object.keys(data.error.data).forEach((key) => {
           setMessages((prev) => [
             ...prev,
-            { id: key, variant: "error", description: data.error.data[key] },
-          ]);
-        });
+            { id: key, variant: 'error', description: data.error.data[key] },
+          ])
+        })
       } else {
         enqueueSnackbar(
           `Discount -> ${discount.name} is deleted successfully!`,
           {
-            variant: "success",
+            variant: 'success',
           }
-        );
+        )
       }
-    });
-  };
+    })
+  }
   return (
     <Box
       key={discount.id}
@@ -87,7 +87,7 @@ const Discount = ({
         </Typography>
       </CardActionArea>
     </Box>
-  );
-};
+  )
+}
 
-export default Discount;
+export default Discount

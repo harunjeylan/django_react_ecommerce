@@ -25,9 +25,9 @@ import {
 import Header from '../../../../../components/Header'
 import { tokens } from '../../../../../theme'
 import Model from '../../../../../components/ui/Model'
-import DiscountList from '../components/DiscountList'
+import DiscountList from '../../settings/specification/components/DiscountList'
 import { useGetAllDiscountsQuery } from '../../../../../features/services/discountApiSlice'
-import CreateEditDiscount from '../components/CreateEditDiscount'
+import CreateEditDiscount from '../../settings/specification/components/CreateEditDiscount'
 import { useSnackbar } from 'notistack'
 const ProductsForAdmin = () => {
   const theme = useTheme()
@@ -191,7 +191,7 @@ const ProductsForAdmin = () => {
       },
     },
     {
-      field: 'is',
+      field: 'action',
       headerName: 'Action',
       width: 360,
       renderCell: ({ row: { id } }) => {
@@ -340,7 +340,10 @@ const ProductsForAdmin = () => {
             productsData?.length ? (
               <DataGrid
                 density="comfortable"
-                rows={productsData}
+                rows={productsData.map((product) => ({
+                  ...product,
+                  action: `action-${product.id}`,
+                }))}
                 columns={columns}
                 autoPageSize
                 checkboxSelection

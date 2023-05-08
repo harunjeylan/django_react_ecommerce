@@ -144,6 +144,15 @@ class OrderedItem(models.Model):
     def __str__(self):
         return f"{self.sale_pricing} -> {self.count}"
 
+class Delivery(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.TextField(null=True, blank=True)
+    pricing = models.FloatField()
+    def __str__(self):
+        return f"{self.name} -> {self.pricing}"
+
+
+
 
 class Order(models.Model):
     items = models.ManyToManyField(OrderedItem, blank=True)
@@ -182,8 +191,7 @@ class Order(models.Model):
         ("dhl", "SHL"),
         ("usps", "Usps next day"),
     ]
-    delivery_method = models.CharField(
-        choices=DELIVERY_METHOD, default="none", max_length=25)
+    delivery_method =  models.ForeignKey(Delivery, on_delete=models.SET_NULL, null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

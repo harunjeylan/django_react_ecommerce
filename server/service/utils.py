@@ -2,8 +2,12 @@ from django.db.models import Func
 from django.db.models import Avg, Q, Count, Sum
 from django.contrib.auth.models import User
 from account.serializer import (
-    AddressSerializer, ProfileImageSerializer, ProfileSerializer)
+    AddressSerializer,
+    ProfileImageSerializer,
+    ProfileSerializer,
 
+)
+from service.serializer import DeliverySerializer
 class Round(Func):
     function = 'ROUND'
     template = '%(function)s(%(expressions)s, 0)'
@@ -34,7 +38,7 @@ def get_order_list_data(request, orders):
             "avatar": profile["image"],
             "full_name": user.get_full_name(),
             "fulfillment_status": order.fulfillment_status,
-            "delivery_method": order.delivery_method,
+            "delivery_method": DeliverySerializer(order.delivery_method).data,
             "total_products":round(total_products, 2),
             "products":order.items.count(),
             "total_price":  get_order_total_price(order),

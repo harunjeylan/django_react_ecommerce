@@ -17,6 +17,7 @@ urlpatterns = [
   path("ratings/", api.getRatings , name="products_ratings"),
   path("images/upload/", api.uploadImage , name="upload_image"),
 
+  path("delivery/multi-change/", api.changeMultiProductsDelivery , name="delivery-multi-change"),
   path("discount/multi-change/", api.changeMultiProductsDiscount , name="discount-multi-change"),
   path("thumbnail/remove/", api.removeThumbnail , name="remove_image"),
 

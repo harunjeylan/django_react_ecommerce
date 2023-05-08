@@ -1,25 +1,16 @@
-import React, { useEffect, useRef } from "react";
-import {
-  Box,
-  Button,
-  Typography,
-  TextField,
-  IconButton,
-  Divider,
-} from "@mui/material";
+import React, { useEffect, useRef } from 'react'
+import { Box, Button, Typography, TextField, Divider } from '@mui/material'
 import {
   useAddVariantMutation,
   useUpdateVariantMutation,
   useDeleteOptionMutation,
-} from "../../../../../features/services/variantApiSlice";
-import CloseIcon from "@mui/icons-material/Close";
-import SaveAsIcon from "@mui/icons-material/SaveAs";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import Option from "./Option";
-import { useTheme } from "@emotion/react";
-import { tokens } from "../../../../../theme";
-import { useSnackbar } from "notistack";
+} from '../../../../../../features/services/variantApiSlice'
+import CloseIcon from '@mui/icons-material/Close'
+import SaveAsIcon from '@mui/icons-material/SaveAs'
+import Option from './Option'
+import { useTheme } from '@emotion/react'
+import { useSnackbar } from 'notistack'
+import { tokens } from '../../../../../../theme'
 
 const CreateEditVariant = ({
   creatingVariant,
@@ -28,106 +19,106 @@ const CreateEditVariant = ({
   setEditingVariant,
   setMessages,
 }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const { enqueueSnackbar } = useSnackbar();
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const { enqueueSnackbar } = useSnackbar()
 
-  const variantInputRef = useRef();
-  const [addVariant] = useAddVariantMutation();
-  const [updateVariant] = useUpdateVariantMutation();
+  const variantInputRef = useRef()
+  const [addVariant] = useAddVariantMutation()
+  const [updateVariant] = useUpdateVariantMutation()
 
-  const [deleteOption] = useDeleteOptionMutation();
+  const [deleteOption] = useDeleteOptionMutation()
   useEffect(() => {
     if (creatingVariant) {
-      variantInputRef.current.value = creatingVariant.label;
+      variantInputRef.current.value = creatingVariant.label
     } else if (editingVariant) {
-      variantInputRef.current.value = editingVariant.label;
+      variantInputRef.current.value = editingVariant.label
     }
-  }, []);
+  }, [])
   const handleSaveVariantLabel = () => {
     if (creatingVariant) {
       setCreatingVariant((prev) => ({
         ...prev,
         label: variantInputRef.current.value,
-      }));
+      }))
     } else if (editingVariant) {
       setEditingVariant((prev) => ({
         ...prev,
         label: variantInputRef.current.value,
-      }));
+      }))
     }
-  };
+  }
   const handleAddOptionLabel = () => {
     if (creatingVariant) {
       setCreatingVariant((prev) => ({
         ...prev,
         options: [
           ...prev.options,
-          { label: "", index: prev.options.length + 1 },
+          { label: '', index: prev.options.length + 1 },
         ],
-      }));
+      }))
     } else if (editingVariant) {
       setEditingVariant((prev) => ({
         ...prev,
         options: [
           ...prev.options,
-          { label: "", index: prev.options.length + 1 },
+          { label: '', index: prev.options.length + 1 },
         ],
-      }));
+      }))
     }
-  };
+  }
   const handleUpdateOptionLabel = ({ option, newLabel }) => {
     if (creatingVariant) {
       setCreatingVariant((prev) => {
         let changedOption = prev.options.find(
           (opt) => opt.index === option.index
-        );
+        )
         let otherOptions = prev.options.filter(
           (opt) => opt.index !== option.index
-        );
+        )
         return {
           ...prev,
           options: [...otherOptions, { ...changedOption, label: newLabel }],
-        };
-      });
+        }
+      })
     } else if (editingVariant) {
       setEditingVariant((prev) => {
         let changedOption = prev.options.find((opt) => {
           if (opt.id && option.id) {
-            return opt.id === option.id;
+            return opt.id === option.id
           } else if (opt.index && option.index) {
-            return opt.index === option.index;
+            return opt.index === option.index
           } else {
-            return false;
+            return false
           }
-        });
+        })
         let otherOptions = prev.options.filter((opt) => {
           if (opt.id && option.id) {
-            return opt.id !== option.id;
+            return opt.id !== option.id
           } else if (opt.index && option.index) {
-            return opt.index !== option.index;
+            return opt.index !== option.index
           } else {
-            return true;
+            return true
           }
-        });
+        })
         return {
           ...prev,
           options: [...otherOptions, { ...changedOption, label: newLabel }],
-        };
-      });
+        }
+      })
     }
-  };
+  }
   const handleDeleteOption = ({ variant, option }) => {
     if (creatingVariant) {
       setCreatingVariant((prev) => {
         let otherOptions = prev.options.filter(
           (opt) => opt.index !== option.index
-        );
+        )
         return {
           ...prev,
           options: otherOptions,
-        };
-      });
+        }
+      })
     } else if (editingVariant) {
       if (option.id) {
         deleteOption({
@@ -139,30 +130,30 @@ const CreateEditVariant = ({
                 ...prev,
                 {
                   id: key,
-                  variant: "error",
+                  variant: 'error',
                   description: data.error.data[key],
                 },
-              ]);
-            });
+              ])
+            })
           } else {
             enqueueSnackbar(
               `Variant Option -> ${option.label} is deleted successfully!`,
               {
-                variant: "success",
+                variant: 'success',
               }
-            );
+            )
           }
-        });
+        })
       }
       setEditingVariant((prev) => {
-        let otherOptions = prev.options.filter((opt) => opt.id !== option.id);
+        let otherOptions = prev.options.filter((opt) => opt.id !== option.id)
         return {
           ...prev,
           options: otherOptions,
-        };
-      });
+        }
+      })
     }
-  };
+  }
   const handleSaveVariant = () => {
     if (creatingVariant) {
       addVariant({ post: creatingVariant }).then((data) => {
@@ -170,52 +161,60 @@ const CreateEditVariant = ({
           Object.keys(data.error.data).forEach((key) => {
             setMessages((prev) => [
               ...prev,
-              { id: key, variant: "error", description: data.error.data[key] },
-            ]);
-          });
+              { id: key, variant: 'error', description: data.error.data[key] },
+            ])
+          })
         } else {
-          setCreatingVariant(undefined);
-          setEditingVariant(undefined);
+          setCreatingVariant(undefined)
+          setEditingVariant(undefined)
           enqueueSnackbar(
             `Variant -> ${creatingVariant.label} is created successfully!`,
             {
-              variant: "success",
+              variant: 'success',
             }
-          );
+          )
         }
-      });
+      })
     } else if (editingVariant) {
       updateVariant({ post: editingVariant }).then((data) => {
         if (data?.error?.status) {
           Object.keys(data.error.data).forEach((key) => {
             setMessages((prev) => [
               ...prev,
-              { id: key, variant: "error", description: data.error.data[key] },
-            ]);
-          });
+              { id: key, variant: 'error', description: data.error.data[key] },
+            ])
+          })
         } else {
-          setCreatingVariant(undefined);
-          setEditingVariant(undefined);
+          setCreatingVariant(undefined)
+          setEditingVariant(undefined)
           enqueueSnackbar(
             `Variant -> ${editingVariant.label} is updated successfully!`,
             {
-              variant: "success",
+              variant: 'success',
             }
-          );
+          )
         }
-      });
+      })
     }
-  };
+  }
 
   const handleCancel = () => {
-    setCreatingVariant(undefined);
-    setEditingVariant(undefined);
-  };
+    setCreatingVariant(undefined)
+    setEditingVariant(undefined)
+  }
   return (
     <Box
       borderColor={colors.grey[500]}
       className="flex flex-col gap-4 border p-4 rounded-md"
     >
+      <Typography
+        variant="h4"
+        color={colors.grey[100]}
+        fontWeight="bold"
+        className={`text-lg md:text-xl text-left`}
+      >
+        Variant
+      </Typography>
       <Box>
         <Typography variant="h5" fontWeight="bold" className="py-2">
           Name
@@ -299,6 +298,6 @@ const CreateEditVariant = ({
         </Box>
       </Box>
     </Box>
-  );
-};
-export default CreateEditVariant;
+  )
+}
+export default CreateEditVariant

@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import { useTheme } from "@emotion/react";
+import React, { useState } from 'react'
+import { useTheme } from '@emotion/react'
 
-import { Box, Typography, Tab, Tabs } from "@mui/material";
+import { Box, Typography, Tab, Tabs } from '@mui/material'
 
-import PhoneMissedIcon from "@mui/icons-material/PhoneMissed";
+import PhoneMissedIcon from '@mui/icons-material/PhoneMissed'
 
-import AdvancedForm from "./AdvancedForm";
-import AttributesForm from "./AttributesForm";
-import GlobalDeliveryForm from "./GlobalDeliveryForm";
-import ShoppingForm from "./ShoppingForm";
-import RestockForm from "./RestockForm";
-import PricingForm from "./PricingForm";
-import { tokens } from "../../../../../theme";
+import AdvancedForm from './AdvancedForm'
+import AttributesForm from './AttributesForm'
+import GlobalDeliveryForm from './GlobalDeliveryForm'
+import ShoppingForm from './ShoppingForm'
+import RestockForm from './RestockForm'
+import PricingForm from './PricingForm'
+import { tokens } from '../../../../../theme'
 
 const InventoryForm = ({
   values,
@@ -21,10 +21,10 @@ const InventoryForm = ({
   handleChange,
   setFieldValue,
 }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
 
-  const [inventoryValue, setInventoryValue] = useState("pricing");
+  const [inventoryValue, setInventoryValue] = useState('pricing')
   return (
     <Box className="w-full">
       <Typography
@@ -52,11 +52,11 @@ const InventoryForm = ({
           allowScrollButtonsMobile
           aria-label="scrollable auto tabs example"
           sx={{
-            "& .MuiTab-root": {
-              padding: "0px !important",
-              height: "10px !important",
-              textAlign: "start !important",
-              margin: "0px !important",
+            '& .MuiTab-root': {
+              padding: '0px !important',
+              height: '10px !important',
+              textAlign: 'start !important',
+              margin: '0px !important',
             },
           }}
         >
@@ -81,12 +81,13 @@ const InventoryForm = ({
             value="shipping"
             label="Shipping"
           />
+
           <Tab
             className="border-b m-0"
             icon={<PhoneMissedIcon size="small" />}
             iconPosition="start"
             value="globalDelivery"
-            label="Delivery"
+            label="Global Delivery"
           />
           <Tab
             className="border-b m-0"
@@ -104,7 +105,7 @@ const InventoryForm = ({
           />
         </Tabs>
         <Box className="w-[70%]">
-          {inventoryValue === "pricing" && (
+          {inventoryValue === 'pricing' && (
             <PricingForm
               setFieldValue={setFieldValue}
               handleBlur={handleBlur}
@@ -114,7 +115,7 @@ const InventoryForm = ({
               errors={errors}
             />
           )}
-          {inventoryValue === "restock" && (
+          {inventoryValue === 'restock' && (
             <RestockForm
               handleBlur={handleBlur}
               handleChange={handleChange}
@@ -123,7 +124,7 @@ const InventoryForm = ({
               errors={errors}
             />
           )}
-          {inventoryValue === "shipping" && (
+          {inventoryValue === 'shipping' && (
             <ShoppingForm
               handleBlur={handleBlur}
               handleChange={handleChange}
@@ -132,7 +133,8 @@ const InventoryForm = ({
               errors={errors}
             />
           )}
-          {inventoryValue === "globalDelivery" && (
+
+          {inventoryValue === 'globalDelivery' && (
             <GlobalDeliveryForm
               handleBlur={handleBlur}
               handleChange={handleChange}
@@ -141,7 +143,7 @@ const InventoryForm = ({
               errors={errors}
             />
           )}
-          {inventoryValue === "attributes" && (
+          {inventoryValue === 'attributes' && (
             <AttributesForm
               handleBlur={handleBlur}
               handleChange={handleChange}
@@ -151,7 +153,7 @@ const InventoryForm = ({
               errors={errors}
             />
           )}
-          {inventoryValue === "advanced" && (
+          {inventoryValue === 'advanced' && (
             <AdvancedForm
               handleBlur={handleBlur}
               handleChange={handleChange}
@@ -163,7 +165,7 @@ const InventoryForm = ({
         </Box>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default InventoryForm;
+export default InventoryForm

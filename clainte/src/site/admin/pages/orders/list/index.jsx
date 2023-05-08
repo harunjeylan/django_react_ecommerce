@@ -80,7 +80,27 @@ const OrdersForAdmin = () => {
       headerName: 'Fulfillment status',
       width: 200,
     },
-    { field: 'delivery_method', headerName: 'Delivery Method', width: 200 },
+    {
+      field: 'delivery_method',
+      headerName: 'Delivery',
+      width: 200,
+      renderCell: ({ row: { delivery_method } }) => {
+        return delivery_method ? (
+          <Box className="flex flex-col">
+            <Typography variant="p">
+              <strong>Name: {delivery_method?.name}</strong>
+            </Typography>
+            <Typography variant="p">
+              <strong>Pricing: </strong>${delivery_method?.pricing}
+            </Typography>
+          </Box>
+        ) : (
+          <Typography variant="p">
+            <strong>No Delivery</strong>
+          </Typography>
+        )
+      },
+    },
     {
       field: 'date',
       headerName: 'Date',

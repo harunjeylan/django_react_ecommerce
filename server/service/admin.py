@@ -22,6 +22,7 @@ from .models import (
     Contact,
     Subscriber,
     Faq,
+    Delivery,
 )
 
 # Register your models here.
@@ -114,6 +115,14 @@ class ReviewAdmin(admin.ModelAdmin):
     list_filter = ('product','rating')
 
 
+
+@admin.register(Delivery)
+class DeliveryAdmin(admin.ModelAdmin):
+    list_display = (
+        'name',
+        'description',
+        'pricing',
+    )
 
 @admin.register(OrderAddress)
 class OrderAddressAdmin(admin.ModelAdmin):

@@ -37,6 +37,16 @@ const Dashboard = React.lazy(() => import('./site/admin/pages/dashboard'))
 const Contacts = React.lazy(() => import('./site/admin/pages/contacts'))
 const AdminFAQ = React.lazy(() => import('./site/admin/pages/faq'))
 
+const General = React.lazy(() =>
+  import('./site/admin/pages/settings/general/General')
+)
+const Specification = React.lazy(() =>
+  import('./site/admin/pages/settings/specification/Specification')
+)
+const Pages = React.lazy(() =>
+  import('./site/admin/pages/settings/pages/Pages')
+)
+
 const OrdersListAdmin = React.lazy(() =>
   import('./site/admin/pages/orders').then((module) => ({
     default: module.OrdersListAdmin,
@@ -181,6 +191,32 @@ function App() {
                 element={
                   <AdminLayout>
                     <NewCustomer />
+                  </AdminLayout>
+                }
+              />
+            </Route>
+            <Route path="setting">
+              <Route
+                path="pages"
+                element={
+                  <AdminLayout>
+                    <Pages />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path="specification"
+                element={
+                  <AdminLayout>
+                    <Specification />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path="general"
+                element={
+                  <AdminLayout>
+                    <General />
                   </AdminLayout>
                 }
               />

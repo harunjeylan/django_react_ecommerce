@@ -1,30 +1,30 @@
-import React from "react";
+import React from 'react'
 
-import { Box, useTheme, Typography, IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import { tokens } from "../../theme";
+import { Box, useTheme, Typography, IconButton } from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
+import { tokens } from '../../theme'
 
 const Model = ({ children, openModel, setOpenModel, modelTitle, width }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
   const getWidth = () => {
     switch (width) {
-      case "lg":
-        return 1024;
-      case "md":
-        return 768;
-      case "sm":
-        return 640;
-      case "xs":
-        return 460;
+      case 'lg':
+        return 1024
+      case 'md':
+        return 768
+      case 'sm':
+        return 640
+      case 'xs':
+        return 460
       default:
-        return 640;
+        return 640
     }
-  };
+  }
 
   return (
     <Box
-      className={`${openModel ? "fixed " : "hidden"} bg-black/20
+      className={`${openModel ? 'fixed ' : 'hidden'} bg-black/20
       w-full h-full left-0 top-0 justify-between items-center
       overflow-y-auto
       pt-[60px] ease-in-out z-[100]`}
@@ -52,7 +52,7 @@ const Model = ({ children, openModel, setOpenModel, modelTitle, width }) => {
         <Box className="px-4 pb-8">{children}</Box>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default Model;
+export default Model

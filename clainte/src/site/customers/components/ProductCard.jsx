@@ -118,7 +118,7 @@ const ProductCard = ({ product }) => {
           />
         </CardActionArea>
         {product?.discount && (
-          <Box className="absolute z-[100] m-2">
+          <Box className="absolute  m-2">
             <Chip
               sx={{
                 color: colors.grey[100],

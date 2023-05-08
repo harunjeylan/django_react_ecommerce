@@ -64,11 +64,11 @@ const Shopping = () => {
     searchAndFilter,
   })
   const { data: brands, isFetching: isFetchingBrands } = useGetAllBrandsQuery()
-  const { data: ratings, isFetching: isFetchingRatings } = useGetRatingsQuery()
   const { data: organize, isFetching: isFetchingOrganize } =
-    useGetAllOrganizeQuery()
+  useGetAllOrganizeQuery()
   const { data: variants, isFetching: isFetchingVariants } =
-    useGetAllVariantsQuery()
+  useGetAllVariantsQuery()
+  const { data: ratings, isFetching: isFetchingRatings } = useGetRatingsQuery()
 
   const handleCheckBrand = (e) => {
     setBradValue((prevBradValue) => {

@@ -22,6 +22,7 @@ from service.models import (
     Organize,
     Discount,
     Country,
+    Delivery,
 )
 from product.models import (
     Product,
@@ -393,6 +394,25 @@ def deleteMultiProducts(request):
             variant.delete()
         product.delete()
     return Response({"success": "product is deleted"}, status=status.HTTP_202_ACCEPTED)
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@admin_only
+def changeMultiProductsDelivery(request):
+    products = Product.objects.filter(id__in=request.data.get("productIds"))
+    if not request.data.get("deliveryId") in [None,"none", "null", ""]:
+        delivery = Delivery.objects.get(id=request.data.get("deliveryId"))
+        for product in products:
+            product.delivery = delivery
+            product.save()
+    else:
+        for product in products:
+            product.delivery = None
+            product.save()
+
+    return Response({"success": "products changed delivery"}, status=status.HTTP_202_ACCEPTED)
 
 
 @api_view(['POST'])
