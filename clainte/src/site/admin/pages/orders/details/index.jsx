@@ -1,11 +1,11 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { useParams } from "react-router-dom";
-import * as yup from "yup";
-import { Formik } from "formik";
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
+import * as yup from 'yup'
+import { Formik } from 'formik'
 
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 import {
   Box,
   Button,
@@ -18,50 +18,66 @@ import {
   FormLabel,
   FormGroup,
   Select,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
   CircularProgress,
-} from "@mui/material";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import CardGiftcardOutlinedIcon from "@mui/icons-material/CardGiftcardOutlined";
-import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
+} from '@mui/material'
 
-import { useGetOrderDetailsForAdminQuery } from "../../../../../features/services/orderApiSlice";
-import { tokens } from "../../../../../theme";
-import Header from "../../../../../components/Header";
-import OrderSummery from "../../../../../components/OrderSummery";
+import {
+  useGetOrderDetailsQuery,
+  useUpdateOrderMutation,
+} from '../../../../../features/services/orderApiSlice'
+import { tokens } from '../../../../../theme'
+import Header from '../../../../../components/Header'
+import OrderSummery from '../../../../../components/OrderSummery'
+import useAlert from '../../../../../components/ui/useAlert'
+import { useSnackbar } from 'notistack'
+import OrderAddressInformation from '../../../../../components/OrderAddressInformation'
 
 const OrderDetailsForAdmin = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const navigate = useNavigate();
-  const { orderId } = useParams();
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const navigate = useNavigate()
+  const { orderId } = useParams()
+  const [CustomAlert, setMessages] = useAlert()
+  const { enqueueSnackbar } = useSnackbar()
+  const [updateOrder] = useUpdateOrderMutation()
   const { data: orderData, isFetching: isFetchingOrder } =
-    useGetOrderDetailsForAdminQuery({ orderId: orderId });
-
-  console.log(orderData);
+    useGetOrderDetailsQuery({
+      orderId: orderId,
+    })
   const orderStateInitialValues = {
-    paymentStatus: "",
-    fulfillmentStatus: "",
-  };
+    payment_status: orderData?.payment_status || '',
+    fulfillment_status: orderData?.fulfillment_status || '',
+  }
   const orderStateSchema = yup.object().shape({
-    paymentStatus: yup.string().required("Required"),
-    fulfillmentStatus: yup.string().required("Required"),
-  });
-  const handleFormSubmit = (values) => {
-    console.log(values);
-  };
+    payment_status: yup.string().required('Required'),
+    fulfillment_status: yup.string().required('Required'),
+  })
+  const handleFormSubmit = (values, { resetForm }) => {
+    updateOrder({ post: { id: orderId, ...values } }).then((data) => {
+      if (data?.error?.data) {
+        Object.keys(data.error.data).forEach((key) => {
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: key,
+              variant: 'error',
+              description: data.error.data[key],
+            },
+          ])
+        })
+      } else {
+        enqueueSnackbar(`Order is updated successfully!`, {
+          variant: 'success',
+        })
+      }
+    })
+  }
 
   const columns = [
     {
-      field: "title",
-      headerName: "Product Name",
-      width: 300,
+      field: 'title',
+      headerName: 'Product Name',
+      width: 200,
       height: 200,
       renderCell: ({ row: { id, title, thumbnail } }) => {
         return (
@@ -78,45 +94,72 @@ const OrderDetailsForAdmin = () => {
               <Typography color={colors.greenAccent[500]}>{title}</Typography>
             </Link>
           </Box>
-        );
+        )
       },
     },
-
+    { field: 'category', headerName: 'Category', width: 100 },
+    { field: 'collection', headerName: 'Collection', width: 100 },
+    { field: 'count', headerName: 'Count', width: 100 },
     {
-      field: "variants",
-      headerName: "Variants",
-      width: 350,
+      field: 'sale_pricing',
+      headerName: 'pricing',
+      renderCell: ({ row: { sale_pricing } }) => {
+        return <Typography>{sale_pricing}</Typography>
+      },
+    },
+    {
+      field: 'Variants',
+      headerName: 'Variants',
+      width: 200,
       renderCell: ({ row: { variants } }) => {
-        return (
-          <Box className="flex gap-4 items-center py-2 w-full h-full">
-            {variants?.map((variant, index) => (
-              <Typography key={index}>
-                <strong>{variant.variantLabel} : </strong>
-                <span> {variant.optionLabel} </span>,
+        return variants?.length ? (
+          <Box className="flex flex-col">
+            {variants.map((variant, index) => (
+              <Typography key={`${variant.id}-${index}`} variant="p">
+                <strong>
+                  {variant?.variantLabel}: {variant?.optionLabel}
+                </strong>
               </Typography>
             ))}
           </Box>
-        );
+        ) : (
+          <Typography variant="p">
+            <strong>No Variants</strong>
+          </Typography>
+        )
       },
     },
     {
-      field: "sale_pricing",
-      headerName: "Price",
-      renderCell: ({ row: { sale_pricing } }) => {
-        return <Typography>{sale_pricing}</Typography>;
+      field: 'discount',
+      headerName: 'Discount',
+      width: 200,
+      renderCell: ({ row: { discount } }) => {
+        return discount ? (
+          <Box className="flex flex-col">
+            <Typography variant="p">
+              <strong>Name: {discount?.name}</strong>
+            </Typography>
+            <Typography variant="p">
+              <strong>Discount: </strong>
+              {discount?.amount}%
+            </Typography>
+            <Typography variant="p">
+              <strong>Date: from </strong>
+              {discount?.start_date}
+              <strong> to </strong>
+              {discount?.end_date}
+            </Typography>
+          </Box>
+        ) : (
+          <Typography variant="p">
+            <strong>No Discount</strong>
+          </Typography>
+        )
       },
     },
-    { field: "count", headerName: "Quantity", width: 150 },
 
-    {
-      field: "total",
-      headerName: "Total",
-      width: 150,
-      renderCell: ({ row: { sale_pricing, count } }) => {
-        return <Typography>${(sale_pricing * count).toFixed(2)}</Typography>;
-      },
-    },
-  ];
+    { field: 'brand', headerName: 'Brand', width: 100 },
+  ]
 
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20 mb-10`}>
@@ -135,273 +178,71 @@ const OrderDetailsForAdmin = () => {
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Header title={`Order # ${orderId}`} subtitle="Customer ID : 2364847" />
       </Box>
-      <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
-        <Box className="flex flex-col lg:flex-row gap-4">
-          <Box className="w-full lg:w-[70%]">
-            <Box className="flex flex-col gap-8">
-              <Box
-                height="80vh"
-                backgroundColor={colors.primary[400]}
-                className="h-[80vh] rounded-lg p-4"
-                sx={{
-                  "& .MuiDataGrid-root": {
-                    border: "none",
-                  },
-                  "& .MuiDataGrid-cell": {
-                    borderBottom: "none",
-                  },
-                  "& .MuiCheckbox-root": {
-                    color: `${colors.greenAccent[200]} !important`,
-                  },
-                  "& .MuiChackbox-root": {
-                    color: `${colors.greenAccent[200]} !important`,
-                  },
-                  "& .MuiDataGrid-columnHeaders": {
-                    borderBottom: "none",
-                  },
-                  "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                    color: `${colors.grey[100]} !important`,
-                  },
-                }}
-              >
-                {!isFetchingOrder ? (
-                  orderData?.products?.length ? (
-                    <DataGrid
-                      density="comfortable"
-                      rows={orderData?.products}
-                      columns={columns}
-                      autoPageSize
-                      checkboxSelection
-                      components={{ Toolbar: GridToolbar }}
-                    />
-                  ) : (
-                    <Box className="w-full flex items-center justify-center h-full min-h-40">
-                      <Typography>No data</Typography>
-                    </Box>
-                  )
+      <Box
+        className={`md:container px-2 md:mx-auto md:px-auto flex flex-col gap-8`}
+      >
+        <Box className="grid  lg:grid-cols-3 gap-4">
+          <Box className="w-full col-span-2">
+            <Box
+              height="80vh"
+              backgroundColor={colors.primary[400]}
+              className="h-[80vh] rounded-lg p-4"
+              sx={{
+                '& .MuiDataGrid-root': {
+                  border: 'none',
+                },
+                '& .MuiDataGrid-cell': {
+                  borderBottom: 'none',
+                },
+                '& .MuiCheckbox-root': {
+                  color: `${colors.greenAccent[200]} !important`,
+                },
+                '& .MuiChackbox-root': {
+                  color: `${colors.greenAccent[200]} !important`,
+                },
+                '& .MuiDataGrid-columnHeaders': {
+                  borderBottom: 'none',
+                },
+                '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
+                  color: `${colors.grey[100]} !important`,
+                },
+              }}
+            >
+              {!isFetchingOrder ? (
+                orderData?.products?.length ? (
+                  <DataGrid
+                    density="comfortable"
+                    rows={orderData?.products}
+                    columns={columns}
+                    autoPageSize
+                    // checkboxSelection
+                    components={{ Toolbar: GridToolbar }}
+                  />
                 ) : (
                   <Box className="w-full flex items-center justify-center h-full min-h-40">
-                    <CircularProgress color="secondary" />
+                    <Typography>No data</Typography>
                   </Box>
-                )}
-              </Box>
-              <Box className="grid  xl:grid-cols-3 gap-4">
-                <Box className="flex flex-col gap-4">
-                  <Typography
-                    variant="h1"
-                    color={colors.grey[100]}
-                    fontWeight="bold"
-                    className={`text-xl md:text-2xl  text-left my-4`}
-                  >
-                    Billing details
-                  </Typography>
-                  <List className="w-full">
-                    <ListItem>
-                      <ListItemIcon>
-                        <PersonOutlineOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Customer"
-                        secondary={
-                          <Link to={`/admin/customers/${orderData?.customer}`}>
-                            <Typography sx={{ color: colors.greenAccent[500] }}>
-                              {orderData?.billing_address?.first_name}{" "}
-                              {orderData?.billing_address?.last_name}
-                            </Typography>
-                          </Link>
-                        }
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemIcon>
-                        <EmailOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Email"
-                        secondary={
-                          <Link to={`/admin/customers/${orderData?.customer}`}>
-                            <Typography sx={{ color: colors.greenAccent[500] }}>
-                              {orderData?.billing_address?.email}
-                            </Typography>
-                          </Link>
-                        }
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemIcon>
-                        <LocalPhoneOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Phone"
-                        secondary={
-                          <Link to={`/admin/customers/${orderData?.customer}`}>
-                            <Typography sx={{ color: colors.greenAccent[500] }}>
-                              {orderData?.billing_address?.phone_number}
-                            </Typography>
-                          </Link>
-                        }
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemIcon>
-                        <HomeOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Address"
-                        secondary={
-                          <Typography>
-                            {orderData?.billing_address?.street1}
-                            {", "}
-                            {orderData?.billing_address?.country}
-                            {", "}
-                            {orderData?.billing_address?.city}
-                            {", "}
-                            {orderData?.billing_address?.state}
-                            {", "}
-                            {orderData?.billing_address?.zipcode}
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                  </List>
+                )
+              ) : (
+                <Box className="w-full flex items-center justify-center h-full min-h-40">
+                  <CircularProgress color="secondary" />
                 </Box>
-                <Box className="flex flex-col gap-4">
-                  <Typography
-                    variant="h1"
-                    color={colors.grey[100]}
-                    fontWeight="bold"
-                    className={`text-xl md:text-2xl  text-left my-4`}
-                  >
-                    Shipping details
-                  </Typography>
-                  <List className="w-full">
-                    <ListItem>
-                      <ListItemIcon>
-                        <PersonOutlineOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Customer"
-                        secondary={
-                          <Link to={`/admin/customers/${orderData?.customer}`}>
-                            <Typography sx={{ color: colors.greenAccent[500] }}>
-                              {orderData?.shipping_address?.first_name}{" "}
-                              {orderData?.shipping_address?.last_name}
-                            </Typography>
-                          </Link>
-                        }
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemIcon>
-                        <EmailOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Email"
-                        secondary={
-                          <Link to={`/admin/customers/${orderData?.customer}`}>
-                            <Typography sx={{ color: colors.greenAccent[500] }}>
-                              {orderData?.shipping_address?.email}
-                            </Typography>
-                          </Link>
-                        }
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemIcon>
-                        <LocalPhoneOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Phone"
-                        secondary={
-                          <Link to={`/admin/customers/${orderData?.customer}`}>
-                            <Typography sx={{ color: colors.greenAccent[500] }}>
-                              {orderData?.shipping_address?.phone_number}
-                            </Typography>
-                          </Link>
-                        }
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemIcon>
-                        <HomeOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Address"
-                        secondary={
-                          <Typography>
-                            {orderData?.shipping_address?.street1}
-                            {", "}
-                            {orderData?.shipping_address?.country}
-                            {", "}
-                            {orderData?.shipping_address?.city}
-                            {", "}
-                            {orderData?.shipping_address?.state}
-                            {", "}
-                            {orderData?.shipping_address?.zipcode}
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                  </List>
-                </Box>
-                <Box className="flex flex-col gap-4">
-                  <Typography
-                    variant="h1"
-                    color={colors.grey[100]}
-                    fontWeight="bold"
-                    className={`text-xl md:text-2xl  text-left my-4`}
-                  >
-                    Other details
-                  </Typography>
-                  <List className="w-full">
-                    <ListItem>
-                      <ListItemIcon>
-                        <CardGiftcardOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Gift order"
-                        secondary={<Typography>Yes</Typography>}
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemIcon>
-                        <ReceiptLongOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Recipient"
-                        secondary={<Typography>Monjito Shiniga</Typography>}
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemIcon>
-                        <EmailOutlinedIcon size="large" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Gift Meaasge"
-                        secondary={
-                          <Typography>
-                            Happy Birthday Shiniga Lots of Love Buga Buga!!
-                            Yours, Mekalan
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                  </List>
-                </Box>
-              </Box>
+              )}
             </Box>
           </Box>
-          <Box className="w-full lg:w-[30%]">
+          <Box className="w-full col-span-2 lg:col-span-1">
             <Box className="flex flex-col gap-4">
               <OrderSummery totalPrice={orderData?.total_price} />
               <Box
                 backgroundColor={colors.primary[400]}
                 className="drop-shadow-lg  rounded-lg p-4"
               >
+                <CustomAlert />
                 <Formik
                   onSubmit={handleFormSubmit}
                   initialValues={orderStateInitialValues}
                   validationSchema={orderStateSchema}
+                  enableReinitialize
                 >
                   {({
                     values,
@@ -441,27 +282,27 @@ const OrderDetailsForAdmin = () => {
                                 </Typography>
                               </Box>
                               <FormControl variant="filled" className="w-full">
-                                <InputLabel id="paymentStatus-select-label">
+                                <InputLabel id="payment_status-select-label">
                                   Payment status
                                 </InputLabel>
                                 <Select
                                   fullWidth
                                   color="secondary"
-                                  labelId="paymentStatus-select-label"
-                                  id="paymentStatus-select"
+                                  labelId="payment_status-select-label"
+                                  id="payment_status-select"
                                   variant="filled"
-                                  value={values.paymentStatus}
+                                  value={values.payment_status}
                                   onBlur={handleBlur}
                                   onChange={handleChange}
-                                  name="paymentStatus"
+                                  name="payment_status"
                                 >
-                                  <MenuItem value="Canceled">Canceled</MenuItem>
-                                  <MenuItem value="Completed">
-                                    Completed
+                                  <MenuItem value="">----------</MenuItem>
+                                  <MenuItem value="cancelled">
+                                    Cancelled
                                   </MenuItem>
-                                  <MenuItem value="Processing">
-                                    Processing
-                                  </MenuItem>
+                                  <MenuItem value="pending">Pending</MenuItem>
+                                  <MenuItem value="failed">Failed</MenuItem>
+                                  <MenuItem value="complete">Complete</MenuItem>
                                 </Select>
                               </FormControl>
                             </Box>
@@ -476,29 +317,39 @@ const OrderDetailsForAdmin = () => {
                                 </Typography>
                               </Box>
                               <FormControl variant="filled" className="w-full">
-                                <InputLabel id="fulfillmentStatus-select-label">
+                                <InputLabel id="fulfillment_status-select-label">
                                   Fulfillment status
                                 </InputLabel>
                                 <Select
                                   fullWidth
                                   color="secondary"
-                                  labelId="fulfillmentStatus-select-label"
-                                  id="fulfillmentStatus-select"
+                                  labelId="fulfillment_status-select-label"
+                                  id="fulfillment_status-select"
                                   variant="filled"
-                                  value={values.fulfillmentStatus}
+                                  value={values.fulfillment_status}
                                   onBlur={handleBlur}
                                   onChange={handleChange}
-                                  name="fulfillmentStatus"
+                                  name="fulfillment_status"
                                 >
-                                  <MenuItem value="Unfulfiled">
-                                    Unfulfiled
+                                  <MenuItem value="">----------</MenuItem>
+                                  <MenuItem value="cancelled">
+                                    Cancelled
                                   </MenuItem>
-                                  <MenuItem value="Fulfiled">Fulfiled</MenuItem>
-                                  <MenuItem value="Pending">Pending</MenuItem>
+                                  <MenuItem value="pending">Pending</MenuItem>
+                                  <MenuItem value="failed">Failed</MenuItem>
+                                  <MenuItem value="complete">Complete</MenuItem>
                                 </Select>
                               </FormControl>
                             </Box>
                           </FormGroup>
+                          <Button
+                            type="submit"
+                            color="secondary"
+                            variant="outlined"
+                            className={`w-full mt-4`}
+                          >
+                            save updates
+                          </Button>
                         </FormControl>
                       </form>
                     </>
@@ -508,9 +359,10 @@ const OrderDetailsForAdmin = () => {
             </Box>
           </Box>
         </Box>
+        <OrderAddressInformation orderData={orderData} />
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default OrderDetailsForAdmin;
+export default OrderDetailsForAdmin

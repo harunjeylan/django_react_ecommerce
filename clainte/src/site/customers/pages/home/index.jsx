@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { Box, Button } from "@mui/material";
 
@@ -17,11 +17,14 @@ import {
 } from "../../../../features/services/productApiSlice";
 import NowsRoom from "./NowsRoom";
 import Header2 from "../../../../components/Header2";
+import { useGetDiscountsQuery } from "../../../../features/services/discountApiSlice";
 
 function Home() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
+  const { data: discounts = [], isFetching: isFetchingDiscounts } =
+    useGetDiscountsQuery({ limit: 2 });
   const { data: topRatedProducts, isFetching: isFetchingTopRatedProducts } =
     useGetTopRatedProductsQuery({ limit: 10 });
   const { data: mostSealedProducts, isFetching: isFetchingMostSealedProducts } =
@@ -36,9 +39,14 @@ function Home() {
       <Box className="md:container px-2 md:mx-auto md:px-auto">
         <Service />
       </Box>
-      <Box backgroundColor={colors.primary[400]} className={`px-auto`}>
-        <Banner />
-      </Box>
+      {!isFetchingDiscounts && discounts.length >= 1 && (
+        <Box
+          backgroundColor={colors.primary[400]}
+          className={`px-1 md:px-auto`}
+        >
+          <Banner discount={discounts[0]} />
+        </Box>
+      )}
       {!isFetchingTopRatedProducts && (
         <Box
           className={`w-full flex flex-col gap-4 px-2 md:mx-auto md:px-auto mt-8`}
@@ -86,9 +94,14 @@ function Home() {
           </Box>
         </Box>
       )}
-      <Box backgroundColor={colors.primary[400]} className={`px-1 md:px-auto`}>
-        <Banner />
-      </Box>
+      {!isFetchingDiscounts && discounts.length === 2 && (
+        <Box
+          backgroundColor={colors.primary[400]}
+          className={`px-1 md:px-auto`}
+        >
+          <Banner discount={discounts[1]} />
+        </Box>
+      )}
 
       <Box className="md:container px-2 md:mx-auto md:px-auto">
         <NowsRoom

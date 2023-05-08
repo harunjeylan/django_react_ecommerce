@@ -1,10 +1,10 @@
 import * as yup from "yup";
 export const newProductSchema = yup.object().shape({
-  title: yup.string().required("Required"),
-  description: yup.string().required("Required"),
-  regularPrice: yup.number().required("Required"),
-  salePrice: yup.number().required("Required"),
-  brand: yup.string().required("Required"),
+  title: yup.string().required('Required'),
+  description: yup.string().required('Required'),
+  regularPrice: yup.number().required('Required'),
+  salePrice: yup.number().required('Required'),
+  brand: yup.string().required('Required'),
   restockQuantity: yup.number(),
   variants: yup.array().of(
     yup.object().shape({
@@ -12,7 +12,7 @@ export const newProductSchema = yup.object().shape({
       options: yup.array().of(yup.string()),
     })
   ),
-  category: yup.string().required("Required"),
+  category: yup.string().required('Required'),
   collection: yup.string(),
   vendor: yup.string(),
   tags: yup.array().of(yup.string()),
@@ -32,4 +32,4 @@ export const newProductSchema = yup.object().shape({
   }),
   productIDType: yup.string(),
   productID: yup.string(),
-});
+})

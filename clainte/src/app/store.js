@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore } from '@reduxjs/toolkit'
 import {
   persistReducer,
   FLUSH,
@@ -7,54 +7,55 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
-} from "redux-persist";
-import storage from "redux-persist/lib/storage";
+} from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
 // ===================================================================
 
-import { authApi } from "../features/auth/authApi";
+import { authApi } from '../features/auth/authApi'
 
-import authReducer from "../features/auth/authSlice";
+import authReducer from '../features/auth/authSlice'
 // ===================================================================
 
-import { productApi } from "../features/services/productApiSlice";
-import { organizeApi } from "../features/services/organizeApiSlice";
-import { variantApi } from "../features/services/variantApiSlice";
-import { brandApi } from "../features/services/brandApiSlice";
-import { subscriberApi } from "../features/services/subscriberApiSlice";
-import { contactApi } from "../features/services/contactApiSlice";
-import { fqaApi } from "../features/services/fqaApiSlice";
-import { discountApi } from "../features/services/discountApiSlice";
-import { orderApi } from "../features/services/orderApiSlice";
-import { wishlistApi } from "../features/services/wishlistApiSlice";
-import { customerApi } from "../features/services/customerApiSlice";
-import { searchApi } from "../features/services/searchApiSlice";
+import { productApi } from '../features/services/productApiSlice'
+import { organizeApi } from '../features/services/organizeApiSlice'
+import { variantApi } from '../features/services/variantApiSlice'
+import { brandApi } from '../features/services/brandApiSlice'
+import { subscriberApi } from '../features/services/subscriberApiSlice'
+import { contactApi } from '../features/services/contactApiSlice'
+import { faqApi } from '../features/services/faqApiSlice'
+import { deliveryApi } from '../features/services/deliveryApiSlice'
+import { discountApi } from '../features/services/discountApiSlice'
+import { orderApi } from '../features/services/orderApiSlice'
+import { wishlistApi } from '../features/services/wishlistApiSlice'
+import { customerApi } from '../features/services/customerApiSlice'
+import { searchApi } from '../features/services/searchApiSlice'
 
-import { blogApi } from "../features/services/blogApiSlice";
+import { blogApi } from '../features/services/blogApiSlice'
 
-import productReducer from "../features/services/productSlice";
-import cartReducer from "../features/services/cartReducer";
-import wishlistReducer from "../features/services/wishlistReducer";
+import productReducer from '../features/services/productSlice'
+import cartReducer from '../features/services/cartReducer'
+import wishlistReducer from '../features/services/wishlistReducer'
 
 // ===================================================================
 
-import { dashboardApi } from "../features/services/dashboardApiSlice";
+import { dashboardApi } from '../features/services/dashboardApiSlice'
 // ===================================================================
 
-const cartConfig = { key: "cart", storage, version: 1 };
-const wishlistsConfig = { key: "wishlists", storage, version: 1 };
+const cartConfig = { key: 'cart', storage, version: 1 }
+const wishlistsConfig = { key: 'wishlists', storage, version: 1 }
 
-const userConfig = { key: "auth", storage, version: 1 };
-const ProductConfig = { key: "product", storage, version: 1 };
+const userConfig = { key: 'auth', storage, version: 1 }
+const ProductConfig = { key: 'product', storage, version: 1 }
 // ===================================================================
 
-const persistedUserAuthReducer = persistReducer(userConfig, authReducer);
-const persistedProductReducer = persistReducer(ProductConfig, productReducer);
+const persistedUserAuthReducer = persistReducer(userConfig, authReducer)
+const persistedProductReducer = persistReducer(ProductConfig, productReducer)
 
-const persistedCartReducer = persistReducer(cartConfig, cartReducer);
+const persistedCartReducer = persistReducer(cartConfig, cartReducer)
 const persistedWishlistReducer = persistReducer(
   wishlistsConfig,
   wishlistReducer
-);
+)
 
 const store = configureStore({
   reducer: {
@@ -69,7 +70,8 @@ const store = configureStore({
     [brandApi.reducerPath]: brandApi.reducer,
     [subscriberApi.reducerPath]: subscriberApi.reducer,
     [contactApi.reducerPath]: contactApi.reducer,
-    [fqaApi.reducerPath]: fqaApi.reducer,
+    [faqApi.reducerPath]: faqApi.reducer,
+    [deliveryApi.reducerPath]: deliveryApi.reducer,
     [discountApi.reducerPath]: discountApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
@@ -94,7 +96,8 @@ const store = configureStore({
       .concat(brandApi.middleware)
       .concat(subscriberApi.middleware)
       .concat(contactApi.middleware)
-      .concat(fqaApi.middleware)
+      .concat(faqApi.middleware)
+      .concat(deliveryApi.middleware)
       .concat(discountApi.middleware)
       .concat(authApi.middleware)
       .concat(orderApi.middleware)
@@ -102,10 +105,9 @@ const store = configureStore({
       .concat(customerApi.middleware)
       .concat(wishlistApi.middleware)
       .concat(searchApi.middleware)
-
-      .concat(blogApi.middleware);
+      .concat(blogApi.middleware)
   },
   devTools: true,
-});
+})
 
-export default store;
+export default store

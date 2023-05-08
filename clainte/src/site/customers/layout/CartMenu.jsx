@@ -1,6 +1,6 @@
-import { useTheme } from "@emotion/react";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useTheme } from '@emotion/react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 import {
   Box,
@@ -10,34 +10,35 @@ import {
   CardActionArea,
   Typography,
   TextField,
-} from "@mui/material";
-import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
-import CloseIcon from "@mui/icons-material/Close";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
-import { tokens } from "../../../theme";
+} from '@mui/material'
+import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined'
+import CloseIcon from '@mui/icons-material/Close'
+import AddIcon from '@mui/icons-material/Add'
+import RemoveIcon from '@mui/icons-material/Remove'
+import { tokens } from '../../../theme'
 import {
   decreaseCount,
   increaseCount,
   removeFromCart,
   setCount,
   setIsCartOpen,
-} from "../../../features/services/cartReducer";
+} from '../../../features/services/cartReducer'
 
 const CartMenu = ({ isAuthenticated }) => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const theme = useTheme();
-  const cart = useSelector((state) => state.cart.cart);
-  const isCartOpen = useSelector((state) => state.cart.isCartOpen);
-  const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const theme = useTheme()
+  const cart = useSelector((state) => state.cart.cart)
+  const isCartOpen = useSelector((state) => state.cart.isCartOpen)
+  const colors = tokens(theme.palette.mode)
+
   const totalPrice = cart.reduce((total, item) => {
-    return total + item?.count * item?.sale_pricing;
-  }, 0);
+    return total + item?.count * item?.sale_pricing
+  }, 0)
 
   return (
     <Box
-      display={isCartOpen ? "block" : "none"}
+      display={isCartOpen ? 'block' : 'none'}
       className={`fixed w-full h-full top-0 left-0 bg-black/50 z-[200]`}
     >
       <Box
@@ -57,7 +58,7 @@ const CartMenu = ({ isAuthenticated }) => {
           {cart.length ? (
             <>
               <Box
-                sx={{ maxHeight: "calc(var(--vh, 1vh)*100 - 240px)" }}
+                sx={{ maxHeight: 'calc(var(--vh, 1vh)*100 - 240px)' }}
                 className={`overflow-auto px-8 flex flex-col gap-4`}
               >
                 {cart.map((item, ind) => (
@@ -68,9 +69,9 @@ const CartMenu = ({ isAuthenticated }) => {
                     <CardActionArea
                       onClick={() => navigate(`/product/${item?.id}`)}
                       className={`${
-                        theme.palette.mode === "dark"
-                          ? "bg-white/5"
-                          : "bg-black/5"
+                        theme.palette.mode === 'dark'
+                          ? 'bg-white/5'
+                          : 'bg-black/5'
                       } bg-opacity-90 p-1 w-fit h-[140px] rounded-md flex
                         items-center ease-in-out duration-300`}
                     >
@@ -92,12 +93,14 @@ const CartMenu = ({ isAuthenticated }) => {
                         </IconButton>
                       </Box>
                       <Typography className="mr-4">
-                        {item?.description
-                          .replaceAll(/<[^>]*>/g, "")
-                          .slice(0, 150)}
-                        {item?.description?.length > 150 && (
-                          <strong> . . .</strong>
-                        )}
+                        {item?.description &&
+                          item?.description
+                            .replaceAll(/<[^>]*>/g, '')
+                            .slice(0, 150)}
+                        {item?.description &&
+                          item?.description?.length > 150 && (
+                            <strong> . . .</strong>
+                          )}
                       </Typography>
                       <Divider />
                       <Box className="flex justify-between w-full">
@@ -106,7 +109,7 @@ const CartMenu = ({ isAuthenticated }) => {
                             (selectedVariant, index) => (
                               <Typography key={index}>
                                 <strong>
-                                  {selectedVariant.variantLabel} :{" "}
+                                  {selectedVariant.variantLabel} :{' '}
                                 </strong>
                                 <span> {selectedVariant.optionLabel} </span>,
                               </Typography>
@@ -180,8 +183,8 @@ const CartMenu = ({ isAuthenticated }) => {
                     className={`w-full py-2`}
                     color="secondary"
                     onClick={() => {
-                      navigate("/checkout/viewcart/");
-                      dispatch(setIsCartOpen({}));
+                      navigate('/checkout/viewcart/')
+                      dispatch(setIsCartOpen({}))
                     }}
                   >
                     VIEW CART
@@ -192,8 +195,8 @@ const CartMenu = ({ isAuthenticated }) => {
                       className={`w-full py-2`}
                       color="secondary"
                       onClick={() => {
-                        navigate("/checkout/");
-                        dispatch(setIsCartOpen({}));
+                        navigate('/checkout/')
+                        dispatch(setIsCartOpen({}))
                       }}
                     >
                       CHECKOUT
@@ -226,7 +229,7 @@ const CartMenu = ({ isAuthenticated }) => {
         </Box>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default CartMenu;
+export default CartMenu

@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { useTheme } from "@emotion/react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from 'react'
+import { useTheme } from '@emotion/react'
+import { useNavigate } from 'react-router-dom'
 import {
   Box,
   Button,
@@ -17,135 +17,131 @@ import {
   Divider,
   List,
   TextField,
-} from "@mui/material";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+} from '@mui/material'
+import Accordion from '@mui/material/Accordion'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
+import ExpandLess from '@mui/icons-material/ExpandLess'
+import ExpandMore from '@mui/icons-material/ExpandMore'
 
-import Service from "../../../../components/Service";
-import Banner from "../../../../components/Banner";
-import ProductsList from "../../components/ProductsList";
+import Service from '../../../../components/Service'
+import Banner from '../../../../components/Banner'
+import ProductsList from '../../components/ProductsList'
 
-import { useGetAllOrganizeQuery } from "../../../../features/services/organizeApiSlice";
+import { useGetAllOrganizeQuery } from '../../../../features/services/organizeApiSlice'
 import {
   useSearchAndFilterProductsQuery,
   useGetRatingsQuery,
-} from "../../../../features/services/productApiSlice";
+} from '../../../../features/services/productApiSlice'
 
-import { useGetAllBrandsQuery } from "../../../../features/services/brandApiSlice";
-import { useGetAllVariantsQuery } from "../../../../features/services/variantApiSlice";
-import { tokens } from "../../../../theme";
+import { useGetAllBrandsQuery } from '../../../../features/services/brandApiSlice'
+import { useGetAllVariantsQuery } from '../../../../features/services/variantApiSlice'
+import { tokens } from '../../../../theme'
 const Shopping = () => {
-  const isNoneMobile = useMediaQuery("(min-width:1024px)");
-  const [openCategory, setOpenCategory] = useState(false);
-  const [openFilter, setOpenFilter] = useState(false);
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const navigate = useNavigate();
-  const [price, setPrice] = useState([0, 100]);
+  const isNoneMobile = useMediaQuery('(min-width:1024px)')
+  const [openCategory, setOpenCategory] = useState(false)
+  const [openFilter, setOpenFilter] = useState(false)
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const navigate = useNavigate()
+  const [price, setPrice] = useState([0, 100])
 
-  const [searchAndFilter, setSearchAndFilter] = useState("");
-  const [searchValue, setSearchValue] = useState("");
-  const [search, setSearch] = useState("");
-  const [priceValue, setPriceValue] = useState({ from: 0, to: 0 });
-  const [brandValue, setBradValue] = useState([]);
-  const [ratingValue, setRatingValue] = useState([]);
-  const [organizeValue, setOrganizeValue] = useState({});
-  const [variantsValue, setVariantValue] = useState([]);
+  const [searchAndFilter, setSearchAndFilter] = useState('')
+  const [searchValue, setSearchValue] = useState('')
+  const [search, setSearch] = useState('')
+  const [priceValue, setPriceValue] = useState({ from: 0, to: 0 })
+  const [brandValue, setBradValue] = useState([])
+  const [ratingValue, setRatingValue] = useState([])
+  const [organizeValue, setOrganizeValue] = useState({})
+  const [variantsValue, setVariantValue] = useState([])
 
   const {
     data: searchAndFilterProducts = [],
     isFetching: isFetchingSearchAndFilterProducts,
   } = useSearchAndFilterProductsQuery({
     searchAndFilter,
-  });
-  const { data: brands, isFetching: isFetchingBrands } = useGetAllBrandsQuery();
-  const { data: ratings, isFetching: isFetchingRatings } = useGetRatingsQuery();
+  })
+  const { data: brands, isFetching: isFetchingBrands } = useGetAllBrandsQuery()
   const { data: organize, isFetching: isFetchingOrganize } =
-    useGetAllOrganizeQuery();
+  useGetAllOrganizeQuery()
   const { data: variants, isFetching: isFetchingVariants } =
-    useGetAllVariantsQuery();
+  useGetAllVariantsQuery()
+  const { data: ratings, isFetching: isFetchingRatings } = useGetRatingsQuery()
 
   const handleCheckBrand = (e) => {
     setBradValue((prevBradValue) => {
       if (e.target.checked) {
-        return [...prevBradValue, e.target.value];
+        return [...prevBradValue, e.target.value]
       } else {
-        return prevBradValue.filter(
-          (prevValue) => prevValue !== e.target.value
-        );
+        return prevBradValue.filter((prevValue) => prevValue !== e.target.value)
       }
-    });
-  };
+    })
+  }
   const handleCheckRating = (e) => {
     setRatingValue((prevRatingValue) => {
       if (e.target.checked) {
-        return [...prevRatingValue, e.target.value];
+        return [...prevRatingValue, e.target.value]
       } else {
         return prevRatingValue.filter(
           (prevValue) => prevValue !== e.target.value
-        );
+        )
       }
-    });
-  };
+    })
+  }
 
   useEffect(() => {
     let timeOut = setTimeout(() => {
-      setPriceValue({ from: price[0], to: price[1] });
-    }, 2000);
-    return () => clearTimeout(timeOut);
-  }, [price]);
+      setPriceValue({ from: price[0], to: price[1] })
+    }, 2000)
+    return () => clearTimeout(timeOut)
+  }, [price])
 
   useEffect(() => {
     let timeOut = setTimeout(() => {
-      if (search !== "") {
-        setSearchValue(search);
-      }
-    }, 1000);
-    return () => clearTimeout(timeOut);
-  }, [search]);
+      setSearchValue(search)
+    }, 1000)
+    return () => clearTimeout(timeOut)
+  }, [search])
 
   useEffect(() => {
-    let searchAndFilterValue = "?";
-    if (searchValue !== "") {
-      searchAndFilterValue = searchAndFilterValue + `search=${searchValue}&`;
+    let searchAndFilterValue = '?'
+    if (searchValue !== '') {
+      searchAndFilterValue = searchAndFilterValue + `search=${searchValue}&`
     }
     if (priceValue.from !== 0 && priceValue.to !== 0) {
       searchAndFilterValue =
-        searchAndFilterValue + `price=${priceValue.from}-${priceValue.to}&`;
+        searchAndFilterValue + `price=${priceValue.from}-${priceValue.to}&`
     }
     brandValue.forEach((brand) => {
-      if (brand !== "") {
-        searchAndFilterValue = searchAndFilterValue + `brand=${brand}&`;
+      if (brand !== '') {
+        searchAndFilterValue = searchAndFilterValue + `brand=${brand}&`
       }
-    });
+    })
     ratingValue.forEach((rating) => {
-      if (rating !== "") {
-        searchAndFilterValue = searchAndFilterValue + `rating=${rating}&`;
+      if (rating !== '') {
+        searchAndFilterValue = searchAndFilterValue + `rating=${rating}&`
       }
-    });
+    })
     Object.keys(organizeValue).forEach((key) => {
       organizeValue[key].forEach((organize) => {
-        if (organize !== "") {
+        if (organize !== '') {
           searchAndFilterValue =
-            searchAndFilterValue + `organize=${key}--${organize}&`;
+            searchAndFilterValue + `organize=${key}--${organize}&`
         }
-      });
-    });
+      })
+    })
     Object.keys(variantsValue).forEach((key) => {
       variantsValue[key].forEach((variant) => {
-        if (variant !== "") {
+        if (variant !== '') {
           searchAndFilterValue =
-            searchAndFilterValue + `variant=${key}--${variant}&`;
+            searchAndFilterValue + `variant=${key}--${variant}&`
         }
-      });
-    });
+      })
+    })
 
-    setSearchAndFilter(searchAndFilterValue);
+    setSearchAndFilter(searchAndFilterValue)
   }, [
     brandValue,
     organizeValue,
@@ -154,7 +150,7 @@ const Shopping = () => {
     ratingValue,
     searchValue,
     variantsValue,
-  ]);
+  ])
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 mt-2`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
@@ -170,9 +166,11 @@ const Shopping = () => {
         </Breadcrumbs>
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
-        <Box className={`flex flex-col lg:flex-row space-4 h-full w-full`}>
+        <Box
+          className={`flex flex-col lg:flex-row space-4 h-full w-full gap-4`}
+        >
           <Box
-            className={`w-full bg-transparent lg:w-[25%] lg:rounded-lg mx-2 h-full `}
+            className={`w-full bg-transparent lg:w-[25%] lg:rounded-lg  h-full `}
           >
             <Box
               backgroundColor={colors.primary[400]}
@@ -270,7 +268,7 @@ const Shopping = () => {
                           <FormControlLabel
                             key={collection.id}
                             value={collection.name}
-                            name={"collection"}
+                            name={'collection'}
                             onClick={(e) =>
                               handleCheckFilter(e, setOrganizeValue)
                             }
@@ -309,7 +307,7 @@ const Shopping = () => {
                           <FormControlLabel
                             key={vendor.id}
                             value={vendor.name}
-                            name={"vendor"}
+                            name={'vendor'}
                             onClick={(e) =>
                               handleCheckFilter(e, setOrganizeValue)
                             }
@@ -348,7 +346,7 @@ const Shopping = () => {
                           <FormControlLabel
                             key={tag.id}
                             value={tag.name}
-                            name={"tags"}
+                            name={'tags'}
                             onClick={(e) =>
                               handleCheckFilter(e, setOrganizeValue)
                             }
@@ -407,7 +405,7 @@ const Shopping = () => {
                           },
                         ]}
                         color="secondary"
-                        getAriaLabel={() => "Temperature range"}
+                        getAriaLabel={() => 'Temperature range'}
                         value={price}
                         onChange={(event, newValue) => setPrice(newValue)}
                         getAriaValueText={(value) => `$${value}`}
@@ -441,7 +439,7 @@ const Shopping = () => {
                           <FormControlLabel
                             key={brand.id}
                             value={brand.name}
-                            name={"brand"}
+                            name={'brand'}
                             control={
                               <Checkbox
                                 // checked={isChecked("brand", brand.name)}
@@ -486,7 +484,7 @@ const Shopping = () => {
                           >
                             <FormControlLabel
                               value={rating.rating}
-                              name={"rating"}
+                              name={'rating'}
                               control={<Checkbox color="secondary" />}
                               onChange={handleCheckRating}
                               label={rating.rating}
@@ -494,7 +492,7 @@ const Shopping = () => {
                               className="block ml-4 w-20"
                             />
                             <Box
-                              backgroundColor={colors.primary[300]}
+                              backgroundColor={colors.grey[500]}
                               className="w-full h-4 outline-1 flex justify-start items-center rounded-md"
                             >
                               <span
@@ -650,30 +648,28 @@ const Shopping = () => {
         <Service />
       </Box>
     </Box>
-  );
-};
+  )
+}
 function handleCheckFilter(e, setfilterValue) {
   setfilterValue((prevFilterValue) => {
-    let hasFilterName = e.target.name in prevFilterValue;
-    let filter = hasFilterName ? prevFilterValue[e.target.name] : [];
-    let updatedFilter;
+    let hasFilterName = e.target.name in prevFilterValue
+    let filter = hasFilterName ? prevFilterValue[e.target.name] : []
+    let updatedFilter
     if (e.target.name in filter && e.target.checked) {
-      updatedFilter = filter;
+      updatedFilter = filter
     } else if (!(e.target.name in filter) && e.target.checked) {
-      updatedFilter = [...filter, e.target.value];
+      updatedFilter = [...filter, e.target.value]
     } else {
-      updatedFilter = filter.filter(
-        (prevValue) => prevValue !== e.target.value
-      );
+      updatedFilter = filter.filter((prevValue) => prevValue !== e.target.value)
     }
     let updatedFilterValue = {
       ...prevFilterValue,
       [e.target.name]: updatedFilter,
-    };
+    }
     Object.keys(updatedFilterValue).forEach((key) => {
-      !updatedFilterValue[key].length && delete updatedFilterValue[key];
-    });
-    return updatedFilterValue;
-  });
+      !updatedFilterValue[key].length && delete updatedFilterValue[key]
+    })
+    return updatedFilterValue
+  })
 }
-export default Shopping;
+export default Shopping

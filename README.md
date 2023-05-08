@@ -1,11 +1,9 @@
 
 # Alif - E-commerce ReactJs and Django App Project
 
-<img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=harunjeylan&repo=alif_django_react_ecommerce&theme=radical" />
-
 [![Build Status](https://travis-ci.org/adrian80z/e-commerce.svg?branch=master)](https://github.com/harunjeylan/alif_django_react_ecommerce.git)
 
-**Link to live version - [Alif](https://f93k2n-5173.csb.app/)**
+**Link to live version - [Alif](https://f93k2n-2001.preview.csb.app/)**
 
 Alif is a e-commerce web application that allows users to search for 
 products stored in database, add them to shopping cart,
@@ -89,18 +87,16 @@ Anyone is able to perform search, view results, all details about selected produ
 - function preventing access restricted page(checkout) without registration/login
 - gallery image on product details page
 - create categories (category model has been created and relation to product exist, but there is no views implemented for categories)
-- blog post
 - customers reviews
-- add filters to search option (currently only search by any keyword is available)
-- search bar - allows user to search product by keyword. Return all products where search keywords appears
 
 #### Features Left to Implement
 
-- payment integration
+- Chapa payment integration
+- search bar - allows user to search product by keyword. Return all products where search keywords appears
 - create pagination
 - create contact page
 - add confirmation email after purchase (currently only flash message appears)
-
+- add filters to search option (currently only search by any keyword is available)
 
 ## Main Technologies used
 
@@ -116,7 +112,7 @@ Anyone is able to perform search, view results, all details about selected produ
 - **[JWT](https://jwt.io/)** - JSON Web Tokens are an open, industry standard RFC 7519 method for representing claims securely between two parties.
 - **[Nivo](https://nivo.rocks/)** - nivo provides a rich set of dataviz components, built on top of D3 and React.
 
-- **[Vite](https://vitejs.dev/)** - A build tool that aims to provide a faster and leaner development experience for modern web projects.
+
 
 - **[GitHub](https://github.com/)** - provides hosting for software development version control using Git.
 - **[Git](https://git-scm.com/)** - version-control system for tracking changes in source code during software development.

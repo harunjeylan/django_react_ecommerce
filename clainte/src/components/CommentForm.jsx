@@ -59,7 +59,7 @@ const CommentForm = ({ handleCommentFormSubmit }) => {
                 name="first_name"
                 error={!!touched.first_name && !!errors.first_name}
                 helperText={touched.first_name && errors.first_name}
-                className={`col-span-1`}
+                className={`col-span-2 md:col-span-1`}
               />
               <TextField
                 fullWidth
@@ -72,7 +72,7 @@ const CommentForm = ({ handleCommentFormSubmit }) => {
                 name="last_name"
                 error={!!touched.last_name && !!errors.last_name}
                 helperText={touched.last_name && errors.last_name}
-                className={`col-span-1`}
+                className={`col-span-2 md:col-span-1`}
               />
               <TextField
                 fullWidth
@@ -122,7 +122,7 @@ const CommentForm = ({ handleCommentFormSubmit }) => {
                 variant="outlined"
                 color="secondary"
                 className={`bg-opacity-0 hover:bg-opacity-100 px-[40px] py-2 ${
-                  "hover:bg-" + colors.greenAccent[400]
+                  'hover:bg-' + colors.greenAccent[400]
                 }`}
               >
                 Post Comment
@@ -139,12 +139,12 @@ const CommentForm = ({ handleCommentFormSubmit }) => {
         >
           <span className="bg-green-400/5 text-green-500 px-2 py-1 rounded-md">
             Note
-          </span>{" "}
+          </span>{' '}
           This form shows usage of the classic Bootstrap form controls, not
           their underlined variants. You can choose whichever variant you want.
         </Typography>
       </Box>
     </Box>
-  );
+  )
 };
 export default CommentForm;

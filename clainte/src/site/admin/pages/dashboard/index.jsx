@@ -1,29 +1,30 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom'
 
-import { ResponsiveBar } from "@nivo/bar";
-import { ResponsiveLine } from "@nivo/line";
-import { ResponsivePie } from "@nivo/pie";
+import { ResponsiveBar } from '@nivo/bar'
+import { ResponsiveLine } from '@nivo/line'
+import { ResponsivePie } from '@nivo/pie'
 
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 
-import { Box, Typography, useTheme, CircularProgress } from "@mui/material";
+import { Box, Typography, useTheme, CircularProgress } from '@mui/material'
 
-import EmailIcon from "@mui/icons-material/Email";
-import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import TrafficIcon from "@mui/icons-material/Traffic";
-import InventoryIcon from "@mui/icons-material/Inventory";
+import EmailIcon from '@mui/icons-material/Email'
+import PointOfSaleIcon from '@mui/icons-material/PointOfSale'
+import PersonAddIcon from '@mui/icons-material/PersonAdd'
+import TrafficIcon from '@mui/icons-material/Traffic'
+import InventoryIcon from '@mui/icons-material/Inventory'
 
-import LineChart from "../../components/LineChart";
-import BarChart from "../../components/BarChart";
-import StatBox from "../../components/StatBox";
-import { useGetDashboardDataQuery } from "../../../../features/services/dashboardApiSlice";
-import { tokens } from "../../../../theme";
-import Header from "../../../../components/Header";
-
+import LineChart from '../../components/LineChart'
+import BarChart from '../../components/BarChart'
+import StatBox from '../../components/StatBox'
+import { useGetDashboardDataQuery } from '../../../../features/services/dashboardApiSlice'
+import { tokens } from '../../../../theme'
+import Header from '../../../../components/Header'
+import userAvatar from '../../../../assets/user-avatar.png'
+import dateFormatter from '../../../../helpers/dateFormatter'
 const MiniBarChart = ({ data }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
   return (
     <ResponsiveBar
       data={data}
@@ -61,83 +62,83 @@ const MiniBarChart = ({ data }) => {
           },
         },
       }}
-      keys={["failed", "complete", "pending", "cancelled"]}
+      keys={['failed', 'complete', 'pending', 'cancelled']}
       indexBy="date"
       margin={{ top: 20, right: 20, bottom: 60, left: 30 }}
       padding={0.8}
-      valueScale={{ type: "linear" }}
-      indexScale={{ type: "band", round: true }}
-      colors={{ scheme: "nivo" }}
+      valueScale={{ type: 'linear' }}
+      indexScale={{ type: 'band', round: true }}
+      colors={{ scheme: 'nivo' }}
       defs={[
         {
-          id: "dots",
-          type: "patternDots",
-          background: "inherit",
-          color: "#38bcb2",
+          id: 'dots',
+          type: 'patternDots',
+          background: 'inherit',
+          color: '#38bcb2',
           size: 4,
           padding: 1,
           stagger: true,
         },
         {
-          id: "lines",
-          type: "patternLines",
-          background: "inherit",
-          color: "#eed312",
+          id: 'lines',
+          type: 'patternLines',
+          background: 'inherit',
+          color: '#eed312',
           rotation: -45,
           lineWidth: 6,
           spacing: 10,
         },
       ]}
       borderColor={{
-        from: "color",
-        modifiers: [["darker", 1.6]],
+        from: 'color',
+        modifiers: [['darker', 1.6]],
       }}
       axisTop={null}
       axisRight={null}
       axisBottom={{
-        orient: "bottom",
+        orient: 'bottom',
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
         legend: undefined,
         legendOffset: 36,
-        legendPosition: "middle",
+        legendPosition: 'middle',
       }}
       axisLeft={{
-        orient: "left",
+        orient: 'left',
         tickSize: 5,
         tickValues: 5,
         tickPadding: 5,
         tickRotation: 0,
         legend: undefined,
         legendOffset: -40,
-        legendPosition: "middle",
+        legendPosition: 'middle',
       }}
       enableGridY={false}
       labelSkipWidth={12}
       labelSkipHeight={12}
       labelTextColor={{
-        from: "color",
-        modifiers: [["darker", 1.6]],
+        from: 'color',
+        modifiers: [['darker', 1.6]],
       }}
       legends={[
         {
-          anchor: "bottom",
-          direction: "row",
+          anchor: 'bottom',
+          direction: 'row',
           justify: false,
           translateX: 25,
           translateY: 50,
           itemsSpacing: 0,
           itemWidth: 100,
           itemHeight: 0,
-          itemTextColor: "#999",
-          itemDirection: "left-to-right",
+          itemTextColor: '#999',
+          itemDirection: 'left-to-right',
           itemOpacity: 1,
           symbolSize: 15,
-          symbolShape: "circle",
+          symbolShape: 'circle',
           effects: [
             {
-              on: "hover",
+              on: 'hover',
               style: {
                 itemTextColor: colors.greenAccent[400],
               },
@@ -149,15 +150,15 @@ const MiniBarChart = ({ data }) => {
       role="application"
       ariaLabel="Nivo bar chart demo"
       barAriaLabel={function (e) {
-        return e.id + ": " + e.formattedValue + " in country: " + e.indexValue;
+        return e.id + ': ' + e.formattedValue + ' in country: ' + e.indexValue
       }}
     />
-  );
-};
+  )
+}
 
 const MiniLineChart = ({ data }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
   return (
     <ResponsiveLine
       data={data}
@@ -196,65 +197,65 @@ const MiniLineChart = ({ data }) => {
         },
       }}
       margin={{ top: 20, right: 25, bottom: 60, left: 25 }}
-      xScale={{ type: "point" }}
+      xScale={{ type: 'point' }}
       yScale={{
-        type: "linear",
+        type: 'linear',
         min: 0,
-        max: "auto",
+        max: 'auto',
         stacked: true,
         reverse: false,
       }}
       axisTop={null}
       axisRight={null}
       axisBottom={{
-        orient: "bottom",
+        orient: 'bottom',
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
         legend: undefined,
         legendOffset: 36,
-        legendPosition: "middle",
+        legendPosition: 'middle',
       }}
       axisLeft={{
-        orient: "left",
+        orient: 'left',
         tickSize: 5,
         tickValues: 5,
         tickPadding: 5,
         tickRotation: 0,
         legend: undefined,
         legendOffset: -40,
-        legendPosition: "middle",
+        legendPosition: 'middle',
       }}
       enableGridX={false}
       enableGridY={false}
-      colors={{ scheme: "category10" }}
+      colors={{ scheme: 'category10' }}
       enablePoints={false}
       pointSize={2}
       pointColor="black"
       pointBorderWidth={2}
-      pointBorderColor={{ from: "serieColor" }}
+      pointBorderColor={{ from: 'serieColor' }}
       pointLabelYOffset={-24}
       enableArea={true}
       areaOpacity={0.15}
       useMesh={true}
       legends={[
         {
-          anchor: "bottom",
-          direction: "row",
+          anchor: 'bottom',
+          direction: 'row',
           justify: false,
           translateX: 25,
           translateY: 50,
           itemsSpacing: 0,
           itemWidth: 100,
           itemHeight: 0,
-          itemTextColor: "#999",
-          itemDirection: "left-to-right",
+          itemTextColor: '#999',
+          itemDirection: 'left-to-right',
           itemOpacity: 1,
           symbolSize: 15,
-          symbolShape: "circle",
+          symbolShape: 'circle',
           effects: [
             {
-              on: "hover",
+              on: 'hover',
               style: {
                 itemTextColor: colors.greenAccent[400],
               },
@@ -263,15 +264,15 @@ const MiniLineChart = ({ data }) => {
         },
       ]}
     />
-  );
-};
+  )
+}
 const CenteredMetric = ({ dataWithArc, centerX, centerY }) => {
-  let total = 0;
+  let total = 0
   dataWithArc.forEach((datum) => {
-    total += datum.value;
-  });
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+    total += datum.value
+  })
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
   return (
     <text
       x={centerX}
@@ -279,18 +280,18 @@ const CenteredMetric = ({ dataWithArc, centerX, centerY }) => {
       textAnchor="middle"
       dominantBaseline="central"
       style={{
-        fontSize: "30px",
+        fontSize: '30px',
         fontWeight: 600,
         fill: colors.grey[100],
       }}
     >
       {total}
     </text>
-  );
-};
+  )
+}
 const MiniPieChart = ({ data }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
   return (
     <ResponsivePie
       data={data}
@@ -331,37 +332,37 @@ const MiniPieChart = ({ data }) => {
       margin={{ top: 20, right: 20, bottom: 60, left: 30 }}
       innerRadius={0.85}
       activeOuterRadiusOffset={8}
-      colors={{ scheme: "category10" }}
+      colors={{ scheme: 'category10' }}
       borderWidth={1}
       borderColor={{
-        from: "color",
-        modifiers: [["darker", 0.2]],
+        from: 'color',
+        modifiers: [['darker', 0.2]],
       }}
       arcLinkLabelsSkipAngle={10}
       arcLinkLabelsTextColor={colors.grey[100]}
       arcLinkLabelsThickness={2}
-      arcLinkLabelsColor={{ from: "color" }}
+      arcLinkLabelsColor={{ from: 'color' }}
       enableArcLabels={false}
       arcLabelsSkipAngle={10}
       arcLabelsTextColor={{
-        from: "color",
-        modifiers: [["darker", 2]],
+        from: 'color',
+        modifiers: [['darker', 2]],
       }}
       defs={[
         {
-          id: "dots",
-          type: "patternDots",
-          background: "inherit",
-          color: "rgba(255, 255, 255, 0.3)",
+          id: 'dots',
+          type: 'patternDots',
+          background: 'inherit',
+          color: 'rgba(255, 255, 255, 0.3)',
           size: 4,
           padding: 1,
           stagger: true,
         },
         {
-          id: "lines",
-          type: "patternLines",
-          background: "inherit",
-          color: "rgba(255, 255, 255, 0.3)",
+          id: 'lines',
+          type: 'patternLines',
+          background: 'inherit',
+          color: 'rgba(255, 255, 255, 0.3)',
           rotation: -45,
           lineWidth: 6,
           spacing: 10,
@@ -369,22 +370,22 @@ const MiniPieChart = ({ data }) => {
       ]}
       legends={[
         {
-          anchor: "bottom",
-          direction: "row",
+          anchor: 'bottom',
+          direction: 'row',
           justify: false,
           translateX: 25,
           translateY: 50,
           itemsSpacing: 0,
           itemWidth: 100,
           itemHeight: 0,
-          itemTextColor: "#999",
-          itemDirection: "left-to-right",
+          itemTextColor: '#999',
+          itemDirection: 'left-to-right',
           itemOpacity: 1,
           symbolSize: 15,
-          symbolShape: "circle",
+          symbolShape: 'circle',
           effects: [
             {
-              on: "hover",
+              on: 'hover',
               style: {
                 itemTextColor: colors.greenAccent[400],
               },
@@ -392,86 +393,134 @@ const MiniPieChart = ({ data }) => {
           ],
         },
       ]}
-      layers={["arcs", "arcLabels", "arcLinkLabels", "legends", CenteredMetric]}
+      layers={['arcs', 'arcLabels', 'arcLinkLabels', 'legends', CenteredMetric]}
     />
-  );
-};
+  )
+}
 
 const Dashboard = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
   const { data: dashboardData, isFetching: isFetchingDashboardData } =
-    useGetDashboardDataQuery();
+    useGetDashboardDataQuery()
 
   const MiniPieChartData = [
     {
-      id: "payed",
-      label: "Payed",
+      id: 'payed',
+      label: 'Payed',
       value: 449,
     },
     {
-      id: "none payed",
-      label: "None Payed",
+      id: 'none payed',
+      label: 'None Payed',
       value: 302,
     },
-  ];
+  ]
   const customerColumns = [
     {
-      field: "first_name",
-      headerName: "Customer",
+      field: 'first_name',
+      headerName: 'Customer',
       width: 200,
       height: 200,
-      renderCell: ({ row: { full_name, avatar } }) => {
+      renderCell: ({ row: { id, full_name, avatar } }) => {
         return (
           <Box className="flex gap-4 items-center py-2 w-full h-full">
-            <Link to={`/admin/customers/${1}`}>
+            <Link to={`/admin/customers/${id}`}>
               <img
-                className="h-[60px] w-[60px] pointer rounded-[50%]"
-                src={avatar}
+                className="h-[60px] w-[60px] pointer rounded-full  border bg-slate-300 "
+                src={avatar || userAvatar}
                 alt={`${full_name}`}
               />
             </Link>
-            <Link to={`/admin/customers/${1}`}>
+            <Link to={`/admin/customers/${id}`}>
               <Typography color={colors.greenAccent[500]}>
-                {full_name}
+                {full_name || 'no name'}
               </Typography>
             </Link>
           </Box>
-        );
+        )
       },
     },
     {
-      field: "email",
-      headerName: "Email",
+      field: 'email',
+      headerName: 'Email',
       width: 200,
-      renderCell: ({ row: { email } }) => {
+      renderCell: ({ row: { id, email } }) => {
         return (
-          <Link to={`/admin/customers/${1}`}>
-            <Typography color={colors.greenAccent[500]}>{email}</Typography>
+          <Link to={`/admin/customers/${id}`}>
+            <Typography color={colors.greenAccent[500]}>
+              {email || 'no email'}
+            </Typography>
           </Link>
-        );
+        )
       },
     },
-    { field: "orders", headerName: "Orders", width: 100 },
+    {
+      field: 'username',
+      headerName: 'Username',
+      width: 200,
+      renderCell: ({ row: { id, username } }) => {
+        return (
+          <Link to={`/admin/customers/${id}`}>
+            <Typography color={colors.greenAccent[500]}>{username}</Typography>
+          </Link>
+        )
+      },
+    },
+    {
+      field: 'orders',
+      headerName: 'Orders',
+      width: 150,
+      renderCell: ({ row: { orders } }) => {
+        return <Typography>{orders || 0}</Typography>
+      },
+    },
+    {
+      field: 'phone_number',
+      headerName: 'Phone Number',
+      width: 150,
+      renderCell: ({ row: { phone_number } }) => {
+        return <Typography>{phone_number || 'no number'}</Typography>
+      },
+    },
 
     {
-      field: "total_spent",
-      headerName: "Total spent",
+      field: 'total_spent',
+      headerName: 'Total spent',
       width: 100,
       renderCell: ({ row: { total_spent } }) => {
         return (
           <Typography color={colors.greenAccent[500]}>
-            ${total_spent}
+            ${total_spent || 0}
           </Typography>
-        );
+        )
       },
     },
-    { field: "last_order", headerName: "Last order", width: 200 },
-  ];
+    {
+      field: 'last_order',
+      headerName: 'Last order',
+      width: 200,
+      renderCell: ({ row: { last_order } }) => {
+        return (
+          <Typography>
+            {dateFormatter(new Date(last_order)) || 'no order'}
+          </Typography>
+        )
+      },
+    },
+    {
+      field: 'date_joined',
+      headerName: 'Date Joined',
+      width: 200,
+      renderCell: ({ row: { date_joined } }) => {
+        return <Typography>{dateFormatter(new Date(date_joined))}</Typography>
+      },
+    },
+  ]
   const orderColumns = [
     {
-      field: "id",
-      headerName: "ORDER",
+      field: 'id',
+      headerName: 'ORDER',
       width: 100,
       renderCell: ({ row: { id } }) => {
         return (
@@ -483,52 +532,77 @@ const Dashboard = () => {
               # {id}
             </Typography>
           </Link>
-        );
+        )
       },
     },
     {
-      field: "total",
-      headerName: "Total",
+      field: 'total_price',
+      headerName: 'Total',
       width: 100,
-      renderCell: ({ row: { total } }) => {
-        return <Typography>${total}</Typography>;
+      renderCell: ({ row: { total_price } }) => {
+        return <Typography>${total_price}</Typography>
       },
     },
     {
-      field: "first_name",
-      headerName: "Customer",
+      field: 'first_name',
+      headerName: 'Customer',
       width: 200,
       height: 200,
-      renderCell: ({ row: { full_name, avatar, user_id } }) => {
+      renderCell: ({ row: { full_name, avatar } }) => {
         return (
           <Box className="flex justify-start gap-4 items-center py-2 w-full h-full">
-            <Link to={`/admin/customers/${user_id}`}>
+            <Link to={`/admin/customers/${1}`}>
               <img
-                className="h-[60px] w-[60px] cursor-pointer rounded-[50%]"
-                src={avatar}
+                className="h-[60px] w-[60px] cursor-pointer  rounded-full  border bg-slate-300 "
+                src={avatar || userAvatar}
                 alt={`${full_name}`}
-              />{" "}
+              />{' '}
             </Link>
-            <Link to={`/admin/customers/${user_id}`}>
+            <Link to={`/admin/customers/${1}`}>
               <Typography
                 className="cursor-pointer"
                 color={colors.greenAccent[500]}
               >
-                {full_name}
+                {full_name || 'no name'}
               </Typography>
             </Link>
           </Box>
-        );
+        )
       },
     },
     {
-      field: "fulfillment_status",
-      headerName: "Fulfilment status",
-      width: 150,
+      field: 'fulfillment_status',
+      headerName: 'Fulfillment status',
+      width: 200,
     },
-    { field: "delivery_method", headerName: "Delivery Method", width: 150 },
-    { field: "date", headerName: "Date", width: 200 },
-  ];
+    { field: 'delivery_method', headerName: 'Delivery Method', width: 200 },
+    {
+      field: 'date',
+      headerName: 'Date',
+      width: 150,
+      renderCell: ({ row: { date } }) => {
+        return (
+          <Typography>{dateFormatter(new Date(date)) || 'no order'}</Typography>
+        )
+      },
+    },
+    {
+      field: 'products',
+      headerName: 'Products',
+      width: 100,
+      renderCell: ({ row: { products } }) => {
+        return <Typography>{products || 0}</Typography>
+      },
+    },
+    {
+      field: 'total_products',
+      headerName: 'Total Products',
+      width: 100,
+      renderCell: ({ row: { total_products } }) => {
+        return <Typography>{total_products || 0}</Typography>
+      },
+    },
+  ]
   return (
     <Box className="flex flex-col gap-4 md:gap-8 md:mt-20 mb-4">
       {/* HEADER */}
@@ -554,7 +628,7 @@ const Dashboard = () => {
                 increase="+21%"
                 icon={
                   <PointOfSaleIcon
-                    sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                    sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
                   />
                 }
               />
@@ -576,7 +650,7 @@ const Dashboard = () => {
                 increase="+43%"
                 icon={
                   <TrafficIcon
-                    sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                    sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
                   />
                 }
               />
@@ -598,7 +672,7 @@ const Dashboard = () => {
                 increase="+14%"
                 icon={
                   <EmailIcon
-                    sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                    sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
                   />
                 }
               />
@@ -624,7 +698,7 @@ const Dashboard = () => {
                 increase="+5%"
                 icon={
                   <InventoryIcon
-                    sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                    sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
                   />
                 }
               />
@@ -646,7 +720,7 @@ const Dashboard = () => {
                 increase="+5%"
                 icon={
                   <PersonAddIcon
-                    sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                    sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
                   />
                 }
               />
@@ -669,7 +743,7 @@ const Dashboard = () => {
                           fontWeight="bold"
                           className="my-2"
                         >
-                          Total orders{" "}
+                          Total orders{' '}
                           <span className="bg-[#eab308]/20 rounded-r-xl rounded-l-xl py-[1pz] px-2 border-[1px] border-[#eab308] text-[#eab308]">
                             {dashboardData?.last_week_orders?.increasing}%
                           </span>
@@ -823,7 +897,7 @@ const Dashboard = () => {
                           fontWeight="bold"
                           className="my-2"
                         >
-                          Paying vs non paying{" "}
+                          Paying vs non paying{' '}
                         </Typography>
                         <Typography
                           variant="h6"
@@ -873,26 +947,26 @@ const Dashboard = () => {
                 className="h-[400px] xl:h-[720px]"
                 height="400px"
                 sx={{
-                  "& .MuiDataGrid-root": {
-                    border: "none",
+                  '& .MuiDataGrid-root': {
+                    border: 'none',
                   },
-                  "& .MuiDataGrid-cell": {
-                    borderBottom: "none",
+                  '& .MuiDataGrid-cell': {
+                    borderBottom: 'none',
                   },
-                  "& .MuiCheckbox-root": {
+                  '& .MuiCheckbox-root': {
                     color: `${colors.greenAccent[200]} !important`,
                   },
-                  "& .MuiChackbox-root": {
+                  '& .MuiChackbox-root': {
                     color: `${colors.greenAccent[200]} !important`,
                   },
-                  "& .MuiDataGrid-columnHeaders": {
-                    borderBottom: "none",
+                  '& .MuiDataGrid-columnHeaders': {
+                    borderBottom: 'none',
                   },
-                  "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+                  '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
                     color: `${colors.grey[100]} !important`,
                   },
-                  "& .MuiDataGrid-cell": {
-                    width: "100%",
+                  '& .MuiDataGrid-cell': {
+                    width: '100%',
                   },
                 }}
               >
@@ -903,7 +977,7 @@ const Dashboard = () => {
                       rows={dashboardData?.new_customers}
                       columns={customerColumns}
                       autoPageSize
-                      checkboxSelection
+                      // checkboxSelection
                       components={{ Toolbar: GridToolbar }}
                     />
                   ) : (
@@ -941,27 +1015,27 @@ const Dashboard = () => {
                 className="h-[400px] xl:h-[1020px]"
                 height="400px"
                 sx={{
-                  "& .MuiDataGrid-root": {
-                    border: "none",
+                  '& .MuiDataGrid-root': {
+                    border: 'none',
                   },
-                  "& .MuiDataGrid-cell": {
-                    borderBottom: "none",
+                  '& .MuiDataGrid-cell': {
+                    borderBottom: 'none',
                   },
-                  "& .MuiCheckbox-root": {
+                  '& .MuiCheckbox-root': {
                     color: `${colors.greenAccent[200]} !important`,
                   },
-                  "& .MuiChackbox-root": {
+                  '& .MuiChackbox-root': {
                     color: `${colors.greenAccent[200]} !important`,
                   },
-                  "& .MuiDataGrid-columnHeaders": {
-                    borderBottom: "none",
+                  '& .MuiDataGrid-columnHeaders': {
+                    borderBottom: 'none',
                   },
-                  "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+                  '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
                     color: `${colors.grey[100]} !important`,
                   },
 
-                  "& .MuiDataGrid-cell": {
-                    width: "100%",
+                  '& .MuiDataGrid-cell': {
+                    width: '100%',
                   },
                 }}
               >
@@ -972,7 +1046,7 @@ const Dashboard = () => {
                       rows={dashboardData.new_orders}
                       columns={orderColumns}
                       autoPageSize
-                      checkboxSelection
+                      // checkboxSelection
                       components={{ Toolbar: GridToolbar }}
                     />
                   ) : (
@@ -1004,7 +1078,7 @@ const Dashboard = () => {
                           fontWeight="bold"
                           className="my-2"
                         >
-                          Total Products{" "}
+                          Total Products{' '}
                           <span className="bg-[#eab308]/20 rounded-r-xl rounded-l-xl py-[1pz] px-2 border-[1px] border-[#eab308] text-[#eab308]">
                             {dashboardData?.last_year_products?.increasing}%
                           </span>
@@ -1111,7 +1185,7 @@ const Dashboard = () => {
         </Box>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard

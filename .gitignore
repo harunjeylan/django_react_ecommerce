@@ -9,12 +9,13 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
+.git-old
+.git-old-2
 node_modules
 dist
 dist-ssr
 *.local
-
+mockData.js
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

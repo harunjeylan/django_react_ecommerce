@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 
-import { useNavigate } from "react-router-dom";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { useNavigate } from 'react-router-dom'
+import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 import {
   Box,
   Button,
@@ -14,78 +14,104 @@ import {
   InputLabel,
   FormControl,
   MenuItem,
-  ButtonGroup,
-} from "@mui/material";
+} from '@mui/material'
 
 import {
   useChangeMultiProductsDiscountMutation,
   useDeleteMultiProductsMutation,
   useDeleteProductMutation,
   useGetProductsForAdminQuery,
-} from "../../../../../features/services/productApiSlice";
-import Header from "../../../../../components/Header";
-import { tokens } from "../../../../../theme";
-import Model from "../../../../../components/ui/Model";
-import DiscountList from "../components/DiscountList";
-import { useGetAllDiscountsQuery } from "../../../../../features/services/discountApiSlice";
-import CreateEditDiscount from "../components/CreateEditDiscount";
+} from '../../../../../features/services/productApiSlice'
+import Header from '../../../../../components/Header'
+import { tokens } from '../../../../../theme'
+import Model from '../../../../../components/ui/Model'
+import DiscountList from '../../settings/specification/components/DiscountList'
+import { useGetAllDiscountsQuery } from '../../../../../features/services/discountApiSlice'
+import CreateEditDiscount from '../../settings/specification/components/CreateEditDiscount'
+import { useSnackbar } from 'notistack'
 const ProductsForAdmin = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const navigate = useNavigate();
-  const [openModel, setOpenModel] = useState(false);
-  const [rowSelectionModel, setRowSelectionModel] = useState([]);
-  const [selectedAction, setSelectedAction] = useState("");
-  const [editingDiscount, setEditingDiscount] = useState(undefined);
-  const [creatingDiscount, setCreatingDiscount] = useState(undefined);
-  const [selectedDiscountId, setSelectedDiscountId] = useState(null);
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const navigate = useNavigate()
+  const { enqueueSnackbar } = useSnackbar()
+  const [openModel, setOpenModel] = useState(false)
+  const [rowSelectionModel, setRowSelectionModel] = useState([])
+  const [selectedAction, setSelectedAction] = useState('')
+  const [editingDiscount, setEditingDiscount] = useState(undefined)
+  const [creatingDiscount, setCreatingDiscount] = useState(undefined)
+  const [selectedDiscountId, setSelectedDiscountId] = useState(null)
   const { data: productsData, isFetching: isFetchingProductsData } =
-    useGetProductsForAdminQuery();
+    useGetProductsForAdminQuery()
   const { data: discounts = [], isFetching: discountsIsFetching } =
-    useGetAllDiscountsQuery();
-  const [deleteProduct] = useDeleteProductMutation();
-  const [deleteMultiProducts] = useDeleteMultiProductsMutation();
-  const [changeMultiProductsDiscount] =
-    useChangeMultiProductsDiscountMutation();
+    useGetAllDiscountsQuery({ limit: null })
+  const [deleteProduct] = useDeleteProductMutation()
+  const [deleteMultiProducts] = useDeleteMultiProductsMutation()
+  const [changeMultiProductsDiscount] = useChangeMultiProductsDiscountMutation()
   const handleAction = () => {
     if (rowSelectionModel.length) {
-      if (selectedAction === "delete") {
+      if (selectedAction === 'delete') {
         deleteMultiProducts({ post: { productIds: rowSelectionModel } }).then(
-          (response) => console.log(response)
-        );
-      } else if (selectedAction === "change discount") {
-        setOpenModel(true);
+          (data) => {
+            if (!data?.error?.status) {
+              setOpenModel(false)
+              setEditingDiscount(undefined)
+              setCreatingDiscount(undefined)
+              setSelectedDiscountId(null)
+              enqueueSnackbar(`Products was deleted  successfully!`, {
+                variant: 'success',
+              })
+            }
+          }
+        )
+      } else if (selectedAction === 'change discount') {
+        setOpenModel(true)
       }
     }
-  };
+  }
   const handleAddDiscount = () => {
     setCreatingDiscount({
-      name: "",
+      name: '',
       amount: 0,
       start_date: null,
       end_date: null,
-    });
-    setEditingDiscount(undefined);
-  };
+    })
+    setEditingDiscount(undefined)
+  }
   const handelDelete = (id) => {
-    deleteProduct({ post: { id } }).then((response) => console.log(response));
-  };
+    deleteProduct({ post: { id } }).then((data) => {
+      if (!data?.error?.status) {
+        setOpenModel(false)
+        setEditingDiscount(undefined)
+        setCreatingDiscount(undefined)
+        setSelectedDiscountId(null)
+        enqueueSnackbar(`Product is deleted  successfully!`, {
+          variant: 'success',
+        })
+      }
+    })
+  }
   const handleChangeMultiProductsDiscount = () => {
     changeMultiProductsDiscount({
       post: { productIds: rowSelectionModel, discountId: selectedDiscountId },
-    }).then((response) => console.log(response));
-    setOpenModel(false);
-    setEditingDiscount(undefined);
-    setCreatingDiscount(undefined);
-    setSelectedDiscountId(null);
-  };
+    }).then((data) => {
+      if (!data?.error?.status) {
+        setOpenModel(false)
+        setEditingDiscount(undefined)
+        setCreatingDiscount(undefined)
+        setSelectedDiscountId(null)
+        enqueueSnackbar(`Products Discount is changed  successfully!`, {
+          variant: 'success',
+        })
+      }
+    })
+  }
   const handleSetDiscount = (discountId) => {
-    setSelectedDiscountId(discountId);
-  };
+    setSelectedDiscountId(discountId)
+  }
   const columns = [
     {
-      field: "id",
-      headerName: "Product",
+      field: 'id',
+      headerName: 'Product',
       width: 100,
       renderCell: ({ row: { id } }) => {
         return (
@@ -97,12 +123,12 @@ const ProductsForAdmin = () => {
               # {id}
             </Typography>
           </Link>
-        );
+        )
       },
     },
     {
-      field: "title",
-      headerName: "Product Name",
+      field: 'title',
+      headerName: 'Product Name',
       editable: true,
       width: 300,
       renderCell: ({ row: { id, title, thumbnail } }) => {
@@ -120,31 +146,31 @@ const ProductsForAdmin = () => {
               <Typography color={colors.greenAccent[500]}>{title}</Typography>
             </Link>
           </Box>
-        );
+        )
       },
     },
     {
-      field: "sale_pricing",
-      headerName: "Pricing",
+      field: 'sale_pricing',
+      headerName: 'Pricing',
       editable: true,
       renderCell: ({ row: { sale_pricing } }) => {
-        return <Typography>{sale_pricing}</Typography>;
+        return <Typography>{sale_pricing}</Typography>
       },
     },
-    { field: "category", headerName: "Category", width: 150 },
-    { field: "collection", headerName: "Collection", width: 150 },
-    { field: "vendor", headerName: "Vendor", width: 150 },
-    { field: "brand", headerName: "Brand", width: 150 },
-    { field: "date", headerName: "Date", width: 200 },
+    { field: 'category', headerName: 'Category', width: 150 },
+    { field: 'collection', headerName: 'Collection', width: 150 },
+    { field: 'vendor', headerName: 'Vendor', width: 150 },
+    { field: 'brand', headerName: 'Brand', width: 150 },
+    { field: 'date', headerName: 'Date', width: 200 },
     {
-      field: "discount",
-      headerName: "Discount",
-      width: 300,
+      field: 'discount',
+      headerName: 'Discount',
+      width: 200,
       renderCell: ({ row: { discount } }) => {
-        return (
+        return discount ? (
           <Box className="flex flex-col">
             <Typography variant="p">
-              <strong>Name: {discount.name}</strong>
+              <strong>Name: {discount?.name}</strong>
             </Typography>
             <Typography variant="p">
               <strong>Discount: </strong>
@@ -157,12 +183,16 @@ const ProductsForAdmin = () => {
               {discount?.end_date}
             </Typography>
           </Box>
-        );
+        ) : (
+          <Typography variant="p">
+            <strong>No Discount</strong>
+          </Typography>
+        )
       },
     },
     {
-      field: "is",
-      headerName: "Action",
+      field: 'action',
+      headerName: 'Action',
       width: 360,
       renderCell: ({ row: { id } }) => {
         return (
@@ -180,17 +210,17 @@ const ProductsForAdmin = () => {
               Delete
             </Button>
           </Box>
-        );
+        )
       },
     },
-  ];
+  ]
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20 mb-10`}>
       <Model
         width="md"
         openModel={openModel}
         setOpenModel={setOpenModel}
-        modelTitle={"Discount"}
+        modelTitle={'Discount'}
       >
         {openModel && (
           <>
@@ -206,11 +236,11 @@ const ProductsForAdmin = () => {
                 <DiscountList
                   discounts={[
                     {
-                      name: "None",
+                      name: 'None',
                       id: null,
                       amount: 0,
-                      start_date: "null",
-                      end_date: "null",
+                      start_date: 'null',
+                      end_date: 'null',
                     },
                     ...discounts,
                   ]}
@@ -257,22 +287,22 @@ const ProductsForAdmin = () => {
           backgroundColor={colors.primary[400]}
           className="h-[80vh] rounded-lg p-4"
           sx={{
-            "& .MuiDataGrid-root": {
-              border: "none",
+            '& .MuiDataGrid-root': {
+              border: 'none',
             },
-            "& .MuiDataGrid-cell": {
-              borderBottom: "none",
+            '& .MuiDataGrid-cell': {
+              borderBottom: 'none',
             },
-            "& .MuiCheckbox-root": {
+            '& .MuiCheckbox-root': {
               color: `${colors.greenAccent[200]} !important`,
             },
-            "& .MuiChackbox-root": {
+            '& .MuiChackbox-root': {
               color: `${colors.greenAccent[200]} !important`,
             },
-            "& .MuiDataGrid-columnHeaders": {
-              borderBottom: "none",
+            '& .MuiDataGrid-columnHeaders': {
+              borderBottom: 'none',
             },
-            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
               color: `${colors.grey[100]} !important`,
             },
           }}
@@ -290,9 +320,11 @@ const ProductsForAdmin = () => {
                 value={selectedAction}
                 onChange={(e) => setSelectedAction(e.target.value)}
               >
-                <MenuItem value={""}>-------</MenuItem>
-                <MenuItem value={"delete"}>delete</MenuItem>
-                <MenuItem value={"change discount"}>change discount</MenuItem>
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={'delete'}>delete</MenuItem>
+                <MenuItem value={'change discount'}>change discount</MenuItem>
               </Select>
             </FormControl>
             <Button
@@ -308,13 +340,16 @@ const ProductsForAdmin = () => {
             productsData?.length ? (
               <DataGrid
                 density="comfortable"
-                rows={productsData}
+                rows={productsData.map((product) => ({
+                  ...product,
+                  action: `action-${product.id}`,
+                }))}
                 columns={columns}
                 autoPageSize
                 checkboxSelection
                 components={{ Toolbar: GridToolbar }}
                 onRowSelectionModelChange={(newRowSelectionModel) => {
-                  setRowSelectionModel(newRowSelectionModel);
+                  setRowSelectionModel(newRowSelectionModel)
                 }}
                 rowSelectionModel={rowSelectionModel}
               />
@@ -331,7 +366,7 @@ const ProductsForAdmin = () => {
         </Box>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default ProductsForAdmin;
+export default ProductsForAdmin

@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useTheme } from "@emotion/react";
+import React, { useState, useRef, useEffect } from 'react'
+import { useTheme } from '@emotion/react'
 import {
   Box,
   TextField,
@@ -14,26 +14,27 @@ import {
   Chip,
   Divider,
   IconButton,
-} from "@mui/material";
-import { useSnackbar } from "notistack";
+} from '@mui/material'
+import { useSnackbar } from 'notistack'
 import {
   useAddOrganizeMutation,
   useDeleteOrganizeMutation,
   useGetAllOrganizeQuery,
   useUpdateOrganizeMutation,
-} from "../../../../../features/services/organizeApiSlice";
+} from '../../../../../features/services/organizeApiSlice'
 
-import CloseIcon from "@mui/icons-material/Close";
-import SaveAsIcon from "@mui/icons-material/SaveAs";
-import Model from "../../../../../components/ui/Model";
-import { tokens } from "../../../../../theme";
+import CloseIcon from '@mui/icons-material/Close'
+import SaveAsIcon from '@mui/icons-material/SaveAs'
+import Model from '../../../../../components/ui/Model'
+import { tokens } from '../../../../../theme'
+import useAlert from '../../../../../components/ui/useAlert'
 
 const Item = ({ item, itemName, handleUpdate, handleDelete }) => {
-  const InputRef = useRef();
+  const InputRef = useRef()
 
   useEffect(() => {
-    InputRef.current.value = item.name;
-  }, [item.name]);
+    InputRef.current.value = item.name
+  }, [item.name])
 
   return (
     <Box className="flex justify-between items-center gap-2">
@@ -62,8 +63,8 @@ const Item = ({ item, itemName, handleUpdate, handleDelete }) => {
         <CloseIcon />
       </IconButton>
     </Box>
-  );
-};
+  )
+}
 
 const OrganizeForm = ({
   values,
@@ -72,109 +73,107 @@ const OrganizeForm = ({
   handleBlur,
   handleChange,
 }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const [openModel, setOpenModel] = useState(false);
-  const [modelTitle, setModelTitle] = useState("");
-  const [modelMessages, setModelMessages] = useState([]);
-  const [modelInputLabel, setModelInputLabel] = useState("");
-  const { enqueueSnackbar } = useSnackbar();
-
-  const [addOrganize] = useAddOrganizeMutation();
-  const [updateOrganize] = useUpdateOrganizeMutation();
-  const [deleteOrganize] = useDeleteOrganizeMutation();
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const [openModel, setOpenModel] = useState(false)
+  const [modelTitle, setModelTitle] = useState('')
+  const [modelInputLabel, setModelInputLabel] = useState('')
+  const { enqueueSnackbar } = useSnackbar()
+  const [CustomAlert, setMessages] = useAlert()
+  const [addOrganize] = useAddOrganizeMutation()
+  const [updateOrganize] = useUpdateOrganizeMutation()
+  const [deleteOrganize] = useDeleteOrganizeMutation()
   const { data: organize = {}, isFetching: organizeIsFetching } =
-    useGetAllOrganizeQuery();
+    useGetAllOrganizeQuery()
 
-  const modelInputRef = useRef();
+  const modelInputRef = useRef()
   const handleOpenModel = ({ inputLabel, modelTitle }) => {
-    setModelInputLabel(inputLabel);
-    setModelTitle(modelTitle);
-    setOpenModel(true);
-  };
+    setModelInputLabel(inputLabel)
+    setModelTitle(modelTitle)
+    setOpenModel(true)
+  }
   const handleAdd = () => {
     const postData = {
       name: modelInputLabel,
       label: modelInputRef.current.value,
-    };
+    }
     addOrganize({ post: postData }).then((data) => {
-      if (data?.error?.status === 400) {
+      if (data?.error?.status) {
         Object.keys(data.error.data).forEach((key) => {
-          setModelMessages((prev) => [
+          setMessages((prev) => [
             ...prev,
-            { id: key, variant: "error", description: data.error.data[key] },
-          ]);
-        });
+            { id: key, variant: 'error', description: data.error.data[key] },
+          ])
+        })
       } else {
         enqueueSnackbar(
           `${postData.name} -> ${postData.label} is created successfully!`,
           {
-            variant: "success",
+            variant: 'success',
           }
-        );
+        )
       }
-    });
+    })
 
-    modelInputRef.current.value = "";
+    modelInputRef.current.value = ''
     // setOpenModel(false);
-  };
+  }
   const handleUpdate = ({ id, name, value }) => {
     const postData = {
       id,
       name,
       label: value,
-    };
+    }
     updateOrganize({ post: postData }).then((data) => {
-      if (data?.error?.status === 400) {
+      if (data?.error?.status) {
         Object.keys(data.error.data).forEach((key) => {
-          setModelMessages((prev) => [
+          setMessages((prev) => [
             ...prev,
-            { id: key, variant: "error", description: data.error.data[key] },
-          ]);
-        });
+            { id: key, variant: 'error', description: data.error.data[key] },
+          ])
+        })
       } else {
         enqueueSnackbar(
           `${postData.name} -> ${postData.name} is updated successfully!`,
           {
-            variant: "success",
+            variant: 'success',
           }
-        );
+        )
       }
-    });
-  };
+    })
+  }
   const handleDelete = ({ id, name }) => {
     const postData = {
       id,
       name,
-    };
+    }
     deleteOrganize({ post: postData }).then((data) => {
-      if (data?.error?.status === 400) {
+      if (data?.error?.status) {
         Object.keys(data.error.data).forEach((key) => {
-          setModelMessages((prev) => [
+          setMessages((prev) => [
             ...prev,
-            { id: key, variant: "error", description: data.error.data[key] },
-          ]);
-        });
+            { id: key, variant: 'error', description: data.error.data[key] },
+          ])
+        })
       } else {
         enqueueSnackbar(
           `${postData.name} -> ${postData.name} is deleted successfully!`,
           {
-            variant: "success",
+            variant: 'success',
           }
-        );
+        )
       }
-    });
-  };
+    })
+  }
   return (
     <>
       <Model
         openModel={openModel}
         setOpenModel={setOpenModel}
         modelTitle={modelTitle}
-        messages={modelMessages}
-        setMessages={setModelMessages}
       >
-        <Box className="w-full">
+        <Box className="w-full flex flex-col gap-2">
+          <CustomAlert />
           <Box className="flex justify-between items-center gap-2 mb-2">
             <TextField
               size="small"
@@ -233,8 +232,8 @@ const OrganizeForm = ({
                 <Typography
                   onClick={() =>
                     handleOpenModel({
-                      inputLabel: "categories",
-                      modelTitle: "Add Category",
+                      inputLabel: 'categories',
+                      modelTitle: 'Add Category',
                     })
                   }
                   variant="h6"
@@ -259,6 +258,9 @@ const OrganizeForm = ({
                   onChange={handleChange}
                   error={!!touched?.category && !!errors?.category}
                 >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
                   {!organizeIsFetching &&
                     organize?.categories?.map((category) => (
                       <MenuItem key={category.id} value={category.name}>
@@ -276,8 +278,8 @@ const OrganizeForm = ({
                 <Typography
                   onClick={() =>
                     handleOpenModel({
-                      inputLabel: "vendors",
-                      modelTitle: "Add Vender",
+                      inputLabel: 'vendors',
+                      modelTitle: 'Add Vender',
                     })
                   }
                   variant="h6"
@@ -302,6 +304,9 @@ const OrganizeForm = ({
                   onChange={handleChange}
                   error={!!touched?.vendor && !!errors?.vendor}
                 >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
                   {!organizeIsFetching &&
                     organize?.vendors?.map((vendor) => (
                       <MenuItem key={vendor.id} value={vendor.name}>
@@ -319,8 +324,8 @@ const OrganizeForm = ({
                 <Typography
                   onClick={() =>
                     handleOpenModel({
-                      inputLabel: "collections",
-                      modelTitle: "Add Collection",
+                      inputLabel: 'collections',
+                      modelTitle: 'Add Collection',
                     })
                   }
                   variant="h6"
@@ -347,6 +352,9 @@ const OrganizeForm = ({
                   onChange={handleChange}
                   error={!!touched?.collection && !!errors?.collection}
                 >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
                   {!organizeIsFetching &&
                     organize?.collections?.map((collection) => (
                       <MenuItem key={collection.id} value={collection.name}>
@@ -365,8 +373,8 @@ const OrganizeForm = ({
                 <Typography
                   onClick={() =>
                     handleOpenModel({
-                      inputLabel: "tags",
-                      modelTitle: "Add Tags",
+                      inputLabel: 'tags',
+                      modelTitle: 'Add Tags',
                     })
                   }
                   variant="subtitle"
@@ -393,8 +401,8 @@ const OrganizeForm = ({
                   renderValue={(selected) => (
                     <Box
                       sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
+                        display: 'flex',
+                        flexWrap: 'wrap',
                         gap: 0.5,
                       }}
                     >
@@ -408,6 +416,9 @@ const OrganizeForm = ({
                   onChange={handleChange}
                   error={!!touched?.tags && !!errors?.tags}
                 >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
                   {!organizeIsFetching &&
                     organize?.tags?.map((tag) => (
                       <MenuItem key={tag.id} value={tag.name}>
@@ -421,7 +432,7 @@ const OrganizeForm = ({
         </FormControl>
       </Box>
     </>
-  );
-};
+  )
+}
 
-export default OrganizeForm;
+export default OrganizeForm

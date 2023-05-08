@@ -1,33 +1,31 @@
 // docs https://github.com/azouaoui-med/react-pro-sidebar
-import { useState } from "react";
-import { Menu, Sidebar, SubMenu, MenuItem } from "react-pro-sidebar";
-import { useProSidebar } from "react-pro-sidebar";
-import { Link } from "react-router-dom";
-import { useTheme, Box, Typography, IconButton } from "@mui/material";
-import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
-import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
-import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
-import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import SwitchRightOutlinedIcon from "@mui/icons-material/SwitchRightOutlined";
-import SwitchLeftOutlinedIcon from "@mui/icons-material/SwitchLeftOutlined";
-import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
-import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import { selectCurrentUser } from "../../../features/auth/authSlice";
-import { useSelector, useDispatch } from "react-redux";
-import { useSidebarContext } from "./SidebarContext";
-import { tokens } from "../../../theme";
-import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
+import { useState } from 'react'
+import { Menu, Sidebar, MenuItem } from 'react-pro-sidebar'
+import { useProSidebar } from 'react-pro-sidebar'
+import { Link } from 'react-router-dom'
+import { useTheme, Box, Typography, IconButton } from '@mui/material'
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined'
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
+import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined'
+import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined'
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined'
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined'
+import PostAddOutlinedIcon from '@mui/icons-material/PostAddOutlined'
+import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined'
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
+import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined'
+import SwitchRightOutlinedIcon from '@mui/icons-material/SwitchRightOutlined'
+import SwitchLeftOutlinedIcon from '@mui/icons-material/SwitchLeftOutlined'
+import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined'
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined'
+import { selectCurrentUser } from '../../../features/auth/authSlice'
+import { useSelector } from 'react-redux'
+import { useSidebarContext } from './SidebarContext'
+import { tokens } from '../../../theme'
+import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'
 const Item = ({ title, to, icon, selected, setSelected }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
 
   return (
     <MenuItem
@@ -39,48 +37,48 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
     >
       <Typography>{title}</Typography>
     </MenuItem>
-  );
-};
+  )
+}
 
 const MyProSidebar = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const [selected, setSelected] = useState("Dashboard");
-  const { sidebarRTL, setSidebarRTL, sidebarImage } = useSidebarContext();
-  const { collapseSidebar, toggleSidebar, collapsed, broken } = useProSidebar();
-  const userData = useSelector(selectCurrentUser);
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const [selected, setSelected] = useState('Dashboard')
+  const { sidebarRTL, setSidebarRTL, sidebarImage } = useSidebarContext()
+  const { collapseSidebar, toggleSidebar, collapsed, broken } = useProSidebar()
+  const userData = useSelector(selectCurrentUser)
 
   return (
     <Box
       sx={{
-        position: "sticky",
-        display: "flex",
-        height: "100vh",
+        position: 'sticky',
+        display: 'flex',
+        height: '100vh',
         top: 0,
         bottom: 0,
         zIndex: 100,
-        "& .sidebar": {
-          border: "none",
+        '& .sidebar': {
+          border: 'none',
         },
-        "& .menu-icon": {
-          backgroundColor: "transparent !important",
+        '& .menu-icon': {
+          backgroundColor: 'transparent !important',
         },
-        "& .ps-menu-button, & .ps-submenu-content": {
-          backgroundColor: "transparent !important",
-          color: "inherit !important",
+        '& .ps-menu-button, & .ps-submenu-content': {
+          backgroundColor: 'transparent !important',
+          color: 'inherit !important',
         },
-        "& .ps-menu-button:hover": {
+        '& .ps-menu-button:hover': {
           color: `${colors.blueAccent[500]} !important`,
-          backgroundColor: "transparent !important",
+          backgroundColor: 'transparent !important',
         },
-        "& .menu-item.active ": {
+        '& .menu-item.active ': {
           color: `${colors.greenAccent[500]} !important`,
-          backgroundColor: "transparent !important",
+          backgroundColor: 'transparent !important',
         },
 
-        "& .sub-menu-content": {
+        '& .sub-menu-content': {
           backgroundColor: colors.primary[400],
-          height: "100%",
+          height: '100%',
         },
       }}
     >
@@ -89,7 +87,7 @@ const MyProSidebar = () => {
         rtl={sidebarRTL}
         backgroundColor={colors.primary[400]}
         image={sidebarImage}
-        width={broken ? "280px" : "320px"}
+        width={broken ? '280px' : '320px'}
       >
         <Menu iconshape="square">
           <Box
@@ -113,7 +111,7 @@ const MyProSidebar = () => {
                 )
               }
               style={{
-                margin: "10px 0 20px 0",
+                margin: '10px 0 20px 0',
                 color: colors.grey[100],
               }}
               id="side-bar--disabled-anchor"
@@ -149,7 +147,7 @@ const MyProSidebar = () => {
                   src={
                     userData?.image
                       ? userData?.image
-                      : "https://robohash.org/utetasperiores.png?size=200x200"
+                      : 'https://robohash.org/utetasperiores.png?size=200x200'
                   }
                 />
               </Box>
@@ -168,7 +166,7 @@ const MyProSidebar = () => {
               </Box>
             </Box>
           )}
-          <Box paddingLeft={collapsed ? undefined : "10%"}>
+          <Box paddingLeft={collapsed ? undefined : '10%'}>
             <Item
               title="Dashboard"
               to="/admin/"
@@ -186,7 +184,7 @@ const MyProSidebar = () => {
             <Typography
               variant="h6"
               color={colors.grey[300]}
-              sx={{ m: "15px 20px 5px 20px" }}
+              sx={{ m: '15px 20px 5px 20px' }}
             >
               Data
             </Typography>
@@ -197,17 +195,11 @@ const MyProSidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
-              title="Invoices Balances"
-              to="/admin/data/invoices"
-              icon={<ReceiptOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+
             <Typography
               variant="h6"
               color={colors.grey[300]}
-              sx={{ m: "15px 20px 5px 20px" }}
+              sx={{ m: '15px 20px 5px 20px' }}
             >
               E commerce
             </Typography>
@@ -242,7 +234,7 @@ const MyProSidebar = () => {
             <Typography
               variant="h6"
               color={colors.grey[300]}
-              sx={{ m: "15px 20px 5px 20px" }}
+              sx={{ m: '15px 20px 5px 20px' }}
             >
               Blog
             </Typography>
@@ -264,7 +256,7 @@ const MyProSidebar = () => {
             <Typography
               variant="h6"
               color={colors.grey[300]}
-              sx={{ m: "15px 20px 5px 20px" }}
+              sx={{ m: '15px 20px 5px 20px' }}
             >
               Pages
             </Typography>
@@ -282,11 +274,39 @@ const MyProSidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: '15px 20px 5px 20px' }}
+            >
+              Settings
+            </Typography>
+            <Item
+              title="General"
+              to="/admin/setting/general"
+              icon={<PersonOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Specification"
+              to="/admin/setting/specification"
+              icon={<PersonOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Pages"
+              to="/admin/setting/pages"
+              icon={<HelpOutlineOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
           </Box>
         </Menu>
       </Sidebar>
     </Box>
-  );
-};
+  )
+}
 
-export default MyProSidebar;
+export default MyProSidebar

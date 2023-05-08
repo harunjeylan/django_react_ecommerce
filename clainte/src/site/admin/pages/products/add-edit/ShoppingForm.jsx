@@ -12,13 +12,7 @@ import {
 } from "@mui/material";
 import { tokens } from "../../../../../theme";
 
-const ShoppingForm = ({
-  handleBlur,
-  handleChange,
-  values,
-  touched,
-  errors,
-}) => {
+const ShoppingForm = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { useEffect, useRef, useState } from 'react'
 import {
   Box,
   Divider,
@@ -10,51 +10,49 @@ import {
   MenuItem,
   OutlinedInput,
   Chip,
-  Avatar,
   IconButton,
-  Collapse,
-  useMediaQuery,
-} from "@mui/material";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import { Breadcrumbs, Button } from "@mui/material";
-import Typography from "@mui/material/Typography";
-import { useNavigate, useParams } from "react-router-dom";
-import { tokens } from "../../../../../theme";
-import Header from "../../../../../components/Header";
-import { Dropzone, FullScreenPreview } from "@dropzone-ui/react";
-import { FileItem } from "@dropzone-ui/react";
-import { Formik, Field } from "formik";
-import { useDispatch } from "react-redux";
-import { getInitialValues } from "./getInitialValues";
-import { blogSchema } from "./blogSchema";
+} from '@mui/material'
+
+import { Breadcrumbs, Button } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import { useNavigate, useParams } from 'react-router-dom'
+import { tokens } from '../../../../../theme'
+import Header from '../../../../../components/Header'
+import { Dropzone, FullScreenPreview } from '@dropzone-ui/react'
+import { FileItem } from '@dropzone-ui/react'
+import { Formik, Field } from 'formik'
+import { useDispatch } from 'react-redux'
+import { getInitialValues } from './getInitialValues'
+import { blogSchema } from './blogSchema'
 import {
   blogApi,
   useAddBlogMutation,
+  useRemoveBlogThumbnailMutation,
   useUpdateBlogMutation,
   useUploadBlogImageMutation,
-} from "../../../../../features/services/blogApiSlice";
-import DeleteIcon from "@mui/icons-material/Delete";
-import UnpublishedIcon from "@mui/icons-material/Unpublished";
-import Model from "../../../../../components/ui/Model";
+} from '../../../../../features/services/blogApiSlice'
+import Model from '../../../../../components/ui/Model'
 import {
   useAddOrganizeMutation,
   useDeleteOrganizeMutation,
   useGetAllOrganizeQuery,
   useUpdateOrganizeMutation,
-} from "../../../../../features/services/organizeApiSlice";
-import CloseIcon from "@mui/icons-material/Close";
-import SaveAsIcon from "@mui/icons-material/SaveAs";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import quillModules from "../../../../../helpers/quillModules";
+} from '../../../../../features/services/organizeApiSlice'
+import CloseIcon from '@mui/icons-material/Close'
+import SaveAsIcon from '@mui/icons-material/SaveAs'
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
+import quillModules from '../../../../../helpers/quillModules'
+import { useSnackbar } from 'notistack'
+import useAlert from '../../../../../components/ui/useAlert'
+import BlogInformation from '../components/BlogInformation'
 
 const Item = ({ item, itemName, handleUpdate, handleDelete }) => {
-  const InputRef = useRef();
+  const InputRef = useRef()
 
   useEffect(() => {
-    InputRef.current.value = item.name;
-  }, [item.name]);
+    InputRef.current.value = item.name
+  }, [item.name])
 
   return (
     <Box className="flex justify-between items-center gap-2">
@@ -83,40 +81,39 @@ const Item = ({ item, itemName, handleUpdate, handleDelete }) => {
         <CloseIcon />
       </IconButton>
     </Box>
-  );
-};
+  )
+}
 
 const AddEditBlog = ({ isEditing }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const isNoneMobile = useMediaQuery("(min-width:1024px)");
-  const [openInfo, setOpenInfo] = useState(false);
-  const [openAction, setOpenAction] = useState(false);
-  const [openRevision, setOpenRevision] = useState(false);
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const { enqueueSnackbar } = useSnackbar()
+  const [CustomAlert, setMessages] = useAlert()
+  const [updating, setUpdating] = useState('')
 
-  const [openModel, setOpenModel] = useState(false);
-  const [modelTitle, setModelTitle] = useState("");
-  const [modelInputLabel, setModelInputLabel] = useState("");
-  const [addOrganize] = useAddOrganizeMutation();
-  const [updateOrganize] = useUpdateOrganizeMutation();
-  const [deleteOrganize] = useDeleteOrganizeMutation();
+  const [openModel, setOpenModel] = useState(false)
+  const [modelTitle, setModelTitle] = useState('')
+  const [modelInputLabel, setModelInputLabel] = useState('')
+  const [addOrganize] = useAddOrganizeMutation()
+  const [updateOrganize] = useUpdateOrganizeMutation()
+  const [deleteOrganize] = useDeleteOrganizeMutation()
 
-  const [imageSrc, setImageSrc] = useState(undefined);
+  const [imageSrc, setImageSrc] = useState(undefined)
 
-  const [blogThumbnail, setBlogThumbnail] = useState([]);
-  const [initialValues, setInitialValues] = useState({});
-  const { blogSlug } = useParams();
+  const [blogThumbnail, setBlogThumbnail] = useState([])
+  const [initialValues, setInitialValues] = useState({})
+  const { blogSlug } = useParams()
 
-  const [addBlog] = useAddBlogMutation();
-  const [updateBlog] = useUpdateBlogMutation();
-  const [uploadImage] = useUploadBlogImageMutation();
-
-  const modelInputRef = useRef();
+  const [addBlog] = useAddBlogMutation()
+  const [updateBlog] = useUpdateBlogMutation()
+  const [uploadImage] = useUploadBlogImageMutation()
+  const [removeBlogThumbnail] = useRemoveBlogThumbnailMutation()
+  const modelInputRef = useRef()
 
   const { data: organize, isFetching: organizeIsFetching } =
-    useGetAllOrganizeQuery();
+    useGetAllOrganizeQuery()
 
   useEffect(() => {
     if (blogSlug && isEditing) {
@@ -126,76 +123,203 @@ const AddEditBlog = ({ isEditing }) => {
         })
       ).then((response) => {
         if (response.isSuccess) {
-          // console.log(response.data);
-          setInitialValues(response.data);
+          setInitialValues(response.data)
         }
-      });
+      })
     }
-  }, [blogSlug, isEditing, dispatch]);
+  }, [blogSlug, isEditing, dispatch])
   const handleOpenModel = ({ inputLabel, modelTitle }) => {
-    setModelInputLabel(inputLabel);
-    setModelTitle(modelTitle);
-    setOpenModel(true);
-  };
+    setModelInputLabel(inputLabel)
+    setModelTitle(modelTitle)
+    setOpenModel(true)
+  }
   const handleAdd = () => {
-    const data = {
+    const postData = {
       name: modelInputLabel,
       label: modelInputRef.current.value,
-    };
-    addOrganize({ post: data });
-    console.log(data);
-    modelInputRef.current.value = "";
-    // setOpenModel(false);
-  };
+    }
+    addOrganize({ post: postData }).then((data) => {
+      if (data?.error?.status) {
+        Object.keys(data.error.data).forEach((key) => {
+          setMessages((prev) => [
+            ...prev,
+            { id: key, variant: 'error', description: data.error.data[key] },
+          ])
+        })
+      } else {
+        enqueueSnackbar(
+          `${postData.name} -> ${postData.label} is created successfully!`,
+          {
+            variant: 'success',
+          }
+        )
+      }
+    })
+
+    modelInputRef.current.value = ''
+  }
   const handleUpdate = ({ id, name, value }) => {
-    const data = {
+    const postData = {
       id,
       name,
       label: value,
-    };
-    updateOrganize({ post: data });
-    console.log(data);
-  };
+    }
+    updateOrganize({ post: postData }).then((data) => {
+      if (data?.error?.status) {
+        Object.keys(data.error.data).forEach((key) => {
+          setMessages((prev) => [
+            ...prev,
+            { id: key, variant: 'error', description: data.error.data[key] },
+          ])
+        })
+      } else {
+        enqueueSnackbar(
+          `${postData.name} -> ${postData.name} is updated successfully!`,
+          {
+            variant: 'success',
+          }
+        )
+      }
+    })
+  }
   const handleDelete = ({ id, name }) => {
-    const data = {
+    const postData = {
       id,
       name,
-    };
-    console.log(data);
-    deleteOrganize({ post: data }).then((res) => console.log(res));
-  };
-  const handleClean = (image) => {
-    console.log("list cleaned", image);
-  };
-  const handleFormSubmit = useCallback((values) => {
-    console.log(values);
-
-    if (blogSlug) {
-      updateBlog({ post: values, blogSlug }).then((res) => {
-        let postForm = new FormData();
-        postForm.append("thumbnail", blogThumbnail[0]?.file);
-        postForm.append("blogId", res.data.id);
-        uploadImage({
-          post: postForm,
-        }).then((response) => {
-          console.log(response);
-          navigate(`/admin/blogs/${blogSlug}`);
-        });
-      });
-    } else {
-      addBlog({ post: values }).then((res) => {
-        let postForm = new FormData();
-        postForm.append("thumbnail", blogThumbnail[0]?.file);
-        postForm.append("blogId", res.data.id);
-        uploadImage({
-          post: postForm,
-        }).then((response) => {
-          navigate(`/admin/blogs/${res.data.slug}`);
-        });
-      });
     }
-  });
-
+    deleteOrganize({ post: postData }).then((data) => {
+      if (data?.error?.status) {
+        Object.keys(data.error.data).forEach((key) => {
+          setMessages((prev) => [
+            ...prev,
+            { id: key, variant: 'error', description: data.error.data[key] },
+          ])
+        })
+      } else {
+        enqueueSnackbar(
+          `${postData.name} -> ${postData.name} is deleted successfully!`,
+          {
+            variant: 'success',
+          }
+        )
+      }
+    })
+  }
+  const handleClean = (image) => {
+  }
+  const handleFormSubmit = (values) => {
+    setUpdating('blog')
+    if (blogSlug) {
+      updateBlog({ post: values, blogSlug }).then((data) => {
+        if (data?.error?.status) {
+          Object.keys(data.error.data).forEach((key) => {
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: key,
+                variant: 'error',
+                description: data.error.data[key],
+              },
+            ])
+          })
+        } else {
+          setUpdating('thumbnail')
+          let postForm = new FormData()
+          postForm.append('thumbnail', blogThumbnail[0]?.file)
+          postForm.append('blogId', data.data.id)
+          uploadImage({
+            post: postForm,
+          }).then((response) => {
+            if (response?.error?.status) {
+              Object.keys(response.error.data).forEach((key) => {
+                setMessages((prev) => [
+                  ...prev,
+                  {
+                    id: key,
+                    variant: 'error',
+                    description: response.error.data[key],
+                  },
+                ])
+              })
+            } else {
+              setUpdating('')
+              enqueueSnackbar(
+                `Blog -> ${values.title} is updated successfully!`,
+                {
+                  variant: 'success',
+                }
+              )
+              navigate(`/admin/blogs/${blogSlug}`)
+            }
+          })
+        }
+      })
+    } else {
+      addBlog({ post: values }).then((data) => {
+        if (data?.error?.status) {
+          Object.keys(data.error.data).forEach((key) => {
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: key,
+                variant: 'error',
+                description: data.error.data[key],
+              },
+            ])
+          })
+        } else {
+          setUpdating('thumbnail')
+          let postForm = new FormData()
+          postForm.append('thumbnail', blogThumbnail[0]?.file)
+          postForm.append('blogId', data.data.id)
+          uploadImage({
+            post: postForm,
+          }).then((response) => {
+            if (response?.error?.status) {
+              Object.keys(response.error.data).forEach((key) => {
+                setMessages((prev) => [
+                  ...prev,
+                  {
+                    id: key,
+                    variant: 'error',
+                    description: response.error.data[key],
+                  },
+                ])
+              })
+            } else {
+              setUpdating('')
+              enqueueSnackbar(
+                `Blog -> ${values.title} is created successfully!`,
+                {
+                  variant: 'success',
+                }
+              )
+              navigate(`/admin/blogs/${data.data.slug}`)
+            }
+          })
+        }
+      })
+    }
+  }
+  const handelRemoveThumbnail = () => {
+    setUpdating('thumbnail')
+    removeBlogThumbnail({ post: { id: initialValues?.id } }).then((data) => {
+      setInitialValues((prev) => ({ ...prev, thumbnail: undefined }))
+      if (data?.error?.status) {
+        Object.keys(data.error.data).forEach((key) => {
+          setMessages((prev) => [
+            ...prev,
+            { id: key, variant: 'error', description: data.error.data[key] },
+          ])
+        })
+      } else {
+        setUpdating()
+        enqueueSnackbar(`Thumbnail is removed successfully!`, {
+          variant: 'success',
+        })
+      }
+    })
+  }
   return (
     <>
       <Model
@@ -203,7 +327,8 @@ const AddEditBlog = ({ isEditing }) => {
         setOpenModel={setOpenModel}
         modelTitle={modelTitle}
       >
-        <Box className="w-full">
+        <Box className="w-full flex flex-col gap-2">
+          {updating === 'organize' && <CustomAlert />}
           <Box className="flex justify-between items-center gap-2 mb-2">
             <TextField
               size="small"
@@ -266,6 +391,7 @@ const AddEditBlog = ({ isEditing }) => {
             backgroundColor={colors.primary[400]}
             className="w-full md:w-3/4 rounded-md py-4"
           >
+            {updating === 'blog' && <CustomAlert />}
             <Typography
               variant="h1"
               color={colors.grey[100]}
@@ -299,10 +425,42 @@ const AddEditBlog = ({ isEditing }) => {
                     <Typography variant="h6" fontWeight="bold" className="my-2">
                       Display Thumbnail
                     </Typography>
+                    {updating === 'thumbnail' && <CustomAlert />}
+                    {initialValues?.thumbnail && (
+                      <Box className="w-full ">
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          className="my-2"
+                        >
+                          Old Display thumbnail
+                        </Typography>
+                        <Box
+                          backgroundColor={colors.primary[400]}
+                          className="w-full p-4 "
+                        >
+                          <Box className="w-fit flex flex-col gap-2  outline outline-1 p-1 rounded-sm">
+                            <img
+                              alt="Display Thumbnail"
+                              className="h-[400px] "
+                              src={initialValues?.thumbnail}
+                            />
+                            <Box>
+                              <Button
+                                onClick={handelRemoveThumbnail}
+                                color="error"
+                              >
+                                Remove
+                              </Button>
+                            </Box>
+                          </Box>
+                        </Box>
+                      </Box>
+                    )}
                     <Dropzone
                       style={{
-                        minHeight: "200px",
-                        minWidth: "100%",
+                        minHeight: '200px',
+                        minWidth: '100%',
                         backgroundColor: colors.primary[400],
                       }}
                       label="Drop your Display thumbnail here or click to browse"
@@ -314,7 +472,7 @@ const AddEditBlog = ({ isEditing }) => {
                       maxFiles={1}
                       maxFileSize={2998000}
                       accept=".png,image/*"
-                      uploadingMessage={"Uploading..."}
+                      uploadingMessage={'Uploading...'}
                     >
                       {blogThumbnail.length &&
                         blogThumbnail.map((file) => (
@@ -404,8 +562,8 @@ const AddEditBlog = ({ isEditing }) => {
                       <Typography
                         onClick={() =>
                           handleOpenModel({
-                            inputLabel: "categories",
-                            modelTitle: "Add Category",
+                            inputLabel: 'categories',
+                            modelTitle: 'Add Category',
                           })
                         }
                         variant="h6"
@@ -432,6 +590,9 @@ const AddEditBlog = ({ isEditing }) => {
                         onChange={handleChange}
                         error={!!touched?.category && !!errors?.category}
                       >
+                        <MenuItem value="">
+                          <em>None</em>
+                        </MenuItem>
                         {!organizeIsFetching &&
                           organize.categories?.map((category) => (
                             <MenuItem key={category.id} value={category.name}>
@@ -454,8 +615,8 @@ const AddEditBlog = ({ isEditing }) => {
                       <Typography
                         onClick={() =>
                           handleOpenModel({
-                            inputLabel: "tags",
-                            modelTitle: "Add Tags",
+                            inputLabel: 'tags',
+                            modelTitle: 'Add Tags',
                           })
                         }
                         variant="subtitle"
@@ -485,8 +646,8 @@ const AddEditBlog = ({ isEditing }) => {
                         renderValue={(selected) => (
                           <Box
                             sx={{
-                              display: "flex",
-                              flexWrap: "wrap",
+                              display: 'flex',
+                              flexWrap: 'wrap',
                               gap: 0.5,
                             }}
                           >
@@ -500,6 +661,9 @@ const AddEditBlog = ({ isEditing }) => {
                         onChange={handleChange}
                         error={!!touched?.tags && !!errors?.tags}
                       >
+                        <MenuItem value="">
+                          <em>None</em>
+                        </MenuItem>
                         {!organizeIsFetching &&
                           organize.tags?.map((tag) => (
                             <MenuItem key={tag.id} value={tag.name}>
@@ -557,10 +721,13 @@ const AddEditBlog = ({ isEditing }) => {
                         onBlur={handleBlur}
                         error={!!touched.status && !!errors.status}
                       >
-                        <MenuItem value={"published"}>{"Published"}</MenuItem>
-                        <MenuItem value={"scheduled"}>{"Scheduled"}</MenuItem>
-                        <MenuItem value={"draft"}>{"Draft"}</MenuItem>
-                        <MenuItem value={"deleted"}>{"Deleted"}</MenuItem>
+                        <MenuItem value="">
+                          <em>None</em>
+                        </MenuItem>
+                        <MenuItem value={'published'}>{'Published'}</MenuItem>
+                        <MenuItem value={'scheduled'}>{'Scheduled'}</MenuItem>
+                        <MenuItem value={'draft'}>{'Draft'}</MenuItem>
+                        <MenuItem value={'deleted'}>{'Deleted'}</MenuItem>
                       </Select>
                     </FormControl>
                   </Box>
@@ -571,263 +738,22 @@ const AddEditBlog = ({ isEditing }) => {
                       variant="outlined"
                       className={`px-8 py-3 `}
                     >
-                      {blogSlug && isEditing ? "Save Blog" : "Create Blog"}
+                      {blogSlug && isEditing ? 'Save Blog' : 'Create Blog'}
                     </Button>
                   </Box>
                 </form>
               )}
             </Formik>
           </Box>
+
           {isEditing && (
             <Box className="w-full md:w-1/4 flex flex-col gap-4">
-              {!isNoneMobile && (
-                <Box className="w-full flex gap-4">
-                  <Button
-                    variant="text"
-                    sx={{ color: colors.grey[100] }}
-                    endIcon={
-                      openInfo ? (
-                        <ExpandLess color={colors.grey[100]} />
-                      ) : (
-                        <ExpandMore color={colors.grey[100]} />
-                      )
-                    }
-                    onClick={() => setOpenInfo(!openInfo)}
-                  >
-                    Post Info
-                  </Button>
-                  <Button
-                    variant="text"
-                    sx={{ color: colors.grey[100] }}
-                    endIcon={
-                      openAction ? (
-                        <ExpandLess color={colors.grey[100]} />
-                      ) : (
-                        <ExpandMore color={colors.grey[100]} />
-                      )
-                    }
-                    onClick={() => setOpenAction(!openAction)}
-                  >
-                    Actions
-                  </Button>
-                  <Button
-                    variant="text"
-                    sx={{ color: colors.grey[100] }}
-                    endIcon={
-                      openRevision ? (
-                        <ExpandLess color={colors.grey[100]} />
-                      ) : (
-                        <ExpandMore color={colors.grey[100]} />
-                      )
-                    }
-                    onClick={() => setOpenRevision(!openRevision)}
-                  >
-                    Revision History
-                  </Button>
-                </Box>
-              )}
-              <Collapse
-                in={isNoneMobile || openInfo}
-                timeout="auto"
-                unmountOnExit
-                className="w-full rounded-md py-4 flex flex-col gap-4"
-                sx={{
-                  backgroundColor: colors.primary[400],
-                }}
-              >
-                <Box className="w-full flex-col">
-                  <Typography
-                    variant="h1"
-                    color={colors.grey[100]}
-                    fontWeight="bold"
-                    className={`text-xl md:text-2xl p-4 text-left`}
-                  >
-                    Post Info
-                  </Typography>
-                  <Divider />
-                </Box>
-                <Box className="w-full px-4 flex flex-col gap-2 py-2">
-                  <Typography
-                    fontWeight={"bold"}
-                    variant="h5"
-                    sx={{ color: colors.grey[200] }}
-                    className=""
-                  >
-                    Post ID
-                  </Typography>
-                  <Typography fontWeight={"bold"} variant="h5">
-                    {initialValues.id}
-                  </Typography>
-                </Box>
-                <Divider />
-                <Box className="w-full px-4 flex flex-col gap-2 py-2">
-                  <Typography
-                    fontWeight={"bold"}
-                    variant="h5"
-                    sx={{ color: colors.grey[200] }}
-                    className=""
-                  >
-                    Status
-                  </Typography>
-                  <Typography fontWeight={"bold"} variant="h5">
-                    {initialValues.status}
-                  </Typography>
-                </Box>
-                <Divider />
-                <Box className="w-full px-4 flex flex-col gap-2 py-2">
-                  <Typography
-                    fontWeight={"bold"}
-                    variant="h5"
-                    sx={{ color: colors.grey[200] }}
-                    className=""
-                  >
-                    Created by
-                  </Typography>
-                  <Box className="flex justify-start items-center gap-4">
-                    <Avatar>A</Avatar>
-
-                    <Typography fontWeight={"bold"} variant="h5">
-                      Admin
-                    </Typography>
-                  </Box>
-                </Box>
-                <Divider />
-                <Box className="w-full px-4 flex flex-col gap-2 py-2">
-                  <Typography
-                    fontWeight={"bold"}
-                    variant="h5"
-                    sx={{ color: colors.grey[200] }}
-                    className=""
-                  >
-                    Created at
-                  </Typography>
-                  <Typography fontWeight={"bold"} variant="h5">
-                    {initialValues.created}
-                  </Typography>
-                </Box>
-                <Divider />
-                <Divider />
-
-                <Box className="w-full px-4 flex flex-col gap-2 py-2">
-                  <Typography
-                    fontWeight={"bold"}
-                    variant="h5"
-                    sx={{ color: colors.grey[200] }}
-                    className=""
-                  >
-                    Last update
-                  </Typography>
-                  <Typography fontWeight={"bold"} variant="h5">
-                    {initialValues.updated}
-                  </Typography>
-                </Box>
-                <Divider />
-
-                <Box className="w-full px-4 flex flex-col gap-2 py-2">
-                  <Typography
-                    fontWeight={"bold"}
-                    variant="h5"
-                    sx={{ color: colors.grey[200] }}
-                    className=""
-                  >
-                    Last Published
-                  </Typography>
-                  <Typography fontWeight={"bold"} variant="h5">
-                    {initialValues.published}
-                  </Typography>
-                </Box>
-              </Collapse>
-
-              <Collapse
-                in={isNoneMobile || openAction}
-                timeout="auto"
-                unmountOnExit
-                className="w-full rounded-md py-4 flex flex-col gap-4"
-                sx={{
-                  backgroundColor: colors.primary[400],
-                }}
-              >
-                <Box className="w-full flex-col">
-                  <Typography
-                    variant="h1"
-                    color={colors.grey[100]}
-                    fontWeight="bold"
-                    className={`text-xl md:text-2xl p-4 text-left`}
-                  >
-                    Actions
-                  </Typography>
-                  <Divider />
-                </Box>
-                <Box className="w-full px-4 flex justify-between items-center gap-2 py-2">
-                  <Typography
-                    fontWeight={"bold"}
-                    variant="h5"
-                    sx={{ color: colors.grey[200] }}
-                    className=""
-                  >
-                    Unpublished
-                  </Typography>
-                  <IconButton>
-                    <UnpublishedIcon color="warning" />
-                  </IconButton>
-                </Box>
-                <Divider />
-                <Box className="w-full px-4 flex justify-between items-center gap-2 py-2">
-                  <Typography
-                    fontWeight={"bold"}
-                    variant="h5"
-                    sx={{ color: colors.grey[200] }}
-                    className=""
-                  >
-                    Delete
-                  </Typography>
-                  <IconButton>
-                    <DeleteIcon color="error" />
-                  </IconButton>
-                </Box>
-                <Divider />
-              </Collapse>
-
-              <Collapse
-                in={isNoneMobile || openRevision}
-                timeout="auto"
-                unmountOnExit
-                className="w-full rounded-md py-4 flex flex-col gap-4"
-                sx={{
-                  backgroundColor: colors.primary[400],
-                }}
-              >
-                <Box className="w-full flex-col">
-                  <Typography
-                    variant="h1"
-                    color={colors.grey[100]}
-                    fontWeight="bold"
-                    className={`text-xl md:text-2xl p-4 text-left`}
-                  >
-                    Revision History
-                  </Typography>
-                  <Divider />
-                </Box>
-                <Box className="w-full px-4 flex justify-between items-center gap-2 py-2">
-                  <Typography
-                    fontWeight={"bold"}
-                    variant="h5"
-                    sx={{ color: colors.grey[200] }}
-                    className=""
-                  >
-                    {initialValues.published}
-                  </Typography>
-                  <Typography fontWeight={"bold"} variant="h5">
-                    Published
-                  </Typography>
-                </Box>
-                <Divider />
-              </Collapse>
+              <BlogInformation blog={initialValues} isEditing />{' '}
             </Box>
           )}
         </Box>
       </Box>
     </>
-  );
-};
-export default AddEditBlog;
+  )
+}
+export default AddEditBlog

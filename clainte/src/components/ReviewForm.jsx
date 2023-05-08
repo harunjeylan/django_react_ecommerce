@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   Box,
   Button,
@@ -6,39 +6,39 @@ import {
   useTheme,
   Rating,
   Typography,
-} from "@mui/material";
-import Header from "./Header";
-import { tokens } from "../theme";
-import { Formik } from "formik";
-import * as yup from "yup";
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../features/auth/authSlice";
+} from '@mui/material'
+import Header from './Header'
+import { tokens } from '../theme'
+import { Formik } from 'formik'
+import * as yup from 'yup'
+import { useSelector } from 'react-redux'
+import { selectCurrentUser } from '../features/auth/authSlice'
 const ReviewForm = ({ handleReviewFormSubmit }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const user = useSelector(selectCurrentUser);
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const user = useSelector(selectCurrentUser)
 
-  const phoneRegExp = /^\+?1?\d{9,15}$/;
+  const phoneRegExp = /^\+?1?\d{9,15}$/
   const initialValues = {
-    rating: "0",
-    first_name: user?.first_name ? user?.first_name : "",
-    last_name: user?.last_name ? user.last_name : "",
-    email: user?.email ? user.email : "",
-    phone_number: user?.phone_number ? user.phone_number : "",
-    description: "",
-  };
+    rating: '0',
+    first_name: user?.first_name ? user?.first_name : '',
+    last_name: user?.last_name ? user.last_name : '',
+    email: user?.email ? user.email : '',
+    phone_number: user?.phone_number ? user.phone_number : '',
+    description: '',
+  }
   const checkoutSchema = yup.object().shape({
-    first_name: yup.string().required("Required"),
-    rating: yup.number().required("Required"),
-    last_name: yup.string().required("Required"),
-    email: yup.string().email("Invalid email!").required("Required"),
+    first_name: yup.string().required('Required'),
+    rating: yup.number().required('Required'),
+    last_name: yup.string().required('Required'),
+    email: yup.string().email('Invalid email!').required('Required'),
     phone_number: yup
       .string()
-      .matches(phoneRegExp, "phone number is not valid!"),
-    description: yup.string().required("Required"),
-  });
+      .matches(phoneRegExp, 'phone number is not valid!'),
+    description: yup.string().required('Required'),
+  })
   return (
-    <Box className="w-full md:max-w-[80%] lg:max-w-[60%]">
+    <Box className="w-full">
       <Header title="Leave a review" />
 
       <Formik
@@ -74,7 +74,7 @@ const ReviewForm = ({ handleReviewFormSubmit }) => {
                 name="first_name"
                 error={!!touched.first_name && !!errors.first_name}
                 helperText={touched.first_name && errors.first_name}
-                className={`col-span-1`}
+                className={`col-span-2 md:col-span-1`}
               />
               <TextField
                 fullWidth
@@ -87,7 +87,7 @@ const ReviewForm = ({ handleReviewFormSubmit }) => {
                 name="last_name"
                 error={!!touched.last_name && !!errors.last_name}
                 helperText={touched.last_name && errors.last_name}
-                className={`col-span-1`}
+                className={`col-span-2 md:col-span-1`}
               />
               <TextField
                 fullWidth
@@ -137,7 +137,7 @@ const ReviewForm = ({ handleReviewFormSubmit }) => {
                 variant="outlined"
                 color="secondary"
                 className={`bg-opacity-0 hover:bg-opacity-100 px-[40px] py-2 ${
-                  "hover:bg-" + colors.greenAccent[400]
+                  'hover:bg-' + colors.greenAccent[400]
                 }`}
               >
                 Post Review
@@ -154,12 +154,12 @@ const ReviewForm = ({ handleReviewFormSubmit }) => {
         >
           <span className="bg-green-400/5 text-green-500 px-2 py-1 rounded-md">
             Note
-          </span>{" "}
+          </span>{' '}
           This form shows usage of the classic Bootstrap form controls, not
           their underlined variants. You can choose whichever variant you want.
         </Typography>
       </Box>
     </Box>
-  );
-};
-export default ReviewForm;
+  )
+}
+export default ReviewForm

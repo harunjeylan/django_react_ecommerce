@@ -9,7 +9,6 @@ from account.api import MyTokenObtainPairView
 from account import api
 
 
-
 urlpatterns = [
     path("", api.getRoutes, name="get_routes"),
     path("profile/", api.getUserData, name="profile"),
@@ -19,10 +18,14 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     path('profile/update/', api.updatePersonalInfo, name='update_profile'),
-    path('profile/password/chenge/', api.updatePassword, name='update_password'),
+    path("profile/image/upload/", api.uploadProfileImage, name="get_routes"),
+    path('profile/password/change/', api.updatePassword, name='update_password'),
 
-     
-    path("admin/customers/", api.getCustomers , name="admin_customers"),
-    path("admin/customers/<pk>/", api.getCustomerDetails , name="admin_customer_details"),
+
+    path("admin/customers/", api.getCustomers, name="admin_customers"),
+    path("admin/customers/note/add/", api.addCustomerNote,
+         name="admin_add_customer_note"),
+    path("admin/customers/<pk>/", api.getCustomerDetails,
+         name="admin_customer_details"),
 
 ]

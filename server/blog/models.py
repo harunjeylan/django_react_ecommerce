@@ -1,7 +1,7 @@
 from django.db import models
 from datetime import datetime
 class Blog(models.Model):
-    
+
     title = models.CharField(max_length=255)
     headline = models.CharField(max_length=255)
     slug = models.SlugField(unique=True)
@@ -18,7 +18,6 @@ class Blog(models.Model):
     views = models.PositiveIntegerField(default=0, blank=True)
     pin_to_top = models.BooleanField(default=False)
     #------------------------------------------------------------------------------------
-    
     STATUS_CHOICE = (
         ("published", "Published"),
         ("scheduled", "Scheduled"),
@@ -28,7 +27,7 @@ class Blog(models.Model):
     status = models.CharField(choices=STATUS_CHOICE,default="draft", max_length=20, null=True, blank=True)
     #------------------------------------------------------------------------------------
     comments = models.ManyToManyField("service.Comment", blank=True)
-    
+
     class Meta:
         verbose_name = "blog"
         ordering = ["-published","-updated","-created"]
@@ -37,16 +36,20 @@ class Blog(models.Model):
     def delete_blog(self):
         self.status = "deleted"
         self.save()
-        
+    def toggle_publish(self):
+        if self.status == "published":
+            self.unpublish_blog()
+        else:
+            self.publish_blog()
     def publish_blog(self):
         self.published = datetime.now()
         self.status = "published"
         self.save()
-        
+
     def unpublish_blog(self):
         self.status = "draft"
         self.save()
-        
+
     #----------------------------------------------------------------------------------
 
     # def natural_key(self):
@@ -57,5 +60,5 @@ class Blog(models.Model):
 
     def __str__(self):
         return f"{self.title}"
-    
+
 

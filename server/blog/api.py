@@ -2,20 +2,22 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from datetime import datetime 
+from datetime import datetime
 from django.db.models import Q
 import pytz
 
 from blog.models import Blog
 from blog.serializer import BlogSerializer,BlogListSerializer,BlogCommentSerializer
+from blog.utils import get_blog_list_data
+from account.decorators import admin_only
 from service.serializer import CategorySerializer,TagSerializer
 from service.models import  Category,Tag, Comment
-    
+
 
 @api_view(['POST'])
+@admin_only
 @permission_classes([IsAuthenticated])
 def newBlog(request):
-    
     category, created_category = Category.objects.get_or_create(name=request.data.get("category"))
     blog_felids = {
         "title":request.data.get("title"),
@@ -41,10 +43,11 @@ def newBlog(request):
         return Response(serialized_data, status=status.HTTP_201_CREATED)
     else:
         return Response(blog_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
-     
+
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def updateBlog(request, slug):
     blog = Blog.objects.get(slug=slug)
     category, created_category = Category.objects.get_or_create(name=request.data.get("category"))
@@ -79,27 +82,49 @@ def updateBlog(request, slug):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def deleteBlog(request):
     blog = Blog.objects.get(id=request.data.get("id"))
     blog.delete()
     return Response({"success":"blog is deleted"}, status=status.HTTP_202_ACCEPTED)
 
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+@admin_only
+def toggleBlogPublish(request):
+    blog = Blog.objects.get(id=request.data.get("id"))
+    blog.toggle_publish()
+    return Response({"success":"blog is saved"}, status=status.HTTP_202_ACCEPTED)
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def changeBlogStatus(request):
     blog = Blog.objects.get(id=request.data.get("id"))
     if request.data.get("status") in ["published","scheduled","draft","deleted"]:
         blog.status = request.data.get("status")
-
         if request.data.get("status") == "published":
-            print(">>>>>>>>>>>>>>>>>>>")
+            blog.publish_blog()
+        blog.save()
+    return Response({"success":"blog is saved"}, status=status.HTTP_202_ACCEPTED)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@admin_only
+def changeMultiBlogStatus(request):
+    blogs = Blog.objects.filter(id__in=request.data.get("blogIds"))
+    for blog in blogs:
+       if request.data.get("status") in ["published","scheduled","draft","deleted"]:
+        blog.status = request.data.get("status")
+        if request.data.get("status") == "published":
             blog.publish_blog()
         blog.save()
     return Response({"success":"blog is saved"}, status=status.HTTP_202_ACCEPTED)
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def toggleBlogPin(request):
     blog = Blog.objects.get(id=request.data.get("id"))
     blog.pin_to_top = not blog.pin_to_top
@@ -108,8 +133,8 @@ def toggleBlogPin(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def uploadImage(request):
-    print(">>>>>>>>>>>>>>")
     blog = Blog.objects.get(id=request.data.get("blogId"))
     thumbnail = request.FILES.get("thumbnail")
     if  thumbnail:
@@ -121,6 +146,7 @@ def uploadImage(request):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
+@admin_only
 def removeThumbnail(request):
     blog = Blog.objects.get(id=request.data.get("id"))
     blog.thumbnail = None
@@ -131,31 +157,15 @@ def removeThumbnail(request):
 
 @api_view(['GET'])
 def getAllBlogs(request):
-    blogs = Blog.objects.order_by(
-        "-published"
-    ).filter(
-        status="published"
-    )
-    serialized_data = BlogListSerializer(
-        blogs,
-        context={"request":request}, 
-        many = True
-    ).data
-    
-    return Response(serialized_data, status=status.HTTP_200_OK) 
+    blogs = Blog.objects.order_by("-published").filter(status="published")
+    serialized_data = get_blog_list_data(request, blogs)
+    return Response(serialized_data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def getAllAdminBlogs(request):
-    blogs = Blog.objects.order_by(
-        "-created"
-    )
-    serialized_data = BlogListSerializer(
-        blogs,
-        context={"request":request}, 
-        many = True
-    ).data
-    
-    return Response(serialized_data, status=status.HTTP_200_OK) 
+    blogs = Blog.objects.order_by("-created")
+    serialized_data = get_blog_list_data(request, blogs)
+    return Response(serialized_data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def searchAndFilterBlog(request):
@@ -164,7 +174,7 @@ def searchAndFilterBlog(request):
         search =  request.GET.get("search")
         blogs = blogs.order_by("-published").filter(
             Q(category__name__icontains= search) |
-            Q(title__icontains = search) | 
+            Q(title__icontains = search) |
             Q(headline__icontains = search) |
             Q(body__icontains = search),
         )
@@ -181,86 +191,44 @@ def searchAndFilterBlog(request):
         dateFilter =  request.GET.get("archive")
         year, month, *_ = dateFilter.split("-")
         blogs = blogs.order_by("-published").filter(
-            published__gt = datetime(int(year), int(month), 1, tzinfo=pytz.UTC), 
+            published__gt = datetime(int(year), int(month), 1, tzinfo=pytz.UTC),
             published__lte = datetime(int(year), int(month), 31, tzinfo=pytz.UTC))
-        
-    serialized_data = BlogListSerializer(
-        blogs,
-        context={"request":request}, 
-        many = True
-    ).data
 
-    return Response(serialized_data, status=status.HTTP_200_OK) 
+    serialized_data = get_blog_list_data(request, blogs)
+    return Response(serialized_data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def getBlogCollections(request):
-    recent_blogs = BlogListSerializer(
-        Blog.objects.order_by(
-        "-published"
-    ).filter(
-        status="published"
-    ).distinct()[:5],
-        context={"request":request}, 
-        many = True
-    ).data
-    
-    pin_blogs = BlogListSerializer(
-        Blog.objects.order_by(
-        "-published"
-        ).filter(
-            status="published", 
-            pin_to_top=True
-        ).distinct(),
-        context={"request":request}, 
-        many = True
-    ).data
-
+    recent_blogs = get_blog_list_data(request,Blog.objects.order_by("-published").filter(status="published").distinct()[:5])
+    pin_blogs = get_blog_list_data(request,Blog.objects.order_by("-published").filter( status="published",pin_to_top=True).distinct())
     serialized_data = {
         "pin_blogs":pin_blogs,
         "recent_blogs":recent_blogs,
     }
-    return Response(serialized_data, status=status.HTTP_200_OK) 
+    return Response(serialized_data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def getRecentBlogs(request):
-    blogs =Blog.objects.order_by("-published").filter(status="published")[:5]
-    serialized_data = BlogListSerializer(
-       blogs,
-        context={"request":request}, 
-        many = True
-    ).data
+    serialized_data = get_blog_list_data(request,Blog.objects.order_by("-published").filter(status="published").distinct()[:5])
     return Response(serialized_data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def getLastBlogs(request):
-    blogs = Blog.objects.order_by("-published").filter(status="published").first()
-    serialized_data = BlogListSerializer(
-       blogs,
-        context={"request":request}, 
-        many = True
-    ).data
+    serialized_data = BlogListSerializer(Blog.objects.order_by("-published").filter(status="published").first(),context={"request":request}).data
     return Response(serialized_data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def getPinToTopBlogs(request):
-    blogs = Blog.objects.order_by("-published").filter(status="published", pin_to_top=True)
-    serialized_data = BlogListSerializer(
-       blogs,
-        context={"request":request}, 
-        many = True
-    ).data
+    serialized_data = get_blog_list_data(request, Blog.objects.order_by("-published").filter(status="published", pin_to_top=True))
     return Response(serialized_data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def getBlogDetails(request, slug):
     blog = Blog.objects.get(status="published", slug=slug)
     comments = BlogCommentSerializer(Comment.objects.filter(blog=blog), many=True).data
-    blog_data = BlogSerializer(
-        blog,
-        context={"request":request}, 
-    ).data
+    blog_data = BlogSerializer(blog,context={"request":request}).data
     serialized_data = {
-        **blog_data, 
+        **blog_data,
         "comments":comments
     }
     return Response(serialized_data, status=status.HTTP_200_OK)
@@ -271,12 +239,9 @@ def getAdminBlogDetails(request, slug):
     comments = BlogCommentSerializer(Comment.objects.filter(blog=blog), many=True).data
     tags = TagSerializer(blog.tags.all(), many=True).data
     category = CategorySerializer(blog.category).data
-    blog_data = BlogSerializer(
-        blog,
-        context={"request":request}, 
-    ).data
+    blog_data = BlogSerializer(blog,context={"request":request}).data
     serialized_data = {
-        **blog_data, 
+        **blog_data,
         "comments":comments,
         "tags":tags,
         "category":category
@@ -286,14 +251,11 @@ def getAdminBlogDetails(request, slug):
 @api_view(['GET'])
 def getRelatedBlogs(request, slug):
     blog = Blog.objects.get(status="published", slug=slug)
-    serialized_data = BlogSerializer(
-        Blog.objects.order_by("-published").filter(
-            status="published",
-            category__name__icontains= blog.category
-        ).exclude(id=blog.id),
-        context={"request":request},
-        many=True
-    ).data
+    blogs = Blog.objects.order_by("-published").filter(
+        status="published",
+        category__name__icontains= blog.category
+    ).exclude(id=blog.id)
+    serialized_data = get_blog_list_data(request,blogs)
     return Response(serialized_data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
@@ -306,7 +268,7 @@ def getBlogFilter(request):
         "categories":categories,
         "tags":tags,
     }
-    return Response(serialized_data, status=status.HTTP_200_OK) 
+    return Response(serialized_data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def getArchives(request):

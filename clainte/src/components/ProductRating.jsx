@@ -1,16 +1,16 @@
-import React from "react";
-import { Box, Typography } from "@mui/material";
+import React from 'react'
+import { Box, Typography } from '@mui/material'
 
-import StarIcon from "@mui/icons-material/Star";
-import { useTheme } from "@emotion/react";
-import { tokens } from "../theme";
+import StarIcon from '@mui/icons-material/Star'
+import { useTheme } from '@emotion/react'
+import { tokens } from '../theme'
 
 const ProductRating = ({ product }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
   return (
-    <Box className=" w-full flex gap-4 items-center">
-      <Box className="w-fit flex flex-col gap-4">
+    <Box className=" w-full flex flex-col  sm:flex-row gap-4 items-center">
+      <Box className="w-fit flex flex-col gap-4 justify-center items-center">
         <Box className="w-fit flex">
           <StarIcon fontSize="large" className="text-yellow-500 text-6xl" />
           <Typography
@@ -35,7 +35,7 @@ const ProductRating = ({ product }) => {
               <strong>{rating.rating}</strong>
             </Typography>
             <Box
-              backgroundColor={colors.primary[300]}
+              backgroundColor={colors.primary[400]}
               className="w-full h-4 outline-1 flex justify-start items-center rounded-md"
             >
               <span
@@ -48,7 +48,7 @@ const ProductRating = ({ product }) => {
         ))}
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default ProductRating;
+export default ProductRating

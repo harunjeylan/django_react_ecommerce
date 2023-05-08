@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   Box,
   Breadcrumbs,
@@ -6,29 +6,28 @@ import {
   Divider,
   TextField,
   Typography,
-} from "@mui/material";
-import Header2 from "../../../../components/Header2";
-import { useTheme } from "@emotion/react";
-import { tokens } from "../../../../theme";
-import { contact } from "../../../../data/staticData";
-import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
-import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import { Formik } from "formik";
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../../../../features/auth/authSlice";
-import * as yup from "yup";
-import { useSnackbar } from "notistack";
-import useAlert from "../../../../components/ui/useAlert";
-import { useAddContactMutation } from "../../../../features/services/contactApiSlice";
+} from '@mui/material'
+import { useTheme } from '@emotion/react'
+import { tokens } from '../../../../theme'
+import { contact } from '../../../../data/staticData'
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined'
+import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined'
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
+import { Formik } from 'formik'
+import { useSelector } from 'react-redux'
+import { selectCurrentUser } from '../../../../features/auth/authSlice'
+import * as yup from 'yup'
+import { useSnackbar } from 'notistack'
+import useAlert from '../../../../components/ui/useAlert'
+import { useAddContactMutation } from '../../../../features/services/contactApiSlice'
 
 const Contact = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const user = useSelector(selectCurrentUser);
-  const { enqueueSnackbar } = useSnackbar();
-  const [CustomAlert, setMessages] = useAlert();
-  const [addContact] = useAddContactMutation();
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const user = useSelector(selectCurrentUser)
+  const { enqueueSnackbar } = useSnackbar()
+  const [CustomAlert, setMessages] = useAlert()
+  const [addContact] = useAddContactMutation()
   const handleContactFormSubmit = (values, { resetForm }) => {
     addContact({ post: values }).then((data) => {
       if (data?.error?.data) {
@@ -37,41 +36,43 @@ const Contact = () => {
             ...prev,
             {
               id: key,
-              variant: "error",
+              variant: 'error',
               description: data.error.data[key],
             },
-          ]);
-        });
+          ])
+        })
       } else {
-        resetForm();
+        resetForm()
         enqueueSnackbar(`You have Subscribed in successfully!`, {
-          variant: "success",
-        });
+          variant: 'success',
+        })
       }
-    });
-  };
-  const phoneRegExp = /^\+?1?\d{9,15}$/;
+    })
+  }
+  const phoneRegExp = /^\+?1?\d{9,15}$/
   const initialValues = {
-    first_name: user?.first_name ? user?.first_name : "",
-    last_name: user?.last_name ? user.last_name : "",
-    email: user?.email ? user.email : "",
-    phone_number: user?.phone_number ? user.phone_number : "",
-    description: "",
-  };
+    first_name: user?.first_name ? user?.first_name : '',
+    last_name: user?.last_name ? user.last_name : '',
+    email: user?.email ? user.email : '',
+    phone_number: user?.phone_number ? user.phone_number : '',
+    description: '',
+  }
   const checkoutSchema = yup.object().shape({
-    first_name: yup.string().required("Required"),
-    last_name: yup.string().required("Required"),
-    email: yup.string().email("Invalid email!").required("Required"),
+    first_name: yup.string().required('Required'),
+    last_name: yup.string().required('Required'),
+    email: yup.string().email('Invalid email!').required('Required'),
     phone_number: yup
       .string()
-      .matches(phoneRegExp, "phone number is not valid!"),
-    description: yup.string().required("Required"),
-  });
+      .matches(phoneRegExp, 'phone number is not valid!'),
+    description: yup.string().required('Required'),
+  })
 
   return (
     <Box className="">
-      <Box className={`flex flex-col gap-4 md:gap-8 mt-10 md:mt-20`}>
-        <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
+      <Box
+        className={`md:container  md:mx-auto md:px-auto flex flex-col gap-4 md:gap-8 mt-10 md:mt-20`}
+      >
+        <Box className={``}>
           <Breadcrumbs aria-label="breadcrumb">
             <Button
               onClick={() => navigate(`/`)}
@@ -83,12 +84,12 @@ const Contact = () => {
             <Typography color="text.primary">Contact</Typography>
           </Breadcrumbs>
         </Box>
-        <Box className={`md:container w-full px-2 md:mx-auto md:px-auto my-4`}>
+        <Box className={``}>
           <Box
-            className={`w-full px-2 md:mx-auto md:px-auto my-12  flex flex-col md:flex-row`}
+            className={`w-full md:mx-auto md:px-auto my-12  flex flex-col md:flex-row justify-between gap-8`}
           >
-            <Box className="w-full flex flex-col items-start gap-4 px-4 py-2 md:w-1/2">
-              <Box className="w-full flex flex-col items-start gap-4 px-4 py-8">
+            <Box className="w-full flex flex-col items-start gap-4 px-2 py-2 md:w-1/3 lg:w-1/2:">
+              <Box className="">
                 <Typography
                   variant="h4"
                   color={colors.grey[100]}
@@ -109,7 +110,7 @@ const Contact = () => {
               </Box>
               <Box className="flex flex-col items-start gap-1">
                 <Typography variant="h5" fontWeight="bold">
-                  <LocationOnOutlinedIcon fontSize="medium" />{" "}
+                  <LocationOnOutlinedIcon fontSize="medium" />{' '}
                   <strong>Address</strong>
                 </Typography>
                 <Typography variant="h5" fontWeight="bold" className="ml-6">
@@ -118,7 +119,7 @@ const Contact = () => {
               </Box>
               <Box className="flex flex-col items-start gap-1">
                 <Typography variant="h5" fontWeight="bold">
-                  <LocalPhoneOutlinedIcon fontSize="medium" />{" "}
+                  <LocalPhoneOutlinedIcon fontSize="medium" />{' '}
                   <strong>phone</strong>
                 </Typography>
                 <Typography variant="h5" fontWeight="bold" className="ml-6">
@@ -126,8 +127,8 @@ const Contact = () => {
                 </Typography>
               </Box>
             </Box>
-            <Box className="flex flex-col items-start gap-8 px-4 py-2 md:w-1/2">
-              <Box className="flex flex-col items-start gap-4 px-4 py-8">
+            <Box className="w-full flex flex-col items-start gap-8 px-2 py-2 md:w-2/3 lg:w-1/2">
+              <Box className="flex flex-col items-start gap-4  py-8">
                 <Typography
                   variant="h4"
                   color={colors.grey[100]}
@@ -146,9 +147,9 @@ const Contact = () => {
                   similique laudantium reprehenderit!
                 </Typography>
               </Box>
-              <Box className="relative w-fit h-fit">
+              <Box className="w-full md:w-full relative  h-fit">
                 <Box
-                  className="md:absolute w-full md:w-[600px] rounded-md p-4"
+                  className="md:absolute w-full rounded-md p-2"
                   backgroundColor={colors.primary[400]}
                 >
                   <CustomAlert />
@@ -178,7 +179,7 @@ const Contact = () => {
                             name="first_name"
                             error={!!touched.first_name && !!errors.first_name}
                             helperText={touched.first_name && errors.first_name}
-                            className={`col-span-1`}
+                            className={`col-span-2 md:col-span-1`}
                           />
                           <TextField
                             fullWidth
@@ -191,7 +192,7 @@ const Contact = () => {
                             name="last_name"
                             error={!!touched.last_name && !!errors.last_name}
                             helperText={touched.last_name && errors.last_name}
-                            className={`col-span-1`}
+                            className={`col-span-2 md:col-span-1`}
                           />
                           <TextField
                             fullWidth
@@ -249,7 +250,7 @@ const Contact = () => {
                             variant="outlined"
                             color="secondary"
                             className={`bg-opacity-0 hover:bg-opacity-100 px-[40px] py-2 ${
-                              "hover:bg-" + colors.greenAccent[400]
+                              'hover:bg-' + colors.greenAccent[400]
                             }`}
                           >
                             Send Message
@@ -276,7 +277,7 @@ const Contact = () => {
         ></iframe>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default Contact;
+export default Contact

@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useTheme } from "@emotion/react";
-import { Dropzone, FileItem, FullScreenPreview } from "@dropzone-ui/react";
+import React, { useState, useRef, useEffect } from 'react'
+import { useTheme } from '@emotion/react'
+import { Dropzone, FileItem, FullScreenPreview } from '@dropzone-ui/react'
 import {
   Box,
   TextField,
@@ -14,33 +14,34 @@ import {
   Select,
   IconButton,
   Button,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import SaveAsIcon from "@mui/icons-material/SaveAs";
+} from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
+import SaveAsIcon from '@mui/icons-material/SaveAs'
 
 import {
   useGetAllBrandsQuery,
   useAddBrandMutation,
   useUpdateBrandMutation,
   useDeleteBrandMutation,
-} from "../../../../../features/services/brandApiSlice";
-import { tokens } from "../../../../../theme";
-import Model from "../../../../../components/ui/Model";
+} from '../../../../../features/services/brandApiSlice'
+import { tokens } from '../../../../../theme'
+import Model from '../../../../../components/ui/Model'
 import {
   useRemoveImageMutation,
   useRemoveThumbnailMutation,
-} from "../../../../../features/services/productApiSlice";
-import { Field } from "formik";
-import "react-quill/dist/quill.snow.css";
-import ReactQuill from "react-quill";
-import { useSnackbar } from "notistack";
+} from '../../../../../features/services/productApiSlice'
+import { Field } from 'formik'
+import 'react-quill/dist/quill.snow.css'
+import ReactQuill from 'react-quill'
+import { useSnackbar } from 'notistack'
+import useAlert from '../../../../../components/ui/useAlert'
 
 const Brand = ({ brand, handleUpdate, handleDelete }) => {
-  const InputRef = useRef();
+  const InputRef = useRef()
 
   useEffect(() => {
-    InputRef.current.value = brand.name;
-  }, [brand.name]);
+    InputRef.current.value = brand.name
+  }, [brand.name])
 
   return (
     <Box className="flex justify-between brands-center gap-2">
@@ -68,8 +69,8 @@ const Brand = ({ brand, handleUpdate, handleDelete }) => {
         <CloseIcon />
       </IconButton>
     </Box>
-  );
-};
+  )
+}
 
 const ProductInformationForm = ({
   values,
@@ -82,128 +83,130 @@ const ProductInformationForm = ({
   setInitialValues,
   setTouched,
   setErrors,
+  customAlert,
 }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const { enqueueSnackbar } = useSnackbar();
-  const [imageSrc, setImageSrc] = useState(undefined);
-  const [modelMessages, setModelMessages] = useState([]);
-  const [openModel, setOpenModel] = useState(false);
-  const modelInputRef = useRef();
-  const [addBrand] = useAddBrandMutation();
-  const [updateBrand, { isLoading: isUpdating }] = useUpdateBrandMutation();
-  const [deleteBrand, { isLoading: isDeleting }] = useDeleteBrandMutation();
-  const [removeImage] = useRemoveImageMutation();
-  const [removeThumbnail] = useRemoveThumbnailMutation();
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const { enqueueSnackbar } = useSnackbar()
+  const [imageSrc, setImageSrc] = useState(undefined)
+  const [CustomAlert, setMessages] = useAlert()
+
+  const [openModel, setOpenModel] = useState(false)
+  const modelInputRef = useRef()
+  const [addBrand] = useAddBrandMutation()
+  const [updateBrand, { isLoading: isUpdating }] = useUpdateBrandMutation()
+  const [deleteBrand, { isLoading: isDeleting }] = useDeleteBrandMutation()
+  const [removeImage] = useRemoveImageMutation()
+  const [removeThumbnail] = useRemoveThumbnailMutation()
   const handleClean = (image) => {
-    console.log("list cleaned", image);
-  };
-  const { data: brands, isFetching: brandsIsFetching } = useGetAllBrandsQuery();
+    console.log('list cleaned', image)
+  }
+  const { data: brands, isFetching: brandsIsFetching } = useGetAllBrandsQuery()
 
   const handleAdd = () => {
     const postData = {
       name: modelInputRef.current.value,
-    };
+    }
     addBrand({ post: postData }).then((data) => {
-      if (data?.error?.status === 400) {
+      if (data?.error?.status) {
         Object.keys(data.error.data).forEach((key) => {
-          setModelMessages((prev) => [
+          setMessages((prev) => [
             ...prev,
-            { id: key, variant: "error", description: data.error.data[key] },
-          ]);
-        });
+            { id: key, variant: 'error', description: data.error.data[key] },
+          ])
+        })
       } else {
         enqueueSnackbar(`Brand -> ${postData.name} is created successfully!`, {
-          variant: "success",
-        });
+          variant: 'success',
+        })
       }
-    });
-    modelInputRef.current.value = "";
-  };
+    })
+    modelInputRef.current.value = ''
+  }
   const handleUpdate = ({ id, name }) => {
-    let brand = brands.find((brand) => brand.id === id);
+    let brand = brands.find((brand) => brand.id === id)
     const postData = {
       id,
       name,
-    };
+    }
     updateBrand({ post: postData }).then((data) => {
-      if (data?.error?.status === 400) {
+      if (data?.error?.status) {
         Object.keys(data.error.data).forEach((key) => {
-          setModelMessages((prev) => [
+          setMessages((prev) => [
             ...prev,
-            { id: key, variant: "error", description: data.error.data[key] },
-          ]);
-        });
+            { id: key, variant: 'error', description: data.error.data[key] },
+          ])
+        })
       } else {
         enqueueSnackbar(`Brand -> ${postData.name} is update successfully!`, {
-          variant: "success",
-        });
+          variant: 'success',
+        })
       }
-    });
+    })
     if (values.brand === brand.name) {
-      setFieldValue("brand", "");
+      setFieldValue('brand', '')
     }
-  };
+  }
   const handleDelete = ({ id }) => {
-    let brand = brands.find((brand) => brand.id === id);
+    let brand = brands.find((brand) => brand.id === id)
     const postData = {
       id,
-    };
+    }
     deleteBrand({ post: postData }).then((data) => {
-      if (data?.error?.status === 400) {
+      if (data?.error?.status) {
         Object.keys(data.error.data).forEach((key) => {
-          setModelMessages((prev) => [
+          setMessages((prev) => [
             ...prev,
-            { id: key, variant: "error", description: data.error.data[key] },
-          ]);
-        });
+            { id: key, variant: 'error', description: data.error.data[key] },
+          ])
+        })
       } else {
         enqueueSnackbar(`Brand -> ${postData.name} is deleted successfully!`, {
-          variant: "success",
-        });
+          variant: 'success',
+        })
       }
-    });
+    })
     if (values.brand === brand.name) {
-      setFieldValue("brand", "");
+      setFieldValue('brand', '')
     }
-  };
+  }
   const handelRemoveThumbnail = () => {
     removeThumbnail({ post: { id: initialValues?.id } }).then((data) => {
-      setInitialValues((prev) => ({ ...prev, thumbnail: undefined }));
-      if (data?.error?.status === 400) {
+      setInitialValues((prev) => ({ ...prev, thumbnail: undefined }))
+      if (data?.error?.status) {
         Object.keys(data.error.data).forEach((key) => {
-          setModelMessages((prev) => [
+          setMessages((prev) => [
             ...prev,
-            { id: key, variant: "error", description: data.error.data[key] },
-          ]);
-        });
+            { id: key, variant: 'error', description: data.error.data[key] },
+          ])
+        })
       } else {
         enqueueSnackbar(`Thumbnail is removed successfully!`, {
-          variant: "success",
-        });
+          variant: 'success',
+        })
       }
-    });
-  };
+    })
+  }
   const handelRemoveImage = (imageId) => {
     removeImage({ post: { id: imageId } }).then((data) => {
       setInitialValues((prev) => ({
         ...prev,
         images: prev.images.filter((image) => image.id !== imageId),
-      }));
-      if (data?.error?.status === 400) {
+      }))
+      if (data?.error?.status) {
         Object.keys(data.error.data).forEach((key) => {
-          setModelMessages((prev) => [
+          setMessages((prev) => [
             ...prev,
-            { id: key, variant: "error", description: data.error.data[key] },
-          ]);
-        });
+            { id: key, variant: 'error', description: data.error.data[key] },
+          ])
+        })
       } else {
         enqueueSnackbar(`Image is removed successfully!`, {
-          variant: "success",
-        });
+          variant: 'success',
+        })
       }
-    });
-  };
+    })
+  }
 
   return (
     <Box className="w-full">
@@ -211,10 +214,9 @@ const ProductInformationForm = ({
         openModel={openModel}
         setOpenModel={setOpenModel}
         modelTitle="Add Brand"
-        messages={modelMessages}
-        setMessages={setModelMessages}
       >
-        <Box className="w-full">
+        <Box className="w-full flex flex-col gap-2">
+          <CustomAlert />
           <Box className="flex justify-between items-center gap-2 mb-2">
             <TextField
               size="small"
@@ -222,8 +224,8 @@ const ProductInformationForm = ({
               fullWidth
               variant="filled"
               type="text"
-              name={"brand"}
-              label={"New Brand..."}
+              name={'brand'}
+              label={'New Brand...'}
               inputRef={modelInputRef}
             />
             <IconButton onClick={handleAdd}>
@@ -278,7 +280,7 @@ const ProductInformationForm = ({
               onBlur={handleBlur}
               error={!!touched.title && !!errors.title}
               helperText={touched.title && errors.title}
-              sx={{ gridColumn: "span 2" }}
+              sx={{ gridColumn: 'span 2' }}
             />
           </Box>
           <Box>
@@ -299,13 +301,13 @@ const ProductInformationForm = ({
                       toolbar: [
                         [{ font: [] }],
                         [{ header: [1, 2, 3, 4, 5, 6, false] }],
-                        ["bold", "italic", "underline", "strike"],
-                        [{ list: "ordered" }, { list: "bullet" }],
-                        [{ indent: "-1" }, { indent: "+1" }, { align: [] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ list: 'ordered' }, { list: 'bullet' }],
+                        [{ indent: '-1' }, { indent: '+1' }, { align: [] }],
                         [{ color: [] }, { background: [] }],
-                        [{ script: "sub" }, { script: "super" }],
-                        ["blockquote", "code-block"],
-                        ["clean"],
+                        [{ script: 'sub' }, { script: 'super' }],
+                        ['blockquote', 'code-block'],
+                        ['clean'],
                       ],
                     }}
                     onChange={field.onChange(field.name)}
@@ -322,50 +324,51 @@ const ProductInformationForm = ({
               )}
             </Field>
           </Box>
-          {initialValues?.thumbnail && (
-            <Box className="w-full ">
-              <Typography variant="h6" fontWeight="bold" className="my-2">
-                Old Display thumbnail
-              </Typography>
-              <Box
-                backgroundColor={colors.primary[400]}
-                className="w-full p-4 "
-              >
-                <Box className="w-fit flex flex-col gap-2  outline outline-1 p-1 rounded-sm">
-                  <img
-                    alt="Display Thumbnail"
-                    className="h-[400px] "
-                    src={initialValues?.thumbnail}
-                  />
-                  <Box>
-                    <Button onClick={handelRemoveThumbnail} color="error">
-                      Remove
-                    </Button>
+          {customAlert}
+          <Box>
+            {initialValues?.thumbnail && (
+              <Box className="w-full ">
+                <Typography variant="h6" fontWeight="bold" className="my-2">
+                  Old Display thumbnail
+                </Typography>
+                <Box
+                  backgroundColor={colors.primary[400]}
+                  className="w-full p-4 "
+                >
+                  <Box className="w-fit flex flex-col gap-2  outline outline-1 p-1 rounded-sm">
+                    <img
+                      alt="Display Thumbnail"
+                      className="h-[400px] "
+                      src={initialValues?.thumbnail}
+                    />
+                    <Box>
+                      <Button onClick={handelRemoveThumbnail} color="error">
+                        Remove
+                      </Button>
+                    </Box>
                   </Box>
                 </Box>
               </Box>
-            </Box>
-          )}
-          <Box>
+            )}
             <Typography variant="h6" fontWeight="bold" className="my-2">
               Display Thumbnail
             </Typography>
             <Dropzone
               style={{
-                minHeight: "200px",
-                minWidth: "100%",
+                minHeight: '200px',
+                minWidth: '100%',
                 backgroundColor: colors.primary[400],
               }}
               label="Drop your Display thumbnail here or click to browse"
               onChange={(incomingImages) =>
-                setFieldValue("thumbnail", incomingImages)
+                setFieldValue('thumbnail', incomingImages)
               }
               onClean={handleClean}
               value={values.thumbnail}
               maxFiles={1}
               maxFileSize={2998000}
               accept=".png,image/*"
-              uploadingMessage={"Uploading..."}
+              uploadingMessage={'Uploading...'}
             >
               {values.thumbnail.length &&
                 values.thumbnail.map((file) => (
@@ -374,7 +377,7 @@ const ProductInformationForm = ({
                     key={file.id}
                     onDelete={(id) =>
                       setFieldValue(
-                        "thumbnail",
+                        'thumbnail',
                         values.thumbnail.filter((x) => x.id !== id)
                       )
                     }
@@ -387,54 +390,57 @@ const ProductInformationForm = ({
                 ))}
             </Dropzone>
           </Box>
-          {initialValues?.images && (
-            <Box className="w-full">
-              <Typography variant="h6" fontWeight="bold" className="my-2">
-                Display Images
-              </Typography>
-              <Box
-                backgroundColor={colors.primary[400]}
-                className="grid grid-cols-4 gap-4 p-4"
-              >
-                {initialValues?.images?.map((imageUrl, index) => (
-                  <Box
-                    key={`product_image ${index}`}
-                    className="w-full flex flex-col gap-2 outline outline-1 p-1 rounded-sm"
-                  >
-                    <img alt={`product_image ${index}`} src={imageUrl.image} />
-                    <Box>
-                      <Button
-                        onClick={() => handelRemoveImage(imageUrl.id)}
-                        color="error"
-                      >
-                        Remove
-                      </Button>
-                    </Box>
-                  </Box>
-                ))}
-              </Box>
-            </Box>
-          )}
           <Box>
+            {initialValues?.images && (
+              <Box className="w-full">
+                <Typography variant="h6" fontWeight="bold" className="my-2">
+                  Old Display Images
+                </Typography>
+                <Box
+                  backgroundColor={colors.primary[400]}
+                  className="grid grid-cols-4 gap-4 p-4"
+                >
+                  {initialValues?.images?.map((imageUrl, index) => (
+                    <Box
+                      key={`product_image ${index}`}
+                      className="w-full flex flex-col gap-2 outline outline-1 p-1 rounded-sm"
+                    >
+                      <img
+                        alt={`product_image ${index}`}
+                        src={imageUrl.image}
+                      />
+                      <Box>
+                        <Button
+                          onClick={() => handelRemoveImage(imageUrl.id)}
+                          color="error"
+                        >
+                          Remove
+                        </Button>
+                      </Box>
+                    </Box>
+                  ))}
+                </Box>
+              </Box>
+            )}
             <Typography variant="h6" fontWeight="bold" className="my-2">
               Display Images
             </Typography>
             <Dropzone
               style={{
-                minHeight: "200px",
-                minWidth: "100%",
+                minHeight: '200px',
+                minWidth: '100%',
                 backgroundColor: colors.primary[400],
               }}
               label="Drop your Display images here or click to browse"
               onChange={(incomingImages) =>
-                setFieldValue("images", incomingImages)
+                setFieldValue('images', incomingImages)
               }
               onClean={handleClean}
               value={values.images}
               maxFiles={10}
               maxFileSize={2998000}
               accept=".png,image/*"
-              uploadingMessage={"Uploading..."}
+              uploadingMessage={'Uploading...'}
             >
               {values.images.length &&
                 values.images.map((file) => (
@@ -443,7 +449,7 @@ const ProductInformationForm = ({
                     key={file.id}
                     onDelete={(id) =>
                       setFieldValue(
-                        "images",
+                        'images',
                         values.images.filter((x) => x.id !== id)
                       )
                     }
@@ -486,6 +492,9 @@ const ProductInformationForm = ({
                   error={!!touched.brand && !!errors.brand}
                   name="brand"
                 >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
                   {brands?.length &&
                     brands?.map((brand) => (
                       <MenuItem key={brand.id} value={brand.name}>
@@ -499,7 +508,7 @@ const ProductInformationForm = ({
         </FormGroup>
       </FormControl>
     </Box>
-  );
-};
+  )
+}
 
-export default ProductInformationForm;
+export default ProductInformationForm

@@ -1,7 +1,5 @@
-import { Box, useMediaQuery } from "@mui/material";
+import { Box } from "@mui/material";
 import "swiper/css";
-import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { useTheme } from "@emotion/react";
 import { useGetLimitAndSkipProductsQuery } from "../redux/services/products";
 import ProductCard2 from "./ProductCard2";
@@ -51,10 +49,10 @@ const ProductCarouse = () => {
             <SwiperSlide
               key={`carousel-${index}`}
               className={`relative rounded-lg
-               bg-opacity-[90%] 
+               bg-opacity-[90%]
                ${
                  theme.palette.mode === "dark" ? "bg-white/5" : "bg-black/10"
-               }   
+               }
                overflow-visible relative `}
             >
               <ProductCard2

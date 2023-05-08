@@ -1,42 +1,36 @@
-import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import * as yup from "yup";
-import { Formik } from "formik";
-import { useDispatch } from "react-redux";
-import {
-  TextField,
-  Box,
-  Typography,
-  Divider,
-  Button,
-  Alert,
-} from "@mui/material";
-import GoogleIcon from "@mui/icons-material/Google";
-import { setUser } from "../features/auth/authSlice";
-import { useRegisterMutation } from "../features/auth/authApiSlice";
-import useAlert from "./ui/useAlert";
-import { useSnackbar } from "notistack";
+import React from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import * as yup from 'yup'
+import { Formik } from 'formik'
+import { useDispatch } from 'react-redux'
+import { TextField, Box, Typography, Divider, Button } from '@mui/material'
+import GoogleIcon from '@mui/icons-material/Google'
+import { setUser } from '../features/auth/authSlice'
+import { useRegisterMutation } from '../features/auth/authApiSlice'
+import useAlert from './ui/useAlert'
+import { useSnackbar } from 'notistack'
 
 const UserRegisterForm = ({
-  handleCloseAccountDialog = undefined,
-  handleClickOpenAccountDialog = undefined,
+  isAdminPage,
+  handleCloseAccountDialog,
+  handleClickOpenAccountDialog,
 }) => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
-  const [CustomAlert, setMessages] = useAlert();
-  const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from?.pathname || '/'
+  const [CustomAlert, setMessages] = useAlert()
+  const { enqueueSnackbar } = useSnackbar()
 
   const initialValues = {
-    username: "",
-    first_name: "",
-    last_name: "",
-    password: "",
-    password2: "",
-  };
+    username: '',
+    first_name: '',
+    last_name: '',
+    password: '',
+    password2: '',
+  }
 
-  const [register] = useRegisterMutation();
+  const [register] = useRegisterMutation()
   const handleFormSubmit = (values, { resetForm }) => {
     register({ ...values }).then((data) => {
       if (data?.error?.data) {
@@ -45,24 +39,27 @@ const UserRegisterForm = ({
             ...prev,
             {
               id: key,
-              variant: "error",
+              variant: 'error',
               description: data.error.data[key],
             },
-          ]);
-        });
+          ])
+        })
       } else {
-        dispatch(setUser(data.data));
         enqueueSnackbar(`You have registered in successfully!`, {
-          variant: "success",
-        });
-        if (handleCloseAccountDialog !== undefined) {
-          handleCloseAccountDialog();
+          variant: 'success',
+        })
+        resetForm()
+        if (!isAdminPage) {
+          dispatch(setUser(data.data))
+          if (handleCloseAccountDialog !== undefined) {
+            handleCloseAccountDialog()
+          } else {
+            navigate(from, { replace: true })
+          }
         }
-        resetForm();
-        navigate(from, { replace: true });
       }
-    });
-  };
+    })
+  }
   return (
     <Box>
       <Formik
@@ -90,7 +87,7 @@ const UserRegisterForm = ({
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.first_name}
-                  name={"first_name"}
+                  name={'first_name'}
                   error={!!touched.first_name && !!errors.first_name}
                   helperText={touched.first_name && errors.first_name}
                 />
@@ -102,7 +99,7 @@ const UserRegisterForm = ({
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.last_name}
-                  name={"last_name"}
+                  name={'last_name'}
                   error={!!touched.last_name && !!errors.last_name}
                   helperText={touched.last_name && errors.last_name}
                 />
@@ -114,7 +111,7 @@ const UserRegisterForm = ({
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.username}
-                  name={"username"}
+                  name={'username'}
                   error={!!touched.username && !!errors.username}
                   helperText={touched.username && errors.username}
                 />
@@ -126,7 +123,7 @@ const UserRegisterForm = ({
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.newPassword}
-                  name={"password"}
+                  name={'password'}
                   error={!!touched.password && !!errors.password}
                   helperText={touched.password && errors.password}
                 />
@@ -138,7 +135,7 @@ const UserRegisterForm = ({
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.newPassword}
-                  name={"password2"}
+                  name={'password2'}
                   error={!!touched.password2 && !!errors.password2}
                   helperText={touched.password2 && errors.password2}
                 />
@@ -151,73 +148,76 @@ const UserRegisterForm = ({
                 >
                   Register
                 </Button>
-
-                <Box className="flex justify-start px-4 pt-2 ">
-                  <Typography>Remember me</Typography>
-                </Box>
+                {!isAdminPage && (
+                  <Box className="flex justify-start px-4 pt-2 ">
+                    <Typography>Remember me</Typography>
+                  </Box>
+                )}
               </Box>
             </Box>
             <Divider />
           </form>
         )}
       </Formik>
-      <Box className="flex flex-col gap-4 px-4 py-2 my-4 mb-8">
-        <Box className="flex flex-col gap-4">
-          <Button
-            variant="outlined"
-            color="error"
-            size="medium"
-            startIcon={<GoogleIcon className="text-red" size="large" />}
-            className="w-full py-2"
-          >
-            Google
-          </Button>
-        </Box>
-        <Box>
-          <Box className="flex justify-start items-center gap-4 px-4 pt-2 mb-4">
-            <Typography>I have already account </Typography>{" "}
+      {!isAdminPage && (
+        <Box className="flex flex-col gap-4 px-4 py-2 my-4 mb-8">
+          <Box className="flex flex-col gap-4">
             <Button
-              onClick={() => {
-                handleClickOpenAccountDialog !== undefined
-                  ? handleClickOpenAccountDialog("login")
-                  : navigate("/auth/login");
-              }}
-              className=""
-              color="secondary"
-              variant="link"
+              variant="outlined"
+              color="error"
+              size="medium"
+              startIcon={<GoogleIcon className="text-red" size="large" />}
+              className="w-full py-2"
             >
-              Login
+              Google
             </Button>
           </Box>
+          <Box>
+            <Box className="flex justify-start items-center gap-4 px-4 pt-2 mb-4">
+              <Typography>I have already account </Typography>{' '}
+              <Button
+                onClick={() => {
+                  handleClickOpenAccountDialog !== undefined
+                    ? handleClickOpenAccountDialog('login')
+                    : navigate('/auth/login')
+                }}
+                className=""
+                color="secondary"
+                variant="link"
+              >
+                Login
+              </Button>
+            </Box>
+          </Box>
         </Box>
-      </Box>
+      )}
     </Box>
-  );
-};
+  )
+}
 const checkoutSchema = yup.object().shape({
-  first_name: yup.string().required("required"),
-  last_name: yup.string().required("required"),
-  username: yup.string().required("required"),
+  first_name: yup.string().required('required'),
+  last_name: yup.string().required('required'),
+  username: yup.string().required('required'),
   password: yup
     .string()
-    .required("required")
+    .required('required')
     .matches(
       /(?=.*[a-zA-Z])/,
-      "The string must contain at least 1 alphabetical character"
+      'The string must contain at least 1 alphabetical character'
     )
     .matches(
       /(?=.*[0-9])/,
-      "The string must contain at least 1 numeric character"
+      'The string must contain at least 1 numeric character'
     )
     .matches(
       /(?=.*[!@#%^&*<>/_?,.:"'$%^&*)=+()])/,
-      "The string must contain at least one special character, but we are escaping reserved RegEx characters to avoid conflict"
+      'The string must contain at least one special character, but we are escaping reserved RegEx characters to avoid conflict'
     )
-    .matches(/(?=.{8,})/, "The string must be eight characters or longer"),
+    .matches(/(?=.{8,})/, 'The string must be eight characters or longer'),
   password2: yup
     .string()
-    .required("required")
-    .oneOf([yup.ref("password"), null], "Passwords must match"),
-});
+    .required('required')
+    .oneOf([yup.ref('password'), null], 'Passwords must match'),
+})
 
-export default UserRegisterForm;
+export default UserRegisterForm

@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import Countdown from "react-countdown";
 import { Typography, Box, useTheme, Button } from "@mui/material";
 import { tokens } from "../theme";
+import { getDate } from "../helpers/getDate";
 
-const Banner = () => {
+const Banner = ({ discount }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
@@ -20,19 +21,19 @@ const Banner = () => {
           fontWeight="bold"
           className={`uppercase`}
         >
-          DEAL OF THE WEEK
+          {discount?.name}
         </Typography>
-        <Typography variant="h1" fontWeight="bold">
+        {/* <Typography variant="h1" fontWeight="bold">
           Oversized denim jacket
-        </Typography>
-        <Box className={`flex space-x-2`}>
+        </Typography> */}
+        {/* <Box className={`flex space-x-2`}>
           <Typography variant="p" color={colors.grey[200]} fontWeight="bold">
             $129.00
           </Typography>
           <Typography variant="p" color={colors.grey[200]} fontWeight="bold">
             $79.00
           </Typography>
-        </Box>
+        </Box> */}
         <Box>
           <Button
             variant="contained"
@@ -42,12 +43,12 @@ const Banner = () => {
             }}
             className={`w-auto px-[20px] py-2`}
           >
-            $50 off
+            ${discount?.amount} off
           </Button>
         </Box>
 
         <Countdown
-          date={Date.now() + 100000000}
+          date={getDate(discount?.end_date)}
           renderer={({
             total = 0,
             days = 0,

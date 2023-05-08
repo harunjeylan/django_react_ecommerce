@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from 'react'
 import {
   Box,
   Checkbox,
-  Chip,
   CircularProgress,
   FormControl,
   FormControlLabel,
@@ -10,67 +9,35 @@ import {
   MenuItem,
   Select,
   useTheme,
-} from "@mui/material";
-import { Accordion, Breadcrumbs, Button } from "@mui/material";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Link, useNavigate } from "react-router-dom";
-import { tokens } from "../../../../../theme";
-import Header from "../../../../../components/Header";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+} from '@mui/material'
+import { Breadcrumbs, Button } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import { Link, useNavigate } from 'react-router-dom'
+import { tokens } from '../../../../../theme'
+import Header from '../../../../../components/Header'
+import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 import {
-  useChangeBlogStatusMutation,
+  useChangeMultiBlogStatusMutation,
   useDeleteBlogMutation,
   useGetAllAdminBlogsQuery,
   useToggleBlogPinMutation,
-} from "../../../../../features/services/blogApiSlice";
-import dateFormatter from "../../../../../helpers/dateFormatter";
-const Status = ({ row: { id, status, published } }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const [inputStatus, setInputStatus] = useState(status);
-  const [changeBlogStatus] = useChangeBlogStatusMutation();
+} from '../../../../../features/services/blogApiSlice'
+import dateFormatter from '../../../../../helpers/dateFormatter'
+import { useSnackbar } from 'notistack'
 
-  useEffect(() => {
-    if (`${inputStatus}` !== `${status}`) {
-      changeBlogStatus({ post: { id, status: inputStatus } }).then((response) =>
-        console.log(response)
-      );
-    }
-  }, [inputStatus]);
-
-  return (
-    <Box className="flex flex-col gap-1 items-center py-2 w-full h-full">
-      <FormControl variant="filled" className="w-full">
-        <InputLabel id="status-select-label">Status</InputLabel>
-        <Select
-          fullWidth
-          color="secondary"
-          labelId="status-select-label"
-          id="status-select"
-          variant="filled"
-          name="status"
-          onChange={(e) => setInputStatus(e.target.value)}
-          value={inputStatus}
-        >
-          <MenuItem value={"published"}>{"Published"}</MenuItem>
-          <MenuItem value={"scheduled"}>{"Scheduled"}</MenuItem>
-          <MenuItem value={"draft"}>{"Draft"}</MenuItem>
-          <MenuItem value={"deleted"}>{"Deleted"}</MenuItem>
-        </Select>
-      </FormControl>
-    </Box>
-  );
-};
-const PinToTop = ({ row: { id, pin_to_top } }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const [toggleBlogPin] = useToggleBlogPinMutation();
+const PinToTop = ({ row: { id, pin_to_top }, enqueueSnackbar }) => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const [toggleBlogPin] = useToggleBlogPinMutation()
   const handleCheck = () => {
-    toggleBlogPin({ post: { id } });
-  };
+    toggleBlogPin({ post: { id } }).then((data) => {
+      if (!data?.error?.data) {
+        enqueueSnackbar(`Blog Pin is updated  successfully!`, {
+          variant: 'success',
+        })
+      }
+    })
+  }
   return (
     <Box className="flex flex-col gap-1 items-center py-2 w-full h-full">
       <FormControlLabel
@@ -82,26 +49,55 @@ const PinToTop = ({ row: { id, pin_to_top } }) => {
             name="fragileProduct"
           />
         }
-        label="Fragile Product"
+        label="Pin To Top"
       />
     </Box>
-  );
-};
+  )
+}
 const AdminListBlog = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const navigate = useNavigate();
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const navigate = useNavigate()
+  const { enqueueSnackbar } = useSnackbar()
+  const [rowSelectionModel, setRowSelectionModel] = useState([])
+  const [selectedAction, setSelectedAction] = useState('')
   const { data: blogs, isFetching: isFetchingBlogData } =
-    useGetAllAdminBlogsQuery();
-  const [deleteBlog] = useDeleteBlogMutation();
+    useGetAllAdminBlogsQuery()
+  const [deleteBlog] = useDeleteBlogMutation()
+
+  const [changeMultiBlogStatus] = useChangeMultiBlogStatusMutation()
+
   const handelDelete = (id) => {
-    console.log(id);
-    deleteBlog({ post: { id } }).then((response) => console.log(response));
-  };
+    console.log(id)
+    deleteBlog({ post: { id } }).then((data) => {
+      if (!data?.error?.data) {
+        enqueueSnackbar(`Blog is deleted  successfully!`, {
+          variant: 'success',
+        })
+      }
+    })
+  }
+
+  const handleAction = () => {
+    console.log(selectedAction)
+    if (rowSelectionModel.length) {
+      if (selectedAction) {
+        changeMultiBlogStatus({
+          post: { blogIds: rowSelectionModel, status: selectedAction },
+        }).then((data) => {
+          if (!data?.error?.data) {
+            enqueueSnackbar(`Blogs Status was updated  successfully!`, {
+              variant: 'success',
+            })
+          }
+        })
+      }
+    }
+  }
   const columns = [
     {
-      field: "id",
-      headerName: "ID",
+      field: 'id',
+      headerName: 'ID',
       width: 100,
       renderCell: ({ row: { id, slug } }) => {
         return (
@@ -113,12 +109,12 @@ const AdminListBlog = () => {
               # {id}
             </Typography>
           </Link>
-        );
+        )
       },
     },
     {
-      field: "title",
-      headerName: "Blog",
+      field: 'title',
+      headerName: 'Blog',
       width: 300,
       renderCell: ({ row: { id, title, thumbnail, slug } }) => {
         return (
@@ -136,44 +132,37 @@ const AdminListBlog = () => {
               <Typography color={colors.greenAccent[500]}>{slug}</Typography>
             </Link>
           </Box>
-        );
+        )
       },
     },
-    { field: "category", headerName: "Category", width: 150 },
-    { field: "headline", headerName: "Headline", width: 150 },
+    { field: 'category', headerName: 'Category', width: 150 },
+    { field: 'headline', headerName: 'Headline', width: 150 },
+
+    { field: 'status', headerName: 'Status', width: 150 },
+
     {
-      field: "published",
-      headerName: "Last Published At",
+      field: 'pin_to_top',
+      headerName: 'Pin To Top',
       width: 150,
-      renderCell: ({ row: { status, published } }) => (
-        <Box className="flex flex-col gap-1 items-center py-2 w-full h-full">
-          {published ? (
-            <Typography color={colors.greenAccent[500]}>
-              {dateFormatter(new Date(published))}
-            </Typography>
-          ) : (
-            <Typography color={colors.greenAccent[500]}>
-              not published net
-            </Typography>
-          )}
-        </Box>
+      renderCell: (props) => (
+        <PinToTop {...props} enqueueSnackbar={enqueueSnackbar} />
       ),
     },
     {
-      field: "status",
-      headerName: "Status",
+      field: 'published',
+      headerName: 'Published',
       width: 150,
-      renderCell: (props) => <Status {...props} />,
+      renderCell: ({ row: { published } }) => {
+        return (
+          <Typography>
+            {dateFormatter(new Date(published)) || 'not published'}
+          </Typography>
+        )
+      },
     },
     {
-      field: "pin_to_top",
-      headerName: "Pin To Top",
-      width: 150,
-      renderCell: (props) => <PinToTop {...props} />,
-    },
-    {
-      field: "action",
-      headerName: "Action",
+      field: 'action',
+      headerName: 'Action',
       width: 360,
       renderCell: ({ row: { slug } }) => {
         return (
@@ -191,10 +180,10 @@ const AdminListBlog = () => {
               Delete
             </Button>
           </Box>
-        );
+        )
       },
     },
-  ];
+  ]
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20 mb-10`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
@@ -217,26 +206,57 @@ const AdminListBlog = () => {
           backgroundColor={colors.primary[400]}
           className="h-[80vh] rounded-lg p-4"
           sx={{
-            "& .MuiDataGrid-root": {
-              border: "none",
+            '& .MuiDataGrid-root': {
+              border: 'none',
             },
-            "& .MuiDataGrid-cell": {
-              borderBottom: "none",
+            '& .MuiDataGrid-cell': {
+              borderBottom: 'none',
             },
-            "& .MuiCheckbox-root": {
+            '& .MuiCheckbox-root': {
               color: `${colors.greenAccent[200]} !important`,
             },
-            "& .MuiChackbox-root": {
+            '& .MuiChackbox-root': {
               color: `${colors.greenAccent[200]} !important`,
             },
-            "& .MuiDataGrid-columnHeaders": {
-              borderBottom: "none",
+            '& .MuiDataGrid-columnHeaders': {
+              borderBottom: 'none',
             },
-            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
               color: `${colors.grey[100]} !important`,
             },
           }}
         >
+          <Box className="flex gap-4 w-fit mb-4 items-center">
+            <Typography>Action: </Typography>
+            <FormControl size="small" className="w-60" fullWidth>
+              <InputLabel id="demo-simple-select-label">option</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Age"
+                color="secondary"
+                variant="outlined"
+                value={selectedAction}
+                onChange={(e) => setSelectedAction(e.target.value)}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={'published'}>{'Published'}</MenuItem>
+                <MenuItem value={'scheduled'}>{'Scheduled'}</MenuItem>
+                <MenuItem value={'draft'}>{'Draft'}</MenuItem>
+                <MenuItem value={'delete'}>{'Delete'}</MenuItem>
+              </Select>
+            </FormControl>
+            <Button
+              variant="outlined"
+              size="medium"
+              color="secondary"
+              onClick={handleAction}
+            >
+              Go
+            </Button>
+          </Box>
           {!isFetchingBlogData ? (
             blogs?.length ? (
               <DataGrid
@@ -245,6 +265,10 @@ const AdminListBlog = () => {
                 columns={columns}
                 autoPageSize
                 checkboxSelection
+                onRowSelectionModelChange={(newRowSelectionModel) => {
+                  setRowSelectionModel(newRowSelectionModel)
+                }}
+                rowSelectionModel={rowSelectionModel}
                 components={{ Toolbar: GridToolbar }}
               />
             ) : (
@@ -260,7 +284,7 @@ const AdminListBlog = () => {
         </Box>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default AdminListBlog;
+export default AdminListBlog

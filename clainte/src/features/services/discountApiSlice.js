@@ -12,7 +12,19 @@ export const discountApi = authApi.injectEndpoints({
       invalidatesTags: ["discounts"],
     }),
     getAllDiscounts: builder.query({
-      query: () => `service/discounts/`,
+      query: ({ limit }) => {
+        let queryKey = "";
+        queryKey = limit !== null ? queryKey + `limit=${limit}&` : queryKey;
+        return `service/discounts/all/?${queryKey}`;
+      },
+      providesTags: ["discounts"],
+    }),
+    getDiscounts: builder.query({
+      query: ({ limit }) => {
+        let queryKey = "";
+        queryKey = limit !== null ? queryKey + `limit=${limit}&` : queryKey;
+        return `service/discounts/?${queryKey}`;
+      },
       providesTags: ["discounts"],
     }),
     updateDiscount: builder.mutation({
@@ -36,6 +48,7 @@ export const discountApi = authApi.injectEndpoints({
 
 export const {
   useGetAllDiscountsQuery,
+  useGetDiscountsQuery,
   useAddDiscountMutation,
   useUpdateDiscountMutation,
   useDeleteDiscountMutation,

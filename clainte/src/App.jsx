@@ -1,158 +1,159 @@
 //IMPORTING LIBRARY
-import React, { useRef } from "react";
-import { Routes, Route } from "react-router-dom";
-import { CssBaseline, ThemeProvider } from "@mui/material";
-import { useEffect } from "react";
-import jwt_decode from "jwt-decode";
+import React, { useRef } from 'react'
+import { Routes, Route } from 'react-router-dom'
+import { CssBaseline, ThemeProvider } from '@mui/material'
+import { useEffect } from 'react'
+import jwt_decode from 'jwt-decode'
 //IMPORTING APP SETUP
-import { ColorModeContext, useMode } from "./theme";
+import { ColorModeContext, useMode } from './theme'
 import {
   selectCurrentToken,
   selectCurrentRefresh,
   selectCurrentUser,
   // selectCurrentUser,
-} from "./features/auth/authSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { Box } from "@mui/material";
+} from './features/auth/authSlice'
+import { useDispatch, useSelector } from 'react-redux'
 // import {  useDispatch } from "react-redux";
-import { useGetUseDataQuery } from "./features/auth/authApiSlice";
-import { setUserData } from "./features/auth/authSlice";
-import { refreshAccessToken } from "./features/auth/authApi";
+import { useGetUseDataQuery } from './features/auth/authApiSlice'
+import { setUserData } from './features/auth/authSlice'
+import { refreshAccessToken } from './features/auth/authApi'
 
-import store from "./app/store";
-import dayjs from "dayjs";
-import BlogDetails from "./site/customers/pages/blog/details";
-import ProductsListCustomer from "./site/customers/pages/products/list";
-// import AddEditBlog from "./site/admin/pages/blog/addEdit";
-
-// import CustomerLayout from "./site/customers/layout";
-// import Home from "./site/customers/pages/home";
-
+import store from './app/store'
+import dayjs from 'dayjs'
+import BlogDetails from './site/customers/pages/blog/details'
+import ProductsListCustomer from './site/customers/pages/products/list'
+import AuthRouters from './utils/AuthRouters'
 const CustomerPrivateRoutes = React.lazy(() =>
-  import("./utils/CustomerPrivateRoutes")
-);
+  import('./utils/CustomerPrivateRoutes')
+)
 const AdminPrivateRoutes = React.lazy(() =>
-  import("./utils/AdminPrivateRoutes")
-);
-const AdminLayout = React.lazy(() => import("./site/admin/layout"));
-const CustomerLayout = React.lazy(() => import("./site/customers/layout"));
+  import('./utils/AdminPrivateRoutes')
+)
+const AdminLayout = React.lazy(() => import('./site/admin/layout'))
+const CustomerLayout = React.lazy(() => import('./site/customers/layout'))
 //IMPORTING ADMIN PAGE COMPONENTS
 
-const Dashboard = React.lazy(() => import("./site/admin/pages/dashboard"));
-const Team = React.lazy(() => import("./site/admin/pages/team"));
-const Invoices = React.lazy(() => import("./site/admin/pages/invoices"));
-const Contacts = React.lazy(() => import("./site/admin/pages/contacts"));
-const AdminFAQ = React.lazy(() => import("./site/admin/pages/faq"));
+const Dashboard = React.lazy(() => import('./site/admin/pages/dashboard'))
+const Contacts = React.lazy(() => import('./site/admin/pages/contacts'))
+const AdminFAQ = React.lazy(() => import('./site/admin/pages/faq'))
+
+const General = React.lazy(() =>
+  import('./site/admin/pages/settings/general/General')
+)
+const Specification = React.lazy(() =>
+  import('./site/admin/pages/settings/specification/Specification')
+)
+const Pages = React.lazy(() =>
+  import('./site/admin/pages/settings/pages/Pages')
+)
 
 const OrdersListAdmin = React.lazy(() =>
-  import("./site/admin/pages/orders").then((module) => ({
+  import('./site/admin/pages/orders').then((module) => ({
     default: module.OrdersListAdmin,
   }))
-);
+)
 const OrderDetailsAdmin = React.lazy(() =>
-  import("./site/admin/pages/orders").then((module) => ({
+  import('./site/admin/pages/orders').then((module) => ({
     default: module.OrderDetailsAdmin,
   }))
-);
+)
 
 const ProductsListAdmin = React.lazy(() =>
-  import("./site/admin/pages/products/list")
-);
+  import('./site/admin/pages/products/list')
+)
 const AddEditProduct = React.lazy(() =>
-  import("./site/admin/pages/products/add-edit")
-);
+  import('./site/admin/pages/products/add-edit')
+)
 const ProductDetailsAdmin = React.lazy(() =>
-  import("./site/admin/pages/products/details")
-);
+  import('./site/admin/pages/products/details')
+)
 // IMPORTING Authentication pages
 
-const Login = React.lazy(() => import("./site/auth/pages/Login"));
-const Register = React.lazy(() => import("./site/auth/pages/Register"));
+const Login = React.lazy(() => import('./site/auth/pages/Login'))
+const Register = React.lazy(() => import('./site/auth/pages/Register'))
 
 //IMPORTING CUSTOMERS PAGE COMPONENTS
 
-const Home = React.lazy(() => import("./site/customers/pages/home"));
-const Shopping = React.lazy(() => import("./site/customers/pages/shopping"));
+const Home = React.lazy(() => import('./site/customers/pages/home'))
+const Shopping = React.lazy(() => import('./site/customers/pages/shopping'))
 const ProductDetailsCustomer = React.lazy(() =>
-  import("./site/customers/pages/products").then((module) => ({
+  import('./site/customers/pages/products').then((module) => ({
     default: module.ProductDetailsCustomer,
   }))
-);
-const Page404 = React.lazy(() => import("./components/Page404"));
+)
+const Page404 = React.lazy(() => import('./components/Page404'))
 
 const CustomersList = React.lazy(() =>
-  import("./site/admin/pages/customers/list/index")
-);
+  import('./site/admin/pages/customers/list/index')
+)
 const NewCustomer = React.lazy(() =>
-  import("./site/admin/pages/customers/new/index")
-);
+  import('./site/admin/pages/customers/new/index')
+)
 const CustomerDetails = React.lazy(() =>
-  import("./site/admin/pages/customers/details/index")
-);
+  import('./site/admin/pages/customers/details/index')
+)
 const Profile = React.lazy(() =>
-  import("./site/customers/pages/profile/details/index")
-);
+  import('./site/customers/pages/profile/details/index')
+)
 const OrdersListCustomer = React.lazy(() =>
-  import("./site/customers/pages/profile/orders/List")
-);
+  import('./site/customers/pages/profile/orders/List')
+)
 const OrderDetailsCustomer = React.lazy(() =>
-  import("./site/customers/pages/profile/orders/Details")
-);
+  import('./site/customers/pages/profile/orders/Details')
+)
 const Wishlist = React.lazy(() =>
-  import("./site/customers/pages/profile/wishlist/index")
-);
+  import('./site/customers/pages/profile/wishlist/index')
+)
 const Checkout = React.lazy(() =>
-  import("./site/customers/pages/checkout/checkout/index")
-);
+  import('./site/customers/pages/checkout/checkout/index')
+)
 const ViewCart = React.lazy(() =>
-  import("./site/customers/pages/checkout/viewcart/index")
-);
+  import('./site/customers/pages/checkout/viewcart/index')
+)
 const Confirmation = React.lazy(() =>
-  import("./site/customers/pages/checkout/confirmation/index")
-);
+  import('./site/customers/pages/checkout/confirmation/index')
+)
 
-const Blog = React.lazy(() => import("./site/customers/pages/blog"));
-const Contact = React.lazy(() => import("./site/customers/pages/contact"));
-const About = React.lazy(() => import("./site/customers/pages/about"));
-const CustomerFAQ = React.lazy(() => import("./site/customers/pages/faq"));
+const Blog = React.lazy(() => import('./site/customers/pages/blog'))
+const Contact = React.lazy(() => import('./site/customers/pages/contact'))
+const About = React.lazy(() => import('./site/customers/pages/about'))
+const CustomerFAQ = React.lazy(() => import('./site/customers/pages/faq'))
 
-const AddEditBlog = React.lazy(() => import("./site/admin/pages/blog/addEdit"));
+const AddEditBlog = React.lazy(() => import('./site/admin/pages/blog/addEdit'))
 
 const AdminBlogDetails = React.lazy(() =>
-  import("./site/admin/pages/blog/details")
-);
-const AdminListBlog = React.lazy(() => import("./site/admin/pages/blog/list"));
+  import('./site/admin/pages/blog/details')
+)
+const AdminListBlog = React.lazy(() => import('./site/admin/pages/blog/list'))
 
 function App() {
-  const [theme, colorMode] = useMode();
-  const accessToken = useSelector(selectCurrentToken);
-  const refreshToken = useSelector(selectCurrentRefresh);
+  const [theme, colorMode] = useMode()
+  const accessToken = useSelector(selectCurrentToken)
+  const refreshToken = useSelector(selectCurrentRefresh)
 
-  const userData = useSelector(selectCurrentUser);
-  const dispatch = useDispatch();
-  const { data: newUserData } = useGetUseDataQuery();
-
+  const userData = useSelector(selectCurrentUser)
+  const dispatch = useDispatch()
+  const { data: newUserData } = useGetUseDataQuery()
   useEffect(() => {
-    if (userData && newUserData) dispatch(setUserData(newUserData));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessToken]);
+    if (userData && newUserData) dispatch(setUserData(newUserData))
+  }, [accessToken, newUserData])
 
-  const timeOutRef = useRef(1000 * 60 * 4);
+  const timeOutRef = useRef(1000 * 60 * 4)
   useEffect(() => {
     timeOutRef.current = accessToken
       ? dayjs.unix(jwt_decode(accessToken).exp).diff(dayjs()) - 30000
-      : 1000 * 60 * 58;
-  }, [accessToken]);
+      : 1000 * 60 * 58
+  }, [accessToken])
 
   useEffect(() => {
-    let timeOut = timeOutRef.current < 0 ? 3000 : timeOutRef.current;
+    let timeOut = timeOutRef.current < 0 ? 3000 : timeOutRef.current
     let interval = setInterval(() => {
       if (refreshToken) {
-        refreshAccessToken(store);
+        refreshAccessToken(store)
       }
-    }, timeOut);
-    return () => clearInterval(interval);
-  }, [accessToken, refreshToken]);
+    }, timeOut)
+    return () => clearInterval(interval)
+  }, [accessToken, refreshToken])
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -162,7 +163,7 @@ function App() {
         <Routes>
           {/* Authentication pages */}
 
-          <Route path="/auth">
+          <Route element={<AuthRouters />} path="/auth">
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
           </Route>
@@ -190,6 +191,32 @@ function App() {
                 element={
                   <AdminLayout>
                     <NewCustomer />
+                  </AdminLayout>
+                }
+              />
+            </Route>
+            <Route path="setting">
+              <Route
+                path="pages"
+                element={
+                  <AdminLayout>
+                    <Pages />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path="specification"
+                element={
+                  <AdminLayout>
+                    <Specification />
+                  </AdminLayout>
+                }
+              />
+              <Route
+                path="general"
+                element={
+                  <AdminLayout>
+                    <General />
                   </AdminLayout>
                 }
               />
@@ -234,22 +261,6 @@ function App() {
                 element={
                   <AdminLayout>
                     <Contacts />
-                  </AdminLayout>
-                }
-              />
-              <Route
-                path="invoices"
-                element={
-                  <AdminLayout>
-                    <Invoices />
-                  </AdminLayout>
-                }
-              />
-              <Route
-                path="team"
-                element={
-                  <AdminLayout>
-                    <Team />
                   </AdminLayout>
                 }
               />
@@ -471,6 +482,6 @@ function App() {
         </Routes>
       </ThemeProvider>
     </ColorModeContext.Provider>
-  );
+  )
 }
-export default App;
+export default App

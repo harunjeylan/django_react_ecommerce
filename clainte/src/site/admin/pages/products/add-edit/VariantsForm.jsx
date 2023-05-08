@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { useTheme } from "@emotion/react";
+import React, { useState, useEffect } from 'react'
+import { useTheme } from '@emotion/react'
 import {
   Box,
   Button,
@@ -13,32 +13,32 @@ import {
   CircularProgress,
   Chip,
   OutlinedInput,
-} from "@mui/material";
+} from '@mui/material'
 
-import { useGetAllVariantsQuery } from "../../../../../features/services/variantApiSlice";
-import VariantList from "../components/VariantList";
-import CreateEditVariant from "../components/CreateEditVariant";
-import { tokens } from "../../../../../theme";
-import Model from "../../../../../components/ui/Model";
+import { useGetAllVariantsQuery } from '../../../../../features/services/variantApiSlice'
+import { tokens } from '../../../../../theme'
+import useAlert from '../../../../../components/ui/useAlert'
+import Model from '../../../../../components/ui/Model'
+import CreateEditVariant from '../../settings/specification/components/CreateEditVariant'
+import VariantList from '../../settings/specification/components/VariantList'
 const VariantsForm = ({
   values,
   errors,
   touched,
   handleBlur,
-  handleChange,
   setFieldValue,
   initialValues,
 }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const [modelMessages, setModelMessages] = useState([]);
-  const [openModel, setOpenModel] = useState(false);
-  const [modelTitle, setModelTitle] = useState("");
-  const [selected, setSelected] = useState([]);
-  const [editingVariant, setEditingVariant] = useState(undefined);
-  const [creatingVariant, setCreatingVariant] = useState(undefined);
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const [CustomAlert, setMessages] = useAlert()
+  const [openModel, setOpenModel] = useState(false)
+  const [modelTitle, setModelTitle] = useState('')
+  const [selected, setSelected] = useState([])
+  const [editingVariant, setEditingVariant] = useState(undefined)
+  const [creatingVariant, setCreatingVariant] = useState(undefined)
   const { data: variants, isFetching: variantsIsFetching } =
-    useGetAllVariantsQuery();
+    useGetAllVariantsQuery()
 
   useEffect(() => {
     if (initialValues?.variants && variants) {
@@ -46,90 +46,84 @@ const VariantsForm = ({
         initialValues?.variants?.map(({ variantLabel }) => {
           let selectedOptions = variants.find(
             (variantOption) => variantOption.label === variantLabel
-          );
+          )
 
-          return selectedOptions;
+          return selectedOptions
         })
-      );
+      )
     }
-  }, [initialValues?.variants, variants]);
+  }, [initialValues?.variants, variants])
 
   const getOptions = (variantLabel) => {
     let variantOptions = values.variants.find(
       (variant) => variant.variantLabel === variantLabel
-    );
+    )
     if (variantOptions?.options) {
-      return variantOptions?.options; //.map((option) => option.label);
+      return variantOptions?.options //.map((option) => option.label);
     } else {
-      return [];
+      return []
     }
     // return variantOptions?.options ? variantOptions?.options : [];
-  };
+  }
 
   const handleOpenModel = () => {
-    setModelTitle("Add Variants");
-    setOpenModel(true);
-  };
-
-  const handleSetVariant = (variantId) => {
-    let selected_variant = variants?.find(
-      (variant) => variant.id === variantId
-    );
-    if (selected.find((variant) => variant.id === variantId)) {
-      setSelected((prev) => prev.filter((variant) => variant.id !== variantId));
-    } else {
-      setSelected((prev) => [...prev, selected_variant]);
-    }
-  };
-
+    setModelTitle('Add Variants')
+    setOpenModel(true)
+  }
   const handleRemove = (variantId) => {
-    let selected_variant = variants?.find(
-      (variant) => variant.id === variantId
-    );
-    setSelected((prev) => prev.filter((variant) => variant.id !== variantId));
+    let selected_variant = variants?.find((variant) => variant.id === variantId)
+    setSelected((prev) => prev.filter((variant) => variant.id !== variantId))
     setFieldValue(
-      "variants",
+      'variants',
       values.variants.filter(
         (variant) => variant.variantLabel !== selected_variant.label
       )
-    );
-  };
+    )
+  }
 
   const handleChangeOption = (variantLabel, options) => {
     if (
       values.variants?.find((variant) => variant.variantLabel === variantLabel)
     ) {
       setFieldValue(
-        "variants",
+        'variants',
         values.variants.map((variant) => {
           if (variant?.variantLabel === variantLabel) {
             return {
               variantLabel,
               options,
-            };
+            }
           } else {
-            return variant;
+            return variant
           }
         })
-      );
+      )
     } else {
-      setFieldValue("variants", [
+      setFieldValue('variants', [
         ...values.variants,
         {
           variantLabel,
           options,
         },
-      ]);
+      ])
     }
-  };
+  }
+  const handleSetVariant = (variantId) => {
+    let selected_variant = variants?.find((variant) => variant.id === variantId)
+    if (selected.find((variant) => variant.id === variantId)) {
+      setSelected((prev) => prev.filter((variant) => variant.id !== variantId))
+    } else {
+      setSelected((prev) => [...prev, selected_variant])
+    }
+  }
 
   const handleAddVariant = () => {
     setCreatingVariant({
-      label: "",
+      label: '',
       options: [],
-    });
-    setEditingVariant(undefined);
-  };
+    })
+    setEditingVariant(undefined)
+  }
 
   return (
     <>
@@ -138,11 +132,10 @@ const VariantsForm = ({
         openModel={openModel}
         setOpenModel={setOpenModel}
         modelTitle={modelTitle}
-        messages={modelMessages}
-        setMessages={setModelMessages}
       >
         {openModel && (
           <>
+            <CustomAlert />
             {creatingVariant || editingVariant ? (
               <CreateEditVariant
                 creatingVariant={creatingVariant}
@@ -150,7 +143,7 @@ const VariantsForm = ({
                 editingVariant={editingVariant}
                 setEditingVariant={setEditingVariant}
                 handleAddVariant={handleAddVariant}
-                setModelMessages={setModelMessages}
+                setMessages={setMessages}
               />
             ) : !variantsIsFetching ? (
               <VariantList
@@ -159,7 +152,7 @@ const VariantsForm = ({
                 setEditingVariant={setEditingVariant}
                 handleSetVariant={handleSetVariant}
                 handleAddVariant={handleAddVariant}
-                setModelMessages={setModelMessages}
+                setMessages={setMessages}
               />
             ) : (
               <Box className="h-full w-full flex justify-center items-center">
@@ -236,8 +229,8 @@ const VariantsForm = ({
                         renderValue={(selected) => (
                           <Box
                             sx={{
-                              display: "flex",
-                              flexWrap: "wrap",
+                              display: 'flex',
+                              flexWrap: 'wrap',
                               gap: 0.5,
                             }}
                           >
@@ -252,6 +245,9 @@ const VariantsForm = ({
                         }
                         error={!!touched?.options && !!errors?.options}
                       >
+                        <MenuItem value="">
+                          <em>None</em>
+                        </MenuItem>
                         {variant.options?.map((option, index) => (
                           <MenuItem
                             key={`option-${option}-${index}`}
@@ -285,7 +281,7 @@ const VariantsForm = ({
         </Button>
       </Box>
     </>
-  );
-};
+  )
+}
 
-export default VariantsForm;
+export default VariantsForm

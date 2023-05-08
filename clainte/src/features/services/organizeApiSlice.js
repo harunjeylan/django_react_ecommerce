@@ -1,42 +1,42 @@
-import { authApi } from "../auth/authApi";
+import { authApi } from '../auth/authApi'
 
 export const organizeApi = authApi.injectEndpoints({
-  tagTypes: ["organize", "categories"],
+  tagTypes: ['organize', 'categories'],
   endpoints: (builder) => ({
     getAllOrganize: builder.query({
-      query: () => "service/organize/",
-      providesTags: ["organize"],
+      query: () => 'service/organize/',
+      providesTags: ['organize'],
     }),
     getAllCategory: builder.query({
       query: () => `service/organize/categories/`,
-      providesTags: ["categories"],
+      providesTags: ['categories'],
     }),
     addOrganize: builder.mutation({
       query: ({ post }) => ({
         url: `service/organize/add/`,
-        method: "POST",
+        method: 'POST',
         body: post,
       }),
-      invalidatesTags: ["organize"],
+      invalidatesTags: ['organize', 'categories'],
     }),
     updateOrganize: builder.mutation({
       query: ({ post }) => ({
         url: `service/organize/update/`,
-        method: "PUT",
+        method: 'PUT',
         body: post,
       }),
-      invalidatesTags: ["organize"],
+      invalidatesTags: ['organize'],
     }),
     deleteOrganize: builder.mutation({
       query: ({ post }) => ({
         url: `service/organize/delete/`,
-        method: "DELETE",
+        method: 'DELETE',
         body: post,
       }),
-      invalidatesTags: ["organize"],
+      invalidatesTags: ['organize'],
     }),
   }),
-});
+})
 
 export const {
   useGetAllCategoryQuery,
@@ -44,4 +44,4 @@ export const {
   useAddOrganizeMutation,
   useDeleteOrganizeMutation,
   useUpdateOrganizeMutation,
-} = organizeApi;
+} = organizeApi

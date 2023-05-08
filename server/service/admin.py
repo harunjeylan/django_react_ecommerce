@@ -2,26 +2,27 @@ from django.contrib import admin
 
 from .models import (
     Category,
-    OrderdItem,
-    OrderdVariantOption, 
-    Review, 
-    Vendor, 
-    Collection, 
-    Tag, 
-    Option, 
+    OrderedItem,
+    OrderedVariantOption,
+    Review,
+    Vendor,
+    Collection,
+    Tag,
+    Option,
     Discount,
-    Variant, 
-    VariantOption, 
-    Image, 
-    Organize,  
-    Country, 
-    Order, 
+    Variant,
+    VariantOption,
+    Image,
+    Organize,
+    Country,
+    Order,
     Brand,
     OrderAddress,
     Comment,
     Contact,
     Subscriber,
-    Fqa,
+    Faq,
+    Delivery,
 )
 
 # Register your models here.
@@ -64,7 +65,7 @@ class DiscountAdmin(admin.ModelAdmin):
 @admin.register(Variant)
 class VariantAdmin(admin.ModelAdmin):
     list_display = ( 'label',)
-   
+
 
 
 @admin.register(VariantOption)
@@ -115,6 +116,14 @@ class ReviewAdmin(admin.ModelAdmin):
 
 
 
+@admin.register(Delivery)
+class DeliveryAdmin(admin.ModelAdmin):
+    list_display = (
+        'name',
+        'description',
+        'pricing',
+    )
+
 @admin.register(OrderAddress)
 class OrderAddressAdmin(admin.ModelAdmin):
     list_display = (
@@ -129,8 +138,8 @@ class OrderAddressAdmin(admin.ModelAdmin):
         'state',
     )
 
-@admin.register(OrderdItem)
-class OrderdItemAdmin(admin.ModelAdmin):
+@admin.register(OrderedItem)
+class OrderedItemAdmin(admin.ModelAdmin):
     list_display = (
         'count',
     )
@@ -138,8 +147,8 @@ class OrderdItemAdmin(admin.ModelAdmin):
 
 
 
-@admin.register(OrderdVariantOption)
-class OrderdVariantOptionAdmin(admin.ModelAdmin):
+@admin.register(OrderedVariantOption)
+class OrderedVariantOptionAdmin(admin.ModelAdmin):
     list_display = ('variant','option')
     list_filter = ('option', 'variant')
 
@@ -161,6 +170,6 @@ class SubscriberAdmin(admin.ModelAdmin):
     list_display = ( 'email',"date")
 
 
-@admin.register(Fqa)
-class FqaAdmin(admin.ModelAdmin):
+@admin.register(Faq)
+class FaqAdmin(admin.ModelAdmin):
     list_display = ( 'question','answer',"date")

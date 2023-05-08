@@ -2,7 +2,7 @@ import React from "react";
 import { Typography, Box, useTheme, Divider } from "@mui/material";
 import { tokens } from "../theme";
 
-const OrderSummery = ({ totalPrice }) => {
+const OrderSummery = ({ totalPrice, tax = 0, shipping = 0 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -45,7 +45,7 @@ const OrderSummery = ({ totalPrice }) => {
           Shipping and handling
         </Typography>
         <Typography variant="h5" fontWeight="bold">
-          $10.00
+          ${shipping}
         </Typography>
       </Box>
       <Divider />
@@ -54,7 +54,7 @@ const OrderSummery = ({ totalPrice }) => {
           Tax
         </Typography>
         <Typography variant="h5" fontWeight="bold">
-          $0.00
+          ${tax}
         </Typography>
       </Box>
       <Divider />
@@ -63,7 +63,7 @@ const OrderSummery = ({ totalPrice }) => {
           Total
         </Typography>
         <Typography variant="h5" fontWeight="bold">
-          ${totalPrice + 10}
+          ${totalPrice + shipping + tax}
         </Typography>
       </Box>
     </Box>

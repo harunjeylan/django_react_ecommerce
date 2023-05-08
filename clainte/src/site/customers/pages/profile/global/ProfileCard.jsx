@@ -1,6 +1,6 @@
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 // import { useGetUseUseDataQuery } from "../../../import";
 import {
   Typography,
@@ -9,25 +9,25 @@ import {
   List,
   ListItemIcon,
   ListItemButton,
-} from "@mui/material";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
-import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
-import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
-import { tokens } from "../../../../../theme";
+} from '@mui/material'
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline'
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined'
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
+import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined'
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined'
+import { tokens } from '../../../../../theme'
 import {
   logOut,
   selectCurrentUser,
-} from "../../../../../features/auth/authSlice";
-
+} from '../../../../../features/auth/authSlice'
+import userAvatar from '../../../../../assets/user-avatar.png'
 const ProfileCard = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const navigate = useNavigate();
-  const userData = useSelector(selectCurrentUser);
-  const dispatch = useDispatch();
-
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const navigate = useNavigate()
+  const userData = useSelector(selectCurrentUser)
+  const dispatch = useDispatch()
+  
   return (
     <Box className="flex flex-col gap-8 drop-shadow-lg bg-slate-400/10 rounded-lg">
       <Box
@@ -37,12 +37,8 @@ const ProfileCard = () => {
         <Box className="h-[200px] w-[200px] rounded-full bg-slate-400/10 ">
           <img
             alt="user avatar"
-            src={
-              userData?.image
-                ? userData?.image
-                : "https://robohash.org/utetasperiores.png?size=200x200"
-            }
-            className="h-[200px] w-[200px] rounded-full"
+            src={userData?.image || userAvatar}
+            className="h-[200px] w-[200px] rounded-full border bg-slate-300 "
           />
         </Box>
 
@@ -67,7 +63,7 @@ const ProfileCard = () => {
 
       <List className={`bg-transparent w-[100%]`}>
         {userData?.is_superuser && (
-          <ListItemButton onClick={() => navigate("/admin/")}>
+          <ListItemButton onClick={() => navigate('/admin/')}>
             <ListItemIcon>
               <DashboardOutlinedIcon fontSize="large" />
             </ListItemIcon>
@@ -78,7 +74,7 @@ const ProfileCard = () => {
             </Box>
           </ListItemButton>
         )}
-        <ListItemButton onClick={() => navigate("/profile/")}>
+        <ListItemButton onClick={() => navigate('/profile/')}>
           <ListItemIcon>
             <PersonOutlineIcon fontSize="large" />
           </ListItemIcon>
@@ -88,7 +84,7 @@ const ProfileCard = () => {
             </Typography>
           </Box>
         </ListItemButton>
-        <ListItemButton onClick={() => navigate("/profile/orders/")}>
+        <ListItemButton onClick={() => navigate('/profile/orders/')}>
           <ListItemIcon>
             <ShoppingBagOutlinedIcon fontSize="large" />
           </ListItemIcon>
@@ -99,7 +95,7 @@ const ProfileCard = () => {
           </Box>
         </ListItemButton>
 
-        <ListItemButton onClick={() => navigate("/profile/wishlist/")}>
+        <ListItemButton onClick={() => navigate('/profile/wishlist/')}>
           <ListItemIcon>
             <FavoriteBorderOutlinedIcon fontSize="large" />
           </ListItemIcon>
@@ -121,7 +117,7 @@ const ProfileCard = () => {
         </ListItemButton>
       </List>
     </Box>
-  );
-};
+  )
+}
 
-export default ProfileCard;
+export default ProfileCard

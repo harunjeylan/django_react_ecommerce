@@ -1,16 +1,16 @@
-import { Alert, Box } from "@mui/material";
+import { Alert, AlertTitle, Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
 const useAlert = () => {
   const [messages, setMessages] = useState([]);
-
   useEffect(() => {
     let messageTimeouts = [];
     messages.forEach((message) => {
+      let timeout = message?.timeout || 5000;
       messageTimeouts.push(
         setTimeout(() => {
           setMessages((prev) => prev.filter((mess) => mess.id !== message.id));
-        }, 5000)
+        }, timeout)
       );
     });
     return () => {
@@ -27,7 +27,8 @@ const useAlert = () => {
             setMessages((prev) => prev.filter((mess) => mess.id !== message.id))
           }
         >
-          {message?.id} =&gt; {message?.description}
+          <AlertTitle>{message?.title || messages?.id}</AlertTitle>
+          {message?.description}
         </Alert>
       </Box>
     ));

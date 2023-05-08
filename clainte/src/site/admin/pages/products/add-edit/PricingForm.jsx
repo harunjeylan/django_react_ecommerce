@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useTheme } from "@emotion/react";
+import React, { useMemo, useState } from 'react'
+import { useTheme } from '@emotion/react'
 
-import InputAdornment from "@mui/material/InputAdornment";
+import InputAdornment from '@mui/material/InputAdornment'
 import {
   Box,
   TextField,
@@ -11,16 +11,16 @@ import {
   FormGroup,
   Button,
   CircularProgress,
-} from "@mui/material";
-import dayjs from "dayjs";
+} from '@mui/material'
+import dayjs from 'dayjs'
 
-import { tokens } from "../../../../../theme";
-import { useGetAllDiscountsQuery } from "../../../../../features/services/discountApiSlice";
+import { tokens } from '../../../../../theme'
+import { useGetAllDiscountsQuery } from '../../../../../features/services/discountApiSlice'
 
-import Model from "../../../../../components/ui/Model";
-import CreateEditDiscount from "../components/CreateEditDiscount";
-import DiscountList from "../components/DiscountList";
-import Discount from "../components/Discount";
+import Model from '../../../../../components/ui/Model'
+import useAlert from '../../../../../components/ui/useAlert'
+import CreateEditDiscount from '../../settings/specification/components/CreateEditDiscount'
+import DiscountList from '../../settings/specification/components/DiscountList'
 
 const PricingForm = ({
   setFieldValue,
@@ -30,25 +30,23 @@ const PricingForm = ({
   touched,
   errors,
 }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const [editingDiscount, setEditingDiscount] = useState(undefined);
-  const [creatingDiscount, setCreatingDiscount] = useState(undefined);
-
-  const [modelMessages, setModelMessages] = useState([]);
-  const [openModel, setOpenModel] = useState(false);
-
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const [editingDiscount, setEditingDiscount] = useState(undefined)
+  const [creatingDiscount, setCreatingDiscount] = useState(undefined)
+  const [openModel, setOpenModel] = useState(false)
+  const [CustomAlert, setMessages] = useAlert()
   const { data: discounts = [], isFetching: discountsIsFetching } =
-    useGetAllDiscountsQuery();
+    useGetAllDiscountsQuery({ limit: null })
 
   const nowDiscounts = useMemo(() => {
     let newDiscount = {
-      name: "None",
+      name: 'None',
       id: null,
       amount: 0,
-      start_date: "null",
-      end_date: "null",
-    };
+      start_date: 'null',
+      end_date: 'null',
+    }
     let filteredDiscounts = [
       newDiscount,
       ...discounts
@@ -57,33 +55,33 @@ const PricingForm = ({
             !(dayjs(discount.end_date) < dayjs(new Date().getTime()))
         )
         ?.slice(0, 2),
-    ];
+    ]
     let isSelectedDiscount = filteredDiscounts.find(
       (discount) => discount.id === values.discount
-    );
+    )
     if (!isSelectedDiscount) {
       let selectedDiscount = discounts.find(
         (discount) => discount.id === values.discount
-      );
+      )
       if (selectedDiscount) {
-        filteredDiscounts.push(selectedDiscount);
+        filteredDiscounts.push(selectedDiscount)
       }
     }
-    return filteredDiscounts;
-  }, [discounts, values.discount]);
+    return filteredDiscounts
+  }, [discounts, values.discount])
 
   const handleAddDiscount = () => {
     setCreatingDiscount({
-      name: "",
+      name: '',
       amount: 0,
       start_date: null,
       end_date: null,
-    });
-    setEditingDiscount(undefined);
-  };
+    })
+    setEditingDiscount(undefined)
+  }
   const handleSetDiscount = (discountId) => {
-    setFieldValue("discount", discountId);
-  };
+    setFieldValue('discount', discountId)
+  }
   return (
     <Box className="h-full w-full max-h-full overflow-y-auto">
       <Model
@@ -91,8 +89,6 @@ const PricingForm = ({
         openModel={openModel}
         setOpenModel={setOpenModel}
         modelTitle="Add Discount"
-        messages={modelMessages}
-        setMessages={setModelMessages}
       >
         {openModel && (
           <>
@@ -102,7 +98,7 @@ const PricingForm = ({
                 setCreatingDiscount={setCreatingDiscount}
                 editingDiscount={editingDiscount}
                 setEditingDiscount={setEditingDiscount}
-                setModelMessages={setModelMessages}
+                setMessages={setMessages}
               />
             ) : !discountsIsFetching ? (
               <DiscountList
@@ -111,7 +107,7 @@ const PricingForm = ({
                 handleAddDiscount={handleAddDiscount}
                 handleSetDiscount={handleSetDiscount}
                 highlightDiscountId={values.discount}
-                setModelMessages={setModelMessages}
+                setMessages={setMessages}
               />
             ) : (
               <Box className="h-full w-full flex justify-center items-center">
@@ -196,7 +192,7 @@ const PricingForm = ({
               />
             ) : (
               <Typography
-                sx={{ mb: "15px" }}
+                sx={{ mb: '15px' }}
                 fontSize="18px"
                 className="text-center"
               >
@@ -220,7 +216,7 @@ const PricingForm = ({
         </FormGroup>
       </FormControl>
     </Box>
-  );
-};
+  )
+}
 
-export default PricingForm;
+export default PricingForm

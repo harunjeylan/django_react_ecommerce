@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Address, Profile
+from .models import Address, Profile, CustomerNote
 
 
 @admin.register(Address)
@@ -23,3 +23,10 @@ class ProfileAdmin(admin.ModelAdmin):
     list_filter = ('user',)
 
 
+@admin.register(CustomerNote)
+class CustomerNoteAdmin(admin.ModelAdmin):
+    list_display = (
+        'customer',
+        'date',
+        'description',
+    )

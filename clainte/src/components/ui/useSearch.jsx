@@ -1,50 +1,49 @@
-import { useTheme } from "@emotion/react";
+import { useTheme } from '@emotion/react'
 import {
   Box,
   CardActionArea,
-  Divider,
   IconButton,
   TextField,
   Typography,
-} from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { tokens } from "../../theme";
-import Model from "./Model";
-import { useSearchItemsQuery } from "../../features/services/searchApiSlice";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../../features/auth/authSlice";
-import { Link } from "react-router-dom";
-
+} from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import { tokens } from '../../theme'
+import Model from './Model'
+import { useSearchItemsQuery } from '../../features/services/searchApiSlice'
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
+import { useSelector } from 'react-redux'
+import { selectCurrentUser } from '../../features/auth/authSlice'
+import { Link } from 'react-router-dom'
+import userAvatar from '../../assets/user-avatar.png'
 const useSearch = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const user = useSelector(selectCurrentUser);
-  const [searchValue, setSearchValue] = useState("");
-  const [search, setSearch] = useState("");
-  const [openModel, setOpenModel] = useState(false);
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const user = useSelector(selectCurrentUser)
+  const [searchValue, setSearchValue] = useState('')
+  const [search, setSearch] = useState('')
+  const [openModel, setOpenModel] = useState(false)
 
   const { data: searchItems = {}, isFetching: isFetchingSearchItems } =
     useSearchItemsQuery({
       search,
-    });
+    })
 
   useEffect(() => {
     let timeOut = setTimeout(() => {
-      if (searchValue !== "") {
-        setSearch(`search=${searchValue}`);
+      if (searchValue !== '') {
+        setSearch(`search=${searchValue}`)
       }
-    }, 1000);
-    return () => clearTimeout(timeOut);
-  }, [searchValue]);
+    }, 1000)
+    return () => clearTimeout(timeOut)
+  }, [searchValue])
 
   const SearchButton = () => {
     return (
       <IconButton onClick={() => setOpenModel(true)}>
         <SearchOutlinedIcon />
       </IconButton>
-    );
-  };
+    )
+  }
 
   const SearchResult = () => {
     return (
@@ -82,7 +81,7 @@ const useSearch = () => {
                     {searchItems.products?.map((product, ind) => (
                       <Box
                         key={`${product?.title}-${product?.id}-${ind}`}
-                        className="h-fit flex flex-col md:flex-row gap-2 
+                        className="h-fit flex flex-col md:flex-row gap-2
                         items-center justify-center pb-4 drop-shadow-md"
                       >
                         <Link
@@ -95,9 +94,9 @@ const useSearch = () => {
                           <CardActionArea
                             // onClick={() => navigate(`/product/${product?.id}`)}
                             className={`${
-                              theme.palette.mode === "dark"
-                                ? "bg-white/5"
-                                : "bg-black/5"
+                              theme.palette.mode === 'dark'
+                                ? 'bg-white/5'
+                                : 'bg-black/5'
                             } bg-opacity-90 p-1 w-fit h-[120px] rounded-md flex
                                 items-center ease-in-out duration-300`}
                           >
@@ -116,8 +115,8 @@ const useSearch = () => {
                           </Box>
                           <Typography className="mr-4">
                             {product?.description
-                              .replaceAll(/<[^>]*>/g, "")
-                              .slice(0, 150)}
+                              ?.replaceAll(/<[^>]*>/g, '')
+                              ?.slice(0, 150)}
                             {product?.description?.length > 150 && (
                               <strong> . . .</strong>
                             )}
@@ -148,7 +147,7 @@ const useSearch = () => {
                     {searchItems.blogs?.map((blog, ind) => (
                       <Box
                         key={`${blog?.title}-${blog?.id}-${ind}`}
-                        className="h-fit flex flex-col md:flex-row gap-2 
+                        className="h-fit flex flex-col md:flex-row gap-2
                         items-center justify-center pb-4 drop-shadow-md"
                       >
                         <Link
@@ -161,9 +160,9 @@ const useSearch = () => {
                           <CardActionArea
                             // onClick={() => navigate(`/blogs/${blog.slug}`)}
                             className={`${
-                              theme.palette.mode === "dark"
-                                ? "bg-white/5"
-                                : "bg-black/5"
+                              theme.palette.mode === 'dark'
+                                ? 'bg-white/5'
+                                : 'bg-black/5'
                             } bg-opacity-90 p-1 w-fit h-[120px] rounded-md flex
                             items-center ease-in-out duration-300`}
                           >
@@ -202,24 +201,25 @@ const useSearch = () => {
                     {searchItems.users?.map((user, ind) => (
                       <Box
                         key={`${user?.title}-${user?.id}-${ind}`}
-                        className="h-fit flex flex-col md:flex-row gap-2 
-                    items-center justify-center pb-4 drop-shadow-md"
+                        className="h-fit w-full flex flex-col md:flex-row gap-2
+                        items-center justify-center pb-4 drop-shadow-md"
                       >
-                        <CardActionArea
-                          onClick={() => navigate(`/user/${user?.id}`)}
-                          className={`${
-                            theme.palette.mode === "dark"
-                              ? "bg-white/5"
-                              : "bg-black/5"
-                          } bg-opacity-90 p-1 w-fit h-[120px] rounded-full flex
-                          items-center ease-in-out duration-300`}
-                        >
-                          <img
-                            className="rounded-full h-[120px] w-[120px]"
-                            alt="customer avatar"
-                            src={user?.image}
-                          />
-                        </CardActionArea>
+                        <Link to={`/admin/customers/${user?.id}`}>
+                          <CardActionArea
+                            className={`${
+                              theme.palette.mode === 'dark'
+                                ? 'bg-white/5'
+                                : 'bg-black/5'
+                            } bg-opacity-90 p-1 w-[80px] h-[80px] rounded-full flex
+                            items-center ease-in-out duration-300 `}
+                          >
+                            <img
+                              className="rounded-full h-full w-full border bg-slate-300 "
+                              alt="customer avatar"
+                              src={user?.image || userAvatar}
+                            />
+                          </CardActionArea>
+                        </Link>
                         <Box className="h-full flex flex-col px-2 w-full">
                           <Box className="flex justify-between items-center">
                             <Typography fontWeight="bold">
@@ -245,10 +245,10 @@ const useSearch = () => {
           </Box>
         </Box>
       </Model>
-    );
-  };
+    )
+  }
 
-  return [SearchButton, SearchResult];
-};
+  return [SearchButton, SearchResult]
+}
 
-export default useSearch;
+export default useSearch

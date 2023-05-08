@@ -1,106 +1,94 @@
-import React, { useCallback, useEffect, useState } from "react";
-import Header2 from "../../../../components/Header2.jsx";
+import React, { useEffect, useState } from 'react'
+import Header2 from '../../../../components/Header2.jsx'
 import {
   Box,
   TextField,
-  Button,
   Typography,
-  Card,
-  CardMedia,
-  CardContent,
   List,
   useMediaQuery,
   Checkbox,
   FormControlLabel,
   CircularProgress,
-} from "@mui/material";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
-import { tokens } from "../../../../theme.js";
-import { useTheme } from "@emotion/react";
-import { Link } from "react-router-dom";
+} from '@mui/material'
+import Accordion from '@mui/material/Accordion'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
+import { tokens } from '../../../../theme.js'
+import { useTheme } from '@emotion/react'
+import { Link } from 'react-router-dom'
 import {
   useGetBlogCollectionsQuery,
   useGetBlogFilterQuery,
   useSearchAndFilterBlogsQuery,
-} from "../../../../features/services/blogApiSlice.js";
-import { SERVER_HOST } from "../../../../features/auth/authApi.js";
-import BlogCard from "../../components/BlogCard.jsx";
-import LargeBlogCard from "../../components/LargeBlogCard";
-import Subscribe from "../../components/Subscribe.jsx";
+} from '../../../../features/services/blogApiSlice.js'
+import BlogCard from '../../components/BlogCard.jsx'
+import LargeBlogCard from '../../components/LargeBlogCard'
+import Subscribe from '../../components/Subscribe.jsx'
 
 const Blog = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const isNoneMobile = useMediaQuery("(min-width:1024px)");
-  const [searchAndFilter, setSearchAndFilter] = useState("");
-  const [categoryValue, setCategoryValue] = useState([]);
-  const [archiveValue, setArchiveValue] = useState([]);
-  const [tagValue, setTagValue] = useState([]);
-  const [searchValue, setSearchValue] = useState("");
-  const [search, setSearch] = useState("");
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const isNoneMobile = useMediaQuery('(min-width:1024px)')
+  const [searchAndFilter, setSearchAndFilter] = useState('')
+  const [categoryValue, setCategoryValue] = useState([])
+  const [archiveValue, setArchiveValue] = useState([])
+  const [tagValue, setTagValue] = useState([])
+  const [searchValue, setSearchValue] = useState('')
+  const [search, setSearch] = useState('')
 
   const { data: blogs, isFetching: isFetchingBlogs } =
-    useSearchAndFilterBlogsQuery({ searchAndFilter });
+    useSearchAndFilterBlogsQuery({ searchAndFilter })
   const { data: collection, isFetching: isFetchingCollection } =
-    useGetBlogCollectionsQuery();
+    useGetBlogCollectionsQuery()
   const { data: filters, isFetching: isFetchingFilters } =
-    useGetBlogFilterQuery();
-
+    useGetBlogFilterQuery()
   useEffect(() => {
     let timeOut = setTimeout(() => {
-      if (search !== "") {
-        setSearchValue(search);
+      setSearchValue(search)
+    }, 1000)
+    return () => clearTimeout(timeOut)
+  }, [search])
+
+  const handleCheckFilter = (e, setValue) => {
+    setValue((prevValues) => {
+      if (e.target.checked) {
+        return [...prevValues, e.target.value]
+      } else {
+        return prevValues.filter((prevValue) => prevValue !== e.target.value)
       }
-    }, 1000);
-    return () => clearTimeout(timeOut);
-  }, [search]);
+    })
+  }
 
-  const handleCheckFilter = useCallback(() => {
-    return (e, setValue) => {
-      setValue((prevValues) => {
-        if (e.target.checked) {
-          return [...prevValues, e.target.value];
-        } else {
-          return prevValues.filter((prevValue) => prevValue !== e.target.value);
-        }
-      });
-    };
-  }, []);
+  const handleSearch = () => {
+    let searchAndFilterValue = ''
+    if (searchValue !== '') {
+      searchAndFilterValue = searchAndFilterValue + `search=${searchValue}&`
+    }
 
-  const handleSearch = useCallback(() => {
-    return () => {
-      let searchAndFilterValue = "";
-      if (searchValue !== "") {
-        searchAndFilterValue = searchAndFilterValue + `search=${searchValue}&`;
+    categoryValue.forEach((category) => {
+      if (category !== '') {
+        searchAndFilterValue = searchAndFilterValue + `category=${category}&`
       }
+    })
+    archiveValue.forEach((archive) => {
+      if (archive !== '') {
+        searchAndFilterValue = searchAndFilterValue + `archive=${archive}&`
+      }
+    })
+    tagValue.forEach((tag) => {
+      if (tag !== '') {
+        searchAndFilterValue = searchAndFilterValue + `tag=${tag}&`
+      }
+    })
 
-      categoryValue.forEach((category) => {
-        if (category !== "") {
-          searchAndFilterValue = searchAndFilterValue + `category=${category}&`;
-        }
-      });
-      archiveValue.forEach((archive) => {
-        if (archive !== "") {
-          searchAndFilterValue = searchAndFilterValue + `archive=${archive}&`;
-        }
-      });
-      tagValue.forEach((tag) => {
-        if (tag !== "") {
-          searchAndFilterValue = searchAndFilterValue + `tag=${tag}&`;
-        }
-      });
-
-      setSearchAndFilter(searchAndFilterValue);
-    };
-  }, []);
+    setSearchAndFilter(searchAndFilterValue)
+  }
 
   useEffect(() => {
-    handleSearch();
-  }, [archiveValue, categoryValue, searchValue, tagValue]);
+    handleSearch()
+  }, [archiveValue, categoryValue, searchValue, tagValue])
 
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
@@ -165,7 +153,7 @@ const Blog = () => {
             </Box>
           )}
         </Box>
-        <Box className="w-full md:w-1/4 flex flex-col gap-4">
+        <Box className="w-full md:w-1/4 flex flex-col gap-1 md:gap-4">
           <Box
             backgroundColor={colors.primary[400]}
             className=" w-full rounded-md mb-4"
@@ -368,7 +356,7 @@ const Blog = () => {
         </Box>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default Blog;
+export default Blog

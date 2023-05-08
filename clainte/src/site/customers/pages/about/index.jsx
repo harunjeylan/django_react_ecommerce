@@ -1,6 +1,6 @@
 import React from "react";
 import { useTheme } from "@emotion/react";
-import { Box, CircularProgress } from "@mui/material";
+import { Box } from "@mui/material";
 import { tokens } from "../../../../theme";
 import { about } from "../../../../data/staticData";
 import Header2 from "../../../../components/Header2";

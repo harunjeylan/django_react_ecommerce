@@ -1,47 +1,67 @@
-import { useTheme } from "@emotion/react";
+import { useTheme } from '@emotion/react'
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Box,
-  Button,
   List,
-  CardMedia,
   CircularProgress,
   Divider,
-  TextField,
   Typography,
   useMediaQuery,
-} from "@mui/material";
-import React from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+} from '@mui/material'
+import React from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   useGetBlogDetailsQuery,
   useAddBlogCommentMutation,
   useGetBlogCollectionsQuery,
-} from "../../../../../features/services/blogApiSlice";
-import { tokens } from "../../../../../theme";
-import Header2 from "../../../../../components/Header2";
-import RelatedBlogs from "./RelatedBlogs";
-import CommentForm from "../../../../../components/CommentForm";
-import Comments from "../../../../../components/Comments";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
+} from '../../../../../features/services/blogApiSlice'
+import { tokens } from '../../../../../theme'
+import Header2 from '../../../../../components/Header2'
+import RelatedBlogs from './RelatedBlogs'
+import CommentForm from '../../../../../components/CommentForm'
+import Comments from '../../../../../components/Comments'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
+import Subscribe from '../../../components/Subscribe'
+import { useSnackbar } from 'notistack'
+import useAlert from '../../../../../components/ui/useAlert'
 const BlogDetails = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const isNoneMobile = useMediaQuery("(min-width:1024px)");
-  const navigate = useNavigate();
-  const { blogSlug } = useParams();
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const isNoneMobile = useMediaQuery('(min-width:1024px)')
+  const navigate = useNavigate()
+  const { blogSlug } = useParams()
+  const { enqueueSnackbar } = useSnackbar()
+  const [CustomAlert, setMessages] = useAlert()
   const { data: blog, isFetching: isFetchingBlog } = useGetBlogDetailsQuery({
     blogSlug,
-  });
+  })
   const { data: collection, isFetching: isFetchingCollection } =
-    useGetBlogCollectionsQuery();
-  const [addBlogComment] = useAddBlogCommentMutation();
+    useGetBlogCollectionsQuery()
+  const [addBlogComment] = useAddBlogCommentMutation()
   const handleCommentFormSubmit = (values, { resetForm }) => {
-    addBlogComment({ post: values, blogSlug }).then(() => resetForm());
-  };
+    addBlogComment({ post: values, blogSlug }).then((data) => {
+      if (data?.error?.data) {
+        Object.keys(data.error.data).forEach((key) => {
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: key,
+              variant: 'error',
+              description: data.error.data[key],
+            },
+          ])
+        })
+      } else {
+        resetForm()
+        enqueueSnackbar(`You have added comment in successfully!`, {
+          variant: 'success',
+        })
+      }
+    })
+  }
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
       <Box
@@ -53,18 +73,24 @@ const BlogDetails = () => {
               <Header2 title={blog.title} subtitle={blog.headline} />
             )}
           </Box>
-          <Box className={`w-full px-2 md:mx-auto md:px-auto`}>
+          <Box
+            className={`w-full flex justify-center items-center  px-2 md:mx-auto md:px-auto`}
+          >
             {!isFetchingBlog && blog.thumbnail ? (
-              <CardMedia
-                sx={{ height: 360, width: "100%" }}
-                title={"the-blog" + blog.thumbnail}
-                image={blog.thumbnail}
+              <img
+                style={{
+                  height: 360,
+                  backgroundColor: colors.grey[200],
+                }}
+                alt={'the-blog' + blog.thumbnail}
+                src={blog.thumbnail}
+                className="w-fit"
               />
             ) : (
               <Box
                 sx={{
                   height: 360,
-                  width: "100%",
+                  width: 800,
                   backgroundColor: colors.grey[200],
                 }}
                 className="flex justify-center items-center"
@@ -76,7 +102,7 @@ const BlogDetails = () => {
 
           {!isFetchingBlog ? (
             <div
-              style={{ color: colors.neutral[400] }}
+              style={{ color: colors.grey[100] }}
               className={`w-full prose lg:prose-xl `}
               dangerouslySetInnerHTML={{ __html: blog.body }}
             />
@@ -92,6 +118,7 @@ const BlogDetails = () => {
                 {blog?.comments?.map((comment, index) => (
                   <Comments key={`comment-${index}`} comment={comment} />
                 ))}
+                <CustomAlert />
                 <CommentForm
                   handleCommentFormSubmit={handleCommentFormSubmit}
                 />
@@ -177,30 +204,9 @@ const BlogDetails = () => {
         </Box>
       </Box>
 
-      <Box className={`md:container px-2 md:mx-auto md:px-auto my-16`}>
-        <Header2
-          title="Sign up for our Newsletter"
-          subtitle="Join our newsletter and get resources, curated content, and design
-            inspiration delivered straight to your inbox."
-        />
-      </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Box className="max-w-lg mx-auto flex justify-between items-center gap-4">
-          <TextField
-            fullWidth
-            placeholder="Email Address"
-            variant="outlined"
-            size="medium"
-            color="secondary"
-          />
-          <Button
-            color="secondary"
-            variant="outlined"
-            size="large"
-            className="py-3"
-          >
-            Submit
-          </Button>
+          <Subscribe />
         </Box>
       </Box>
 
@@ -208,7 +214,7 @@ const BlogDetails = () => {
         <RelatedBlogs blogSlug={blogSlug} />
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default BlogDetails;
+export default BlogDetails

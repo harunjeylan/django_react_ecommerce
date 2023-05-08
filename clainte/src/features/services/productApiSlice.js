@@ -1,183 +1,215 @@
-import { authApi } from "../auth/authApi";
+import { authApi } from '../auth/authApi'
 
 export const productApi = authApi.injectEndpoints({
   tagTypes: [
-    "products",
-    "recommended-products",
-    "products-by-category",
-    "products_details",
-    "brands",
-    "admin_products",
-    "products_data",
-    "most-sealed-products",
-    "top-rated-products",
+    'products',
+    'recommended-products',
+    'products-by-category',
+    'products_details',
+    'brands',
+    'admin_products',
+    'products_data',
+    'most-sealed-products',
+    'top-rated-products',
   ],
   endpoints: (builder) => ({
     addProduct: builder.mutation({
       query: ({ post }) => ({
         url: `product/add/`,
-        method: "POST",
+        method: 'POST',
         body: post,
       }),
-      invalidatesTags: ["products", "recommended-products"],
+      invalidatesTags: ['products', 'recommended-products'],
     }),
     updateProduct: builder.mutation({
       query: ({ post, productId }) => ({
         url: `product/${productId}/edit/`,
-        method: "PUT",
+        method: 'PUT',
         body: post,
       }),
       invalidatesTags: [
-        "products",
-        "recommended-products",
-        "products-by-category",
-        "products_details",
-        "brands",
-        "admin_products",
-        "products_data",
-        "most-sealed-products",
-        "top-rated-products",
+        'products',
+        'recommended-products',
+        'products-by-category',
+        'products_details',
+        'brands',
+        'admin_products',
+        'products_data',
+        'most-sealed-products',
+        'top-rated-products',
       ],
     }),
     getAllProducts: builder.query({
-      query: () => "product/",
-      providesTags: ["products"],
+      query: () => 'product/',
+      providesTags: ['products'],
     }),
 
     getRecommendedProducts: builder.query({
-      query: () => "product/recommended/",
-      providesTags: ["recommended-products"],
+      query: () => 'product/recommended/',
+      providesTags: ['recommended-products'],
     }),
     searchAndFilterProducts: builder.query({
       query: ({ searchAndFilter }) =>
         `product/search-and-filter/${searchAndFilter}`,
-      providesTags: ["products-by-searchAndFilter"],
+      providesTags: ['products-by-searchAndFilter'],
     }),
 
     getProductsDetails: builder.query({
       query: ({ productId }) => `product/${productId}/`,
-      providesTags: ["products_details"],
+      providesTags: ['products_details'],
     }),
     getProductsByCategory: builder.query({
       query: ({ category }) => `product/category/${category}/`,
-      providesTags: ["products-by-category"],
+      providesTags: ['products-by-category'],
     }),
     getRelatedProducts: builder.query({
       query: ({ productId }) => `product/${productId}/related/`,
-      providesTags: ["products-by-category"],
+      providesTags: ['products-by-category'],
     }),
 
     getMostSealedProducts: builder.query({
       query: ({ limit }) => {
-        let queryKey = "";
-        queryKey = limit ? queryKey + `limit=${limit}&` : queryKey;
-        return `product/most-sealed/?${queryKey}`;
+        let queryKey = ''
+        queryKey = limit ? queryKey + `limit=${limit}&` : queryKey
+        return `product/most-sealed/?${queryKey}`
       },
-      providesTags: ["most-sealed-products"],
+      providesTags: ['most-sealed-products'],
     }),
     getTopRatedProducts: builder.query({
       query: ({ limit }) => {
-        let queryKey = "";
-        queryKey = limit ? queryKey + `limit=${limit}&` : queryKey;
-        return `product/top-rated/?${queryKey}`;
+        let queryKey = ''
+        queryKey = limit !== null ? queryKey + `limit=${limit}&` : queryKey
+        return `product/top-rated/?${queryKey}`
       },
-      providesTags: ["top-rated-products"],
+      providesTags: ['top-rated-products'],
     }),
 
     uploadImage: builder.mutation({
       query: ({ post }) => ({
         url: `product/images/upload/`,
-        method: "POST",
+        method: 'POST',
         body: post,
       }),
-      invalidatesTags: ["products"],
+      invalidatesTags: ['products'],
     }),
     addProductReview: builder.mutation({
       query: ({ post, productId }) => ({
         url: `product/${productId}/review/add/`,
-        method: "POST",
+        method: 'POST',
         body: post,
       }),
       invalidatesTags: [
-        "products",
-        "recommended-products",
-        "products-by-category",
-        "products_details",
+        'products',
+        'recommended-products',
+        'products-by-category',
+        'products_details',
       ],
     }),
     getRatings: builder.query({
-      query: () => "product/ratings/",
+      query: () => 'product/ratings/',
     }),
     getProductsForAdmin: builder.query({
-      query: () => "product/admin/",
-      providesTags: ["admin_products"],
+      query: () => 'product/admin/',
+      providesTags: ['admin_products'],
     }),
     deleteProduct: builder.mutation({
       query: ({ post }) => ({
         url: `product/delete/`,
-        method: "DELETE",
+        method: 'DELETE',
         body: post,
       }),
       invalidatesTags: [
-        "products",
-        "recommended-products",
-        "products-by-category",
-        "products_details",
-        "brands",
-        "admin_products",
-        "products_data",
+        'products',
+        'recommended-products',
+        'products-by-category',
+        'products_details',
+        'brands',
+        'admin_products',
+        'products_data',
       ],
     }),
     deleteMultiProducts: builder.mutation({
       query: ({ post }) => ({
         url: `product/multi-delete/`,
-        method: "DELETE",
+        method: 'DELETE',
         body: post,
       }),
       invalidatesTags: [
-        "products",
-        "recommended-products",
-        "products-by-category",
-        "products_details",
-        "brands",
-        "admin_products",
-        "products_data",
+        'products',
+        'recommended-products',
+        'products-by-category',
+        'products_details',
+        'brands',
+        'admin_products',
+        'products_data',
       ],
     }),
     changeMultiProductsDiscount: builder.mutation({
       query: ({ post }) => ({
         url: `product/discount/multi-change/`,
-        method: "POST",
+        method: 'POST',
         body: post,
       }),
       invalidatesTags: [
-        "products",
-        "recommended-products",
-        "products-by-category",
-        "products_details",
-        "brands",
-        "admin_products",
-        "products_data",
+        'products',
+        'recommended-products',
+        'products-by-category',
+        'products_details',
+        'brands',
+        'admin_products',
+        'products_data',
+      ],
+    }),
+    changeMultiProductsDelivery: builder.mutation({
+      query: ({ post }) => ({
+        url: `product/delivery/multi-change/`,
+        method: 'POST',
+        body: post,
+      }),
+      invalidatesTags: [
+        'products',
+        'recommended-products',
+        'products-by-category',
+        'products_details',
+        'brands',
+        'admin_products',
+        'products_data',
       ],
     }),
     removeThumbnail: builder.mutation({
       query: ({ post }) => ({
         url: `product/thumbnail/remove/`,
-        method: "DELETE",
+        method: 'DELETE',
         body: post,
-        invalidatesTags: ["products_data"],
+        invalidatesTags: [
+          'products',
+          'recommended-products',
+          'products-by-category',
+          'products_details',
+          'brands',
+          'admin_products',
+          'products_data',
+        ],
       }),
     }),
     removeImage: builder.mutation({
       query: ({ post }) => ({
         url: `service/images/remove/`,
-        method: "DELETE",
+        method: 'DELETE',
         body: post,
-        invalidatesTags: ["products_data"],
+        invalidatesTags: [
+          'products',
+          'recommended-products',
+          'products-by-category',
+          'products_details',
+          'brands',
+          'admin_products',
+          'products_data',
+        ],
       }),
     }),
   }),
-});
+})
 
 export const {
   useAddProductMutation,
@@ -195,10 +227,11 @@ export const {
   useDeleteProductMutation,
   useDeleteMultiProductsMutation,
   useChangeMultiProductsDiscountMutation,
+  useChangeMultiProductsDeliveryMutation,
 
   useRemoveImageMutation,
   useRemoveThumbnailMutation,
   useGetProductsForAdminQuery,
   useGetTopRatedProductsQuery,
   useGetMostSealedProductsQuery,
-} = productApi;
+} = productApi

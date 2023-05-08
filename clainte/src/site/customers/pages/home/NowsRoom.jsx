@@ -1,15 +1,15 @@
-import React from "react";
-import { useGetPinToTopBlogsQuery } from "../../../../features/services/blogApiSlice";
-import { Box, CircularProgress, Typography } from "@mui/material";
-import BlogCard from "../../components/BlogCard";
-import { useTheme } from "@emotion/react";
-import { tokens } from "../../../../theme";
+import React from 'react'
+import { useGetPinToTopBlogsQuery } from '../../../../features/services/blogApiSlice'
+import { Box, CircularProgress, Typography } from '@mui/material'
+import BlogCard from '../../components/BlogCard'
+import { useTheme } from '@emotion/react'
+import { tokens } from '../../../../theme'
 
 const NowsRoom = ({ header, footer }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
   const { data: blogs = [], isFetching: isFetchingBlogs } =
-    useGetPinToTopBlogsQuery();
+    useGetPinToTopBlogsQuery()
   return (
     <Box className="w-full px-2">
       {!isFetchingBlogs ? (
@@ -17,7 +17,7 @@ const NowsRoom = ({ header, footer }) => {
           <Box>
             {header}
             <Box className="w-full flex flex-col md:flex-row my-8 gap-8">
-              <Box className="w-full grid grid-cols-4 flex-col gap-8 ">
+              <Box className="w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 flex-col gap-8 ">
                 {blogs.map((blog, index) => (
                   <BlogCard
                     key={`${blog.slug}-${index}`}
@@ -47,7 +47,7 @@ const NowsRoom = ({ header, footer }) => {
         </Box>
       )}
     </Box>
-  );
-};
+  )
+}
 
-export default NowsRoom;
+export default NowsRoom

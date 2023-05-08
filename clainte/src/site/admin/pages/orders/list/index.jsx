@@ -1,7 +1,7 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 import {
   Box,
   Button,
@@ -9,23 +9,23 @@ import {
   Breadcrumbs,
   useTheme,
   CircularProgress,
-} from "@mui/material";
+} from '@mui/material'
 
-import { useGetAllOrdersForAdminQuery } from "../../../../../features/services/orderApiSlice";
-import { tokens } from "../../../../../theme";
-import Header from "../../../../../components/Header";
-
+import { tokens } from '../../../../../theme'
+import Header from '../../../../../components/Header'
+import userAvatar from '../../../../../assets/user-avatar.png'
+import dateFormatter from '../../../../../helpers/dateFormatter'
+import { useGetAllOrdersQuery } from '../../../../../features/services/orderApiSlice'
 const OrdersForAdmin = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const navigate = useNavigate();
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const navigate = useNavigate()
 
-  const { data: orders, isFetching: isFetchingOrders } =
-    useGetAllOrdersForAdminQuery();
+  const { data: orders, isFetching: isFetchingOrders } = useGetAllOrdersQuery()
   const columns = [
     {
-      field: "id",
-      headerName: "ORDER",
+      field: 'id',
+      headerName: 'ORDER',
       width: 100,
       renderCell: ({ row: { id } }) => {
         return (
@@ -37,20 +37,20 @@ const OrdersForAdmin = () => {
               # {id}
             </Typography>
           </Link>
-        );
+        )
       },
     },
     {
-      field: "total_price",
-      headerName: "Total",
+      field: 'total_price',
+      headerName: 'Total',
       width: 100,
       renderCell: ({ row: { total_price } }) => {
-        return <Typography>${total_price}</Typography>;
+        return <Typography>${total_price}</Typography>
       },
     },
     {
-      field: "first_name",
-      headerName: "Customer",
+      field: 'first_name',
+      headerName: 'Customer',
       width: 200,
       height: 200,
       renderCell: ({ row: { full_name, avatar } }) => {
@@ -58,31 +58,76 @@ const OrdersForAdmin = () => {
           <Box className="flex justify-start gap-4 items-center py-2 w-full h-full">
             <Link to={`/admin/customers/${1}`}>
               <img
-                className="h-[60px] w-[60px] cursor-pointer rounded-[50%]"
-                src={avatar}
+                className="h-[60px] w-[60px] cursor-pointer  rounded-full  border bg-slate-300 "
+                src={avatar || userAvatar}
                 alt={`${full_name}`}
-              />{" "}
+              />{' '}
             </Link>
             <Link to={`/admin/customers/${1}`}>
               <Typography
                 className="cursor-pointer"
                 color={colors.greenAccent[500]}
               >
-                {full_name}
+                {full_name || 'no name'}
               </Typography>
             </Link>
           </Box>
-        );
+        )
       },
     },
     {
-      field: "fulfillment_status",
-      headerName: "Fulfillment status",
+      field: 'fulfillment_status',
+      headerName: 'Fulfillment status',
       width: 200,
     },
-    { field: "delivery_method", headerName: "Delivery Method", width: 200 },
-    { field: "date", headerName: "Date", width: 100 },
-  ];
+    {
+      field: 'delivery_method',
+      headerName: 'Delivery',
+      width: 200,
+      renderCell: ({ row: { delivery_method } }) => {
+        return delivery_method ? (
+          <Box className="flex flex-col">
+            <Typography variant="p">
+              <strong>Name: {delivery_method?.name}</strong>
+            </Typography>
+            <Typography variant="p">
+              <strong>Pricing: </strong>${delivery_method?.pricing}
+            </Typography>
+          </Box>
+        ) : (
+          <Typography variant="p">
+            <strong>No Delivery</strong>
+          </Typography>
+        )
+      },
+    },
+    {
+      field: 'date',
+      headerName: 'Date',
+      width: 150,
+      renderCell: ({ row: { date } }) => {
+        return (
+          <Typography>{dateFormatter(new Date(date)) || 'no order'}</Typography>
+        )
+      },
+    },
+    {
+      field: 'products',
+      headerName: 'Products',
+      width: 100,
+      renderCell: ({ row: { products } }) => {
+        return <Typography>{products || 0}</Typography>
+      },
+    },
+    {
+      field: 'total_products',
+      headerName: 'Total Products',
+      width: 100,
+      renderCell: ({ row: { total_products } }) => {
+        return <Typography>{total_products || 0}</Typography>
+      },
+    },
+  ]
 
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20 mb-10`}>
@@ -102,45 +147,27 @@ const OrdersForAdmin = () => {
         <Header title="Order" subtitle="welcome to you Order" />
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
-        <Box className="flex gap-4">
-          <Box className="flex gap-1">
-            <Typography>All</Typography>
-            <Typography color={colors.greenAccent[500]}>(10000)</Typography>
-          </Box>
-          <Box className="flex gap-1">
-            <Typography>Published</Typography>
-            <Typography color={colors.greenAccent[500]}>(5600)</Typography>
-          </Box>
-          <Box className="flex gap-1">
-            <Typography>All</Typography>
-            <Typography color={colors.greenAccent[500]}>(540)</Typography>
-          </Box>
-          <Box className="flex gap-1">
-            <Typography>On Discount</Typography>
-            <Typography color={colors.greenAccent[500]}>(800)</Typography>
-          </Box>
-        </Box>
         <Box
           height="80vh"
           backgroundColor={colors.primary[400]}
           className="h-[80vh] rounded-lg p-4"
           sx={{
-            "& .MuiDataGrid-root": {
-              border: "none",
+            '& .MuiDataGrid-root': {
+              border: 'none',
             },
-            "& .MuiDataGrid-cell": {
-              borderBottom: "none",
+            '& .MuiDataGrid-cell': {
+              borderBottom: 'none',
             },
-            "& .MuiCheckbox-root": {
+            '& .MuiCheckbox-root': {
               color: `${colors.greenAccent[200]} !important`,
             },
-            "& .MuiChackbox-root": {
+            '& .MuiChackbox-root': {
               color: `${colors.greenAccent[200]} !important`,
             },
-            "& .MuiDataGrid-columnHeaders": {
-              borderBottom: "none",
+            '& .MuiDataGrid-columnHeaders': {
+              borderBottom: 'none',
             },
-            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
               color: `${colors.grey[100]} !important`,
             },
           }}
@@ -152,7 +179,7 @@ const OrdersForAdmin = () => {
                 rows={orders}
                 columns={columns}
                 autoPageSize
-                checkboxSelection
+                // checkboxSelection
                 components={{ Toolbar: GridToolbar }}
               />
             ) : (
@@ -168,7 +195,7 @@ const OrdersForAdmin = () => {
         </Box>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default OrdersForAdmin;
+export default OrdersForAdmin
