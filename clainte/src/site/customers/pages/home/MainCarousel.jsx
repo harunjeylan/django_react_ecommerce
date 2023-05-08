@@ -1,5 +1,4 @@
 import { Box, Button, Typography } from '@mui/material'
-import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from '@emotion/react'
 import { Swiper, SwiperSlide } from 'swiper/react'
