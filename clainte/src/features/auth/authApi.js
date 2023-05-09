@@ -1,8 +1,7 @@
 import { setCredentials, logOut } from '../../features/auth/authSlice'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-export const SERVER_HOST =
-  'https://django-react-ecommerce-8de4hmu0l-harunjeylan.vercel.app'
+export const SERVER_HOST = 'https://django-react-ecommerce-woad.vercel.app/'
 
 export const refreshAccessToken = async (store) => {
   if (store.getState().auth?.refresh) {
