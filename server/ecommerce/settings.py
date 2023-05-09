@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-q33*m&%v&p&eyz37!k2mk^w=)chtsoq^-wz%mps^43y9w6%fw7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS =  ['127.0.0.1','localhost', '.vercel.app']
 
 
 # Application definition
@@ -47,9 +47,10 @@ INSTALLED_APPS = [
     'product.apps.ProductConfig',
     'service.apps.ServiceConfig',
     'blog.apps.BlogConfig',
+    'main.apps.MainConfig',
 ]
 REST_FRAMEWORK = {
- 
+
     'DEFAULT_AUTHENTICATION_CLASSES': (
 
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -93,9 +94,9 @@ SIMPLE_JWT = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    
+
     'corsheaders.middleware.CorsMiddleware',
-    
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -190,7 +191,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://sub.example.com",
     "http://localhost:8080",
     "http://127.0.0.1:9000",
-    "http://localhost:2001",
+    "https://djangoreactecommerce.netlify.app",
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False

@@ -54,7 +54,7 @@ yarn-error.log*
 note.txt
 
 env
-
+./server/.git
 
 ./*/__pycache__
 ./*/__pycache__
