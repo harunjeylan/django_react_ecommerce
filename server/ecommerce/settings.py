@@ -43,7 +43,6 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
-    'django_extensions',
     'corsheaders',
 
     'account.apps.AccountConfig',
@@ -182,8 +181,7 @@ STATIC_ROOT = os.path.join(BASE_DIR)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR,'static'),
-    os.path.join(BASE_DIR,'static','django_extensions'),
-    os.path.join(BASE_DIR,'static','rest_framework'),
+    os.path.join(BASE_DIR,'rest_framework'),
 ]
 # Media folder
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
