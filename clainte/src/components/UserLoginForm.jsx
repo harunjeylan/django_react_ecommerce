@@ -41,7 +41,7 @@ const UserLoginForm = ({
 
   const handleFormSubmit = (values, { resetForm }) => {
     login({ ...values }).then((data) => {
-      if (data?.error?.data) {
+      if (data?.error) {
         Object.keys(data.error.data).forEach((key) => {
           setMessages((prev) => [
             ...prev,

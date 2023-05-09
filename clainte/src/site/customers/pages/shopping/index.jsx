@@ -63,12 +63,14 @@ const Shopping = () => {
   } = useSearchAndFilterProductsQuery({
     searchAndFilter,
   })
-  const { data: brands, isFetching: isFetchingBrands } = useGetAllBrandsQuery()
-  const { data: organize, isFetching: isFetchingOrganize } =
-  useGetAllOrganizeQuery()
-  const { data: variants, isFetching: isFetchingVariants } =
-  useGetAllVariantsQuery()
-  const { data: ratings, isFetching: isFetchingRatings } = useGetRatingsQuery()
+  const { data: brands = [], isFetching: isFetchingBrands } =
+    useGetAllBrandsQuery()
+  const { data: organize = {}, isFetching: isFetchingOrganize } =
+    useGetAllOrganizeQuery()
+  const { data: variants = [], isFetching: isFetchingVariants } =
+    useGetAllVariantsQuery()
+  const { data: ratings = [], isFetching: isFetchingRatings } =
+    useGetRatingsQuery()
 
   const handleCheckBrand = (e) => {
     setBradValue((prevBradValue) => {
@@ -225,7 +227,7 @@ const Shopping = () => {
                   <AccordionDetails>
                     <List className={``}>
                       {!isFetchingOrganize &&
-                        organize?.categories.map((categorie) => (
+                        organize?.categories?.map((categorie) => (
                           <FormControlLabel
                             key={categorie.id}
                             value={categorie.name}
@@ -264,7 +266,7 @@ const Shopping = () => {
                   <AccordionDetails>
                     <List className={``}>
                       {!isFetchingOrganize &&
-                        organize.collections.map((collection) => (
+                        organize?.collections?.map((collection) => (
                           <FormControlLabel
                             key={collection.id}
                             value={collection.name}
@@ -303,7 +305,7 @@ const Shopping = () => {
                   <AccordionDetails>
                     <List className={``}>
                       {!isFetchingOrganize &&
-                        organize.vendors.map((vendor) => (
+                        organize?.vendors?.map((vendor) => (
                           <FormControlLabel
                             key={vendor.id}
                             value={vendor.name}
@@ -342,7 +344,7 @@ const Shopping = () => {
                   <AccordionDetails>
                     <List className={``}>
                       {!isFetchingOrganize &&
-                        organize.tags.map((tag) => (
+                        organize?.tags?.map((tag) => (
                           <FormControlLabel
                             key={tag.id}
                             value={tag.name}
@@ -435,7 +437,7 @@ const Shopping = () => {
                   <AccordionDetails>
                     <Box className={`flex flex-col`}>
                       {!isFetchingBrands &&
-                        brands.map((brand) => (
+                        brands?.map((brand) => (
                           <FormControlLabel
                             key={brand.id}
                             value={brand.name}
@@ -525,7 +527,7 @@ const Shopping = () => {
                     </FormLabel>
                     <Box className={`w-full flex flex-col`}>
                       {!isFetchingVariants &&
-                        variants.map((variantOptions) => (
+                        variants?.map((variantOptions) => (
                           <Accordion
                             key={variantOptions.id}
                             sx={{ backgroundColor: colors.primary[400] }}
@@ -548,7 +550,7 @@ const Shopping = () => {
                             </AccordionSummary>
                             <AccordionDetails>
                               <Box>
-                                {variantOptions.options.map((option) => (
+                                {variantOptions?.options?.map((option) => (
                                   <FormControlLabel
                                     key={option.id}
                                     value={option?.label}
@@ -616,7 +618,7 @@ const Shopping = () => {
               )}
             </Box>
             {!isFetchingSearchAndFilterProducts ? (
-              searchAndFilterProducts.length ? (
+              searchAndFilterProducts?.length ? (
                 <ProductsList
                   products={searchAndFilterProducts}
                   isShopping={true}
@@ -667,7 +669,7 @@ function handleCheckFilter(e, setfilterValue) {
       [e.target.name]: updatedFilter,
     }
     Object.keys(updatedFilterValue).forEach((key) => {
-      !updatedFilterValue[key].length && delete updatedFilterValue[key]
+      !updatedFilterValue[key]?.length && delete updatedFilterValue[key]
     })
     return updatedFilterValue
   })
