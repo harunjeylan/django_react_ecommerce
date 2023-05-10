@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.org/adrian80z/e-commerce.svg?branch=master)](https://github.com/harunjeylan/alif_django_react_ecommerce.git)
 
-**Link to live version - [Alif](https://f93k2n-2001.preview.csb.app/)**
+**Link to live version - [Alif](https://djangoreactecommerce.netlify.app/)**
 
 Alif is a e-commerce web application that allows users to search for 
 products stored in database, add them to shopping cart,
