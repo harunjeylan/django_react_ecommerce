@@ -11,7 +11,10 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+
 import os
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 from datetime import timedelta
@@ -40,7 +43,6 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
-    'django_extensions',
     'corsheaders',
 
     'account.apps.AccountConfig',
@@ -122,16 +124,21 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ecommerce.wsgi.application'
-
+WSGI_APPLICATION = 'ecommerce.wsgi.app'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'RVTr8MTu4aHDYwyKATnG',
+        'HOST': 'containers-us-west-181.railway.app',
+        'PORT': '5734',
     }
 }
 
@@ -174,6 +181,7 @@ STATIC_ROOT = os.path.join(BASE_DIR)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR,'static'),
+    os.path.join(BASE_DIR,'static','rest_framework'),
 ]
 # Media folder
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -191,6 +199,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://sub.example.com",
     "http://localhost:8080",
     "http://127.0.0.1:9000",
+    "http://localhost:5173",
     "https://djangoreactecommerce.netlify.app",
 ]
 

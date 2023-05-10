@@ -38,11 +38,11 @@ const Blog = () => {
   const [searchValue, setSearchValue] = useState('')
   const [search, setSearch] = useState('')
 
-  const { data: blogs, isFetching: isFetchingBlogs } =
+  const { data: blogs=[], isFetching: isFetchingBlogs } =
     useSearchAndFilterBlogsQuery({ searchAndFilter })
-  const { data: collection, isFetching: isFetchingCollection } =
+  const { data: collection={}, isFetching: isFetchingCollection } =
     useGetBlogCollectionsQuery()
-  const { data: filters, isFetching: isFetchingFilters } =
+  const { data: filters={}, isFetching: isFetchingFilters } =
     useGetBlogFilterQuery()
   useEffect(() => {
     let timeOut = setTimeout(() => {
@@ -107,14 +107,14 @@ const Blog = () => {
         className={`md:container px-2 md:mx-auto md:px-auto flex flex-col-reverse md:flex-row gap-4`}
       >
         <Box className="w-full md:w-3/4 rounded-md px-2">
-          {!isFetchingBlogs && blogs.length ? (
+          {!isFetchingBlogs && blogs?.length ? (
             <LargeBlogCard blog={blogs[0]} />
           ) : undefined}
           {!isFetchingBlogs ? (
-            blogs.length ? (
+            blogs?.length ? (
               <Box className="w-full flex flex-col md:flex-row my-8 gap-8">
                 <Box className="w-full flex flex-col gap-8">
-                  {blogs.map(
+                  {blogs?.map(
                     (blog, index) =>
                       index % 2 === 0 &&
                       index !== 0 && (
@@ -123,7 +123,7 @@ const Blog = () => {
                   )}
                 </Box>
                 <Box className="w-full flex flex-col gap-8">
-                  {blogs.map(
+                  {blogs?.map(
                     (blog, index) =>
                       index % 2 === 1 &&
                       index !== 0 && (
@@ -189,7 +189,7 @@ const Blog = () => {
             <AccordionDetails>
               <List className={`flex flex-col gap-2`}>
                 {!isFetchingCollection &&
-                  collection?.pin_blogs.map((blog) => (
+                  collection?.pin_blogs?.map((blog) => (
                     <Link key={`blogs-${blog.slug}`} to={`/blogs/${blog.slug}`}>
                       <Typography
                         variant="p"
@@ -226,7 +226,7 @@ const Blog = () => {
             <AccordionDetails>
               <List className={`flex flex-col gap-2`}>
                 {!isFetchingCollection &&
-                  collection?.recent_blogs.map((blog) => (
+                  collection?.recent_blogs?.map((blog) => (
                     <Link key={`blogs-${blog.slug}`} to={`/blogs/${blog.slug}`}>
                       <Typography
                         variant="p"
@@ -264,7 +264,7 @@ const Blog = () => {
             <AccordionDetails>
               <List className={``}>
                 {!isFetchingFilters &&
-                  filters?.categories.map((category) => (
+                  filters?.categories?.map((category) => (
                     <FormControlLabel
                       key={category.id}
                       value={category.name}
@@ -301,7 +301,7 @@ const Blog = () => {
             <AccordionDetails>
               <List className={``}>
                 {!isFetchingFilters &&
-                  filters?.archives.map((archive) => (
+                  filters?.archives?.map((archive) => (
                     <FormControlLabel
                       key={archive}
                       value={archive}
@@ -338,7 +338,7 @@ const Blog = () => {
             <AccordionDetails>
               <List className={``}>
                 {!isFetchingFilters &&
-                  filters?.tags.map((tag) => (
+                  filters?.tags?.map((tag) => (
                     <FormControlLabel
                       key={tag.id}
                       value={tag.name}

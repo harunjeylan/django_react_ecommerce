@@ -32,7 +32,7 @@ const Delivery = ({
             </Typography>
           </Box>
           <CardActionArea
-            onClick={() => setFieldValue('deliveryMethod', 'none')}
+            onClick={() => setFieldValue('deliveryMethod', null)}
             className="flex flex-col items-start gap-4 px-4 py-2"
           >
             <Typography variant="h5" fontWeight="bold">
