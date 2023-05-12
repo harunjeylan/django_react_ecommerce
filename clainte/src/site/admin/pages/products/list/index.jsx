@@ -139,7 +139,7 @@ const ProductsForAdmin = () => {
                 style={{ backgroundColor: colors.primary[400] }}
                 className="h-[60px] w-[60px] pointer rounded-md border-[1px]"
                 src={thumbnail}
-                alt={`${title}`}
+                alt={`${title?.slice(0, 20)}`}
               />
             </Link>
             <Link to={`/admin/products/${id}`}>
