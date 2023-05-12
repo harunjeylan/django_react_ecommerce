@@ -26,7 +26,7 @@ export const useProductColumns = (params) => {
                 style={{ backgroundColor: colors.primary[400] }}
                 className="h-[60px] w-[60px] pointer rounded-md border-[1px]"
                 src={thumbnail}
-                alt={`${title?.slice(0, 150)}`}
+                alt={`${title?.slice(0, 20)}`}
               />
             </Link>
             <Link
