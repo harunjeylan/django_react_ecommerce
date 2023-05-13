@@ -108,21 +108,22 @@ const AddressForm = ({
         <Select
           fullWidth
           color="secondary"
-          labelId="country-select-label"
-          id="country-select"
           variant="filled"
-          value={values?.country}
+          type="text"
+          label="Country"
           onBlur={handleBlur}
           onChange={handleChange}
-          error={!!touched.country && !!errors.country}
-          name="country"
+          value={values.country}
+          name={formattedName('country')}
+          error={formattedError('country')}
+          sx={{ gridColumn: 'span 4' }}
         >
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
           {countries?.map((country, index) => (
             <MenuItem
-              key={`country-${country.code}-${index}`}
+              key={`country-${country.name}-${index}`}
               value={country.name}
             >
               {country.name}
