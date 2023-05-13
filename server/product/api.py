@@ -234,6 +234,7 @@ def newProduct(request):
         "title": request.data.get("title"),
         "brand": brand.id,
         "description": request.data.get("description"),
+        "additional_information": request.data.get("additional_information"),
         "organize": organize.id,
         "regular_pricing": request.data.get("regularPrice"),
         "sale_pricing": request.data.get("salePrice"),
@@ -281,8 +282,10 @@ def newProduct(request):
 @admin_only
 def updateProduct(request, pk):
     product = Product.objects.get(id=pk)
-    product.description = request.data.get("description")
     product.title = request.data.get("title")
+    product.description = request.data.get("description")
+    product.additional_information = request.data.get("additional_information")
+
     category, created_category = Category.objects.get_or_create(
         name=request.data.get("category"))
     collection, created_collection = Collection.objects.get_or_create(

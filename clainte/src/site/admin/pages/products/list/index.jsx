@@ -139,11 +139,13 @@ const ProductsForAdmin = () => {
                 style={{ backgroundColor: colors.primary[400] }}
                 className="h-[60px] w-[60px] pointer rounded-md border-[1px]"
                 src={thumbnail}
-                alt={`${title?.slice(0, 20)}`}
+                alt={`${title}`}
               />
             </Link>
             <Link to={`/admin/products/${id}`}>
-              <Typography color={colors.greenAccent[500]}>{title}</Typography>
+              <Typography color={colors.greenAccent[500]}>
+                {title?.slice(0, 25)}
+              </Typography>
             </Link>
           </Box>
         )

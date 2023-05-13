@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Form, Formik } from 'formik'
 
@@ -19,11 +19,14 @@ import VariantsForm from './VariantsForm'
 import Header from '../../../../../components/Header'
 import { useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
+import { TransitionContext } from '../../../../../utils/TransitionContext'
 
 const AddEditProduct = ({ isEditing }) => {
   const { enqueueSnackbar } = useSnackbar()
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const { startTransition, isPending } = useContext(TransitionContext)
+
   const [updating, setUpdating] = useState('')
   const [CustomAlert, setMessages] = useAlert()
   const [addProduct] = useAddProductMutation()
@@ -47,120 +50,121 @@ const AddEditProduct = ({ isEditing }) => {
   }, [productId, isEditing, dispatch])
 
   const handleFormSubmit = (values) => {
-    let data = values?.expiryDate?.date
-    let formattedDate
-    if (data.hasOwnProperty('format')) {
-      formattedDate = data.hasOwnProperty('format')
-    } else {
-      let objectDate = new Date()
-      formattedDate = `${objectDate.getFullYear()}-${objectDate.getMonth()}-${objectDate.getDate()}`
-    }
-    const postData = {
-      ...values,
-      expiryDate: {
-        selected: values?.expiryDate?.selected,
-        date: formattedDate,
-      },
-    }
+    startTransition(() => {
+      let data = values?.expiryDate?.date
+      let formattedDate
+      if (data.hasOwnProperty('format')) {
+        formattedDate = data.hasOwnProperty('format')
+      } else {
+        let objectDate = new Date()
+        formattedDate = `${objectDate.getFullYear()}-${objectDate.getMonth()}-${objectDate.getDate()}`
+      }
+      const postData = {
+        ...values,
+        expiryDate: {
+          selected: values?.expiryDate?.selected,
+          date: formattedDate,
+        },
+      }
 
-    if (productId) {
-      updateProduct({ post: postData, productId }).then((data) => {
-
-        if (data?.error?.status) {
-          Object.keys(data.error.data).forEach((key) => {
-            setMessages((prev) => [
-              ...prev,
-              {
-                id: key,
-                variant: 'error',
-                description: data.error.data[key],
-              },
-            ])
-          })
-        } else {
-          setUpdating('thumbnail')
-          let postForm = new FormData()
-          postForm.append('thumbnail', values.thumbnail[0]?.file)
-          values.images.forEach((image) => {
-            postForm.append('images', image.file)
-          })
-          postForm.append('productId', data.data.id)
-          uploadImage({
-            post: postForm,
-          }).then((response) => {
-            if (response?.error?.status) {
-              Object.keys(response.error.data).forEach((key) => {
-                setMessages((prev) => [
-                  ...prev,
-                  {
-                    id: key,
-                    variant: 'error',
-                    description: response.error.data[key],
-                  },
-                ])
-              })
-            } else {
-              setUpdating('')
-              enqueueSnackbar(
-                `Product -> ${postData.title} is updated successfully!`,
+      if (productId) {
+        updateProduct({ post: postData, productId }).then((data) => {
+          if (data?.error?.status) {
+            Object.keys(data.error.data).forEach((key) => {
+              setMessages((prev) => [
+                ...prev,
                 {
-                  variant: 'success',
-                }
-              )
-              navigate(`/admin/products/${productId}`)
-            }
-          })
-        }
-      })
-    } else {
-      addProduct({ post: postData }).then((data) => {
-        if (data?.error?.status) {
-          Object.keys(data.error.data).forEach((key) => {
-            setMessages((prev) => [
-              ...prev,
-              {
-                id: key,
-                variant: 'error',
-                description: data.error.data[key],
-              },
-            ])
-          })
-        } else {
-          setUpdating('thumbnail')
-          let postForm = new FormData()
-          postForm.append('thumbnail', values.thumbnail[0]?.file)
-          values.images.forEach((image) => {
-            postForm.append('images', image.file)
-          })
-          postForm.append('productId', data.data.id)
-          uploadImage({
-            post: postForm,
-          }).then((response) => {
-            if (response?.error?.status) {
-              Object.keys(response.error.data).forEach((key) => {
-                setMessages((prev) => [
-                  ...prev,
+                  id: key,
+                  variant: 'error',
+                  description: data.error.data[key],
+                },
+              ])
+            })
+          } else {
+            setUpdating('thumbnail')
+            let postForm = new FormData()
+            postForm.append('thumbnail', values.thumbnail[0]?.file)
+            values.images.forEach((image) => {
+              postForm.append('images', image.file)
+            })
+            postForm.append('productId', data.data.id)
+            uploadImage({
+              post: postForm,
+            }).then((response) => {
+              if (response?.error?.status) {
+                Object.keys(response.error.data).forEach((key) => {
+                  setMessages((prev) => [
+                    ...prev,
+                    {
+                      id: key,
+                      variant: 'error',
+                      description: response.error.data[key],
+                    },
+                  ])
+                })
+              } else {
+                setUpdating('')
+                enqueueSnackbar(
+                  `Product -> ${postData.title} is updated successfully!`,
                   {
-                    id: key,
-                    variant: 'error',
-                    description: response.error.data[key],
-                  },
-                ])
-              })
-            } else {
-              setUpdating('')
-              enqueueSnackbar(
-                `Product -> ${postData.title} is created successfully!`,
+                    variant: 'success',
+                  }
+                )
+                navigate(`/admin/products/${productId}`)
+              }
+            })
+          }
+        })
+      } else {
+        addProduct({ post: postData }).then((data) => {
+          if (data?.error?.status) {
+            Object.keys(data.error.data).forEach((key) => {
+              setMessages((prev) => [
+                ...prev,
                 {
-                  variant: 'success',
-                }
-              )
-              navigate(`/admin/products/${data.data.id}`)
-            }
-          })
-        }
-      })
-    }
+                  id: key,
+                  variant: 'error',
+                  description: data.error.data[key],
+                },
+              ])
+            })
+          } else {
+            setUpdating('thumbnail')
+            let postForm = new FormData()
+            postForm.append('thumbnail', values.thumbnail[0]?.file)
+            values.images.forEach((image) => {
+              postForm.append('images', image.file)
+            })
+            postForm.append('productId', data.data.id)
+            uploadImage({
+              post: postForm,
+            }).then((response) => {
+              if (response?.error?.status) {
+                Object.keys(response.error.data).forEach((key) => {
+                  setMessages((prev) => [
+                    ...prev,
+                    {
+                      id: key,
+                      variant: 'error',
+                      description: response.error.data[key],
+                    },
+                  ])
+                })
+              } else {
+                setUpdating('')
+                enqueueSnackbar(
+                  `Product -> ${postData.title} is created successfully!`,
+                  {
+                    variant: 'success',
+                  }
+                )
+                navigate(`/admin/products/${data.data.id}`)
+              }
+            })
+          }
+        })
+      }
+    })
   }
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20 mb-10`}>
@@ -267,12 +271,19 @@ const AddEditProduct = ({ isEditing }) => {
                 </Box>
                 <Box className="flex justify-start my-4">
                   <Button
+                    disabled={isPending}
                     type="submit"
                     color="secondary"
                     variant="outlined"
                     className={`px-8 py-3 `}
                   >
-                    {productId && isEditing ? 'Save Product' : 'Create Product'}
+                    {productId && isEditing
+                      ? isPending
+                        ? 'Saving Product...'
+                        : 'Save Product'
+                      : isPending
+                      ? 'Creating Product...'
+                      : 'Create Product'}
                   </Button>
                 </Box>
               </Form>

@@ -1,27 +1,41 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef } from 'react'
 
-import { Box, useTheme, Typography, IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { Box, useTheme, Typography, IconButton } from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
 
-import { LayoutContext } from "./LayoutContext";
-import { tokens } from "../../../theme";
-import UserLoginForm from "../../../components/UserLoginForm";
-import UserRegisterForm from "../../../components/UserRegisterForm";
+import { LayoutContext } from './LayoutContext'
+import { tokens } from '../../../theme'
+import UserLoginForm from '../../../components/UserLoginForm'
+import UserRegisterForm from '../../../components/UserRegisterForm'
 
 const AccountDialog = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
 
-  const { openAccountDialog } = useContext(LayoutContext);
-  const { handleCloseAccountDialog } = useContext(LayoutContext);
-  const { handleClickOpenAccountDialog } = useContext(LayoutContext);
+  const { openAccountDialog } = useContext(LayoutContext)
+  const { handleCloseAccountDialog } = useContext(LayoutContext)
+  const { handleClickOpenAccountDialog } = useContext(LayoutContext)
+  const modelRef = useRef()
+  const handleClose = (e) => {
+    const dialogDimensions = modelRef.current.getBoundingClientRect()
+    if (
+      e.clientX < dialogDimensions.left ||
+      e.clientX > dialogDimensions.right ||
+      e.clientY < dialogDimensions.top ||
+      e.clientY > dialogDimensions.bottom
+    ) {
+      handleCloseAccountDialog()
+    }
+  }
   return (
     <Box
+      onClick={handleClose}
       className={`${
-        openAccountDialog.isOpen ? "fixed " : "hidden"
+        openAccountDialog.isOpen ? 'fixed ' : 'hidden'
       } bg-black/20 z-[1000] w-full h-full left-0 top-0 pt-[60px] ease-in-out`}
     >
       <Box
+        ref={modelRef}
         backgroundColor={colors.primary[400]}
         open={openAccountDialog.isOpen}
         onClose={handleCloseAccountDialog}
@@ -34,8 +48,8 @@ const AccountDialog = () => {
             fontWeight="bold"
             className={`text-xl md:text-2xl  text-left my-4`}
           >
-            {openAccountDialog.mode === "login" && "Login"}
-            {openAccountDialog.mode === "register" && "Register"}
+            {openAccountDialog.mode === 'login' && 'Login'}
+            {openAccountDialog.mode === 'register' && 'Register'}
           </Typography>
           <Box>
             <IconButton onClick={handleCloseAccountDialog}>
@@ -43,13 +57,13 @@ const AccountDialog = () => {
             </IconButton>
           </Box>
         </Box>
-        {openAccountDialog.mode === "login" && (
+        {openAccountDialog.mode === 'login' && (
           <UserLoginForm
             handleCloseAccountDialog={handleCloseAccountDialog}
             handleClickOpenAccountDialog={handleClickOpenAccountDialog}
           />
         )}
-        {openAccountDialog.mode === "register" && (
+        {openAccountDialog.mode === 'register' && (
           <UserRegisterForm
             handleCloseAccountDialog={handleCloseAccountDialog}
             handleClickOpenAccountDialog={handleClickOpenAccountDialog}
@@ -57,7 +71,7 @@ const AccountDialog = () => {
         )}
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default AccountDialog;
+export default AccountDialog

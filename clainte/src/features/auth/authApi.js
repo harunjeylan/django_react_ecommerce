@@ -1,8 +1,8 @@
 import { setCredentials, logOut } from '../../features/auth/authSlice'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-export const SERVER_HOST = 'https://harunjeylan.pythonanywhere.com/'
-// export const SERVER_HOST = 'http://127.0.0.1:8000/'
+// export const SERVER_HOST = 'https://harunjeylan.pythonanywhere.com/'
+export const SERVER_HOST = 'http://127.0.0.1:8000/'
 
 export const refreshAccessToken = async (store) => {
   if (store.getState().auth?.refresh) {

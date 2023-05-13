@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 
 import { Box, useTheme, Typography, IconButton } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
@@ -7,6 +7,18 @@ import { tokens } from '../../theme'
 const Model = ({ children, openModel, setOpenModel, modelTitle, width }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  const modelRef = useRef()
+  const handleClose = (e) => {
+    const dialogDimensions = modelRef.current.getBoundingClientRect()
+    if (
+      e.clientX < dialogDimensions.left ||
+      e.clientX > dialogDimensions.right ||
+      e.clientY < dialogDimensions.top ||
+      e.clientY > dialogDimensions.bottom
+    ) {
+      setOpenModel(false)
+    }
+  }
   const getWidth = () => {
     switch (width) {
       case 'lg':
@@ -28,8 +40,10 @@ const Model = ({ children, openModel, setOpenModel, modelTitle, width }) => {
       w-full h-full left-0 top-0 justify-between items-center
       overflow-y-auto
       pt-[60px] ease-in-out z-[100]`}
+      onClick={handleClose}
     >
       <Box
+        ref={modelRef}
         width={getWidth()}
         backgroundColor={colors.primary[400]}
         className={`mx-auto my-auto max-w-[90%] rounded-lg`}

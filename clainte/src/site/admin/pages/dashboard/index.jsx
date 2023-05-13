@@ -849,9 +849,6 @@ const Dashboard = () => {
                     color: `${colors.grey[100]} !important`,
                   },
 
-                  '& .MuiDataGrid-cell': {
-                    width: '100%',
-                  },
                 }}
               >
                 {!isFetchingDashboardData ? (

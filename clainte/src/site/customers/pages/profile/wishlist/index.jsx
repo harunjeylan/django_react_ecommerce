@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
   Typography,
   Box,
@@ -8,13 +8,9 @@ import {
   Breadcrumbs,
   Button,
   CircularProgress,
-  Checkbox,
-  IconButton,
 } from '@mui/material'
 
 import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined'
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
-import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart'
 
 import ProfileCard from '../global/ProfileCard'
 import { DataGrid, GridToolbar } from '@mui/x-data-grid'
@@ -33,7 +29,7 @@ import {
   toggleCart,
 } from '../../../../../features/services/cartReducer'
 import { selectCurrentUser } from '../../../../../features/auth/authSlice'
-import CloseIcon from '@mui/icons-material/Close'
+import { useProductColumns } from '../../../../../components/dataGridColumns/useProductColumns'
 
 const Wishlist = () => {
   const navigate = useNavigate()
@@ -73,80 +69,7 @@ const Wishlist = () => {
     setIsInCart(findInCart(product))
   }
 
-  const productColumns = [
-    {
-      field: 'title',
-      headerName: 'Product Name',
-      width: 250,
-      height: 200,
-      renderCell: ({ row: { id, title, thumbnail } }) => {
-        return (
-          <Box className="flex gap-4 items-center py-2 w-full h-full">
-            <Link to={`/product/${id}`}>
-              <img
-                style={{ backgroundColor: colors.primary[400] }}
-                className="h-[60px] w-[60px] pointer rounded-md border-[1px]"
-                src={thumbnail}
-                alt={`${title}`}
-              />
-            </Link>
-            <Link to={`/product/${id}`}>
-              <Typography color={colors.greenAccent[500]}>{title}</Typography>
-            </Link>
-          </Box>
-        )
-      },
-    },
-    { field: 'category', headerName: 'Category', width: 100 },
-    { field: 'collection', headerName: 'Collection', width: 100 },
-
-    {
-      field: 'sale_pricing',
-      headerName: 'pricing',
-      renderCell: ({ row: { sale_pricing } }) => {
-        return <Typography>{sale_pricing}</Typography>
-      },
-    },
-
-    { field: 'brand', headerName: 'Brand', width: 100 },
-    {
-      field: 'cart',
-      headerName: 'Cart',
-      width: 100,
-      renderCell: ({ row: { id } }) => {
-        const [isInCart, setIsInCart] = useState(false)
-        const product = wishlists.find((product) => product.id === id)
-        useEffect(() => {
-          setIsInCart(findInCart(product))
-        }, [carts, findInCart, product])
-        return (
-          <Box className="mx-auto">
-            <Checkbox
-              color="secondary"
-              inputProps={{ 'aria-label': 'Checkbox demo' }}
-              icon={<AddShoppingCartIcon color={colors.grey[100]} />}
-              checkedIcon={<RemoveShoppingCartIcon color={colors.grey[100]} />}
-              checked={isInCart}
-              onChange={() => changeCart(product, setIsInCart)}
-            />
-          </Box>
-        )
-      },
-    },
-    {
-      field: 'wishlist',
-      headerName: 'Remove',
-      renderCell: ({ row: { id } }) => {
-        return (
-          <Box className="mx-auto">
-            <IconButton color="error" onClick={() => changeWishlist(id)}>
-              <CloseIcon />
-            </IconButton>
-          </Box>
-        )
-      },
-    },
-  ]
+  const productColumns = useProductColumns()
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>

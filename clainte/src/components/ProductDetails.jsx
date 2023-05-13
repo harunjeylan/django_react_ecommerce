@@ -53,7 +53,7 @@ const ProductDetails = ({ productId, isAdminPage }) => {
   const colors = tokens(theme.palette.mode)
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const [value, setValue] = useState('description')
+  const [value, setValue] = useState('addition-information')
   const user = useSelector(selectCurrentUser)
   const wishlist = useSelector(selectWishlists)
   const carts = useSelector(selectCart)
@@ -405,9 +405,7 @@ const ProductDetails = ({ productId, isAdminPage }) => {
               )}
             </Box>
             <Typography variant="body2" className={`w-full px-auto  h-fit`}>
-              Samsa was a travelling salesman - and above it there hung a
-              picture that he had recently cut out of an illustrated magazine
-              and housed in a nice, gilded frame.
+              {product?.description}
             </Typography>
 
             <Box className="w-full flex flex-col gap-4 justify-start">
@@ -579,18 +577,10 @@ const ProductDetails = ({ productId, isAdminPage }) => {
             indicatorColor="secondary"
             aria-label="secondary tabs example"
           >
-            <Tab label="Description" value="description" />
             <Tab label="Additional Information" value="addition-information" />
             <Tab label="Reviews" value="reviews" />
           </Tabs>
           <Box className="flex flex-wrap gap-4  mt-8">
-            {value === 'description' && (
-              <div
-                style={{ color: colors.neutral[400] }}
-                className={`w-full prose lg:prose-xl `}
-                dangerouslySetInnerHTML={{ __html: product?.description }}
-              />
-            )}
             {value === 'reviews' && (
               <Box className={`flex flex-col gap-4 w-fit max-w-2xl`}>
                 {product?.reviews?.map((review, index) => (
@@ -602,7 +592,13 @@ const ProductDetails = ({ productId, isAdminPage }) => {
               </Box>
             )}
             {value === 'addition-information' && (
-              <Box>addition-information</Box>
+              <div
+                style={{ color: colors.neutral[400] }}
+                className={`w-full prose lg:prose-xl `}
+                dangerouslySetInnerHTML={{
+                  __html: product?.additional_information,
+                }}
+              />
             )}
           </Box>
         </Box>
