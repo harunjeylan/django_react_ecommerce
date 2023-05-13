@@ -27,7 +27,10 @@ export const useInitialValues = (initialValues) => {
       title: getValue(initialValues?.title, ''),
       brand: getValue(initialValues?.brand?.name, ''),
       description: getValue(initialValues?.description, ''),
-      additional_information: getValue(initialValues?.description, ''),
+      additional_information: getValue(
+        initialValues?.additional_information,
+        ''
+      ),
       salePrice: getValue(initialValues?.sale_pricing, 0),
       regularPrice: getValue(initialValues?.regular_pricing, 0),
       discount: getValue(initialValues?.discount?.id, null),
