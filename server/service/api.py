@@ -742,8 +742,6 @@ def updateDelivery(request,pk):
     return Response(delivery_serializer_form.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
-@admin_only
 def getDelivery(request):
     deliveries = Delivery.objects.all()
     deliveries_data = DeliverySerializer(deliveries, many=True).data

@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
-
+from django.conf import settings
+import os
 # Create your models here.
 
 
@@ -47,6 +48,21 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.get_full_name()}"
+
+    def delete_image(self, *args, **kwargs):
+        try:
+            os.remove(os.path.join(settings.MEDIA_ROOT, self.image.name))
+        except:
+            pass
+        self.image = None
+        self.save()
+
+    def delete(self, *args, **kwargs):
+        try:
+            os.remove(os.path.join(settings.MEDIA_ROOT, self.image.name))
+        except:
+            pass
+        super(Profile,self).delete(*args,**kwargs)
 
     def get_image(self):
         if self.image:

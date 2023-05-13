@@ -1,5 +1,5 @@
-import { Box, Checkbox, FormControlLabel, Typography } from "@mui/material";
-import AddressForm from "./AddressForm";
+import { Box, Checkbox, FormControlLabel, Typography } from '@mui/material'
+import AddressForm from './AddressForm'
 
 const Shipping = ({
   title,
@@ -14,7 +14,7 @@ const Shipping = ({
     <Box m="30px auto" className="flex flex-col gap-4">
       {/* BILLING FORM */}
       <Box>
-        <Typography sx={{ mb: "15px" }} fontSize="18px">
+        <Typography sx={{ mb: '15px' }} fontSize="18px">
           Billing Information
         </Typography>
         <AddressForm
@@ -33,11 +33,11 @@ const Shipping = ({
             <Checkbox
               color="secondary"
               defaultChecked
-              value={values.shippingAddress.isSameAddress}
+              value={values?.shippingAddress?.isSameAddress}
               onChange={() =>
                 setFieldValue(
-                  "shippingAddress.isSameAddress",
-                  !values.shippingAddress.isSameAddress
+                  'shippingAddress.isSameAddress',
+                  !values?.shippingAddress?.isSameAddress
                 )
               }
             />
@@ -47,9 +47,9 @@ const Shipping = ({
       </Box>
 
       {/* SHIPPING FORM */}
-      {!values.shippingAddress.isSameAddress && (
+      {!values?.shippingAddress?.isSameAddress && (
         <Box>
-          <Typography sx={{ mb: "15px" }} fontSize="18px">
+          <Typography sx={{ mb: '15px' }} fontSize="18px">
             Shipping Information
           </Typography>
           <AddressForm
@@ -63,7 +63,7 @@ const Shipping = ({
         </Box>
       )}
     </Box>
-  );
-};
+  )
+}
 
-export default Shipping;
+export default Shipping

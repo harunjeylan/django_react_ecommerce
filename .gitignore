@@ -51,8 +51,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+media
 note.txt
-
+db.sqlite3
 env
 .env
 ./server/.git

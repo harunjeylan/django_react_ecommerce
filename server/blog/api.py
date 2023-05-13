@@ -149,8 +149,9 @@ def uploadImage(request):
 @admin_only
 def removeThumbnail(request):
     blog = Blog.objects.get(id=request.data.get("id"))
-    blog.thumbnail = None
-    blog.save()
+    # blog.thumbnail = None
+    # blog.save()
+    blog.delete_thumbnail()
     return Response({"success":"thumbnail is deleted"}, status=status.HTTP_202_ACCEPTED)
 
 

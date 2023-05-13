@@ -1,9 +1,17 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useTransition } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import * as yup from 'yup'
 import { Formik } from 'formik'
 import { useDispatch } from 'react-redux'
-import { TextField, Box, Typography, Divider, Button } from '@mui/material'
+import {
+  TextField,
+  Box,
+  Typography,
+  Divider,
+  Button,
+  CircularProgress,
+} from '@mui/material'
+
 import GoogleIcon from '@mui/icons-material/Google'
 
 import { setCredentials, setUserData } from '../features/auth/authSlice'
@@ -11,7 +19,6 @@ import { useLoginMutation } from '../features/auth/authApiSlice'
 import { endpoints as authEndpoints } from '../features/auth/authApiSlice'
 import { useSnackbar } from 'notistack'
 import useAlert from './ui/useAlert'
-
 const UserLoginForm = ({
   handleCloseAccountDialog = undefined,
   handleClickOpenAccountDialog = undefined,
@@ -20,6 +27,7 @@ const UserLoginForm = ({
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const location = useLocation()
+  const [isPending, startTransition] = useTransition()
   const { enqueueSnackbar } = useSnackbar()
   const [CustomAlert, setMessages] = useAlert()
   const from = location.state?.from?.pathname || '/'
@@ -40,35 +48,37 @@ const UserLoginForm = ({
   const [login] = useLoginMutation()
 
   const handleFormSubmit = (values, { resetForm }) => {
-    login({ ...values }).then((data) => {
-      if (data?.error) {
-        Object.keys(data.error.data).forEach((key) => {
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: key,
-              variant: 'error',
-              description: data.error.data[key],
-            },
-          ])
-        })
-      } else {
-        dispatch(setCredentials(data.data))
-        dispatch(authEndpoints.getUseData.initiate()).then((response) => {
-          if (response.isSuccess) {
-            dispatch(setUserData(response.data))
-            enqueueSnackbar(`You have logged in successfully!`, {
-              variant: 'success',
-            })
-            if (handleCloseAccountDialog !== undefined) {
-              handleCloseAccountDialog()
-            } else {
-              navigate(from, { replace: true })
+    startTransition(() => {
+      login({ ...values }).then((data) => {
+        if (data?.error) {
+          Object.keys(data.error.data).forEach((key) => {
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: key,
+                variant: 'error',
+                description: data.error.data[key],
+              },
+            ])
+          })
+        } else {
+          dispatch(setCredentials(data.data))
+          dispatch(authEndpoints.getUseData.initiate()).then((response) => {
+            if (response.isSuccess) {
+              dispatch(setUserData(response.data))
+              enqueueSnackbar(`You have logged in successfully!`, {
+                variant: 'success',
+              })
+              if (handleCloseAccountDialog !== undefined) {
+                handleCloseAccountDialog()
+              } else {
+                navigate(from, { replace: true })
+              }
             }
-          }
-          resetForm()
-        })
-      }
+            resetForm()
+          })
+        }
+      })
     })
   }
   return (
@@ -117,15 +127,31 @@ const UserLoginForm = ({
                   error={!!touched.password && !!errors.password}
                   helperText={touched.password && errors.password}
                 />
-                <Button
-                  type="submit"
-                  variant="outlined"
-                  size="medium"
-                  color="secondary"
-                  className="w-full py-2"
-                >
-                  Login
-                </Button>
+                {isPending ? (
+                  <Button
+                    disabled
+                    type="submit"
+                    variant="outlined"
+                    size="medium"
+                    color="secondary"
+                    className="w-full py-2"
+                    loading
+                    loadingPosition="start"
+                    startIcon={<CircularProgress />}
+                  >
+                    Login...
+                  </Button>
+                ) : (
+                  <Button
+                    type="submit"
+                    variant="outlined"
+                    size="medium"
+                    color="secondary"
+                    className="w-full py-2"
+                  >
+                    Login
+                  </Button>
+                )}
                 <Box className="flex justify-end px-4 pt-2 ">
                   <Typography>Forgat Password</Typography>
                 </Box>
