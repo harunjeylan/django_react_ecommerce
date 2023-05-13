@@ -287,14 +287,35 @@ const ProductInformationForm = ({
             <Typography variant="h6" fontWeight="bold" className="my-2">
               Product Description
             </Typography>
-            <Field name="description">
+            <TextField
+              fullWidth
+              variant="filled"
+              type="text"
+              label="Product Additional Information"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values.description}
+              name="description"
+              error={!!touched.description && !!errors.description}
+              helperText={touched.description && errors.description}
+              className={`col-span-2`}
+              multiline
+              minRows={3}
+            />
+          </Box>
+
+          <Box>
+            <Typography variant="h6" fontWeight="bold" className="my-2">
+              Product Additional Information
+            </Typography>
+            <Field name="additional_information">
               {({ meta, field }) => (
                 <Box
                   backgroundColor={colors.primary[400]}
                   color={colors.grey[100]}
                 >
                   <ReactQuill
-                    name="description"
+                    name="additional_information"
                     theme="snow"
                     value={field.value}
                     modules={{
@@ -312,14 +333,16 @@ const ProductInformationForm = ({
                     }}
                     onChange={field.onChange(field.name)}
                   />
-                  {!!touched.description && !!errors.description && (
-                    <>
-                      <Divider color="error" className="h-[2px] mt-[-1px]" />
-                      <Typography className="text-red-500">
-                        {touched.description && errors.description}
-                      </Typography>
-                    </>
-                  )}
+                  {!!touched.additional_information &&
+                    !!errors.additional_information && (
+                      <>
+                        <Divider color="error" className="h-[2px] mt-[-1px]" />
+                        <Typography className="text-red-500">
+                          {touched.additional_information &&
+                            errors.additional_information}
+                        </Typography>
+                      </>
+                    )}
                 </Box>
               )}
             </Field>

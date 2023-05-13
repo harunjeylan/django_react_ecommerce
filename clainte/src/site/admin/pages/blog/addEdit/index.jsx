@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import {
   Box,
   Divider,
@@ -46,6 +46,7 @@ import quillModules from '../../../../../helpers/quillModules'
 import { useSnackbar } from 'notistack'
 import useAlert from '../../../../../components/ui/useAlert'
 import BlogInformation from '../components/BlogInformation'
+import { TransitionContext } from '../../../../../utils/TransitionContext'
 
 const Item = ({ item, itemName, handleUpdate, handleDelete }) => {
   const InputRef = useRef()
@@ -90,6 +91,8 @@ const AddEditBlog = ({ isEditing }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
+  const { startTransition, isPending } = useContext(TransitionContext)
+
   const [CustomAlert, setMessages] = useAlert()
   const [updating, setUpdating] = useState('')
 
@@ -112,7 +115,7 @@ const AddEditBlog = ({ isEditing }) => {
   const [removeBlogThumbnail] = useRemoveBlogThumbnailMutation()
   const modelInputRef = useRef()
 
-  const { data: organize, isFetching: organizeIsFetching } =
+  const { data: organize={}, isFetching: organizeIsFetching } =
     useGetAllOrganizeQuery()
 
   useEffect(() => {
@@ -205,101 +208,102 @@ const AddEditBlog = ({ isEditing }) => {
       }
     })
   }
-  const handleClean = (image) => {
-  }
+  const handleClean = (image) => {}
   const handleFormSubmit = (values) => {
-    setUpdating('blog')
-    if (blogSlug) {
-      updateBlog({ post: values, blogSlug }).then((data) => {
-        if (data?.error?.status) {
-          Object.keys(data.error.data).forEach((key) => {
-            setMessages((prev) => [
-              ...prev,
-              {
-                id: key,
-                variant: 'error',
-                description: data.error.data[key],
-              },
-            ])
-          })
-        } else {
-          setUpdating('thumbnail')
-          let postForm = new FormData()
-          postForm.append('thumbnail', blogThumbnail[0]?.file)
-          postForm.append('blogId', data.data.id)
-          uploadImage({
-            post: postForm,
-          }).then((response) => {
-            if (response?.error?.status) {
-              Object.keys(response.error.data).forEach((key) => {
-                setMessages((prev) => [
-                  ...prev,
-                  {
-                    id: key,
-                    variant: 'error',
-                    description: response.error.data[key],
-                  },
-                ])
-              })
-            } else {
-              setUpdating('')
-              enqueueSnackbar(
-                `Blog -> ${values.title} is updated successfully!`,
+    startTransition(() => {
+      setUpdating('blog')
+      if (blogSlug) {
+        updateBlog({ post: values, blogSlug }).then((data) => {
+          if (data?.error?.status) {
+            Object.keys(data.error.data).forEach((key) => {
+              setMessages((prev) => [
+                ...prev,
                 {
-                  variant: 'success',
-                }
-              )
-              navigate(`/admin/blogs/${blogSlug}`)
-            }
-          })
-        }
-      })
-    } else {
-      addBlog({ post: values }).then((data) => {
-        if (data?.error?.status) {
-          Object.keys(data.error.data).forEach((key) => {
-            setMessages((prev) => [
-              ...prev,
-              {
-                id: key,
-                variant: 'error',
-                description: data.error.data[key],
-              },
-            ])
-          })
-        } else {
-          setUpdating('thumbnail')
-          let postForm = new FormData()
-          postForm.append('thumbnail', blogThumbnail[0]?.file)
-          postForm.append('blogId', data.data.id)
-          uploadImage({
-            post: postForm,
-          }).then((response) => {
-            if (response?.error?.status) {
-              Object.keys(response.error.data).forEach((key) => {
-                setMessages((prev) => [
-                  ...prev,
+                  id: key,
+                  variant: 'error',
+                  description: data.error.data[key],
+                },
+              ])
+            })
+          } else {
+            setUpdating('thumbnail')
+            let postForm = new FormData()
+            postForm.append('thumbnail', blogThumbnail[0]?.file)
+            postForm.append('blogId', data.data.id)
+            uploadImage({
+              post: postForm,
+            }).then((response) => {
+              if (response?.error?.status) {
+                Object.keys(response.error.data).forEach((key) => {
+                  setMessages((prev) => [
+                    ...prev,
+                    {
+                      id: key,
+                      variant: 'error',
+                      description: response.error.data[key],
+                    },
+                  ])
+                })
+              } else {
+                setUpdating('')
+                enqueueSnackbar(
+                  `Blog -> ${values.title} is updated successfully!`,
                   {
-                    id: key,
-                    variant: 'error',
-                    description: response.error.data[key],
-                  },
-                ])
-              })
-            } else {
-              setUpdating('')
-              enqueueSnackbar(
-                `Blog -> ${values.title} is created successfully!`,
+                    variant: 'success',
+                  }
+                )
+                navigate(`/admin/blogs/${blogSlug}`)
+              }
+            })
+          }
+        })
+      } else {
+        addBlog({ post: values }).then((data) => {
+          if (data?.error?.status) {
+            Object.keys(data.error.data).forEach((key) => {
+              setMessages((prev) => [
+                ...prev,
                 {
-                  variant: 'success',
-                }
-              )
-              navigate(`/admin/blogs/${data.data.slug}`)
-            }
-          })
-        }
-      })
-    }
+                  id: key,
+                  variant: 'error',
+                  description: data.error.data[key],
+                },
+              ])
+            })
+          } else {
+            setUpdating('thumbnail')
+            let postForm = new FormData()
+            postForm.append('thumbnail', blogThumbnail[0]?.file)
+            postForm.append('blogId', data.data.id)
+            uploadImage({
+              post: postForm,
+            }).then((response) => {
+              if (response?.error?.status) {
+                Object.keys(response.error.data).forEach((key) => {
+                  setMessages((prev) => [
+                    ...prev,
+                    {
+                      id: key,
+                      variant: 'error',
+                      description: response.error.data[key],
+                    },
+                  ])
+                })
+              } else {
+                setUpdating('')
+                enqueueSnackbar(
+                  `Blog -> ${values.title} is created successfully!`,
+                  {
+                    variant: 'success',
+                  }
+                )
+                navigate(`/admin/blogs/${data.data.slug}`)
+              }
+            })
+          }
+        })
+      }
+    })
   }
   const handelRemoveThumbnail = () => {
     setUpdating('thumbnail')
@@ -594,7 +598,7 @@ const AddEditBlog = ({ isEditing }) => {
                           <em>None</em>
                         </MenuItem>
                         {!organizeIsFetching &&
-                          organize.categories?.map((category) => (
+                          organize?.categories?.map((category) => (
                             <MenuItem key={category.id} value={category.name}>
                               {category.name}
                             </MenuItem>
@@ -733,12 +737,19 @@ const AddEditBlog = ({ isEditing }) => {
                   </Box>
                   <Box className="flex justify-start my-4">
                     <Button
+                      disabled={isPending}
                       type="submit"
                       color="secondary"
                       variant="outlined"
                       className={`px-8 py-3 `}
                     >
-                      {blogSlug && isEditing ? 'Save Blog' : 'Create Blog'}
+                      {blogSlug && isEditing
+                        ? isPending
+                          ? 'Saving Blog...'
+                          : 'Save Blog'
+                        : isPending
+                        ? 'Creating Blog...'
+                        : 'Create Blog'}
                     </Button>
                   </Box>
                 </form>

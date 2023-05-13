@@ -1,7 +1,7 @@
 //IMPORTING LIBRARY
-import React, { useRef } from 'react'
+import React, { useContext, useRef } from 'react'
 import { Routes, Route } from 'react-router-dom'
-import { CssBaseline, ThemeProvider } from '@mui/material'
+import { CssBaseline, LinearProgress, ThemeProvider } from '@mui/material'
 import { useEffect } from 'react'
 import jwt_decode from 'jwt-decode'
 //IMPORTING APP SETUP
@@ -23,6 +23,7 @@ import dayjs from 'dayjs'
 import BlogDetails from './site/customers/pages/blog/details'
 import ProductsListCustomer from './site/customers/pages/products/list'
 import AuthRouters from './utils/AuthRouters'
+import { TransitionContext } from './utils/TransitionContext'
 const CustomerPrivateRoutes = React.lazy(() =>
   import('./utils/CustomerPrivateRoutes')
 )
@@ -130,7 +131,7 @@ function App() {
   const [theme, colorMode] = useMode()
   const accessToken = useSelector(selectCurrentToken)
   const refreshToken = useSelector(selectCurrentRefresh)
-
+  const { isPending } = useContext(TransitionContext)
   const userData = useSelector(selectCurrentUser)
   const dispatch = useDispatch()
   const { data: newUserData } = useGetUseDataQuery()
@@ -149,7 +150,7 @@ function App() {
     let timeOut = timeOutRef.current < 0 ? 3000 : timeOutRef.current
     let interval = setInterval(() => {
       if (refreshToken) {
-        refreshAccessToken(store).then(console.log)
+        refreshAccessToken(store).then(() => {})
       }
     }, timeOut)
     return () => clearInterval(interval)
@@ -159,7 +160,7 @@ function App() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-
+        {!isPending && <LinearProgress />}
         <Routes>
           {/* Authentication pages */}
 

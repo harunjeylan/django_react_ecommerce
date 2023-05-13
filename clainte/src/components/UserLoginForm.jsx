@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useTransition } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import * as yup from 'yup'
 import { Formik } from 'formik'
@@ -19,6 +19,7 @@ import { useLoginMutation } from '../features/auth/authApiSlice'
 import { endpoints as authEndpoints } from '../features/auth/authApiSlice'
 import { useSnackbar } from 'notistack'
 import useAlert from './ui/useAlert'
+import { TransitionContext } from '../utils/TransitionContext'
 const UserLoginForm = ({
   handleCloseAccountDialog = undefined,
   handleClickOpenAccountDialog = undefined,
@@ -27,7 +28,7 @@ const UserLoginForm = ({
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const location = useLocation()
-  const [isPending, startTransition] = useTransition()
+  const { isPending, startTransition } = useContext(TransitionContext)
   const { enqueueSnackbar } = useSnackbar()
   const [CustomAlert, setMessages] = useAlert()
   const from = location.state?.from?.pathname || '/'
@@ -127,31 +128,18 @@ const UserLoginForm = ({
                   error={!!touched.password && !!errors.password}
                   helperText={touched.password && errors.password}
                 />
-                {isPending ? (
-                  <Button
-                    disabled
-                    type="submit"
-                    variant="outlined"
-                    size="medium"
-                    color="secondary"
-                    className="w-full py-2"
-                    loading
-                    loadingPosition="start"
-                    startIcon={<CircularProgress />}
-                  >
-                    Login...
-                  </Button>
-                ) : (
-                  <Button
-                    type="submit"
-                    variant="outlined"
-                    size="medium"
-                    color="secondary"
-                    className="w-full py-2"
-                  >
-                    Login
-                  </Button>
-                )}
+
+                <Button
+                  disabled={isPending}
+                  type="submit"
+                  variant="outlined"
+                  size="medium"
+                  color="secondary"
+                  className="w-full py-2"
+                >
+                  {isPending}Login
+                </Button>
+
                 <Box className="flex justify-end px-4 pt-2 ">
                   <Typography>Forgat Password</Typography>
                 </Box>

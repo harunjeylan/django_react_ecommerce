@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { useNavigate } from 'react-router-dom'
-import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 
 import * as yup from 'yup'
@@ -38,8 +37,9 @@ import { tokens } from '../../../../../theme'
 import Header from '../../../../../components/Header'
 import useAlert from '../../../../../components/ui/useAlert'
 import { useSnackbar } from 'notistack'
-import dateFormatter from '../../../../../helpers/dateFormatter'
 import userAvatar from '../../../../../assets/user-avatar.png'
+import { useProductColumns } from '../../../../../components/dataGridColumns/useProductColumns'
+import { useOrderColumns } from '../../../../../components/dataGridColumns/useOrderColumns'
 const CustomerDetails = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -82,133 +82,8 @@ const CustomerDetails = () => {
       }
     )
   }
-  const productColumns = [
-    {
-      field: 'title',
-      headerName: 'Product Name',
-      width: 200,
-      height: 200,
-      renderCell: ({ row: { id, title, thumbnail } }) => {
-        return (
-          <Box className="flex gap-4 items-center py-2 w-full h-full">
-            <Link to={`/admin/products/${id}`}>
-              <img
-                style={{ backgroundColor: colors.primary[400] }}
-                className="h-[60px] w-[60px] pointer rounded-md border-[1px]"
-                src={thumbnail}
-                alt={`${title}`}
-              />
-            </Link>
-            <Link to={`/admin/products/${id}`}>
-              <Typography color={colors.greenAccent[500]}>{title}</Typography>
-            </Link>
-          </Box>
-        )
-      },
-    },
-    { field: 'category', headerName: 'Category', width: 150 },
-    { field: 'collection', headerName: 'Collection', width: 150 },
-    { field: 'date', headerName: 'Date', width: 200 },
-    {
-      field: 'sale_pricing',
-      headerName: 'sale_pricing',
-      renderCell: ({ row: { sale_pricing } }) => {
-        return <Typography>{sale_pricing}</Typography>
-      },
-    },
-    {
-      field: 'discount',
-      headerName: 'Discount',
-      width: 200,
-      renderCell: ({ row: { discount } }) => {
-        return discount ? (
-          <Box className="flex flex-col">
-            <Typography variant="p">
-              <strong>Name: {discount?.name}</strong>
-            </Typography>
-            <Typography variant="p">
-              <strong>Discount: </strong>
-              {discount?.amount}%
-            </Typography>
-            <Typography variant="p">
-              <strong>Date: from </strong>
-              {discount?.start_date}
-              <strong> to </strong>
-              {discount?.end_date}
-            </Typography>
-          </Box>
-        ) : (
-          <Typography variant="p">
-            <strong>No Discount</strong>
-          </Typography>
-        )
-      },
-    },
-    { field: 'brand', headerName: 'Brand', width: 100 },
-  ]
-  const orderColumns = [
-    {
-      field: 'id',
-      headerName: 'ORDER',
-      width: 100,
-      renderCell: ({ row: { id } }) => {
-        return (
-          <Link to={`/admin/orders/${id}`}>
-            <Typography
-              className="cursor-pointer"
-              color={colors.greenAccent[500]}
-            >
-              # {id}
-            </Typography>
-          </Link>
-        )
-      },
-    },
-    {
-      field: 'total_price',
-      headerName: 'Total',
-      width: 100,
-      renderCell: ({ row: { total_price } }) => {
-        return <Typography>${total_price}</Typography>
-      },
-    },
-
-    {
-      field: 'fulfillment_status',
-      headerName: 'Fulfillment status',
-      width: 200,
-    },
-    {
-      field: 'delivery_method',
-      headerName: 'Delivery',
-      width: 200,
-      renderCell: ({ row: { delivery_method } }) => {
-        return delivery_method ? (
-          <Box className="flex flex-col">
-            <Typography variant="p">
-              <strong>Name: {delivery_method?.name}</strong>
-            </Typography>
-            <Typography variant="p">
-              <strong>Pricing: </strong>${delivery_method?.pricing}
-            </Typography>
-          </Box>
-        ) : (
-          <Typography variant="p">
-            <strong>No Delivery</strong>
-          </Typography>
-        )
-      },
-    },
-    {
-      field: 'date',
-      headerName: 'Date',
-      width: 200,
-      renderCell: ({ row: { date } }) => {
-        return <Typography>{dateFormatter(new Date(date))}</Typography>
-      },
-    },
-  ]
-
+  const productColumns = useProductColumns({ isAdmin: true })
+  const orderColumns = useOrderColumns({ isAdmin: true })
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 md:mt-20 mb-10`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>

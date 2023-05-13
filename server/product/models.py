@@ -7,6 +7,7 @@ import os
 class Product(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
+    additional_information =  models.TextField(null=True, blank=True)
     thumbnail = models.ImageField(null=True, blank=True, upload_to="product-images")
     date = models.DateField(auto_now_add=True)
     regular_pricing = models.FloatField()

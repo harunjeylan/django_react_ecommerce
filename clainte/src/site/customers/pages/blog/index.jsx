@@ -38,11 +38,11 @@ const Blog = () => {
   const [searchValue, setSearchValue] = useState('')
   const [search, setSearch] = useState('')
 
-  const { data: blogs=[], isFetching: isFetchingBlogs } =
+  const { data: blogs = [], isFetching: isFetchingBlogs } =
     useSearchAndFilterBlogsQuery({ searchAndFilter })
-  const { data: collection={}, isFetching: isFetchingCollection } =
+  const { data: collection = {}, isFetching: isFetchingCollection } =
     useGetBlogCollectionsQuery()
-  const { data: filters={}, isFetching: isFetchingFilters } =
+  const { data: filters = {}, isFetching: isFetchingFilters } =
     useGetBlogFilterQuery()
   useEffect(() => {
     let timeOut = setTimeout(() => {
@@ -93,10 +93,7 @@ const Blog = () => {
   return (
     <Box className={`flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
-        <Header2
-          title="Alif Newsroom"
-          subtitle="Geeks Newsroom Geeks Newsroom"
-        />
+        <Header2 title="Alif Newsroom" subtitle="Well come to the news" />
       </Box>
       <Box className={`md:container px-2 md:mx-auto md:px-auto`}>
         <Box className="max-w-lg mx-auto flex justify-between items-center gap-4">

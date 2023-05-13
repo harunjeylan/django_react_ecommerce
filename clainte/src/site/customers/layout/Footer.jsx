@@ -1,10 +1,13 @@
-import { Box, Typography } from "@mui/material";
-import { useTheme } from "@emotion/react";
-import { tokens } from "../../../theme";
-
+import { Box, Typography } from '@mui/material'
+import { useTheme } from '@emotion/react'
+import { tokens } from '../../../theme'
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined'
+import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined'
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
+import { contact } from '../../../data/staticData'
 function Footer() {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
 
   return (
     <Box
@@ -55,17 +58,28 @@ function Footer() {
           <Typography variant="h4" fontWeight="bold" className="mb-4 lg:mb-6">
             Contact Us
           </Typography>
-          <Typography className="mb-4 lg:mb-6">
-            50 north Whatever Blvd, Washington, DC 10501
-          </Typography>
-          <Typography className="mb-4 lg:mb-6" sx={{ wordWrap: "break-word" }}>
-            Email: mredwardroh@gmail.com
-          </Typography>
-          <Typography className="mb-4 lg:mb-6">(222)333-4444</Typography>
+          <Box className="flex flex-col items-start gap-1">
+            <Typography className="mb-4 lg:mb-6 flex gap-2">
+              <EmailOutlinedIcon fontSize="medium" /> <strong>Email</strong> :
+              <p>{contact.email}</p>
+            </Typography>
+          </Box>
+          <Box className="flex flex-col items-start gap-1">
+            <Typography className="mb-4 lg:mb-6 flex gap-2">
+              <LocationOnOutlinedIcon fontSize="medium" />
+              <strong>Address</strong> :<p>{contact.address}</p>
+            </Typography>
+          </Box>
+          <Box className="flex flex-col items-start gap-1">
+            <Typography className="mb-4 lg:mb-6 flex gap-2">
+              <LocalPhoneOutlinedIcon fontSize="medium" />
+              <strong>phone</strong> :<p>{contact.phone}</p>
+            </Typography>
+          </Box>
         </Box>
       </Box>
     </Box>
-  );
+  )
 }
 
-export default Footer;
+export default Footer

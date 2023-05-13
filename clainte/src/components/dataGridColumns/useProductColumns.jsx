@@ -14,7 +14,7 @@ export const useProductColumns = (params) => {
     {
       field: 'title',
       headerName: 'Product Name',
-      width: 200,
+      width: 240,
       height: 200,
       renderCell: ({ row: { id, title, thumbnail } }) => {
         return (
@@ -26,13 +26,15 @@ export const useProductColumns = (params) => {
                 style={{ backgroundColor: colors.primary[400] }}
                 className="h-[60px] w-[60px] pointer rounded-md border-[1px]"
                 src={thumbnail}
-                alt={`${title?.slice(0, 20)}`}
+                alt={`${title}`}
               />
             </Link>
             <Link
               to={params?.isAdmin ? `/admin/products/${id}` : `/product/${id}`}
             >
-              <Typography color={colors.greenAccent[500]}>{title}</Typography>
+              <Typography color={colors.greenAccent[500]}>
+                {title?.slice(0, 18)}
+              </Typography>
             </Link>
           </Box>
         )
