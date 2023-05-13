@@ -56,13 +56,16 @@ def get_product_list_data(request, products, discount_amount=0):
         rating=0
         if product.reviews.exists():
             rating = round(product.reviews.all().aggregate(Avg('rating'))["rating__avg"], 2)
-        # category = None
-        # collection = None
-        # vendor = None
-        # if product.organize:
-        #     category = product.organize.category.name
-        #     collection = product.organize.collection.name
-        #     vendor = product.organize.vendor.name
+        category = None
+        collection = None
+        vendor = None
+        tags = []
+        if product.organize:
+            category = product.organize.category.name
+            collection = product.organize.collection.name
+            vendor = product.organize.vendor.name
+            tags = TagSerializer(product.organize.tags, many=True).data
+
         product_data.append({
             "id": product.id,
             "title": product.title,
@@ -73,9 +76,10 @@ def get_product_list_data(request, products, discount_amount=0):
             "regular_pricing":product.regular_pricing,
             "date": product.date,
             "brand": product.brand.name,
-            "category": product.organize.category.name if product.organize.category else None,
-            "collection": product.organize.collection.name if product.organize.collection else None,
-            "vendor": product.organize.vendor.name if product.organize.vendor else None,
+            "category": category,
+            "collection": collection,
+            "vendor": vendor,
+            "tags":tags,
             "discount": discount,
             "rating":rating,
         })

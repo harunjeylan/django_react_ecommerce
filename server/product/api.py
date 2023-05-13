@@ -372,9 +372,9 @@ def uploadImage(request):
 @admin_only
 def deleteProduct(request):
     product = Product.objects.get(id=request.data.get("id"))
-    product.organize.delete()
-    for image in product.images.all():
-        image.delete()
+    if product.organize:
+        product.organize.delete()
+
     for variant in product.variants.all():
         variant.delete()
     product.delete()
@@ -387,9 +387,8 @@ def deleteProduct(request):
 def deleteMultiProducts(request):
     products = Product.objects.filter(id__in=request.data.get("productIds"))
     for product in products:
-        product.organize.delete()
-        for image in product.images.all():
-            image.delete()
+        if product.organize:
+            product.organize.delete()
         for variant in product.variants.all():
             variant.delete()
         product.delete()
@@ -438,8 +437,10 @@ def changeMultiProductsDiscount(request):
 @admin_only
 def removeThumbnail(request):
     product = Product.objects.get(id=request.data.get("id"))
-    product.thumbnail = None
-    product.save()
+    # product.thumbnail = None
+    # product.save()
+    product.delete_thumbnail()
+
     return Response({"success": "thumbnail is deleted"}, status=status.HTTP_202_ACCEPTED)
 
 

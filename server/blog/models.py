@@ -1,5 +1,9 @@
 from django.db import models
 from datetime import datetime
+
+from django.conf import settings
+import os
+
 class Blog(models.Model):
 
     title = models.CharField(max_length=255)
@@ -31,7 +35,20 @@ class Blog(models.Model):
     class Meta:
         verbose_name = "blog"
         ordering = ["-published","-updated","-created"]
+    def delete_thumbnail(self, *args, **kwargs):
+        try:
+            os.remove(os.path.join(settings.MEDIA_ROOT, self.thumbnail.name))
+        except:
+            pass
+        self.thumbnail = None
+        self.save()
 
+    def delete(self, *args, **kwargs):
+        try:
+            os.remove(os.path.join(settings.MEDIA_ROOT, self.thumbnail.name))
+        except:
+            pass
+        super(Blog,self).delete(*args,**kwargs)
     #----------------------------------------------------------------------------------
     def delete_blog(self):
         self.status = "deleted"

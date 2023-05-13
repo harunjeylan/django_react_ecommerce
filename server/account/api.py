@@ -115,6 +115,8 @@ def uploadProfileImage(request):
         user=request.user)
     image = request.FILES.get("image")
     if  image:
+        if not profile.image is None:
+            profile.delete_image()
         profile.image = image
         profile.save()
     return Response({"success":"image is uploaded"}, status=status.HTTP_201_CREATED)

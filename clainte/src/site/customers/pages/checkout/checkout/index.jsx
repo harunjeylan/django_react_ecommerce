@@ -107,18 +107,18 @@ const Checkout = () => {
     },
     shippingAddress: {
       isSameAddress: true,
-      first_name: '',
-      last_name: '',
-      phone_number: '',
-      email: '',
-      country: '',
-      street1: '',
-      street2: '',
-      city: '',
-      state: '',
-      zipcode: '',
+      first_name: getValue(userData?.first_name),
+      last_name: getValue(userData?.last_name),
+      phone_number: getValue(userData?.phone_number),
+      email: getValue(userData?.email),
+      country: getValue(userData?.country),
+      street1: getValue(userData?.street1),
+      street2: getValue(userData?.street2),
+      city: getValue(userData?.city),
+      state: getValue(userData?.state),
+      zipcode: getValue(userData?.zipcode),
     },
-    deliveryMethod: 'none',
+    deliveryMethod: null,
   }
   return (
     <Box className={`w-full flex flex-col gap-4 md:gap-8 mt-20 md:mt-40`}>
@@ -288,42 +288,43 @@ const checkoutSchema = [
       isSameAddress: yup.boolean(),
       first_name: yup.string().when('isSameAddress', {
         is: false,
-        then: yup.string().required('required'),
+        then: () => yup.string().required('required'),
       }),
       last_name: yup.string().when('isSameAddress', {
         is: false,
-        then: yup.string().required('required'),
+        then: () => yup.string().required('required'),
       }),
       email: yup.string().when('isSameAddress', {
         is: false,
-        then: yup.string().required('required'),
+        then: () => yup.string().required('required'),
       }),
       phone_number: yup.string().when('isSameAddress', {
         is: false,
-        then: yup
-          .string()
-          .required('required')
-          .matches(
-            phoneRegExp,
-            "Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
-          ),
+        then: () =>
+          yup
+            .string()
+            .required('required')
+            .matches(
+              phoneRegExp,
+              "Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
+            ),
       }),
       country: yup.string().when('isSameAddress', {
         is: false,
-        then: yup.string().required('required'),
+        then: () => yup.string().required('required'),
       }),
       street1: yup.string().when('isSameAddress', {
         is: false,
-        then: yup.string().required('required'),
+        then: () => yup.string().required('required'),
       }),
       street2: yup.string(),
       city: yup.string().when('isSameAddress', {
         is: false,
-        then: yup.string().required('required'),
+        then: () => yup.string().required('required'),
       }),
       state: yup.string().when('isSameAddress', {
         is: false,
-        then: yup.string().required('required'),
+        then: () => yup.string().required('required'),
       }),
       zipcode: yup.string(),
     }),

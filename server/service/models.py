@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 
+from django.conf import settings
+import os
 # Create your models here.
 
 
@@ -78,6 +80,13 @@ class VariantOption(models.Model):
 class Image(models.Model):
     image = models.ImageField(null=True, blank=True,
                               upload_to="product-images")
+    def delete(self, *args, **kwargs):
+        try:
+            os.remove(os.path.join(settings.MEDIA_ROOT, self.image.name))
+        except:
+            pass
+        super(Image,self).delete(*args,**kwargs)
+
 
     def __str__(self):
         return f"{self.image.name}"

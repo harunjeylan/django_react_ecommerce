@@ -22,7 +22,7 @@ const Delivery = ({
           <Box
             className="px-4 py-4 rounded-t-lg"
             backgroundColor={
-              values.deliveryMethod === 'none'
+              values.deliveryMethod === null
                 ? colors.greenAccent[600]
                 : colors.primary[400]
             }

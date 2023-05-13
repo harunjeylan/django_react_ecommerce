@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import  User
 
+from django.conf import settings
+import os
+
 class Product(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
@@ -37,6 +40,22 @@ class Product(models.Model):
     variants = models.ManyToManyField("service.VariantOption", blank=True)
     reviews = models.ManyToManyField("service.Review", blank=True)
     wishes = models.ManyToManyField(User, blank=True)
+    def delete_thumbnail(self, *args, **kwargs):
+        try:
+            os.remove(os.path.join(settings.MEDIA_ROOT, self.thumbnail.name))
+        except:
+            pass
+        self.thumbnail = None
+        self.save()
+
+    def delete(self, *args, **kwargs):
+        try:
+            os.remove(os.path.join(settings.MEDIA_ROOT, self.thumbnail.name))
+        except:
+            pass
+        for image in self.images.all():
+            image.delete()
+        super(Product,self).delete(*args,**kwargs)
 
     def __str__(self):
         return f"{self.title}"

@@ -1,11 +1,19 @@
 import { getIn } from 'formik'
-import { Box, Typography } from '@mui/material'
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from '@mui/material'
 import TextField from '@mui/material/TextField'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { Dropzone, FileItem, FullScreenPreview } from '@dropzone-ui/react'
 import { useState } from 'react'
 import { useTheme } from '@emotion/react'
 import { tokens } from '../../../../../theme'
+import countries from '../../../../../data/countries'
 const PersonalDetails = ({
   values,
   touched,
@@ -153,7 +161,7 @@ const PersonalDetails = ({
           helperText={formattedHelper('phone_number')}
           sx={{ gridColumn: 'span 4' }}
         />
-        <TextField
+        {/* <TextField
           fullWidth
           variant="filled"
           type="text"
@@ -165,7 +173,35 @@ const PersonalDetails = ({
           error={formattedError('country')}
           helperText={formattedHelper('country')}
           sx={{ gridColumn: 'span 4' }}
-        />
+        /> */}
+        <FormControl variant="filled" sx={{ gridColumn: 'span 4' }}>
+          <InputLabel id="country-select-label">Country</InputLabel>
+
+          <Select
+            fullWidth
+            color="secondary"
+            labelId="country-select-label"
+            id="country-select"
+            variant="filled"
+            value={values?.country}
+            onBlur={handleBlur}
+            onChange={handleChange}
+            error={!!touched.country && !!errors.country}
+            name="country"
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            {countries?.map((country, index) => (
+              <MenuItem
+                key={`country-${country.code}-${index}`}
+                value={country.name}
+              >
+                {country.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         <TextField
           fullWidth
