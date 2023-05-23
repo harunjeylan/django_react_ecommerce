@@ -88,15 +88,16 @@ Anyone is able to perform search, view results, all details about selected produ
 - gallery image on product details page
 - create categories (category model has been created and relation to product exist, but there is no views implemented for categories)
 - customers reviews
+- search bar - allows user to search product by keyword. Return all products where search keywords appears
+- create contact page
+- add filters to search option (currently only search by any keyword is available)
+
 
 #### Features Left to Implement
 
-- Chapa payment integration
-- search bar - allows user to search product by keyword. Return all products where search keywords appears
+- Payment integration
 - create pagination
-- create contact page
 - add confirmation email after purchase (currently only flash message appears)
-- add filters to search option (currently only search by any keyword is available)
 
 ## Main Technologies used
 
